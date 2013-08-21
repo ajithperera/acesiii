@@ -659,8 +659,10 @@ c     MXCONT - ???
 
 C
       character*32 szFile
-      logical bExist, Spherical
+      Character*2 Iroot(10)
+      logical bExist, Spherical, Estate_calcs, Dens_diff 
       Character*4 Comp_pgrp, Full_pgrp
+      Integer Roots
       Dimension Atommass(Mxatms), Iatmchrg(Mxatms),  
      &          Fucoord(3,Mxatms), Coord(3,Mxatms),
      &          Norbits_fullG(Mxatms), NOrbits_compG(Mxatms),
@@ -669,11 +671,13 @@ C
       Dimension Work(Icrsiz/iintfp)
 C
       Data Ione, Ieight, Iunit /1, 8, 10/
-C
+      Data Iroot /"01", "02", "03", "04", "05", "06", "07",
+     &            "08", "09", "10"/
+C    
       Iuhf = 1
       If (iflags(11).eq.0) iuhf = 0 
 C
-      Maxcor   = Icrsiz
+      Maxcor   = Icrsiz/Iintfp
       Length   = 0
 c
 c Read the JOBARC file for basic data of the molecule. 
@@ -713,7 +717,7 @@ C
       Write(6,"(a,2A4)")"Comp_pgrp, Full_pgrp: ", Comp_pgrp, Full_pgrp
       Write(6,*)
 C
-      IScfvec_a = I0
+      IScfvec_a = 1
       IScfvec_b = IScfvec_a  + Naobfns*Naobfns
       ITmp1     = IScfvec_b  + Naobfns*Naobfns
       ITmp2     = ITmp1      + Naobfns*Naobfns
@@ -723,8 +727,11 @@ C
       Ioed2a_or = Ioed2a_sc  + Naobfns
       Inext     = Ioed2a_or  + Naobfns
 
-      Imemleft = (Icrsiz - Inext)
-C
+      If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
+     &                                    Maxcor)
+
+      Imemleft = (Maxcor - Inext)
+
       Call a3_symadapt_scfvecs(Work(IScfvec_a), Work(IScfvec_b), 
      &                         Work(IScfevl_a), Work(IScfevl_b),
      &                         Work(Itmp1), Work(Itmp2),
@@ -732,6 +739,40 @@ C
      &                         Nbfns,
      &                         Naobfns, Nbfns_4irrep, Nirrep, Iuhf,
      &                         Spherical, Work(Inext), Imemleft)
+C
+C Assign symmetry labels for excited states (excited state natural 
+C orbitals. Bulk of the work necessary to do this was done by Tom
+C Watson and I am simply moving things around to put all togther
+C into a nice organized form. 
+C
+      Estate_calcs = (Iflags(87) .GT. 1) 
+      Nroots       = (Iflags(89)   )
+
+      Iexsvec_a  = 1
+      Igdens     = Iexsvec_a  + Naobfns*Naobfns
+      Iedens     = Igdens     + Naobfns*Naobfns
+      Inorbs     = Iedens     + Naobfns*Naobfns
+      Iexseval_a = Inorbs     + Naobfns*Naobfns
+      Iocc       = Iexseval_a + Naobfns
+      Inext      = Iocc       + Naobfns
+
+      If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
+     &                                     Maxcor)
+      
+      Imemleft = (Maxcor - Inext)
+
+      If (Estate_calcs)  Then
+
+         Do Roots = 1, Nroots 
+            Call a3_symadapt_estate_norbs(Work(Iexsevl_a), Work(Iocc), 
+     &                                    Work(Iexsvec_a), 
+     &                                    Work(Igdens), Work(Inorbs), 
+     &                                    Work(Iedens), Work(Inext), 
+     &                                    Naobfns, Nbfns, Imemleft,
+     &                                    Iuhf, Iroot(Roots),
+     &                                    Nbfns_4irrep, Nirrep)
+         Enddo
+      Endif
 
       Return
       End

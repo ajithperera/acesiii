@@ -40,7 +40,7 @@ c-----------------------------------------------------------------------------
       enddo
 
 
-      write(6,"(a)") "The reordered and renormalized SCF veactors"
+      write(6,"(a)") "The reordered and renormalized SCF vectors"
       call output(ovlp_vmol, 1, nbasis, 1, nbasis, nbasis, nbasis,1)
 
       return

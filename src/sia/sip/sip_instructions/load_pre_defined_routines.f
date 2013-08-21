@@ -167,6 +167,8 @@ C Ajith Perera, SOI instructions
 
       external compute_2soi_xbatch, compute_2soi_ybatch,
      &         compute_2soi_zbatch
+     
+      external write_vecs2jarc
 
 c------------------------------------------------------
       external form_iad
@@ -685,6 +687,9 @@ c-------------------------------------------------------------------
      &                       compute_2soi_ybatch)
       dummy = load_user_sub('compute_2soi_zbatch'//char(0),
      &                       compute_2soi_zbatch)
+     
+      dummy = load_user_sub('write_vecs2jarc'//char(0), 
+     &                       write_vecs2jarc)
 
 c Instructions needed in the CCSD(T) gradient and ecpgradient   
 c --------------------------------------------------------------------

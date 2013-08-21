@@ -40,7 +40,7 @@ c-----------------------------------------------------------------------------
       enddo
 
 #ifdef _DEBUG_LVL0
-      write(6,"(a)") "The reordered and renormalized SCF veactors"
+      write(6,"(a)") "The reordered and renormalized SCF vectors"
       call output(ovlp_vmol, 1, nbasis, 1, nbasis, nbasis, nbasis,1)
 #endif
       return

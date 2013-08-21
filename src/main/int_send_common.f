@@ -15,6 +15,7 @@ C  in the file COPYRIGHT.
       subroutine int_send_common()
 c-------------------------------------------------------------------------
 c   Broadcast the master's common block.
+c   Changges to make the GNU compiler happy. C. Taylor, 08/2013.
 c------------------------------------------------------------------------- 
       implicit none
 
@@ -31,9 +32,9 @@ c-------------------------------------------------------------------------
       common /flags/ iflags
       integer iflags(100) 
 
-      integer ECP, ntot
+      integer ECP, ntot, npad
       double precision ecp_erd
-      common /FECP/ntot, ecp_erd(2500,2500)
+      common /FECP/ntot, npad, ecp_erd(2500,2500)
 
 c---------------------------------------------------------------------------
 c   Broadcast int_gen_parms common block.

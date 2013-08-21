@@ -18,6 +18,7 @@ c  Computes the set of OED integrals of types
 c
 c   type = 1 --> NAI integrals
 c          2 --> KIN integrals
+C  Changes to make GNU compiler happy, C. Taylor, 08/2013.
 c---------------------------------------------------------------------------
       implicit none
 
@@ -68,9 +69,9 @@ c---------------------------------------------------------------------------
      *                 zn(max_centers)
       double precision x1,y1,z1,x2,y2,z2, y
 
-      integer ECP, ntot
+      integer ECP, ntot, npad
       double precision ecp_erd
-      common /FECP/ntot, ecp_erd(2500,2500)
+      common /FECP/ntot, npad,  ecp_erd(2500,2500)
 
       common /flags/ iflags
       integer iflags(100)

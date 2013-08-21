@@ -71,7 +71,8 @@ c            32   RHF LCCD iteration, energy
 c            33   RHF LCCD iteration, energy  
 c   
 c--------------------------------------------------------------------------
-
+C Changes to make GNU complier happy, C. Taylor, 08/2013.
+C
       implicit none
       include 'interpreter.h'
       include 'trace.h'
@@ -154,7 +155,7 @@ c---------------------------------------------------------------------------
       if (dabs(scalar_table(sind)+10.0) .le. 0.001) then 
          if (me .eq. 0) then 
          write(66,10) 
-         flush(66) 
+         call flush(66) 
          call abort_job() 
          endif 
       endif 
@@ -396,7 +397,7 @@ c---------------------------------------------------------------------------
       if (dabs(scalar_table(sind)+2.0) .le. 0.001) then 
          if (me .eq. 0) then 
          write(66,20) 
-         flush(66) 
+         call flush(66) 
          call abort_job() 
          endif 
       endif 
@@ -434,7 +435,7 @@ c---------------------------------------------------------------------------
      *             1,n1,1,n2)
       endif 
 
-      flush(66) 
+      call flush(66) 
 
       return 
       end 

@@ -12,9 +12,9 @@ C Ajith Perera, March, 2000
 C 
       IMPLICIT DOUBLE PRECISION (A-H, O-Z)
 C
-      DOUBLE PRECISION LMBDAN, LMBDAP
-      LOGICAL MORSE, TS, NRORMANR, RFA, EVFTS, IGTS, QSD,
-     &        QSTLST_CLIMB
+      DOUBLE PRECISION LMBDAN, LMBDA
+      LOGICAL MORSE, TS, NRORMANR, RFA, EVFTS
+      LOGICAL IGTS, QSD, QSTLST_CLIMB
 C
 #include "mxatms.par"
 #include "machsp.com"
@@ -164,7 +164,6 @@ C                 keep the LST and QST directional vectors. They
 C                 revert back to zero after their use in ANLYSHES so that
 C                 there intended use in GETLAMBDA is not upset.
 C
-      Write(6,*) "Enetering ANLYSHES"
       CALL ANLYSHES(HESMOD, DIAGHES, RFAMAT, EVRFAMAT, HES,
      &              GRDMOD, SCRATCH, PMAT, VEC, NOPT, NX,
      &              NCYCLE, INR, IVEC, IMODE, IDIE, TS,

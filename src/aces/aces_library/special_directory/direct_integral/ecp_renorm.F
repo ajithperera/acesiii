@@ -32,6 +32,7 @@ c        		system corresponding to index "i" in the ACES-based
 c			system.
 c      scalars          An array (output) of scale factors to adjust the
 c                       ERD integrals to match VMOL integrals.
+c Changes to make GNU complier happy, C. Taylor, 08/2013.
 c-----------------------------------------------------------------------------
       implicit none
       include 'mpif.h'
@@ -48,9 +49,9 @@ c     include 'saved_data.h'
 
       integer Ierror 
 
-      integer nbasis, ndim, natoms  
+      integer nbasis, ndim, natoms, npad
       double precision ecp_erd, decp_erd
-      common /FECP/ndim, ecp_erd(2500,2500)  
+      common /FECP/ndim, npad, ecp_erd(2500,2500)  
 c     common /DECP/natoms, decp_erd(50,3,1000,1000)  
 
       integer map(max_basis) 

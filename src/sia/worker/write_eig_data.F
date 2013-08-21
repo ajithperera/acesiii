@@ -44,13 +44,34 @@ c---------------------------------------------------------------------------
       iptr = ishptr
       dptr = dshptr
 #endif
+C
+C The eigenvector arrays written from here are in the natural (or standard)
+C order of shells. Since  we are not allowing OED/ERD to vmol 
+C back transformation (the block of code that dose this transformation
+C has troubles with compiler optimizations), we can not use the 
+C eigenvectors written here directly in the post SCF analysis  (they 
+C are not in ACES II scalaing or order). In order to transform the
+C vectors written from here to ACES II order following steps
+C need to taken 1. transform the vectors back into "ACES III
+C shell ordering (binpack). 2. Applying OED/ERD to vmol
+C transformation . 3. transform to natural shell order. In order
+C to acomplish thes we need the info about shell ordering and OED/ERD
+C transformation data in (write the data for former transformation here
+C and the data for latter transformation is written from 
+C direct_integral/sip_integral_int.F). 08/2013, Ajith Perera. 
+
+      call iputrec(20, "JOBARC", "NSHELLS" , 1, nshells)
+      call iputrec(20, "JOBARC", "NPRMSHEL", nshells, nfps)
+      call iputrec(20, "JOBARC", "BNPAKORD", nshells, ixshells)
+
+      go to 10 
+
       if (intpkg .eq. flocke_package) then
 
 c---------------------------------------------------------------------------
 c   Transform the CA and CB data from ERD order/scaling to VMOL order/scaling.
 c---------------------------------------------------------------------------
 
-         go to 10 
          if (need_predef(1) .or.
      *       need_predef(2)) then
             do j = 1, n
@@ -77,7 +98,8 @@ c---------------------------------------------------------------------------
                enddo
             enddo
          endif   
-10       continue 
+
+ 10      Continue
 
 c---------------------------------------------------------------------------
 c   Save the diagonals of the FOCKA array.
@@ -94,7 +116,6 @@ c---------------------------------------------------------------------------
 
             call descramble_coefficients(ca, n, scr, nfps, ixshells, 
      *                                nshells)
-
             do i = 1, n
                focka(i,i) = scr(i)
             enddo

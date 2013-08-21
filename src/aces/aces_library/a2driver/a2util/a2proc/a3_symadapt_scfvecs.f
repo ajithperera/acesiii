@@ -29,6 +29,20 @@ c machsp.com : end
 
 
 
+C MXATMS     : Maximum number of atoms currently allowed
+C MAXCNTVS   : Maximum number of connectivites per center
+C MAXREDUNCO : Maximum number of redundant coordinates.
+C
+      INTEGER MXATMS, MAXCNTVS, MAXREDUNCO
+      PARAMETER (MXATMS=200, MAXCNTVS = 10, MAXREDUNCO = 3*MXATMS)
+
+
+c ***NOTE*** This is a genuine (though not serious) limit on what Aces3 can do.
+c     12 => s,p,d,f,g,h,i,j,k,l,m,n
+      integer maxangshell
+      parameter (maxangshell=12)
+
+
 
       Dimension Scfvec_a(Naobfns*Naobfns), Scfvec_b(Naobfns*Naobfns), 
      &          Scfevl_a(Nbfns), Scfeval_b(Nbfns), 
@@ -36,8 +50,13 @@ c machsp.com : end
      &          Tmp2_a(Naobfns*Naobfns), Tmp2_b(Naobfns*Naobfns), 
      &          Oed2AScale(Naobfns), Ioed2Aorder(Naobfns)
 
+      Dimension Work(Imemleft)
+C
       Dimension Nocc(8,2)
-     
+      Dimension Nprim_shell(Maxangshell*Mxatms)
+      Dimension Orig_nprim_shell(Maxangshell*Mxatms)
+      Integer   Reorder_Shell(Maxangshell*Mxatms)
+C
       Call Getrec(20, "JOBARC", "SCFEVCA0", Nbfns*Nbfns*Iintfp,
      &            Tmp2_a)
       Call Filter(Tmp2_a, Nbfns*Nbfns, Tol)
@@ -57,8 +76,38 @@ c machsp.com : end
       Write(6,"(6(1x,F10.5))") (Scfevl_a(i), i=1, Nbfns)
       if (Iuhf .Gt. 0) Call output(Tmp2_b, 1, Nbfns, 1, Nbfns, 
      &                             Nbfns, Nbfns, 1)
+C Before reordering/rescaling the vectors from OED/ERD ordering/scaling
+C we need to binpacking (rather silly name to what it actaully does)
+C
+      Call Getrec(20, "JOBARC", "NSHELLS" , 1, nshells)
+      Call Getrec(20, "JOBARC", "NPRMSHEL", nshells, Nprim_shell)
+      Call Getrec(20, "JOBARC", "BNPAKORD", nshells, Reorder_Shell)
+C
+      Iscr1 = 1
+      Iscr2 = Iscr1 + Nbfns
+      INext = IScr2 + Nbfns
+      If (Inext .Gt. Imemleft) Call Insmem("a3_symadapt_scfvecs",
+     &                                      Inext, Imemleft)
 
-C Get the ERD to ACES scaling and ordering vectors.
+      Call Binpack(Tmp2_a, Nshells, Nprim_shell,
+     &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
+     &                  Work(Iscr2), Nbfns)
+
+      If (IUhf .EQ. 1) then
+          Call Binpack(Tmp2_b, Nshells, Nprims_shell,
+     &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
+     &                  Work(Iscr2), Nbfns)
+
+      Endif
+
+      Write(6,"(a)") "The SCF eigenvectors after binpack ACES III run"
+      Call output(Tmp2_a, 1, Nbfns, 1, Nbfns, Nbfns, Nbfns, 1)
+      Write(6,"(a)") "The Eigenvalues"
+      Write(6,"(6(1x,F10.5))") (Scfevl_a(i), i=1, Nbfns)
+      if (Iuhf .Gt. 0) Call output(Tmp2_b, 1, Nbfns, 1, Nbfns,
+     &                             Nbfns, Nbfns, 1)
+
+C Get the OED/ERD to ACES scaling and ordering vectors.
 
       Call Getrec(20, "JOBARC", "ERD2A2CS", Nbfns*Iintfp,
      &            Oed2AScale)
@@ -70,7 +119,24 @@ C
          Call Do_oed_to_vmol(Nbfns, Ioed2Aorder, Oed2AScale, Tmp2_b,
      &                      Scfvec_b)
       Endif
-C 
+C
+C Undo the binpacking from ACES III (binpacking 
+C
+      Call undo_binpack(Scfvec_a, Nshells, Nprim_shell, 
+     &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
+     &                  Work(Iscr2), Nbfns)
+
+      If (IUhf .EQ. 1) then
+          Call undo_binpack(Scfvec_b, Nshells, Nprims_shell, 
+     &                      Orig_nprim_shell, Reorder_Shell, 
+     &                      Work(Iscr1), Work(Iscr2), Nbfns)
+      Endif
+
+      Write(6,*) "The SCF eigenvectors from ACES III after unbinpack"
+      Call output(Scfvec_a, 1, Nbfns, 1, Nbfns, Nbfns, Nbfns, 1)
+      if (Iuhf .Gt. 0) Call output(Scfvec_b, 1, Nbfns, 1, Nbfns, 
+     &                             Nbfns, Nbfns, 1)
+C
 C Generate the occupation numbers for each irrep based on eigen
 C values and the number of basis functions per irrep.
 
@@ -82,6 +148,18 @@ C values and the number of basis functions per irrep.
       Else
          Call Icopy(8, Nocc(1, 1), 1, Nocc(1,2), 1)
       Endif
+C 
+C Write the the scf vectors in ACES II order so molden
+C interface that handle excited state densities will function
+C correctly. Note that I did not overwrite the records SCFEVCA0
+C and SCFEVCB0 (which I could have done). That would have prevented
+C me from runing xa2proc over and over without getting wrong 
+c results!
+
+      Call Putrec(20, "JOBARC", "SCFVECA0", Nbfns*Nbfns*Iintfp,
+     &            Scfvec_a)
+      If (Iuhf .EQ. 1) Call Putrec(20, "JOBARC", "SCFVECB0",
+     &                             Nbfns*Nbfns*Iintfp, Scfvec_b)
 C
       Write(6,"(a)") "The occupation numbers"
       Write(6,"(8(1x,I3))") (Nocc(i, 1), i=1, Nirrep)
@@ -97,12 +175,18 @@ C in Cartesian this should do nothing).
      &            Naobfns, Scfvec_a, Nbfns, 0.0D0, Tmp2, Naobfns)
 
       Call Dcopy(Naobfns*Nbfns, Tmp2, 1, Scfvec_a, 1)
+      
+      Call Putrec(20, "JOBARC", "SCFVECA3", Naobfns*Nbfns*Iintfp,
+     &            Scfvec_a)
 
       If (Iuhf .EQ. 1) Then
          Call Xgemm("N", "N", Naobfns, Nbfns, Nbfns, 1.0D0, Tmp1, 
      &               Naobfns, Scfvec_b, Nbfns, 0.0D0, Tmp2, Naobfns)
 
          Call Dcopy(Naobfns*Nbfns, Tmp2, 1, Scfvec_b, 1)
+
+         Call Putrec(20, "JOBARC", "SCFVECB3", Naobfns*Nbfns*Iintfp,
+     &               Scfvec_b)
 
       Endif
 

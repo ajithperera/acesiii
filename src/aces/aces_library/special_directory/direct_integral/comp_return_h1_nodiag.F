@@ -18,6 +18,7 @@ c  Computes the set of OED integrals of types
 c
 c   type = 1 --> NAI integrals
 c          2 --> KIN integrals
+c Changes to make GNU compiler happy from C. Taylor, 08/2013.
 c---------------------------------------------------------------------------
       implicit none
 

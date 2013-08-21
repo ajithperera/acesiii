@@ -19,6 +19,7 @@ c   automatic ACES III parameters which are written to the file ZMAT.AUTO.
 c
 c   If a *SIP section already exists in the ZMAT file, no automatic
 c   parameters are generated.
+c   Changes to make the GNU compiler happy, C. Taylor, 08/2013.
 c-------------------------------------------------------------------------
       implicit none
       include 'parallel_info.h'
@@ -35,8 +36,9 @@ c-------------------------------------------------------------------------
       integer iflags2(500)
 #endif
 
-      integer calc, vib, geom_opt, ref, dropmo, excite, instab, props
-      integer grad_calc, dip_calc, dea_calc, density
+      integer calc, vib, geom_opt, ref, dropmo, excite, instab, props,
+     *        density, dip_calc, dea_calc
+      integer grad_calc
       integer nerr
       integer ios
       integer str_trimlen
@@ -131,28 +133,6 @@ c---------------------------------------------------------------------------
       endif
 
 c---------------------------------------------------------------------------
-c   Get the flag for relaxed or respnse denstiy
-c---------------------------------------------------------------------------
-
-      density = iflags(19)
-c
-c---------------------------------------------------------------------------
-c Get the flags for DIP/DEA calculations.
-C Note that currently singlet states only DIP/DEA calculations
-C require UHF refrence and it is not necessary and need to be
-C changed (require new SIAL codes). Ajith Perera, 07/2013.
-
-      dip_calc = iflags2(128)
-      dea_calc = iflags2(230)
-
-      If (dip_calc .gt. 0 .OR. dea_calc .gt. 0) then
-          if (ref .eq. 0) then
-              Write(6,"(a,a)") "DIP/DEA calcuation with RHF reference",
-     &                         " is not currently supported."
-              nerr = nerr + 1
-          Endif
-      Endif
-c---------------------------------------------------------------------------
 c   Get the HFSTABILITY flag.
 c---------------------------------------------------------------------------
 
@@ -197,7 +177,7 @@ c---------------------------------------------------------------------------
       sip_written = .false.
   300 continue
       line = ' '
-      read (23,9000, end = 400) line
+      read (23,9000, end = 400, iostat=ios) line
       if (line(1:4) .eq. '*SIP') then
          write (22,9000) line   ! copy the '*SIP'
          sip_written = .true.
@@ -219,7 +199,7 @@ c--------------------------------------------------------------------------
       if (sip_written) then
   500    continue
          line = ' '
-         read (23,9000,end=600) line
+         read (23,9000, end=600, iostat=ios) line
          if (line(1:1) .eq. '*') go to 600   ! new namelist.
          if (line .eq. ' ') go to 600        ! skip blank line
 
@@ -308,8 +288,10 @@ c---------------------------------------------------------------------------
 
   700 continue
       line = ' '
-      read (23,9000,end=9900) line
-      write (22,9000) line
+      if (ios .eq. 0) then
+          read (23,9000, end=9900, iostat=ios) line
+          write (22,9000) line
+      endif
 
  9900 continue
       close(22)

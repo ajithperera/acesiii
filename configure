@@ -703,6 +703,7 @@ enable_option_checking
 enable_mkl
 enable_gnu
 enable_cray
+enable_open64
 '
       ac_precious_vars='build_alias
 host_alias
@@ -3174,11 +3175,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 fi
 
-
-
-
-
-
 #This specifies the default C++ compiler in case no other compiler is found
 SERIAL_CPP="g++"
 
@@ -3205,7 +3201,6 @@ SIAL_COMPILER_LIBS="-lsial -lsip_shared -laces2  -lifcore"
 fi
 ACESLIBS=$MKLLIBS
 ACESFLAGS=$MKLFLAGS
-
 fi
 
 
@@ -3233,9 +3228,30 @@ SIAL_COMPILER_LIBS="-lsial -lsip_shared -laces2 -lgfortranbegin -lgfortran -ldl 
 fi
 ACESLIBS=$GNULIBS
 ACESFLAGS=$GNUFLAGS
-
 fi
 
+if test "${enable_open64+set}" = set; then
+  enableval=$enable_open64;
+if test x$O64LIBS = x; then
+   { { $as_echo "$as_me:$LINENO: error: Please specify all the required gnu libraries in variable O64LIBS" >&5
+$as_echo "$as_me: error: Please specify all the required gnu libraries in variable O64LIBS" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+if test x$O64FLAGS = x; then
+   { { $as_echo "$as_me:$LINENO: error: Please specify all the gnu library locations in variable  O64FLAGS" >&5
+$as_echo "$as_me: error: Please specify all the gnu library locations in variable  O64FLAGS" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+#Set c++ compiler
+SERIAL_CPP="openCC"
+#Also set SIAL_COMPILER_LIBS accordingly
+if test x$SIAL_COMPILER_LIBS = x; then
+SIAL_COMPILER_LIBS="-lsial -lsip_shared -laces2 -lfortran -lffio -ldl -lsip1 -lsip2"
+fi
+ACESLIBS=$O64LIBS
+ACESFLAGS=$O64FLAGS
+fi
 
 #Settings for Cray XT3 system
 # Check whether --enable-cray was given.
@@ -4064,6 +4080,8 @@ ac_config_files="$ac_config_files src/aces/aces_library/special_directory/ecp/Ma
 ac_config_files="$ac_config_files src/aces/aces_library/special_directory/nlo/Makefile"
 
 ac_config_files="$ac_config_files src/aces/aces_library/special_directory/erd/Makefile"
+
+ac_config_files="$ac_config_files src/aces/aces_library/special_directory/prop_ints/Makefile"
 
 ac_config_files="$ac_config_files src/aces/aces_library/special_directory/direct_integral/Makefile"
 

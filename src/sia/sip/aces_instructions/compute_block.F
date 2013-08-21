@@ -35,6 +35,7 @@ c   send_count          Returned number of blocks sent (0 or 1).
 c   comm                MPI Communicator
 c   comm_timer          Timer handle to accumulate wait time on blocks.
 c   instruction_timer   Timer handle for current instruction timer.
+C   changes to make GNU compiler happy from C. Taylor, 08/2013.
 c--------------------------------------------------------------------------
       implicit none
       include 'interpreter.h'
@@ -370,7 +371,7 @@ c---------------------------------------------------------------------------
                if (op(c_ind1+k-1) .eq. wildcard_indicator) 
      *               partial_create = .true.
             enddo
-            if (partial_create .eq. .false.) then 
+            if (.not.(partial_create)) then 
             print *,'Task ',me,' Error: Attempt to create an array ',
      *              'that has already been created.', partial_create 
             print *,'Wild Array = ', (op(c_ind1+k-1), k=1, nindex) 

@@ -572,12 +572,14 @@ c---------------------------------------------------------------------------
       return
       end
 
-      subroutine validate_block(data, array, block, flag)
+      subroutine validate_block(xdata, array, block, flag)
 c--------------------------------------------------------------------------
 c   Checks the block_id_data portion of the block against the expected 
 c   array and block info.  If it matches, the subroutine returns, else  
 c   the job is terminated (if the abort flag is set).
 c--------------------------------------------------------------------------
+C Changes to make GNU compiler happy from C. Taylor, 08/2013.  
+
       implicit none
       include 'maxdim.h'
       include 'blkmgr.h'
@@ -585,21 +587,26 @@ c--------------------------------------------------------------------------
       include 'parallel_info.h'
       include 'machine_types.h'
 
-      integer data(*)
-      integer array, block
-      integer*8 ixx, c_loc64
+      double precision xdata(*)
+      integer array, block, idata(2)
+      integer*8 ixx, c_loc64, c_memcpy, idest
       logical flag
+
+      idest = c_memcpy(idata(1), xdata(1), 8)
+C     print *, "idest = ", idest
+C     print *, "idata(1) = ", idata(1)
+C     print *, "idata(2) = ", idata(2)
  
-      if (data(1) .ne. array .or.
-     *    data(2) .ne. block) then
+      if (idata(1) .ne. array .or.
+     *    idata(2) .ne. block) then
          print *,'Task ',me,' ERROR: Invalid data in block, line ',
      *                   current_line
          print *,'       Expected array ',array,' block ',block
-         print *,'       Data had array id ',data(1),' block id ',
-     *                   data(2)
+         print *,'       Data had array id ',idata(1),' block id ',
+     *                   idata(2)
          ixx = 1
          print *,'       Data address of block ',
-     *        c_loc64(data, ixx, intsize)
+     *        c_loc64(idata, ixx, intsize)
          if (flag) then
             call dump_block_ids()
             call abort_job()
@@ -3887,7 +3894,10 @@ c---------------------------------------------------------------------------
       integer i, old_array, block, stack, ptr, next
       integer n_persistent, n_removed, n_tot  
       integer status(MPI_STATUS_SIZE)
-      logical persistent, flag
+      integer persistent
+      logical lflag
+      integer iflag
+      equivalence (iflag, lflag)
       
 c-------------------------------------------------------------------------
 c   Find a persistent block that is not busy.
@@ -3907,8 +3917,8 @@ c-------------------------------------------------------------------------
       call get_blk_header(next, ptr, c_persistent_ptr)
       call get_blk_header(stack, i,c_block_stack)
 
-      call get_blk_header(flag, i,c_block_flags)
-      persistent = and(flag, block_persistence_flag)
+      call get_blk_header(iflag, i,c_block_flags)
+      persistent = and(iflag, block_persistence_flag)
       if (persistent .eq. 0) then 
          if (n_tot .lt. stack_size(mystack)) then
             ptr = ptr - 1  
@@ -3950,8 +3960,8 @@ c   If it has finished, remove it from the comm_list.
 c--------------------------------------------------------------------------
 
             call mpi_test(request,
-     *                         flag, status, mpi_ierr)
-            if (flag) then
+     *                         lflag, status, mpi_ierr)
+            if (lflag) then
                call put_blk_header(MPI_REQUEST_NULL, i,c_block_request)
                call blkmgr_remove_block_from_list(comm_list_head,
      *                 comm_list_tail, i, c_comm_list_ptr)
@@ -3966,7 +3976,7 @@ c   The block is not found to be engaged in communication.
 c   Thus it may be safely reclaimed.
 c--------------------------------------------------------------------------
 
-            flag = .true.
+            lflag = .true.
          endif
 
 c-------------------------------------------------------------------------
@@ -3974,7 +3984,7 @@ c   Free the block. The free_block subroutine will also remove the
 c   block from the persistent_block list.
 c-------------------------------------------------------------------------
 
-         if (flag) then
+         if (lflag) then
             call get_blk_header(old_array, i,c_array_handle)
             call get_blk_header(block, i,c_array_block)  
             call free_block(old_array, block,

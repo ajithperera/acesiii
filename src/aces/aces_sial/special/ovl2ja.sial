@@ -1,0 +1,184 @@
+                    SIAL  OVL2JA
+#
+#
+#------------------------------------------------------------------------
+#
+#
+#          Declare variables!
+#
+#
+         AOINDEX  mu = 1, norb
+         AOINDEX  nu = 1, norb
+
+         MOAINDEX  i  = baocc, eaocc
+
+         MOAINDEX  p  = baocc, eavirt
+         MOAINDEX  p1 = baocc, eavirt
+
+         TEMP  txp  (mu,p)
+         TEMP  t1xp (mu,p)
+         TEMP  tpx  (p,mu)
+         TEMP  t1px (p,mu)
+
+         TEMP  txx  (mu,nu)
+
+         TEMP  tpp  (p,p1)
+         TEMP  t1pp (p,p1)
+
+         STATIC Lxp  (mu,p )
+         STATIC L1xp (nu,p1)
+
+         LOCAL  Lpx  (p ,mu)
+
+         TEMP    TOVRLAP (mu,nu)
+         STATIC  OVERLAP (mu,nu)
+
+         DISTRIBUTED  ORTHO (p,p1)
+
+         DISTRIBUTED  DENS (mu,nu)
+
+         DISTRIBUTED  CP (mu,p)
+
+         SCALAR  IOVRLAP
+         SCALAR  rank
+#
+#
+#------------------------------------------------------------------------
+#
+#
+#          Main Program
+#
+#
+         EXECUTE  SIP_BARRIER
+         CREATE  ORTHO
+	 CREATE  DENS
+         CREATE  CP
+         EXECUTE  SIP_BARRIER
+
+         IOVRLAP = -1.0
+
+         DO mu
+         DO nu
+            TOVRLAP (mu,nu) = 0.0
+            TOVRLAP (mu,nu) = OED_OVL (mu,nu)
+            OVERLAP (mu,nu) = TOVRLAP (mu,nu)
+         ENDDO nu
+         ENDDO mu
+
+         EXECUTE  SIP_BARRIER
+         EXECUTE  DENS2JOBARC  OED_OVL  IOVRLAP
+
+         PARDO  i, mu, nu
+            tpx (i ,nu)  = CA (nu,i)
+            txx (mu,nu)  = CA (mu,i) * tpx (i,nu)
+            txx (mu,nu) *= 2.0
+            PUT  DENS (mu,nu) += txx (mu,nu)
+         ENDPARDO  i, mu, nu
+
+         PARDO  nu, mu, p
+               txp (mu,p)  = OED_OVL (mu,nu) * CA (nu,p)
+               PUT CP (mu,p) += txp (mu,p)
+         ENDPARDO  nu, mu, p
+
+         EXECUTE  SIP_BARRIER
+
+         PARDO  mu, nu
+
+            GET  DENS (mu,nu)
+
+            DO p1
+               GET  CP (nu,p1)
+               txp (mu,p1) = DENS (mu,nu) * CP (nu,p1)
+               DO p
+                  GET  CP (mu,p)
+                  tpx (p,mu) = CP (mu,p)
+                  tpp (p,p1) = tpx (p,mu) * txp (mu,p1)
+                  PUT  ORTHO (p,p1) += tpp (p,p1)
+               ENDDO p
+            ENDDO p1
+
+         ENDPARDO  mu, nu
+
+         EXECUTE  SIP_BARRIER
+
+         EXECUTE  PRINT_SCALAR  IOVRLAP
+
+         EXECUTE  SIP_BARRIER
+         DELETE  ORTHO
+         EXECUTE  SIP_BARRIER
+         CREATE  ORTHO
+         EXECUTE  SIP_BARRIER
+
+         PARDO  mu, nu
+
+            DO p1
+               txp (mu,p1) = OED_OVL (mu,nu) * CA (nu,p1)
+               DO p
+                  tpx (p,mu) = CA  (mu,p)
+                  tpp (p,p1) = tpx (p,mu) * txp (mu,p1)
+                  PUT  ORTHO (p,p1) += tpp (p,p1)
+               ENDDO p
+            ENDDO p1
+
+         ENDPARDO  mu, nu
+
+#         PARDO  p, p1
+#            tpp (p,p1) = 0.0
+#            DO mu
+#               tpx (p,mu) = CA (mu,p)
+#               DO nu
+#                  t1px (p,nu)  = tpx  (p,mu) * OVERLAP (mu,nu)
+#                  t1pp (p,p1)  = t1px (p,nu) * CA (nu,p1)
+#                  tpp  (p,p1) += t1pp (p,p1)
+#               ENDDO nu
+#            ENDDO mu
+#            PUT  ORTHO (p,p1) = tpp (p,p1)
+#         ENDPARDO  p, p1
+
+#         ALLOCATE  Lxp (*,*)
+
+         EXECUTE  SIP_BARRIER
+#
+#         DO  mu
+#         DO  p1
+#
+#            txp (mu,p1) = 0.0
+#            DO nu
+#               t1xp (mu,p1) = OVERLAP (mu,nu) * CA (nu,p1)
+#               Lxp  (mu,p1) += t1xp (mu,p1)
+#            ENDDO nu
+#
+#         ENDDO  p1
+#         ENDDO  mu
+#
+#         EXECUTE  SIP_BARRIER
+#
+#         DO  p
+#         DO  p1
+#
+#            tpp (p,p1) = 0.0
+#            DO mu
+#               tpx  (p,mu)  = CA (mu,p)
+#               t1pp (p,p1)  = tpx (p,mu) * Lxp (mu,p1)
+#               tpp  (p,p1) += t1pp (p,p1)
+#            ENDDO mu
+#
+#            PUT  ORTHO (p,p1) = tpp (p,p1)
+#
+#         ENDDO  p1
+#         ENDDO  p
+  
+         EXECUTE  SIP_BARRIER
+
+#         DEALLOCATE  Lxp (*,*)
+
+         EXECUTE  PRINT_SCALAR  IOVRLAP
+
+         EXECUTE  SIP_BARRIER
+#
+#
+#          ...ready!
+#
+#
+                   ENDSIAL  OVL2JA
+#------------------------------------------------------------------------

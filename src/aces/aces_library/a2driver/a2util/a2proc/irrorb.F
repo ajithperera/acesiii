@@ -94,7 +94,8 @@ C
       Write(6,"(I5)")  IORDGRP
       Write(6,"(6I5)") (IPTR(i), i=1, IORDGRP*NATOMS)
       Write(6,*) 
-      Write(6,"(6I5)") (SYOPS(i), i=1, 9*IORDGRP)
+      Write(6,"(6(1x,F10.5))") (SYOPS(i), i=1, 9*IORDGRP)
+      Write(6,*)
 #endif
 C
       CALL GETREC(-1,'JOBARC','ORIENTMT',IINTFP*9,ORIENT)

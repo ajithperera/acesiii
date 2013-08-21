@@ -6,11 +6,13 @@ c-----------------------------------------------------------------------
      &                 orb_r(nao)
       character*8 cscfener(2)
       character*8 cscforb(2)
+      character*8 cscfa3orb(2)
       character*8 cexxcoef(2)
       character*8 cnumdrop(2)
       character*5 sptype(2)
       integer iocc(nmo), iang(nao)
       integer  idrppop(8),idrpvrt(8)
+      logical ACESIII
 
 #include "machsp.com"
 #include "info.com"
@@ -21,6 +23,7 @@ c-----------------------------------------------------------------------
       parameter (zilch=0.0D0)
       data cscfener /'SCFEVLA0','SCFEVLB0'/
       data cscforb  /'SCFEVCA0','SCFEVCB0'/
+      data cscfa3orb/'SCFEVCA3','SCFEVCB3'/
       data cexxcoef /'EXXCOEFA','EXXCOEFB'/
       data cnumdrop /'NUMDROPA','NUMDROPB'/  
       data sptype   /'Alpha','Beta '/
@@ -68,8 +71,21 @@ c           do i=2,nmo
 c              call dcopy(nao,scr(i010),1,scr(i010+(i-1)*nao),1)
 c           enddo
         else
-           call getrec(20,'JOBARC',cscforb(ispin),
-     $          nmo**2*iintfp,scr(i010))
+c
+c If this is a ACES III jobarc, the SCF eigenvectors have allready 
+c been processed (transformation to Cartesian basis set). See the
+c new routine a3_symadapt_scfvecs). 
+
+           CALL GETREC(-1, "JOBARC", "AIIIJARC", 1, IACESIII)
+           IF (IACESIII .GT. 0) ACESIII = .TRUE.
+  
+           if (ACESIII) Then
+               call getrec(20,'JOBARC',cscfa3orb(ispin),
+     $                     nmo*nao*iintfp,orb)
+           else
+               call getrec(20,'JOBARC',cscforb(ispin),
+     $                     nmo**2*iintfp,scr(i010))
+           endif
 
 #ifdef _IMPORT_CORR_ORBS
 C This is a highly experiemental work and what this do is
@@ -83,9 +99,9 @@ C
 #endif
         endif
 
-        call xgemm('n','n',nao,nmo,nmo,one,scr(i000),nao,scr(i010),
-     &    nmo,zilch,orb,nao)
-
+        if (.not. ACESIII) call xgemm('n','n',nao,nmo,nmo,one,
+     &                                scr(i000),nao,scr(i010),
+     &                                nmo,zilch,orb,nao)
         call getrec(-1,'JOBARC',cscfener,nmo*iintfp,ener)
 c
 c fill occupation numbers

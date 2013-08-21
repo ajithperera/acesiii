@@ -273,6 +273,7 @@ c---------------------------------------------------------------------------
                 scr(mu,nu) = dens(mu,nu)
              enddo
              enddo
+            
 
              IF (FLAG .EQ. 0) THEN
 
@@ -333,6 +334,7 @@ C            enddo
      +               (DENS,NDIM1,NFPS,IXSHELLS,NSHELLS)
      +
      +
+         call output(dens, 1, ndim1, 1, ndim2, ndim1, ndim2, 1)
          NDIM = NDIM1 * NDIM2
          CALL  DPUTREC (1, 'JOBARC', JALABEL, NDIM,DENS)
 

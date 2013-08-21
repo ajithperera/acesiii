@@ -83,7 +83,7 @@ tl_tmp :=
 tl_tmp += \
           mpistubs mpw p_mpw blas lapack eispack linpack \
           lb tools \
-          acescore p_acescore acesutil libr ecp symcor joda \
+          acescore p_acescore acesutil libr ecp symcor_a2 joda \
           crust libr2 librt3 trp vcc
 tl_tmp += \
           oed erd gamess p_gamess \

@@ -718,7 +718,9 @@ c-------------------------------------------------------------------
 c        stack_algorithm_type = 2
 
          first = .false.
+         Write(6,*) "Entering init_data"
          call init_data()
+         Write(6,*) "out from init_data"
          call joda_prep()
 
          if (sip_mx_occ_segsize.lt.1.or.
