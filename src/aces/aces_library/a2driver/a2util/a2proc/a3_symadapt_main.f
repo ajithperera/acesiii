@@ -720,8 +720,10 @@ C
       IScfvec_a = 1
       IScfvec_b = IScfvec_a  + Naobfns*Naobfns
       ITmp1     = IScfvec_b  + Naobfns*Naobfns
-      ITmp2     = ITmp1      + Naobfns*Naobfns
-      IScfevl_a = ITmp2      + Naobfns*Naobfns
+      ITmp2     = Itmp1      + Naobfns*Naobfns
+      ITmp2_a   = ITmp2      + Naobfns*Naobfns
+      ITmp2_b   = ITmp2_a    + Naobfns*Naobfns
+      IScfevl_a = ITmp2_b    + Naobfns*Naobfns
       IScfevl_b = IScfevl_a  + Naobfns
       Ioed2a_sc = IScfevl_b  + Naobfns
       Ioed2a_or = Ioed2a_sc  + Naobfns
@@ -736,6 +738,7 @@ C
      &                         Work(IScfevl_a), Work(IScfevl_b),
      &                         Work(Itmp1), Work(Itmp2),
      &                         Work(Ioed2a_sc), Work(Ioed2a_or),
+     &                         Work(Itmp2_a), Work(Itmp2_b),
      &                         Nbfns,
      &                         Naobfns, Nbfns_4irrep, Nirrep, Iuhf,
      &                         Spherical, Work(Inext), Imemleft)
@@ -753,8 +756,11 @@ C
       Iedens     = Igdens     + Naobfns*Naobfns
       Inorbs     = Iedens     + Naobfns*Naobfns
       Iexseval_a = Inorbs     + Naobfns*Naobfns
-      Iocc       = Iexseval_a + Naobfns
-      Inext      = Iocc       + Naobfns
+      Itmp1      = Iexseval_a + Naobfns*Naobfns
+      Iocc       = Itmp1      + Naobfns
+      Ioed2a_sc  = Iocc       + Naobfns
+      Ioed2a_or  = Ioed2a_sc  + Naobfns
+      Inext      = Ioed2a_or  + Naobfns
 
       If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
      &                                     Maxcor)
@@ -767,7 +773,11 @@ C
             Call a3_symadapt_estate_norbs(Work(Iexsevl_a), Work(Iocc), 
      &                                    Work(Iexsvec_a), 
      &                                    Work(Igdens), Work(Inorbs), 
-     &                                    Work(Iedens), Work(Inext), 
+     &                                    Work(Iedens), 
+     &                                    Work(Ioed2a_sc), 
+     &                                    Work(Ioed2a_or),
+     &                                    Work(Itmp1),
+     &                                    Work(Inext), 
      &                                    Naobfns, Nbfns, Imemleft,
      &                                    Iuhf, Iroot(Roots),
      &                                    Nbfns_4irrep, Nirrep)
