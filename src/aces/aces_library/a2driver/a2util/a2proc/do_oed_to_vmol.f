@@ -1,5 +1,4 @@
-      subroutine do_oed_to_vmol(nrows, ncolumns, erd_index, scalars, 
-     &                          ovlp_oed,
+      subroutine do_oed_to_vmol(nbasis, erd_index, scalars, ovlp_oed,
      &                          ovlp_vmol)
 c-----------------------------------------------------------------------------
 c   Using the shell angular momentum and basis function information, this
@@ -13,20 +12,19 @@ c-----------------------------------------------------------------------------
 
       integer erd_index(*)
       double precision scalars(*)
-      double precision ovlp_vmol(nrows,ncolumns),
-     &                 Ovlp_oed (nrows,ncolumns)
+      double precision ovlp_vmol(nbasis,nbasis),Ovlp_oed(nbasis,nbasis)
 
       integer i, j, k, ii, jj, kk  
-      integer nrows, n, ncolumns 
+      integer nbasis, n
 
 
-      Write(6,"(6(1x,i5))") (erd_index(i), i=1, nrows)
+      Write(6,"(6(1x,i5))") (erd_index(i), i=1, nbasis)
       Write(6,*)
-      Write(6,"(6(1x,F10.5))") (scalars(i), i=1, nrows)
+      Write(6,"(6(1x,F10.5))") (scalars(i), i=1, nbasis)
 
 
-      do i = 1, nrows 
-         do j = 1, ncolumns 
+      do i = 1, nbasis
+         do j = 1, nbasis 
 
              ii = erd_index(i) 
 
@@ -43,8 +41,7 @@ c-----------------------------------------------------------------------------
 
 
       write(6,"(a)") "The reordered and renormalized SCF vectors"
-      call output(ovlp_vmol, 1, nrows, 1, ncolumns, nrows, 
-     &            ncolumns,1)
+      call output(ovlp_vmol, 1, nbasis, 1, nbasis, nbasis, nbasis,1)
 
       return
       end

@@ -1,13 +1,13 @@
       Subroutine Undo_binpack(ca, Nshells, Nprims_shell, 
      &                        Orig_nprim_shell, Reorder_Shell, 
-     &                        Iscr, Dscr, Nrows, Ncolumns)
+     &                        Iscr, Dscr, Nbfns)
 
       Implicit Double Precision (A-H, O-Z)
 
-      Dimension Ca(Nrows, Ncolumns), Nprims_shell(Nshells), 
+      Dimension Ca(Nbfns, Nbfns), Nprims_shell(Nshells), 
      &          Orig_nprim_shell(Nshells)
       Integer   Reorder_Shell(Nshells)
-      Dimension Iscr(Nrows), Dscr(Nrows)
+      Dimension Iscr(Nbfns), Dscr(Nbfns)
 
       Write(6,*) Nbfns, Nshells, (Nprims_shell(i), i=1,Nshells)
       Write(6,*) (reorder_shell(i), i=1,Nshells)
@@ -48,17 +48,17 @@ c----------------------------------------------------------------------------
             enddo
          enddo
 
-         do j = 1, Ncolumns
+         do j = 1, Nbfns
 
 c--------------------------------------------------------------------------
 c   Save column "j".
 c--------------------------------------------------------------------------
 
-            do i = 1, Nrows
+            do i = 1, Nbfns
                Dscr(i) = ca(i,j)
             enddo
 
-            do i = 1, Nrows
+            do i = 1, Nbfns
                ca(iScr(i),j) = Dscr(i)
             enddo
 

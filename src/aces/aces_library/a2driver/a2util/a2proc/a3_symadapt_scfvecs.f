@@ -1,7 +1,6 @@
-      Subroutine  a3_symadapt_scfvecs(Scfvec_a, Scfveqc_b, Scfevl_a,
-     &                                Scfeval_b, Tmp1, Tmp2,
+      Subroutine  a3_symadapt_scfvecs(Scfvec_a, Scfvec_b, Scfevl_a,
+     &                                Scfeval_b, Tmp1, Tmp2, 
      &                                Oed2AScal, Ioed2Aord, 
-     &                                Tmp2_a, Tmp2_b,
      &                                Nbfns,
      &                                Naobfns, Nbfirr, Nirrep, Iuhf,
      &                                Spherical, Work, Imemleft)
@@ -48,7 +47,6 @@ c     12 => s,p,d,f,g,h,i,j,k,l,m,n
       Dimension Scfvec_a(Naobfns*Naobfns), Scfvec_b(Naobfns*Naobfns), 
      &          Scfevl_a(Nbfns), Scfeval_b(Nbfns), 
      &          Tmp1(Naobfns*Naobfns), Nbfirr(8),
-     &          Tmp2(Naobfns*Naobfns),
      &          Tmp2_a(Naobfns*Naobfns), Tmp2_b(Naobfns*Naobfns), 
      &          Oed2AScale(Naobfns), Ioed2Aorder(Naobfns)
 
@@ -115,23 +113,23 @@ C Get the OED/ERD to ACES scaling and ordering vectors.
      &            Oed2AScale)
       Call Getrec(20, "JOBARC", "ERDORDER", Nbfns, Ioed2Aorder)
 C
-      Call Do_oed_to_vmol(Nbfns, Nbfns, Ioed2Aorder, Oed2AScale, 
-     &                    Tmp2_a, Scfvec_a)
+      Call Do_oed_to_vmol(Nbfns, Ioed2Aorder, Oed2AScale, Tmp2_a,
+     &                    Scfvec_a)
       If (Iuhf .EQ. 1) then
-         Call Do_oed_to_vmol(Nbfns, Nbfns, Ioed2Aorder, Oed2AScale, 
-     &                      Tmp2_b, Scfvec_b)
+         Call Do_oed_to_vmol(Nbfns, Ioed2Aorder, Oed2AScale, Tmp2_b,
+     &                      Scfvec_b)
       Endif
 C
 C Undo the binpacking from ACES III (binpacking 
 C
       Call undo_binpack(Scfvec_a, Nshells, Nprim_shell, 
      &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
-     &                  Work(Iscr2), Nbfns, Nbfns)
+     &                  Work(Iscr2), Nbfns)
 
       If (IUhf .EQ. 1) then
           Call undo_binpack(Scfvec_b, Nshells, Nprims_shell, 
      &                      Orig_nprim_shell, Reorder_Shell, 
-     &                      Work(Iscr1), Work(Iscr2), Nbfns, Nbfns)
+     &                      Work(Iscr1), Work(Iscr2), Nbfns)
       Endif
 
       Write(6,*) "The SCF eigenvectors from ACES III after unbinpack"
