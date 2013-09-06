@@ -19,9 +19,9 @@ C
 C
       double precision ener(nbas),orb(nao,nbas),scr(maxcor)
       double precision dens(nbas*nbas),edens(nbas,nbas),nlorb(nbas*nbas)
-      double precision nelec
-      double precision Oed2AScale(Nao), Ioed2Aorder(Nao), tmp1(Nao,Nao)
-C
+      double precision nelec, tmp1(Nao, Nao)
+      
+      Dimension Oed2AScale(Nao), Ioed2Aorder(Nao)
       Dimension Nprim_shell(Maxangshell*Mxatms)
       Dimension Orig_nprim_shell(Maxangshell*Mxatms)
       Integer   Reorder_Shell(Maxangshell*Mxatms)
@@ -64,14 +64,15 @@ c
       Call Getrec(20, "JOBARC", "NPRMSHEL", nshells, Nprim_shell)
       Call Getrec(20, "JOBARC", "BNPAKORD", nshells, Reorder_Shell)
 C
-      Call Getrec(20, "JOBARC", "ERD2A2CS", Nbfns*Iintfp, Oed2AScale)
-      Call Getrec(20, "JOBARC", "ERDORDER", Nbfns, Ioed2Aorder)
+      Call Getrec(20, "JOBARC", "ERD2A2CS", Nbas*Iintfp, Oed2AScale)
+      Call Getrec(20, "JOBARC", "ERDORDER", Nbas, Ioed2Aorder)
 C
       i000=1
       i010=i000+nbas*nbas
       i020=i010+nbas*nbas
       i030=i020+nbas*nbas
-      iend=i030+2*nbas*nbas
+      i040=i030+nbas
+      iend=i040+nbas
 
       if(Iend.gt.maxcor)
      &  call insmem('a3_symadapt_estate_norbs',iend,maxcor)
@@ -219,9 +220,18 @@ C Do the OO and VV transformation. Retrive the SCF vectors of correct
 C spin type during first iteration of the inner loop (OO block)
 C
         call getrec(20,'JOBARC', SCFVECS(Ispin), Nbas*Nbas*iintfp,dens)
+C
+C The eigenvectors in the JOBARC are not ACESIII order (not binpacked).
+C So, binpack them
+C
+        Call binpack(Dens, Nshells, Nprim_shell,
+     &               Orig_nprim_shell, Reorder_Shell, Scr(I030),
+     &               Scr(I040), Nbas, Nbas)
+
+        Ioffd = (Idens-1)*Nbas*Noccs + 1
 
         CALL XGEMM('N','N',nbas,norbs,norbs,
-     +                     1.0D0,DENS,   nbas,
+     +                     1.0D0,DENS(ioffd),   nbas,
      +                           NLORB,  norbs,
      +                     0.0D0,SCR(I010),    nbas )
 
@@ -236,24 +246,30 @@ CSSS       If (Idens .EQ. 1) Call Dcopy (Nbas*Norbs, SCR(I010), 1, Dens, 1)
            CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1) 
         Endif
 #endif
-        Enddo
 
 C Before we proceed further we need to convert the vectors from 
 C OED (ACESIII) scaling and order to ACESII scaling and order. 
 C
-C       Call Do_oed_to_vmol(Norbs, Ioed2Aorder, Oed2AScale, Tmp1, 
-C    &                      Scr(I010))
-C      If (Iuhf .EQ. 1) then
-C         Call Do_oed_to_vmol(Norbs, Ioed2Aorder, Oed2AScale, Tmp1,
-C     &                      Scr(I010))
-C      Endif
-
-#ifdef _NOSKIP
-
+      Call Do_oed_to_vmol(Nbas, Norbs, Ioed2Aorder, Oed2AScale, 
+     &                    Scr(I010), Tmp1)
+      Call Dcopy(Nbas*Norbs, Tmp1, 1, Scr(I010), 1)
+      Call undo_binpack(Scr(I010), Nshells, Nprim_shell,
+     &                   Orig_nprim_shell, Reorder_Shell, Scr(I030),
+     &                   Scr(I040), Nbas, Norbs)
+C
+#ifdef _DEBUG_LVL0
+        If (Idens .EQ. 1) Then
+           WRITE (6,"(a)") ' The OO rotated MO vectors after OED/VMOL'
+           CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1)
+        Else
+           WRITE (6,"(a)") ' The VV rotated MO vectors after OED/VMOL'
+           CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1)
+        Endif
+#endif
         call getrec(20,'JOBARC','CMP2ZMAT',nao*nbas*iintfp,scr(i000))
 
-#ifdef _DEBUG_LVLM
-        WRITE (6,"(a)") ' CMP2ZMAT ! '
+#ifdef _DEBUG_LVL0
+        WRITE (6,"(a)") "The CMP2ZMAT "
         CALL OUTPUT(scr(i000),1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
 #endif
         call xgemm('n','n',nao,nbas,nbas,one,scr(i000),nao,scr(i010),
@@ -263,6 +279,9 @@ C      Endif
         WRITE (6,"(a)") ' Nat. Orbs. NAOBFNS x MO ! '
         CALL OUTPUT(orb,1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
 #endif 
+        Enddo 
+
+#ifdef _NOSKIP
         call getrec(-1,'JOBARC',cscfener,nbas*iintfp,ener)
 C
         Call Get_irreps(orb, Ener, Scr, Imemleft*Iintfp, Nbas,

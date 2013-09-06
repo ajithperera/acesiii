@@ -366,7 +366,7 @@ scf_uhf_finish_aguess.sio
 cis_uhf.sio
 tran_uhf_dip.sio
 ccsd_uhf_dip.sio
-eom_dip_singlets.sio
+eom_dip_triplets.sio
 ENDJOBFLOW EOMDIP_CCSD_TRIPLET
 
 JOBFLOW EOMDEA_CCSD_SINGLET
@@ -388,7 +388,7 @@ cis_uhf.sio
 tran_uhf_dea.sio
 ccsd_uhf_dea.sio
 hbar_uhf_dea.sio
-eom_dea_singlets.sio
+eom_dea_triplets.sio
 ENDJOBFLOW EOMDEA_CCSD_TRIPLET
 
 JOBFLOW HF_AISO

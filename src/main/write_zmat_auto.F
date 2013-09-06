@@ -133,6 +133,28 @@ c---------------------------------------------------------------------------
       endif
 
 c---------------------------------------------------------------------------
+c Get the flag for relaxed or respnse denstiy
+c---------------------------------------------------------------------------
+
+      density = iflags(19)
+c
+c---------------------------------------------------------------------------
+c Get the flags for DIP/DEA calculations.
+C Note that currently singlet states only DIP/DEA calculations
+C require UHF refrence and it is not necessary and need to be
+C changed (require new SIAL codes). Ajith Perera, 07/2013.
+
+      dip_calc = iflags2(128)
+      dea_calc = iflags2(130)
+
+      If (dip_calc .gt. 0 .OR. dea_calc .gt. 0) then
+          if (ref .eq. 0) then
+              Write(6,"(a,a)") "DIP/DEA calcuation with RHF reference",
+     &                         " is not currently supported."
+              nerr = nerr + 1
+          Endif
+      Endif
+c---------------------------------------------------------------------------
 c   Get the HFSTABILITY flag.
 c---------------------------------------------------------------------------
 

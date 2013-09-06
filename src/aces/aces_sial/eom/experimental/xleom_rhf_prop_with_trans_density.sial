@@ -251,6 +251,7 @@
       distributed R2L2_OO_A (i,i1) 
 
       DISTRIBUTED  AO_DENS (mu,nu)
+      DISTRIBUTED  MO_DENS (p,p1)
       DISTRIBUTED  DHF (mu,nu)
 
       LOCAL  liaia  (i,a,i1,a1)
@@ -402,6 +403,7 @@
       temp        t1ee (kroot,indone)
       temp        t2ee (kroot,indone)
       STATIC  DENSITY (mu,nu)
+      STATIC  MO_DENSITY (p,p1)
       static  STATIC_LEE (kroot,indone)
       static  S_ORDER    (kindex12,indone)
       DISTRIBUTED  LEE_resid (kroot,indone)
@@ -30156,6 +30158,7 @@
       CREATE  DENS_VO_A
 
       CREATE  AO_DENS
+      CREATE  MO_DENS
       CREATE  DHF
 
       CREATE T2L2_VV_A 
@@ -30221,6 +30224,7 @@
       DELETE  DENS_VO_A
 
       DELETE  AO_DENS
+      DELETE  MO_DENS
       DELETE  DHF
 
       DELETE T2L2_VV_A 
@@ -31669,6 +31673,19 @@
          PUT  AO_DENS (mu,nu) = txx (mu,nu)
       ENDPARDO  mu, nu
 
+      PARDO  p, p1
+         tpp (p,p1)          = 0.0
+         PUT  MO_DENS (p,p1) = tpp (p,p1)
+      ENDPARDO  p, p1
+
+      EXECUTE  SIP_BARRIER
+
+      PARDO  i, i1
+         tpp (i,i1)          = 0.0
+         EXECUTE  ADD_SCAL2DIAG  tpp  TWO  # Hartree-Fock contribution
+         PUT  MO_DENS (i,i1) = tpp (i,i1)
+      ENDPARDO  i, i1
+
       EXECUTE  SIP_BARRIER
 #
 #
@@ -31687,6 +31704,7 @@
             tii (i,i1)  = DENS_OO_A (i1,i)
             tii (i,i1) += DENS_OO_A (i,i1)
             tii (i,i1) *= LRNORM
+            PUT  MO_DENS (i,i1) = tii (i,i1)
             DO mu
                txi  (mu,i1) = tii (i,i1) * CA (mu,i)
                DO nu
@@ -31702,6 +31720,7 @@
             taa (a,a1)  = DENS_VV_A (a1,a)
             taa (a,a1) += DENS_VV_A (a,a1)
             taa (a,a1) *= LRNORM
+            PUT  MO_DENS (a,a1) = taa (a,a1)
             DO mu
                txa  (mu,a1) = taa (a,a1) * CA (mu,a)
                DO nu
@@ -31717,6 +31736,9 @@
             tai (a,i)  = DENS_OV_A (i,a)
             tai (a,i) += DENS_VO_A (a,i)
             tai (a,i) *= LRNORM
+            tia (i,a)  = tai (a,i)
+            PUT  MO_DENS (i,a) = tia (i,a)
+            PUT  MO_DENS (a,i) = tai (a,i)
             DO mu
                txi (mu,i) = tai (a,i) * CA (mu,a)
                DO nu
@@ -31742,10 +31764,11 @@
 
          PARDO  i, i1
             GET  DENS_OO_A (i,i1)
+            tii (i,i1)  = DENS_OO_A (i,i1)
+            tii (i,i1) *= 2.0
+            tii (i,i1) *= LRNORM
             DO mu
-               txi  (mu,i1) = DENS_OO_A (i,i1) * CA (mu,i)
-               txi  (mu,i1)*= 2.0  
-               txi  (mu,i1)*= LRNORM
+               txi  (mu,i1) = tii (i,i1) * CA (mu,i)
                DO nu
                   txx  (mu,nu) = txi (mu,i1) * CA (nu,i1)
                   PUT  AO_DENS (mu,nu) += txx  (mu,nu)
@@ -31755,10 +31778,11 @@
 
          PARDO  a, a1
             GET  DENS_VV_A (a,a1)
+            taa (a,a1)  = DENS_VV_A (a,a1)
+            taa (a,a1) *= 2.0
+            taa (a,a1) *= LRNORM
             DO mu
-               txa  (mu,a1) = DENS_VV_A (a,a1) * CA (mu,a)
-               txa  (mu,a1)*= 2.0
-               txa  (mu,a1)*= LRNORM
+               txa  (mu,a1) = taa (a,a1) * CA (mu,a)
                DO nu
                   txx  (mu,nu) = txa (mu,a1) * CA (nu,a1)
                   PUT  AO_DENS (mu,nu) += txx  (mu,nu)
@@ -31768,10 +31792,11 @@
 
          PARDO  a, i
             GET  DENS_VO_A (a,i)
+            tai (a,i)  = DENS_VO_A (a,i)
+            tai (a,i) *= 2.0
+            tai (a,i) *= LRNORM
             DO mu
-               txi (mu,i) = DENS_VO_A (a,i) * CA (mu,a)
-               txi (mu,i)*= 2.0
-               txi (mu,i)*= LRNORM
+               txi (mu,i) = tai (a,i) * CA (mu,a)
                DO nu
                   txx  (mu,nu) = txi (mu,i) * CA (nu,i)
                   PUT  AO_DENS (mu,nu) += txx  (mu,nu)
@@ -31781,10 +31806,11 @@
 
          PARDO  i, a
             GET  DENS_OV_A   (i,a)
+            tia (i,a)  = DENS_OV_A (i,a)
+            tia (i,a) *= 2.0
+            tia (i,a) *= LRNORM
             DO mu
-               txa (mu,a) = DENS_OV_A (i,a) * CA (mu,i)
-               txa (mu,a)*= 2.0
-               txa (mu,a)*= LRNORM
+               txa (mu,a) = tia (i,a) * CA (mu,i)
                DO nu
                   txx  (mu,nu) = txa (mu,a) * CA (nu,a)
                   PUT  AO_DENS (mu,nu) += txx  (mu,nu)
@@ -32244,6 +32270,12 @@
          txx (mu,nu)          = 0.0
          PUT  AO_DENS (mu,nu) = txx (mu,nu)
       ENDPARDO  mu, nu
+
+      PARDO  p, p1
+         tpp (p,p1)          = 0.0
+         PUT  MO_DENS (p,p1) = tpp (p,p1)
+      ENDPARDO  p, p1
+
       EXECUTE  SIP_BARRIER
 
       PARDO i, i1
@@ -32254,6 +32286,7 @@
             tii (i,i1) += tpp (i,i1)
          ENDDO a2
          tii (i,i1) *= etemp # Alpha-Beta and lrnorm
+         PUT  MO_DENS (i,i1) = tii (i,i1)
 
          DO mu
             txi  (mu,i1) = tii (i,i1) * CA (mu,i)
@@ -32265,6 +32298,13 @@
       ENDPARDO  i, i1
 
       EXECUTE  SIP_BARRIER
+
+#      do p 
+#      do p1
+#         execute dump_amp MO_DENS(p,p1)
+#      enddo p1
+#      enddo p
+    
 #
 #
 #          ...ready!
@@ -32297,6 +32337,12 @@
          txx (mu,nu)          = 0.0
          PUT  AO_DENS (mu,nu) = txx (mu,nu)
       ENDPARDO  mu, nu
+
+      PARDO  p, p1
+         tpp (p,p1)          = 0.0
+         PUT  MO_DENS (p,p1) = tpp (p,p1)
+      ENDPARDO  p, p1
+
       EXECUTE  SIP_BARRIER
 
       PARDO a, a1
@@ -32307,6 +32353,7 @@
             taa (a,a1) += tpp (a,a1)
          ENDDO i2
          taa (a,a1) *= etemp # Alpha-Beta and lrnorm
+         PUT  MO_DENS (a,a1) = taa (a,a1)
 
          DO mu
             txa  (mu,a1) = taa (a,a1) * CA (mu,a)
@@ -32318,6 +32365,12 @@
       ENDPARDO  a, a1
 
       EXECUTE  SIP_BARRIER
+
+#      do p 
+#      do p1
+#         execute dump_amp MO_DENS(p,p1)
+#      enddo p1
+#      enddo p
 #
 #
 #          ...ready!
@@ -32336,9 +32389,51 @@
 
 #-------------------------------------------------------------------------
 #
-#    -----------------------
-      PROC  WRITE_TO_JOBARC
-#    -----------------------
+#    --------------------------
+      PROC  WRITE_MO_TO_JOBARC
+#    --------------------------
+#
+#
+#             Write to JOBARC
+#
+#
+      DO p
+      DO p1
+         GET          MO_DENS (p,p1)
+         tpp (p,p1) = MO_DENS (p,p1)
+         MO_DENSITY (p,p1) = tpp (p,p1)
+      ENDDO p1
+      ENDDO p
+      execute get_my_rank rank
+      if rank == 0.0
+      do p 
+         do p1
+            execute dump_amp mo_density(p,p1)
+         enddo p1
+      enddo p
+      endif 
+
+      proot = iroot - 1.0
+      IDENS = proot + inext
+      EXECUTE  PRINT_SCALAR  IDENS
+
+      EXECUTE  DENS2JOBARC  MO_DENSITY  IDENS
+#
+#
+#          ...ready!
+#
+#
+      ENDPROC  WRITE_MO_TO_JOBARC
+#-------------------------------------------------------------------------
+
+
+
+
+#-------------------------------------------------------------------------
+#
+#    --------------------------
+      PROC  WRITE_AO_TO_JOBARC
+#    --------------------------
 #
 #
 #             Write to JOBARC
@@ -32365,7 +32460,7 @@
 #          ...ready!
 #
 #
-      ENDPROC  WRITE_TO_JOBARC
+      ENDPROC  WRITE_AO_TO_JOBARC
 #-------------------------------------------------------------------------
 
 
@@ -32445,7 +32540,8 @@
       proot = iroot - 1.0
       IF proot == 1.0
          inext = 0.0
-         CALL  WRITE_TO_JOBARC
+        #CALL  WRITE_MO_TO_JOBARC
+        #CALL  WRITE_AO_TO_JOBARC
       ENDIF
       IF proot > 1.0
          inext += -1.0
@@ -32509,7 +32605,7 @@
 #          I will instead write the defined natural transition densities later
 #
 #         inext += 1
-#         CALL  WRITE_TO_JOBARC
+#         CALL  WRITE_AO_TO_JOBARC
 #
 
          DIP_MOM_X_R = DIP_MOM_X
@@ -32551,11 +32647,13 @@
 #
          CALL  FORM_OO_TRANS_DENS
          inext += 1
-         CALL  WRITE_TO_JOBARC
+         CALL  WRITE_MO_TO_JOBARC
+        #CALL  WRITE_AO_TO_JOBARC
 
          CALL  FORM_VV_TRANS_DENS
          inext += 1
-         CALL  WRITE_TO_JOBARC
+         CALL  WRITE_MO_TO_JOBARC
+        #CALL  WRITE_AO_TO_JOBARC
 #
 #
 #   AJITH: This should be the end of the transition densities!
@@ -32583,7 +32681,8 @@
          GROUNDSTATE = ONE
          CALL  BACK_TRANS_COMP_DIP
          inext += 1
-         CALL  WRITE_TO_JOBARC
+        #CALL  WRITE_MO_TO_JOBARC
+        #CALL  WRITE_AO_TO_JOBARC
          GROUNDSTATE = ZERO
 
         #CALL  PRINT_OUT_PIECES

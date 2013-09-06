@@ -420,7 +420,10 @@ c     dummy = load_user_sub('open_amp'//char(0), open_amp)
       call set_upgrade_flag(dummy) 
       dummy = load_user_sub('place_one_dip'//char(0),
      *                                      place_one_dip)
-      call set_upgrade_flag(dummy) 
+C
+C This need to get upgraded as the rest!!, Ajith Perera, 08/2013.
+CSSS      call set_upgrade_flag(dummy) 
+C
       dummy = load_user_sub('place_one_dip_2'//char(0),
      *                                      place_one_dip_2)
       call set_upgrade_flag(dummy) 

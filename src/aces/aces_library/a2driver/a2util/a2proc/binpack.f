@@ -1,18 +1,19 @@
       subroutine binpack(ca, Nshells, Nprims_shell, 
      &                   Orig_nprims_shell, Reorder_Shell,
-     &                   Iscr, Dscr, Nbfns)
+     &                   Iscr, Dscr, Nrows, Ncolumns)
 
       Implicit Double Precision (A-H, O-Z)
 
-      Dimension Ca(Nbfns, Nbfns), Nprims_shell(Nshells),
+      Dimension Ca(Nrows, Ncolumns), Nprims_shell(Nshells),
      &          Orig_nprims_shell(Nshells)
       Integer   Reorder_Shell(Nshells)
-      Dimension Iscr(Nbfns), Dscr(Nbfns)
+      Dimension Iscr(Nrows), Dscr(Nrows)
 
-      Write(6,*) Nbfns, Nshells, (Nprims_shell(i), i=1,Nshells)
+
+      Write(6,*) Nrows, Ncolumns,Nshells,(Nprims_shell(i), i=1,Nshells)
       Write(6,*) (reorder_shell(i), i=1,Nshells)
 
-      if (Nbfns .gt. 0) then
+      if (Nrows .gt. 0) then
 
          do i = 1, nshells
             Orig_nprims_shell(Reorder_Shell(i)) = Nprims_shell(i)
@@ -45,17 +46,17 @@ c----------------------------------------------------------------------------
             enddo
          enddo
 
-         do j = 1, Nbfns
+         do j = 1, Ncolumns 
 
 c--------------------------------------------------------------------------
 c   Save column "j".
 c--------------------------------------------------------------------------
 
-            do i = 1, Nbfns
+            do i = 1, Nrows
                Dscr(i) = ca(i,j)
             enddo
 
-            do i = 1, Nbfns
+            do i = 1, Nrows
                ca(i,j) = Dscr(Iscr(i))
             enddo
          enddo

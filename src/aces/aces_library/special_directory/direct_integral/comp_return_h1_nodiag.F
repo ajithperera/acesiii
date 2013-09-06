@@ -69,11 +69,11 @@ c---------------------------------------------------------------------------
       double precision x1,y1,z1,x2,y2,z2, y
 
       common /d2int_com/jatom, jx, jcenter
-      integer jatom, jx, jcenter, dcoord
+      integer jatom, jx, jcenter, dcoord, npad
 
       integer ECP, ntot
       double precision ecp_erd
-      common /FECP/ntot, ecp_erd(2500,2500)
+      common /FECP/ntot, npad, ecp_erd(2500,2500)
 
       common /flags/ iflags
       integer iflags(100)

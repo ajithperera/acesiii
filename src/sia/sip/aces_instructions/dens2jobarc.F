@@ -158,9 +158,8 @@ c---------------------------------------------------------------------------
       DOUBLE PRECISION  SCR  (1:NDIM1,1:NDIM2)
       DOUBLE PRECISION  dbuf (*)
 
+      FLAG = -1 
       IF (me .EQ. 0) THEN
-
-         FLAG = 0 ! Density
 
          IF      (type .EQ.  0) THEN
             JALABEL='HFDENSTY'
@@ -328,13 +327,12 @@ C
 C            enddo
 
          ENDIF
-
-         CALL  DESCRAMBLE_MATRIX
+         IF (FLAG .EQ. 0 .OR. FLAG .EQ. 1) 
+     +   CALL  DESCRAMBLE_MATRIX
      +
      +               (DENS,NDIM1,NFPS,IXSHELLS,NSHELLS)
      +
      +
-         call output(dens, 1, ndim1, 1, ndim2, ndim1, ndim2, 1)
          NDIM = NDIM1 * NDIM2
          CALL  DPUTREC (1, 'JOBARC', JALABEL, NDIM,DENS)
 

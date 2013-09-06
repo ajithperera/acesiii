@@ -64,12 +64,12 @@ C
 
       Call Binpack(Tmp2_a, Nshells, Nprim_shell,
      &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
-     &                  Work(Iscr2), Nbfns)
+     &                  Work(Iscr2), Nbfns, Nbfns)
 
       If (IUhf .EQ. 1) then
           Call Binpack(Tmp2_b, Nshells, Nprims_shell,
      &                  Orig_nprim_shell, Reorder_Shell, Work(Iscr1),
-     &                  Work(Iscr2), Nbfns)
+     &                  Work(Iscr2), Nbfns, Nbfns)
 
       Endif
 

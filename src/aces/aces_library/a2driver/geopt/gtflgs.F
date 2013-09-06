@@ -222,7 +222,7 @@ c     State Variable index returned from asv_update_kv
       integer iASV
 c     logical flags
       logical bExist_JOBARC, bStar, bCCSDT3, bCompress,
-     &        bTDCalc, DoABCD, DoABCI, ACES2, bMN_A3, DoQRHF, bSTEOM,
+     &        bTDCalc, DoABCD, DoABCI, ACES3, bMN_A3, DoQRHF, bSTEOM,
      &        EOM, bGeomOpt, bTDA, bOpenShell
       logical bOpened, bTmp, bDone, bDelLastChar, bHaveKeys, bVerbose
       logical bAutoCart, NO_AGRAD
@@ -1516,9 +1516,9 @@ c option and also to accomodate the change deriv_level options
 c (from {ANALYTICAL, NUMERICAL, AUTO} to  {NONE, ANALYTICAL, NUMERICAL})
 c 04/2006, Ajith Perera
 c
-      ACES2 = ioppar(h_IOPPAR_program).eq.2
+      ACES3 = .TRUE.
       bTmp = bGeomOpt.or.(ioppar(h_IOPPAR_vib).ge.2) 
-      bMN_A3 = .not.ACES2
+      bMN_A3 = .not.ACES3
 
       if (bMN_A3) then
 c
@@ -1577,7 +1577,7 @@ C
             end if
             call asv_update_kv('abcdfull'//achar(0),iASV,szData,0)
          end if
-c     else if (ACES2) then
+c     else if (ACES3) then
       else
          If (bTmp) then
             if (ioppar(h_IOPPAR_grad_calc).eq.0) then
@@ -2262,7 +2262,7 @@ c  SET HBARABCD/HBARABCI FLAGS: ONLY USED IN ACES2
 c
 c  FULL HBARABCD/HBARABCI IS REQUIRED FOR EA-EOMCC AND MOST VCCEH CALCULATIONS
 
-      if (ACES2) then
+      if (ACES3) then
 c      o set DoABCD and DoABCI
          if ((ioppar(h_IOPPAR_props).ge. 8.and.
      &        ioppar(h_IOPPAR_props).le.11).or.
@@ -2324,11 +2324,11 @@ cMN                  print *, '@GTFLGS: HBARABCI should be OFF.'
                end if
             end if
          end if
-c     else if (.not.ACES2) then
+c     else if (.not.ACES3) then
       else
          call asv_update_kv('!hbarabcd'//achar(0),iASV,szData,0)
          call asv_update_kv('!hbarabci'//achar(0),iASV,szData,0)
-c     end if (ACES2)
+c     end if (ACES3)
       end if
 
 c   o Assymetric CCSD(T) or Lambda-based CCSD(T) designated as
@@ -2389,7 +2389,7 @@ c   o set bCompress
      &          )
       bCompress = (.not.bCCSDT3)
 c   o elevate bCompress
-      if (ioppar(h_IOPPAR_ea_calc).ge.5.and.ACES2)
+      if (ioppar(h_IOPPAR_ea_calc).ge.5.and.ACES3)
      &   bCompress = .false.
       if (ioppar(h_IOPPAR_dea_calc).ge.1)
      &   bCompress = .false.

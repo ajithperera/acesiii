@@ -228,13 +228,18 @@ C
 C
 C             ...Watson: Atomic integrals are not zero anymore for 
 C                        derivative of moment integrals.
+C                        Tom had the comment right, but EMPTY was
+C                        after the IF statment which returns. So,
+C                        actaully the dipole deriavtive integrals
+C                        were incorrect. Ajith Perera, 08/2013.
 C
 C
-         IF ( ATOMIC .AND. (CASE1 .OR. CASE2 .OR. CASE3) ) THEN
-             EMPTY = .TRUE.
-             RETURN
-         END IF
-            
+C
+CSSS         IF ( ATOMIC .AND. (CASE1 .OR. CASE2 .OR. CASE3) ) THEN
+CSSS             EMPTY = .TRUE.
+CSSS             RETURN
+CSSS         END IF
+
          EMPTY  = .FALSE.
          SHELLP = SHELL1 + SHELL2
          MXSHELL = MAX0 (SHELL1,SHELL2)

@@ -400,6 +400,8 @@ C changed (require new SIAL codes).
 
       call Igetrec(-1,'JOBARC','DEASYMA ',1, dea_singlet_root)
       call Igetrec(-1,'JOBARC','DEASYMB ',1, dea_triplet_root)
+   
+      Write(6,*) ref, calc, dip_calc      
 
       if (ref .eq. 1 .and. Calc .eq. 10 .and.dip_calc .eq. 2 .and.
      &    dip_singlet_root .gt. 0) jobflow = 'EOMDIP_CCSD_SINGLET'
@@ -411,7 +413,7 @@ C changed (require new SIAL codes).
      &    dea_singlet_root .gt. 0) jobflow = 'EOMDEA_CCSD_SINGLET'
 
       if (ref .eq. 1 .and. Calc .eq. 10 .and. dea_calc .eq. 2 .and.
-     &    dea_triplet_root) jobflow = 'EOMDEA_CCSD_TRIPLET'
+     &    dea_triplet_root .gt. 0) jobflow = 'EOMDEA_CCSD_TRIPLET'
 
       return
       end

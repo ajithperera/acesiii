@@ -396,18 +396,22 @@ C
 
       call Igetrec(-1,'JOBARC','DEASYMA ',1, dea_singlet_root)
       call Igetrec(-1,'JOBARC','DEASYMB ',1, dea_triplet_root)
-
-      if (ref .eq. 0 .and. Calc .eq. 10 .and.dip_calc .eq. 2 .and.
+C
+C Until true RHF DIP/DEA is written use UHF codes for both singlets
+C and triplet (ie. UHF reference, ref=1). Ajith Perera, 08/2013.
+C
+      Write(6,*) ref, calc, dea_calc, dea_singlet_root,dea_triplet_root
+      if (ref .eq. 1 .and. Calc .eq. 10 .and.dip_calc .eq. 2 .and.
      &    dip_singlet_root .gt. 0) jobflow = 'EOMDIP_CCSD_SINGLET'
 
       if (ref .eq. 1 .and. Calc .eq. 10 .and. dip_calc .eq. 2 .and.
      &    dip_triplet_root .gt. 0) jobflow = 'EOMDIP_CCSD_TRIPLET'
 
-      if (ref .eq. 0 .and. Calc .eq. 10 .and. dea_calc .eq. 2 .and.
+      if (ref .eq. 1 .and. Calc .eq. 10 .and. dea_calc .eq. 2 .and.
      &    dea_singlet_root .gt. 0) jobflow = 'EOMDEA_CCSD_SINGLET'
 
       if (ref .eq. 1 .and. Calc .eq. 10 .and. dea_calc .eq. 2 .and.
-     &    dea_triplet_root) jobflow = 'EOMDEA_CCSD_TRIPLET'
+     &    dea_triplet_root .gt. 0) jobflow = 'EOMDEA_CCSD_TRIPLET'
 
       n = str_trimlen(jobflow)
       print *,'Using Default jobflow = ',jobflow(1:n)
