@@ -21,6 +21,7 @@ C  USA
      +                      NEXP,
      +                      IP,                            ! Watson Added
      +                      PA,
+     +                      CXYZ,
      +                      PINVHF,
      +                      AB,
      +                      OVRLP,                         ! Watson Added
@@ -104,6 +105,9 @@ C                    SHELLx      =  shell type for csh x = A and B
 C                    NEXP        =  # of exponent pairs
 C                    PA          =  current NEXP coordinate differences
 C                                   P-A between centers P and A
+C                    CXYZ        =  The X, Y or Z coordinates of the
+C                                   center at which the moments are
+C                                   computed.
 C                    PINVHF      =  current NEXP values of 1/(2*P),
 C                                   where P are the exponent sums
 C                                   for contraction shells A and B
@@ -123,6 +127,8 @@ C  AUTHOR      : Norbert Flocke
 C
 C  MODIFIED    : Thomas Watson
 C                   Changed to do derivative moment integrals
+C              : Ajith Perere                p    q    r
+C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C
@@ -140,7 +146,7 @@ C
          INTEGER   SHELLA,SHELLB
          INTEGER   SHELLP,SHELLX
 
-         DOUBLE PRECISION  AB
+         DOUBLE PRECISION  AB, CXYZ
          DOUBLE PRECISION  F,P1
          DOUBLE PRECISION  ZERO,ONE,TWO
 
@@ -172,6 +178,7 @@ C
          CASE1D = 2 * MIN (1,SHELLA) + MIN (1,SHELLB) + 1
 
          GOTO (1,2,3,4) CASE1D
+
 C
 C
 C             ...the case A = s-shell and B = s-shell (no HRR!).
@@ -181,7 +188,7 @@ C
 C
     1    DO N = 1,NEXP
 C            INT1D (N,0,0) = ONE                           ! Watson Changed
-            INT1D (N,0,0) = IP (N)
+            INT1D (N,0,0) = IP (N) - CXYZ
          END DO
 
          RETURN
@@ -200,7 +207,7 @@ C
 
          DO N = 1,NEXP
             OVRLP (N,0,0) = ONE
-            INT1D (N,0,0) = IP (N)                         ! Watson Changed
+            INT1D (N,0,0) = IP (N) - CXYZ                 ! Watson Changed 
 
             OVRLP (N,0,1) = PA (N)
             INT1D (N,0,1) = PA (N) * INT1D  (N,0,0) + PINVHF (N)
@@ -241,7 +248,7 @@ C
 C
     3    DO N = 1,NEXP
             OVRLP (N,0,0) = ONE
-            INT1D (N,0,0) = IP (N)                         ! Watson Changed
+            INT1D (N,0,0) = IP (N) - CXYZ                    ! Watson Changed
 
             OVRLP (N,1,0) = PA (N)
             INT1D (N,1,0) = PA (N) * INT1D  (N,0,0) + PINVHF (N)
@@ -298,7 +305,7 @@ C
 
          DO N = 1,NEXP
             OVRSCR (N,0,0) = ONE
-            INTSCR (N,0,0) = IP (N)                        ! Watson Changed
+            INTSCR (N,0,0) = IP (N) - CXYZ                 ! Watson Changed
 
             OVRSCR (N,1,0) = PA (N)
             INTSCR (N,1,0) = PA (N) * INTSCR (N,0,0) + PINVHF (N)

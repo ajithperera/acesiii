@@ -24,6 +24,7 @@ C  USA
      +                      NXYZA,NXYZB,
      +                      SHELLA,SHELLB,SHELLP,
      +                      XA,YA,ZA,XB,YB,ZB,
+     +                      XC,YC,ZC,
      +                      ABX,ABY,ABZ,
      +                      XMOMD,YMOMD,ZMOMD,             ! Watson Added
      +                      NDERX,NDERY,NDERZ,
@@ -99,7 +100,7 @@ C                                    each contraction shell x = A,B
 C                    SHELLx       =  the shell type for contraction
 C                                    shells x = A,B and P=A+B
 C                    Xx,Yx,Zx     =  the x,y,z-coordinates for centers
-C                                    x = A,B
+C                                    x = A,B and C
 C                    xMOMD        =  type of moment integral to be
 C                                    differentiated. x = X, Y, or Z
 C                    ABm          =  the m=x,y,z-coordinate differences
@@ -153,6 +154,8 @@ C
 C  AUTHOR      : Norbert Flocke
 C  MODIFIED    : Thomas Watson
 C                   - Changed to do derivatives of moment integrals
+C              : Ajith Perere                p    q    r
+C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C
@@ -194,7 +197,7 @@ C
          DOUBLE PRECISION  ABX,ABY,ABZ
          DOUBLE PRECISION  EXPA,EXPB
          DOUBLE PRECISION  PINV,PVAL
-         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB
+         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB,XC,YC,ZC
          DOUBLE PRECISION  ZERO,HALF,ONE,ONEP5
 
          DOUBLE PRECISION  ALPHAA  (1:NPGTOA)
@@ -344,6 +347,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAX,
+     +                          XC,
      +                          PINVHF,
      +                          ABX,
      +                          OVRLP,                         ! Watson Added
@@ -423,6 +427,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAX,
+     +                          XC,
      +                          PINVHF,
      +                          ABX,
      +                          OVRLP,                         ! Watson Added
@@ -471,6 +476,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAY,
+     +                          YC,
      +                          PINVHF,
      +                          ABY,
      +                          OVRLP,                         ! Watson Added
@@ -550,6 +556,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAY,
+     +                          YC,
      +                          PINVHF,
      +                          ABY,
      +                          OVRLP,                         ! Watson Added
@@ -598,6 +605,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAZ,
+     +                          ZC,
      +                          PINVHF,
      +                          ABZ,
      +                          OVRLP,                         ! Watson Added
@@ -677,6 +685,7 @@ C
      +                          MIJ,
      +                          IP,                            ! Watson Added
      +                          PAZ,
+     +                          ZC,
      +                          PINVHF,
      +                          ABZ,
      +                          OVRLP,                         ! Watson Added

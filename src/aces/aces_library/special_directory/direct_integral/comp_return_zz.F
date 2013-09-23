@@ -58,7 +58,7 @@ c---------------------------------------------------------------------------
      *                 pcoeff_pack(max_dim_coeff)
       double precision xn(max_centers), yn(max_centers), 
      *                 zn(max_centers)
-      double precision x1,y1,z1,x2,y2,z2, y
+      double precision x1,y1,z1,x2,y2,z2, y,xc,yc,zc
 
 #ifdef ALTIX
       iptr = ishptr
@@ -149,7 +149,9 @@ c ------------------------------------------------------------------------
      *                 ivangmom(m), ivangmom(n), x1,y1,z1,x2,y2,z2,
      *                 alpha_pack,
      *                 pcoeff_pack, ccbeg_pack, ccend_pack,
-     *                 spherical, .false., ibuf(ipkgscr),0,0,2, nints, 
+     *                 spherical, .false., ibuf(ipkgscr),0,0,2,
+     *                 xc,yc,zc,
+     *                 nints, 
      *                 nfirst, dbuf(dpkgscr))
 
             if (nints .gt. 0) then

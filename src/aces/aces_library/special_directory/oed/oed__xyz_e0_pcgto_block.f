@@ -20,7 +20,7 @@ C  in the file COPYRIGHT.
      +                      NPGTOA,NPGTOB,
      +                      NXYZET,NXYZP,
      +                      SHELLA,SHELLP,
-     +                      XA,YA,ZA,XB,YB,ZB,
+     +                      XA,YA,ZA,XB,YB,ZB,XC,YC,ZC,
      +                      ABX,ABY,ABZ,
      +                      MOMENTX,MOMENTY,MOMENTZ,
      +                      ALPHAA,ALPHAB,
@@ -85,7 +85,7 @@ C                                    the P=A+B shell
 C                    SHELLx       =  the shell type for contraction
 C                                    shells x = A and P=A+B
 C                    Xx,Yx,Zx     =  the x,y,z-coordinates for centers
-C                                    x = A,B,P
+C                                    x = A,B,P and C
 C                    ABm          =  the m=x,y,z-coordinate differences
 C                                    between centers A and B
 C                    ALPHAx       =  the primitive exponents for
@@ -156,7 +156,7 @@ C
          DOUBLE PRECISION  ABX,ABY,ABZ
          DOUBLE PRECISION  EXPA,EXPB
          DOUBLE PRECISION  PINV,PVAL
-         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB
+         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB,XC,YC,ZC
          DOUBLE PRECISION  ZERO,HALF,ONE,ONEP5
 
          DOUBLE PRECISION  ALPHAA  (1:NPGTOA)
@@ -259,7 +259,7 @@ C
      +                      MIJ,
      +                      XA,YA,ZA,XB,YB,ZB,
      +                      PAX,PAY,PAZ,
-     +                      XP,YP,ZP,
+     +                      XP,YP,ZP,XC,YC,ZC,
      +                      PINVHF,
      +                      ZERO,ZERO,ZERO,
      +                      MOMENTX,MOMENTY,MOMENTZ,

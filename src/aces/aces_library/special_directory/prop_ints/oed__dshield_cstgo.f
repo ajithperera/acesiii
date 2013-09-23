@@ -1,5 +1,5 @@
-C  Copyright (c) 1997-1999, 2003 Massachusetts Institute of Technology
-C 
+C  Copyright (c) 2003-2010 University of Florida
+C
 C  This program is free software; you can redistribute it and/or modify
 C  it under the terms of the GNU General Public License as published by
 C  the Free Software Foundation; either version 2 of the License, or
@@ -10,11 +10,9 @@ C  but WITHOUT ANY WARRANTY; without even the implied warranty of
 C  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 C  GNU General Public License for more details.
 
-C  You should have received a copy of the GNU General Public License
-C  along with this program; if not, write to the Free Software
-C  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-C  USA
-         SUBROUTINE  OED__XYZ_DERV_CSGTO
+C  The GNU General Public License is included in this distribution
+C  in the file COPYRIGHT.
+         SUBROUTINE  OED__DSHIELD_CSGTO
      +
      +                    ( IMAX,ZMAX,
      +                      NALPHA,NCOEFF,NCSUM,
@@ -22,11 +20,14 @@ C  USA
      +                      NPGTO1,NPGTO2,
      +                      SHELL1,SHELL2,
      +                      X1,Y1,Z1,X2,Y2,Z2,
+     +                      NUCLEI,CNUCLEI,
+     +                      XN,YN,ZN,NCHARGE,
+     +                      IXDERC,
      +                      DER1X,DER1Y,DER1Z,
      +                      DER2X,DER2Y,DER2Z,
-     +                      XMOMD,YMOMD,ZMOMD,             ! Watson Added
-     +                      XC,YC,ZC,
+     +                      DERCX,DERCY,DERCZ,
      +                      ALPHA,CC,CCBEG,CCEND,
+     +                      FTABLE,MGRID,NGRID,TMAX,TSTEP,TVSTEP,
      +                      L1CACHE,TILE,NCTROW,
      +                      SPHERIC,SCREEN,
      +                      ICORE,
@@ -36,16 +37,17 @@ C  USA
      +                                ZCORE )
      +
 C------------------------------------------------------------------------
-C  OPERATION   : OED__XYZ_DERV_CSGTO
+C  OPERATION   : OED__EFIELD_CSGTO
 C  MODULE      : ONE ELECTRON INTEGRALS DIRECT
 C  MODULE-ID   : OED
-C  SUBROUTINES : OED__XYZ_SET_DERV_AB
-C                OED__OVL_SET_IJ_PAIRS
-C                OED__OVL_SET_DERV_SEQUENCE
-C                OED__XYZ_DERV_DEF_BLOCKS
-C                OED__OVL_PREPARE_CTR
-C                OED__XYZ_DERV_PCGTO_BLOCK
+C  SUBROUTINES : OED__EFIELD_SET_DERV_AB
+C                OED__NAI_SET_DERV_IJC_TRIPLES
+C                OED__NAI_SET_DERV_SEQUENCE
+C                OED__NAI_DERV_DEF_BLOCKS
+C                OED__NAI_PREPARE_CTR
+C                OED__NAI_DERV_PCGTO_BLOCK
 C                OED__CTR_2INDEX_BLOCK
+C                OED__CTR_RS_EXPAND
 C                OED__CTR_2INDEX_REORDER
 C                OED__TRANSPOSE_BATCH
 C                OED__XYZ_TO_RY_AB
@@ -53,15 +55,21 @@ C                OED__CARTESIAN_NORMS
 C                OED__SPHERICAL_TRANSFORM
 C                OED__NORMALIZE_CARTESIAN
 C                OED__MOVE_RY
-C  DESCRIPTION : This operation calculates a batch of differentiated
-C                contracted moment integrals on up to two different
-C                centers between spherical or cartesian gaussian type
-C                shells.
+C  DESCRIPTION : This operation calculates a batch of contracted 
+C                electric field integrals. The electric filed integral
+C                can be expressed as the fist deriavtive of the nuclear
+C                attraction integral when the differentiation is
+C                is carried out exclusively on the nuclear attration center.
+C                It is important to note that when the attraction center
+C                concide with the centers 1 or/and 2, no derivative 
+C                of shells are taken. So, in strict sense it is unfair
+C                to call electric field integral as a derivative of nuclear
+C                attraction with respect to the attration center.
 C
 C
 C                  Input (x = 1 and 2):
 C
-C                    IMAX,ZMAX    =  maximum integer,flp memory
+C                    IMAX,ZMAX    =  maximum integer + flp memory
 C                    NALPHA       =  total # of exponents
 C                    NCOEFF       =  total # of contraction coeffs
 C                    NCSUM        =  total # of contractions
@@ -70,12 +78,33 @@ C                    NPGTOx       =  # of primitives per contraction
 C                                    for csh x
 C                    SHELLx       =  the shell type for csh x
 C                    Xy,Yy,Zy     =  the x,y,z-coordinates for centers
-C                                    y = 1 and 2 and C.
+C                                    y = 1 and 2
+C                    NUCLEI       =  # of nuclear attraction centers
+C                    XN,YN,ZN     =  the x,y,z-coordinates for all
+C                                    nuclear attraction centers
+C                    NCHARGE      =  the nuclear charges for all
+C                                    nuclear attraction centers
+C                    IXDERC       =  the index of which of the nuclear
+C                                    attraction centers is to be
+C                                    differentiated. If that index
+C                                    corresponds to one of the centers
+C                                    1 and/or 2, it will already be
+C                                    differentiated along with these
+C                                    centers, hence values transmitted
+C                                    for DERCX,DERCY,DERCZ are
+C                                    irrelevant in that case. If no
+C                                    nuclear attraction center is to
+C                                    be differentiated besides those
+C                                    which are possibly equal to
+C                                    centers 1 and/or 2, set this
+C                                    index value =< 0
 C                    DERyp        =  the order of differentiation on
 C                                    centers y = 1 and 2 with respect
 C                                    to the p = x,y,z coordinates
-C                    xMOMD        =  type of moment integral to be
-C                                    differentiated. x = X, Y, or Z
+C                    DERCp        =  the order of differentiation for
+C                                    the IXDERC-th nuclear attraction
+C                                    center with respect to the
+C                                    p = x,y,z coordinates
 C                    ALPHA        =  primitive exponents for csh
 C                                    1 and 2 in that order
 C                    CC           =  full set (including zeros) of
@@ -83,12 +112,21 @@ C                                    contraction coefficients for csh
 C                                    1 and 2 in that order, for each
 C                                    csh individually such that an
 C                                    (I,J) element corresponds to the
-C                                    I-th primitive and J-th contraction
+C                                    I-th primitive and J-th contraction.
 C                    CC(BEG)END   =  (lowest)highest nonzero primitive
 C                                    index for contractions for csh
 C                                    1 and 2 in that order. They are
 C                                    different from (1)NPGTOx only for
 C                                    segmented contractions
+C                    FTABLE       =  Fm (T) table for interpolation
+C                                    in low T region
+C                    MGRID        =  maximum m in Fm (T) table
+C                    NGRID        =  # of T's for which Fm (T) table
+C                                    was set up
+C                    TMAX         =  maximum T in Fm (T) table
+C                    TSTEP        =  difference between two consecutive
+C                                    T's in Fm (T) table
+C                    TVSTEP       =  Inverse of TSTEP
 C                    L1CACHE      =  Size of level 1 cache in units of
 C                                    8 Byte
 C                    TILE         =  Number of rows and columns in
@@ -113,18 +151,20 @@ C                    NFIRST       =  first address location inside the
 C                                    ZCORE array containing the first
 C                                    derivative integral
 C                    ZCORE        =  full batch of contracted (1|2)
-C                                    derivative overlap integrals over
-C                                    cartesian or spherical gaussians
-C                                    starting at ZCORE (NFIRST)
+C                                    derivative nuclear attraction
+C                                    integrals over cartesian or
+C                                    spherical gaussians starting at
+C                                    ZCORE (NFIRST)
 C
 C
 C
-C              --- NOTES ABOUT THE OVERALL OVLP INTEGRAL PREFACTOR ---
+C              --- NOTES ABOUT THE OVERALL NAI INTEGRAL PREFACTOR ---
 C
-C                The overal overlap integral prefactor is defined here
-C                as follows. Consider the normalization factors for a
-C                primitive cartesian GTO and for a spherical GTO
-C                belonging to the angular momentum L = l+m+n:
+C                The overal nuclear attraction integral prefactor is
+C                defined here as follows. Consider the normalization
+C                factors for a primitive cartesian GTO and for a
+C                spherical GTO belonging to the angular momentum
+C                L = l+m+n:
 C
 C
 C                    lmn                        l m n           2
@@ -183,13 +223,16 @@ C                     N (0,0,0,0) =   / --------------
 C                                   \/  pi * sqrt (pi)
 C
 C
-C                Also every overlap integral has a factor of pi**(3/2)
-C                associated with it, hence the overall common factor
-C                for all overlap integrals will be N(0,0,0,0)**2 times
-C                pi**(3/2), which is equal to:
+C                Also every nuclear attraction integral has a factor
+C                of 2*pi associated with it, hence the overall common
+C                factor for all nuclear attraction integrals will be
+C                N(0,0,0,0)**2 times 2*pi. In order to avoid sign
+C                changes of the nuclear charges, the negative sign of
+C                these is incorporated also into the prefactor, which
+C                is thus equal to:
 C
-C                                          ___
-C                            PREFACT  =  \/ 8 
+C                                            _________
+C                            PREFACT  =  - \/ 32 / pi 
 C
 C
 C                and is set as a parameter inside the present routine.
@@ -200,16 +243,11 @@ C                                 \/ a^((2L+3)/2)
 C
 C                will be calculated separately (see below) and their
 C                inclusion in evaluating the primitive cartesian
-C                derivative overlap [A|B] integrals will be essential
-C                for numerical stability during contraction.
+C                derivative nuclear attraction [A|B] integrals will be
+C                essential for numerical stability during contraction.
 C
 C
 C  AUTHOR      : Norbert Flocke
-C
-C  MODIFIED    : Thomas Watson
-C                   - Changed to do derivatives of moment integrals
-C              : Ajith Perere                p    q    r
-C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C             ...include files and declare variables.
@@ -219,49 +257,55 @@ C
 
          LOGICAL     ATOMIC
          LOGICAL     BLOCKED
-         LOGICAL     DIFFA,DIFFB
+         LOGICAL     CASEI,CASEII,CASEIII
+         LOGICAL     DIFFA,DIFFB,DIFFC
          LOGICAL     DIFFX,DIFFY,DIFFZ
          LOGICAL     EMPTY
          LOGICAL     EQUALAB
          LOGICAL     MEMORY
+         LOGICAL     ONECASE
          LOGICAL     REORDER
          LOGICAL     SCREEN
          LOGICAL     SPHERIC
          LOGICAL     SWAP12,SWAPRS
 
-         INTEGER     XMOMD,YMOMD,ZMOMD                     ! Watson Added
          INTEGER     DER1X,DER1Y,DER1Z
          INTEGER     DER2X,DER2Y,DER2Z
          INTEGER     DERAX,DERAY,DERAZ
          INTEGER     DERBX,DERBY,DERBZ
-         INTEGER     ICENSQX,ICENSQY,ICENSQZ
+         INTEGER     DERCX,DERCY,DERCZ
          INTEGER     IMAX,ZMAX
          INTEGER     IN,OUT
          INTEGER     INDEXA,INDEXB
          INTEGER     INDEXR,INDEXS
+         INTEGER     INUCCEN
          INTEGER     IPRIMA,IPRIMB
          INTEGER     IPUSED,IPSAVE,IPPAIR
          INTEGER     ISNROWA,ISNROWB
          INTEGER     ISROWA,ISROWB
          INTEGER     IUSED,ZUSED
+         INTEGER     IXAEQB,IXCEQA,IXCEQB
+         INTEGER     IXDERC
          INTEGER     L1CACHE,TILE,NCTROW
          INTEGER     LCC1,LCC2
          INTEGER     LCCA,LCCB
          INTEGER     LCCSEGA,LCCSEGB
          INTEGER     LEXP1,LEXP2
          INTEGER     LEXPA,LEXPB
-         INTEGER     MIJ
-         INTEGER     NOVRLP,NOVRSCR                        ! Watson Added
+         INTEGER     MGRID,NGRID
+         INTEGER     MIJ,MIJCEN,MGQPIJ,MGIJCEN
          INTEGER     MOVE,NOTMOVE
          INTEGER     MXPRIM,MNPRIM
          INTEGER     MXSHELL
          INTEGER     NALPHA,NCOEFF,NCSUM
          INTEGER     NBATCH,NFIRST
+         INTEGER     NCENA,NCENB,NCENC
          INTEGER     NCGTO1,NCGTO2
          INTEGER     NCGTOA,NCGTOB,NCGTOAB
          INTEGER     NCGTOR,NCGTOS
          INTEGER     NCTR
          INTEGER     NDERX,NDERY,NDERZ
+         INTEGER     NGQP,NMOM,NGQSCR
          INTEGER     NIJ,NIJBLK,NIJBEG,NIJEND
          INTEGER     NINT1DX,NINT1DY,NINT1DZ
          INTEGER     NPGTO1,NPGTO2
@@ -270,6 +314,7 @@ C
          INTEGER     NROTA,NROTB
          INTEGER     NROWA,NROWB
          INTEGER     NRYA,NRYB
+         INTEGER     NUCLEI,CNUCLEI
          INTEGER     NXYZA,NXYZB,NXYZT
          INTEGER     SHELL1,SHELL2
          INTEGER     SHELLA,SHELLB,SHELLP
@@ -277,13 +322,14 @@ C
 
          INTEGER     ZCBATCH,ZPBATCH,ZWORK,
      +               ZNORMA,ZNORMB,
-     +               ZBASE,ZCNORM,I,
+     +               ZBASE,ZCNORM,
      +               ZRHOAB,
-     +               ZPAX,ZPAY,ZPAZ,
-     +               ZPINVHF,ZSCALE,ZEXP2A,ZEXP2B,
+     +               ZPX,ZPY,ZPZ,ZPAX,ZPAY,ZPAZ,ZPINVHF,ZSCALE,
+     +               ZRTS,ZWTS,ZGQSCR,ZTVAL,
+     +               ZR1X,ZR1Y,ZR1Z,ZR2,
+     +               ZEXP2A,ZEXP2B,ZEXP2AB,
      +               ZINT1DX,ZINT1DY,ZINT1DZ,
-     +               ZSROTA,ZSROTB,
-     +               ZIP,ZOVRLP,ZOVRSCR,ZPINVA,ZPINVB      ! Watson Added
+     +               ZSROTA,ZSROTB
 
          INTEGER     CCBEG (1:NCSUM)
          INTEGER     CCEND (1:NCSUM)
@@ -294,14 +340,22 @@ C
          DOUBLE PRECISION  PREFACT
          DOUBLE PRECISION  RNABSQ
          DOUBLE PRECISION  SPNORM
+         DOUBLE PRECISION  TMAX,TSTEP,TVSTEP
          DOUBLE PRECISION  X1,Y1,Z1,X2,Y2,Z2
-         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB,XC,YC,ZC
+         DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB
+
+         DOUBLE PRECISION  XN      (1:NUCLEI)
+         DOUBLE PRECISION  YN      (1:NUCLEI)
+         DOUBLE PRECISION  ZN      (1:NUCLEI)
+         DOUBLE PRECISION  NCHARGE (1:NUCLEI)
 
          DOUBLE PRECISION  ALPHA (1:NALPHA)
          DOUBLE PRECISION  CC    (1:NCOEFF)
          DOUBLE PRECISION  ZCORE (1:ZMAX)
 
-         PARAMETER  (PREFACT = 2.828427124746190D0)
+         DOUBLE PRECISION  FTABLE (0:MGRID,0:NGRID)
+
+         PARAMETER  (PREFACT = -3.191538243211461D0)
 C
 C
 C------------------------------------------------------------------------
@@ -309,7 +363,7 @@ C
 C
 C             ...fix the A,B labels from the 1,2 ones. Calculate
 C                the relevant data for the A,B batch of derivative
-C                overlap integrals.
+C                nuclear attraction integrals.
 C
 C
          LEXP1 = 1
@@ -317,17 +371,20 @@ C
          LCC1  = 1
          LCC2  = LCC1 + NPGTO1 * NCGTO1
 
-         CALL  OED__XYZ_SET_DERV_AB
+         CALL  OED__EFIELD_SET_DERV_AB
      +
      +              ( NCGTO1,NCGTO2,
      +                NPGTO1,NPGTO2,
      +                SHELL1,SHELL2,
      +                X1,Y1,Z1,X2,Y2,Z2,
-     +                ALPHA (LEXP1),ALPHA (LEXP2),
-     +                CC (LCC1),CC (LCC2),
+     +                NUCLEI,CNUCLEI,
+     +                XN,YN,ZN,
+     +                IXDERC,
      +                DER1X,DER1Y,DER1Z,
      +                DER2X,DER2Y,DER2Z,
-     +                XMOMD,YMOMD,ZMOMD,                   ! Watson Added
+     +                DERCX,DERCY,DERCZ,
+     +                ALPHA (LEXP1),ALPHA (LEXP2),
+     +                CC (LCC1),CC (LCC2),
      +                SPHERIC,
      +
      +                            NCGTOA,NCGTOB,
@@ -338,8 +395,10 @@ C
      +                            NDERX,NDERY,NDERZ,
      +                            DERAX,DERAY,DERAZ,
      +                            DERBX,DERBY,DERBZ,
-     +                            DIFFA,DIFFB,
+     +                            DIFFA,DIFFB,DIFFC,
      +                            DIFFX,DIFFY,DIFFZ,
+     +                            IXAEQB,IXCEQA,IXCEQB,
+     +                            ATOMIC,EQUALAB,
      +                            ABX,ABY,ABZ,RNABSQ,
      +                            SPNORM,
      +                            NXYZA,NXYZB,NXYZT,
@@ -361,112 +420,133 @@ C         WRITE (*,*) ' Index A,B = ',INDEXA,INDEXB
          END IF
 C
 C
-C             ...enter the cartesian contracted (a|b) overlap batch
-C                generation. Set the i and j primitive exponent
-C                sets and the corresponding exponential prefactors.
-C                Since all derivatives of the overlap integrals on
-C                atoms are equal to zero, we set variables ATOMIC
-C                EQUALAB equals to false once and for all for further
-C                use.
-C
-C             ...Watson: Disregard the latter part of the previous
-C                        paragraph.  The variables will still be set
-C                        to false once and for all, but the atomic 
-C                        integrals are taken care of.
+C             ...set the i and j primitive exponent sets, the relevant
+C                nuclear attraction centers and the corresponding
+C                exponential prefactors.
 C
 C
-         ATOMIC = .FALSE.
-         EQUALAB = .FALSE.
-
-         NPGTOAB = NPGTOA * NPGTOB
-         NCGTOAB = NCGTOA * NCGTOB
+         IF (EQUALAB) THEN
+             NPGTOAB = (NPGTOA*(NPGTOA+1))/2
+             NCGTOAB = (NCGTOA*(NCGTOA+1))/2
+         ELSE
+             NPGTOAB = NPGTOA * NPGTOB
+             NCGTOAB = NCGTOA * NCGTOB
+         END IF
 
          IPRIMA = 1
          IPRIMB = IPRIMA + NPGTOAB
+         INUCCEN = IPRIMB + NPGTOAB
 
-         CALL  OED__OVL_SET_IJ_PAIRS
+         CALL  OED__NAI_SET_DERV_IJC_TRIPLES
      +
-     +              ( NPGTOA,NPGTOB,NPGTOAB,
+     +              ( NUCLEI,
+     +                XN,YN,ZN,NCHARGE,
+     +                NPGTOA,NPGTOB,NPGTOAB,
+     +                DIFFC,IXDERC,
      +                ATOMIC,EQUALAB,
      +                SWAPRS,
+     +                XA,YA,ZA,XB,YB,ZB,
      +                RNABSQ,
      +                PREFACT,
      +                ALPHA (LEXPA),ALPHA (LEXPB),
+     +                FTABLE,MGRID,NGRID,TMAX,TSTEP,TVSTEP,
      +                SCREEN,
      +
-     +                         EMPTY,
-     +                         NIJ,
-     +                         ICORE (IPRIMA),ICORE (IPRIMB),
-     +                         ZCORE (1) )
+     +                        EMPTY,
+     +                        NIJ,NCENA,NCENB,NCENC,
+     +                        ICORE (IPRIMA),ICORE (IPRIMB),
+     +                        IXCEQA,IXCEQB,
+     +                        ICORE (INUCCEN),
+     +                        ZCORE (1) )
      +
      +
+C         WRITE (*,*) ' Finished set derivative ijc triples '
+
+         Write(6,*) "EMPTY HERE? ", EMPTY, SCREEN
          IF (EMPTY) THEN
              NBATCH = 0
              RETURN
          END IF
 C
 C
-C             ...determine the sequence of centers for derivation
-C                for each coordinate.
+C             ...we are now ready to calculate the cartesian contracted
+C                (a|b) derivative nuclear attraction batch, which is
+C                obtained as a sum over all attraction centers:
+C
+C                           dxdydz (a|b)  =  sum dxdydz (a|C|b)
+C                                             C
+C
+C                In general three cases can arise for each basic (a|C|b)
+C                derivative integral, each of which has to be dealt 
+C                separately and summed into (a|b):
+C
+C                    Case I    =  2-center integrals of type (a|A|b)
+C                    Case II   =  2-center integrals of type (a|B|b)
+C                    Case III  =  3-center integrals of type (a|C|b)
+C
+C                Note, that cases I and II cannot arise once dxdydz
+C                operates on a center C different from A and B. In that
+C                case we only have case III integrals. Note that
+C                the electric field integrals belong to caseIII. 
+C                Decide on the primitive [a|b] block size and return
+C                array sizes and pointers for the primitive [a|b]
+C                generation. Perform also some preparation steps
+C                for contraction.
 C
 C
-         ICENSQX = IPRIMB + NPGTOAB
-         ICENSQY = ICENSQX + NDERX + 1
-         ICENSQZ = ICENSQY + NDERY + 1
+         CASEI   = .FALSE.
+         CASEII  = .FALSE.
+         CASEIII = .TRUE.
 
-         CALL  OED__OVL_SET_DERV_SEQUENCE
-     +
-     +              ( NDERX,NDERY,NDERZ,
-     +                DERAX,DERAY,DERAZ,
-     +                DERBX,DERBY,DERBZ,
-     +
-     +                            ICORE (ICENSQX),
-     +                            ICORE (ICENSQY),
-     +                            ICORE (ICENSQZ) )
-     +
-     +
-C
-C
-C             ...decide on the primitive [a|b] block size and
-C                return array sizes and pointers for the primitive
-C                [a|b] generation. Perform also some preparation
-C                steps for contraction.
-C
-C
+C         WRITE (*,*) ' CASEI   = ',CASEI
+C         WRITE (*,*) ' CASEII  = ',CASEII
+C         WRITE (*,*) ' CASEIII = ',CASEIII
+
+         ONECASE =      (CASEI  .AND.(.NOT.CASEII).AND.(.NOT.CASEIII))
+     +             .OR. (CASEII .AND.(.NOT.CASEI) .AND.(.NOT.CASEIII))
+     +             .OR. (CASEIII.AND.(.NOT.CASEI) .AND.(.NOT.CASEII) )
+
+         NGQP = 1 + (SHELLP + NDERX + NDERY + NDERZ) / 2
+         NMOM = 2 * NGQP - 1
+         NGQSCR = 5 * NMOM + 2 * NGQP - 2
+
          MEMORY = .FALSE.
 
-         CALL  OED__XYZ_DERV_DEF_BLOCKS
+         CALL  OED__NAI_DERV_DEF_BLOCKS
      +
      +              ( ZMAX,
      +                NPGTOA,NPGTOB,
      +                SHELLA,SHELLB,SHELLP,
      +                NIJ,NCGTOAB,
+     +                MAX (NCENA,NCENB,NCENC),
+     +                NGQP,NGQSCR,
      +                NXYZT,
      +                DERAX,DERAY,DERAZ,
      +                DERBX,DERBY,DERBZ,
-     +                XMOMD,YMOMD,ZMOMD,                   ! Watson Added
+     +                CASEI,CASEII,CASEIII,
      +                L1CACHE,NCTROW,
      +                MEMORY,
      +
-     +                        NIJBLK,
-     +                        NBATCH,
-     +                        NOVRLP,NOVRSCR,              ! Watson Added
-     +                        NPSIZE,NCSIZE,NWSIZE,
-     +                        NINT1DX,NINT1DY,NINT1DZ,
-     +                        MXPRIM,MNPRIM,
-     +                        ZCBATCH,ZPBATCH,ZWORK,
-     +                        ZNORMA,ZNORMB,
-     +                        ZRHOAB,
-     +                        ZPAX,ZPAY,ZPAZ,                ! Watson Added
-     +                        ZPINVHF,ZSCALE,
-     +                        ZEXP2A,ZEXP2B,
-     +                        ZINT1DX,ZINT1DY,ZINT1DZ,
-     +                        ZIP,ZOVRLP,ZOVRSCR,ZPINVA,ZPINVB )
+     +                       NIJBLK,
+     +                       NBATCH,
+     +                       NPSIZE,NCSIZE,NWSIZE,
+     +                       NINT1DX,NINT1DY,NINT1DZ,
+     +                       MXPRIM,MNPRIM,
+     +                       ZCBATCH,ZPBATCH,ZWORK,
+     +                       ZNORMA,ZNORMB,
+     +                       ZRHOAB,
+     +                       ZPX,ZPY,ZPZ,ZPAX,ZPAY,ZPAZ,ZPINVHF,ZSCALE,
+     +                       ZRTS,ZWTS,ZGQSCR,ZTVAL,
+     +                       ZR1X,ZR1Y,ZR1Z,ZR2,
+     +                       ZEXP2A,ZEXP2B,ZEXP2AB,
+     +                       ZINT1DX,ZINT1DY,ZINT1DZ )
      +
      +
-         BLOCKED = NIJBLK .LT. NIJ
+         BLOCKED = (.NOT.ONECASE) .OR. (NIJBLK .LT. NIJ)
 
-         CALL  OED__OVL_PREPARE_CTR
+C         WRITE (*,*) ' BLOCKED = ',BLOCKED
+
+         CALL  OED__NAI_PREPARE_CTR
      +
      +              ( NCSIZE,
      +                NIJ,
@@ -478,110 +558,131 @@ C
      +                BLOCKED,
      +                ZCORE (1),
      +
-     +                          ZCORE (ZNORMA),ZCORE (ZNORMB),
-     +                          ZCORE (ZRHOAB),
-     +                          ZCORE (ZCBATCH) )
+     +                        ZCORE (ZNORMA),ZCORE (ZNORMB),
+     +                        ZCORE (ZRHOAB),
+     +                        ZCORE (ZCBATCH) )
      +
      +
-         IPUSED = ICENSQZ + NDERZ + 1
+         IPUSED = INUCCEN + NCENC
          IPSAVE = IPUSED + MNPRIM
          IPPAIR = IPSAVE + MXPRIM
 C
 C
 C             ...evaluate unnormalized rescaled [a|b] derivative
-C                overlap integrals in blocks over ij pairs and add to
-C                final contracted (a|b) derivative overlap integrals.
-C                The keyword REORDER indicates, if the primitive [a|b]
-C                derivative overlap integrals need to be transposed
-C                before being contracted.
+C                nuclear attraction integrals in blocks over ij pairs
+C                and add to final contracted (a|b) derivative nuclear
+C                attraction integrals. The keyword REORDER indicates,
+C                if the primitive [a|b] derivative nuclear attraction
+C                integrals need to be transposed before being
+C                contracted.
 C
 C
          REORDER = .TRUE.
-
-         DO 1000 NIJBEG = 1,NIJ,NIJBLK
-            NIJEND = MIN0 (NIJBEG+NIJBLK-1,NIJ)
-            MIJ = NIJEND - NIJBEG + 1
-
-            CALL  OED__XYZ_DERV_PCGTO_BLOCK
-     +
-     +                 ( NBATCH,
-     +                   NOVRLP,NOVRSCR,                   ! Watson Added
-     +                   NINT1DX,NINT1DY,NINT1DZ,
-     +                   MIJ,NIJ,NIJBEG,NIJEND,
-     +                   NPGTOA,NPGTOB,
-     +                   NXYZA,NXYZB,
-     +                   SHELLA,SHELLB,SHELLP,
-     +                   XA,YA,ZA,XB,YB,ZB,
-     +                   XC,YC,ZC,
-     +                   ABX,ABY,ABZ,
-     +                   XMOMD,YMOMD,ZMOMD,                ! Watson Added
-     +                   NDERX,NDERY,NDERZ,
-     +                   DERAX,DERAY,DERAZ,
-     +                   DERBX,DERBY,DERBZ,
-     +                   DIFFX,DIFFY,DIFFZ,
-     +                   DIFFA,DIFFB,
-     +                   ALPHA (LEXPA),ALPHA (LEXPB),
-     +                   ICORE (ICENSQX),
-     +                   ICORE (ICENSQY),
-     +                   ICORE (ICENSQZ),
-     +                   ICORE (IPRIMA+NIJBEG-1),
-     +                   ICORE (IPRIMB+NIJBEG-1),
-     +                   ZCORE (ZNORMA),ZCORE (ZNORMB),
-     +                   ZCORE (ZRHOAB),
-     +                   ZCORE (ZPAX),ZCORE (ZPAY),ZCORE (ZPAZ),
-     +                   ZCORE (ZPINVA),ZCORE (ZPINVB),    ! Watson Added
-     +                   ZCORE (ZPINVHF),ZCORE (ZSCALE),
-     +                   ZCORE (ZEXP2A),ZCORE (ZEXP2B),
-     +                   ZCORE (ZINT1DX),
-     +                   ZCORE (ZINT1DY),
-     +                   ZCORE (ZINT1DZ),
-     +                   ZCORE (ZIP),ZCORE (ZOVRLP),ZCORE (ZOVRSCR),! Watson
-     +
-     +                             ZCORE (ZPBATCH) )
-     +
-     +
-C            WRITE (*,*) ' Finished ab overlap pcgto derv block '
-
-            CALL  OED__CTR_2INDEX_BLOCK
-     +
-     +                 ( NPSIZE,NCSIZE,NWSIZE,
-     +                   NXYZT,
-     +                   MIJ,NCGTOAB,
-     +                   NPGTOA,NPGTOB,
-     +                   NCGTOA,NCGTOB,
-     +                   MXPRIM,MNPRIM,
-     +                   CC (LCCA),CC (LCCB),
-     +                   CCBEG (LCCSEGA),CCBEG (LCCSEGB),
-     +                   CCEND (LCCSEGA),CCEND (LCCSEGB),
-     +                   ICORE (IPRIMA+NIJBEG-1),
-     +                   ICORE (IPRIMB+NIJBEG-1),
-     +                   L1CACHE,TILE,NCTROW,
-     +                   EQUALAB,
-     +                   SWAPRS,
-     +                   REORDER,
-     +                   BLOCKED,
-     +                   ICORE (IPUSED),
-     +                   ICORE (IPSAVE),
-     +                   ICORE (IPPAIR),
-     +                   ZCORE (ZPBATCH),
-     +                   ZCORE (ZWORK),
-     +
-     +                             ZCORE (ZCBATCH) )
-     +
-     +
-C            WRITE (*,*) ' Finished 2 index ctr block '
-
- 1000    CONTINUE
+C
+C             ...case III integrals 
 C
 C
-C             ...the unnormalized cartesian (a|b) contracted overlap
-C                derivative batch is ready. Reorder the contraction
-C                index part (if necessary):
+         IF (CASEIII) THEN
+
+             DO 3000 NIJBEG = 1,NIJ,NIJBLK
+                NIJEND = MIN0 (NIJBEG+NIJBLK-1,NIJ)
+                MIJ = NIJEND - NIJBEG + 1
+                MIJCEN  = MIJ * NCENC
+                MGIJCEN = NGQP * MIJCEN
+                Write(6,*) "Entering OED__DSHIELD_DERV_3CEN_PCGTO_BLOCK"
+
+                CALL  OED__DSHIELD_DERV_3CEN_PCGTO_BLOCK
+     +
+     +                     ( NBATCH,
+     +                       NINT1DX,NINT1DY,NINT1DZ,
+     +                       ATOMIC,
+     +                       MIJ,NCENC,MIJCEN,
+     +                       NIJ,NIJBEG,NIJEND,
+     +                       NGQP,NMOM,NGQSCR,MGIJCEN,
+     +                       NPGTOA,NPGTOB,
+     +                       NXYZA,NXYZB,
+     +                       SHELLA,SHELLB,SHELLP,
+     +                       XA,YA,ZA,XB,YB,ZB,
+     +                       ABX,ABY,ABZ,
+     +                       NUCLEI,
+     +                       XN,YN,ZN,NCHARGE,
+     +                       ICORE (INUCCEN),
+     +                       DERAX,DERAY,DERAZ,
+     +                       DERBX,DERBY,DERBZ,
+     +                       DERCX,DERCY,DERCZ,
+     +                       DIFFX,DIFFY,DIFFZ,
+     +                       DIFFA,DIFFB,DIFFC,
+     +                       IXAEQB,
+     +                       ALPHA (LEXPA),ALPHA (LEXPB),
+     +                       FTABLE,MGRID,NGRID,TMAX,TSTEP,TVSTEP,
+     +                       ICORE (IPRIMA+NIJBEG-1),
+     +                       ICORE (IPRIMB+NIJBEG-1),
+     +                       ZCORE (ZNORMA),ZCORE (ZNORMB),
+     +                       ZCORE (ZRHOAB),
+     +                       ZCORE (ZPX),ZCORE (ZPY),ZCORE (ZPZ),
+     +                       ZCORE (ZPAX),ZCORE (ZPAY),ZCORE (ZPAZ),
+     +                       ZCORE (ZPINVHF),ZCORE (ZSCALE),
+     +                       ZCORE (ZRTS),ZCORE (ZWTS),ZCORE (ZGQSCR),
+     +                       ZCORE (ZTVAL),
+     +                       ZCORE (ZR1X),ZCORE (ZR1Y),ZCORE (ZR1Z),
+     +                       ZCORE (ZR2),
+     +                       ZCORE (ZEXP2A),ZCORE (ZEXP2B),
+     +                       ZCORE (ZEXP2AB),
+     +                       ZCORE (ZINT1DX),
+     +                       ZCORE (ZINT1DY),
+     +                       ZCORE (ZINT1DZ),
+     +
+     +                                 ZCORE (ZPBATCH) )
+     +
+     +
+C            WRITE (*,*) ' Finished case III ab nai pcgto derv block '
+
+                CALL  OED__CTR_2INDEX_BLOCK
+     +
+     +                     ( NPSIZE,NCSIZE,NWSIZE,
+     +                       NXYZT,
+     +                       MIJ,NCGTOAB,
+     +                       NPGTOA,NPGTOB,
+     +                       NCGTOA,NCGTOB,
+     +                       MXPRIM,MNPRIM,
+     +                       CC (LCCA),CC (LCCB),
+     +                       CCBEG (LCCSEGA),CCBEG (LCCSEGB),
+     +                       CCEND (LCCSEGA),CCEND (LCCSEGB),
+     +                       ICORE (IPRIMA+NIJBEG-1),
+     +                       ICORE (IPRIMB+NIJBEG-1),
+     +                       L1CACHE,TILE,NCTROW,
+     +                       EQUALAB,
+     +                       SWAPRS,
+     +                       REORDER,
+     +                       BLOCKED,
+     +                       ICORE (IPUSED),
+     +                       ICORE (IPSAVE),
+     +                       ICORE (IPPAIR),
+     +                       ZCORE (ZPBATCH),
+     +                       ZCORE (ZWORK),
+     +
+     +                                 ZCORE (ZCBATCH) )
+     +
+     +
+C                WRITE (*,*) ' Finished case III 2 index ctr block '
+
+ 3000        CONTINUE
+
+         END IF
+C
+C
+C             ...the unnormalized cartesian (a|b) contracted nuclear
+C                attraction derivative batch is ready. Expand the
+C                contraction indices (if necessary):
+C
+C                   batch (nxyzt,r>=s) --> batch (nxyzt,r,s)
+C
+C                and reorder the contraction index part (if necessary):
 C
 C                   batch (nxyzt,r,s) --> batch (nxyzt,1,2)
 C
 C                The array IXOFF (x) indicates the total # of indices
-C                to the left of x without including the nxyzet-part.
+C                to the left of x without including the nxyzt-part.
 C                For the left most IXOFF value it is convenient to
 C                set it equal to 1 instead of 0. Note, that the IXOFF
 C                array indicates the true # of indices to the left
@@ -616,6 +717,23 @@ C
 
          IN = ZCBATCH
          OUT = IN + NBATCH
+
+         IF (EQUALAB .AND. NCGTOAB.GT.1) THEN
+             CALL  OED__CTR_RS_EXPAND
+     +
+     +                  ( NXYZT,NCGTOAB,
+     +                    NCGTOA,NCGTOB,
+     +                    ZCORE (IN),
+     +
+     +                            ZCORE (OUT) )
+     +
+     +
+C             WRITE (*,*) ' Finished ctr rs expansion '
+
+             TEMP = IN
+             IN = OUT
+             OUT = TEMP
+         END IF
 
          REORDER = SWAP12 .NEQV. SWAPRS
 

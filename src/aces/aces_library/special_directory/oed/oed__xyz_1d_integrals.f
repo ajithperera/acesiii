@@ -19,7 +19,7 @@ C  in the file COPYRIGHT.
      +                      NEXP,
      +                      XA,YA,ZA,XB,YB,ZB,
      +                      PAX,PAY,PAZ,
-     +                      XP,YP,ZP,
+     +                      XP,YP,ZP,XC,YC,ZC,
      +                      PINVHF,
      +                      ABX,ABY,ABZ,
      +                      MOMENTX,MOMENTY,MOMENTZ,
@@ -62,7 +62,7 @@ C                                    for contraction shells A and B
 C                    ABx          =  coordinate x=X,Y,Z differences
 C                                    A-B between centers A and B
 C                    Xx,Yx,Zx     =  X,Y,Z coordinates of centers
-C                                    x = A,B,P
+C                                    x = A,B,P and C.
 C                    MOMENTx      =  tells which power of X,Y, or Z
 C                                    integrals to compute
 C                    SCRMTX       =  holds all previous integrals 
@@ -80,6 +80,8 @@ C                  - Wrote original OED package
 C
 C  MODIFIED    : Thomas Watson Jr.                   p  q  r
 C                  - Modified OED package to handle X, Y, Z integrals
+C              : Ajith Perere                p    q    r
+C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C
@@ -98,6 +100,7 @@ C
          INTEGER    MOMENTX,MOMENTY,MOMENTZ
 
          DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB
+         DOUBLE PRECISION  XC,YC,ZC
          DOUBLE PRECISION  ABM,ABX,ABY,ABZ
          DOUBLE PRECISION  F
          DOUBLE PRECISION  ZERO,ONE,TWO
@@ -137,7 +140,7 @@ C
      +
      +            ( SHELLP,SHELLB,
      +              NEXP,
-     +              XP,YP,ZP,
+     +              XP,YP,ZP,XC,YC,ZC,
      +              PINVHF,
      +              MOMENTX,MOMENTY,MOMENTZ,
      +              XMINUS,YMINUS,ZMINUS,
@@ -223,7 +226,8 @@ C
                            SCRMTX (N,I,0) = INT1DX (N,I,0)
                         END DO
                         P1 = F * PINVHF (N)
-                        INT1DX (N,0,0) = XP (N) * SCRMTX (N,0,0)
+                        INT1DX (N,0,0) = (XP (N) - XC)  
+     +                                          * SCRMTX (N,0,0)
      +                                     + P1 * XMINUS (N)
                      END DO
                      F = F + ONE
@@ -287,7 +291,8 @@ C
                            SCRMTY (N,I,0) = INT1DY (N,I,0)
                         END DO
                         P1 = F * PINVHF (N)
-                        INT1DY (N,0,0) = YP (N) * SCRMTY (N,0,0)
+                        INT1DY (N,0,0) = (YP (N) - YC) 
+     +                                          * SCRMTY (N,0,0)
      +                                     + P1 * YMINUS (N)
                      END DO
                      F = F + ONE
@@ -351,7 +356,8 @@ C
                            SCRMTZ (N,I,0) = INT1DZ (N,I,0)
                         END DO
                         P1 = F * PINVHF (N)
-                        INT1DZ (N,0,0) = ZP (N) * SCRMTZ (N,0,0)
+                        INT1DZ (N,0,0) = (ZP (N) - ZC )
+     +                                          * SCRMTZ (N,0,0)
      +                                     + P1 * ZMINUS (N)
                      END DO
                      F = F + ONE

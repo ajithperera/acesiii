@@ -25,6 +25,7 @@ C  in the file COPYRIGHT.
      +                      SPHERIC,SCREEN,
      +                      ICORE,
      +                      MOMENTX,MOMENTY,MOMENTZ,
+     +                      XC,YC,ZC,
      +
      +                                NBATCH,
      +                                NFIRST,
@@ -66,7 +67,7 @@ C                    NPGTOx       =  # of primitives per contraction
 C                                    for csh x
 C                    SHELLx       =  the shell type for csh x
 C                    Xy,Yy,Zy     =  the x,y,z-coordinates for centers
-C                                    y = 1 and 2
+C                                    y = 1 and 2 and C
 C                    ALPHA        =  primitive exponents for csh
 C                                    1 and 2 in that order
 C                    CC           =  full set (including zeros) of
@@ -202,6 +203,8 @@ C                  - Wrote original OED package
 C
 C  MODIFIED    : Thomas Watson Jr.           p  q  r
 C                  - Modified OED to handle X, Y, Z integrals
+C              : Ajith Perere                p    q    r
+C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C
@@ -285,7 +288,7 @@ C
          DOUBLE PRECISION  PREFACT
          DOUBLE PRECISION  RNABSQ
          DOUBLE PRECISION  SPNORM
-         DOUBLE PRECISION  X1,Y1,Z1,X2,Y2,Z2
+         DOUBLE PRECISION  X1,Y1,Z1,X2,Y2,Z2,XC,YC,ZC
          DOUBLE PRECISION  XA,YA,ZA,XB,YB,ZB
 
          DOUBLE PRECISION  ALPHA (1:NALPHA)
@@ -461,7 +464,7 @@ C
      +                   NPGTOA,NPGTOB,
      +                   NXYZET,NXYZP,
      +                   SHELLA,SHELLP,
-     +                   XA,YA,ZA,XB,YB,ZB,
+     +                   XA,YA,ZA,XB,YB,ZB,XC,YC,ZC,
      +                   ABX,ABY,ABZ,
      +                   MOMENTX,MOMENTY,MOMENTZ,
      +                   ALPHA (LEXPA),ALPHA (LEXPB),

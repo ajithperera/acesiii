@@ -67,7 +67,7 @@ c---------------------------------------------------------------------------
            sval = Sval + array1(a,b) 
 
 #ifdef _DEBUG_LVL0
-           write(6,"(a,1x,2I4,1x,F20.10)") ' SVAL ', a, b, sval 
+           write(6,"(a,1x,2I4,1x,F20.10)") " SVAL ", a, b, sval 
 #endif
       enddo ! b 
       enddo ! a 

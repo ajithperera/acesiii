@@ -68,7 +68,7 @@ c---------------------------------------------------------------------------
      *                 pcoeff_pack(max_dim_coeff)
       double precision xn(max_centers), yn(max_centers), 
      *                 zn(max_centers)
-      double precision x1,y1,z1,x2,y2,z2, y, fact 
+      double precision x1,y1,z1,x2,y2,z2, y, fact,xc,yc,zc
 
       common /d2int_com/jatom, jx, jcenter
       integer jatom, jx, jcenter, dcoord
@@ -137,6 +137,10 @@ c-------------------------------------------------------------------------
          yn(iatom) = dbuf(icoord+3*(m-1)+1)
          zn(iatom) = dbuf(icoord+3*(m-1)+2)
       enddo
+     
+      xc = 0.0D0
+      yc = 0.0D0
+      zc = 0.0D0
 
 c-------------------------------------------------------------------------
 c   Calculate the integrals over the necessary shell blocks.
@@ -229,6 +233,9 @@ C                   if (atom(m) .eq. atom(n)) der1z = 1
              if ( type .eq. 1 ) xmomder = 1
              if ( type .eq. 2 ) ymomder = 1
              if ( type .eq. 3 ) zmomder = 1
+C
+C The moments deriavtives are computed at the origin. 
+C
 
              call oed__gener_xyz_derv_batch(intmax,zmax,
      *                 nalpha,ncoeff,
@@ -237,6 +244,7 @@ C                   if (atom(m) .eq. atom(n)) der1z = 1
      *                 der1x, der1y, der1z,
      *                 der2x, der2y, der2z,
      *                 xmomder, ymomder, zmomder,
+     *                 xc,yc,zc,
      *                 alpha_pack, pcoeff_pack, ccbeg_pack, ccend_pack,
      *                 spherical, .false., ibuf(ipkgscr), nints, nfirst,
      *                 dbuf(dpkgscr))

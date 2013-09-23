@@ -1,5 +1,5 @@
-C  Copyright (c) 1997-1999, 2003 Massachusetts Institute of Technology
-C 
+C  Copyright (c) 2003-2010 University of Florida
+C
 C  This program is free software; you can redistribute it and/or modify
 C  it under the terms of the GNU General Public License as published by
 C  the Free Software Foundation; either version 2 of the License, or
@@ -10,11 +10,9 @@ C  but WITHOUT ANY WARRANTY; without even the implied warranty of
 C  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 C  GNU General Public License for more details.
 
-C  You should have received a copy of the GNU General Public License
-C  along with this program; if not, write to the Free Software
-C  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-C  USA
-         SUBROUTINE  OED__GENER_XYZ_DERV_BATCH
+C  The GNU General Public License is included in this distribution
+C  in the file COPYRIGHT.
+         SUBROUTINE  OED__GENER_EFIELD_BATCH
      +
      +                    ( IMAX,ZMAX,
      +                      NALPHA,NCOEFF,NCSUM,
@@ -22,10 +20,12 @@ C  USA
      +                      NPGTO1,NPGTO2,
      +                      SHELL1,SHELL2,
      +                      X1,Y1,Z1,X2,Y2,Z2,
-     +                      DER1X,DER1Y,DER1Z,
+     +                      NUCLEI,CNUCLEI,
+     +                      XN,YN,ZN,NCHARGE,
+     +                      IXDERC,
+     +                      DER1X,DER1Y,DER1Z, 
      +                      DER2X,DER2Y,DER2Z,
-     +                      XMOMD,YMOMD,ZMOMD,             ! Watson Added
-     +                      XC,YC,ZC,
+     +                      DERCX,DERCY,DERCZ,
      +                      ALPHA,CC,CCBEG,CCEND,
      +                      SPHERIC,
      +                      SCREEN,
@@ -36,13 +36,12 @@ C  USA
      +                                ZCORE )
      +
 C------------------------------------------------------------------------
-C  OPERATION   : OED__GENER_XYZ_DERV_BATCH
+C  OPERATION   : OED__GENER_EFIELD_BATCH
 C  MODULE      : ONE ELECTRON INTEGRALS DIRECT
 C  MODULE-ID   : OED
-C  SUBROUTINES : OED__XYZ_DERV_CSGTO
+C  SUBROUTINES : OED__Efield_CSGTO
 C  DESCRIPTION : Main operation that drives the calculation of a batch
-C                of differentiated contracted electron x, y, or z
-C                integrals.
+C                of electric field integrals
 C
 C
 C                  Input (x = 1 and 2):
@@ -56,12 +55,33 @@ C                    NPGTOx       =  # of primitives per contraction
 C                                    for csh x
 C                    SHELLx       =  the shell type for csh x
 C                    Xy,Yy,Zy     =  the x,y,z-coordinates for centers
-C                                    y = 1 and 2 and C. 
+C                                    y = 1 and 2
+C                    NUCLEI       =  # of nuclear attraction centers
+C                    XN,YN,ZN     =  the x,y,z-coordinates for all
+C                                    nuclear attraction centers
+C                    NCHARGE      =  the nuclear charges for all
+C                                    nuclear attraction centers
+C                    IXDERC       =  the index of which of the nuclear
+C                                    attraction centers is to be
+C                                    differentiated. If that index
+C                                    corresponds to one of the centers
+C                                    1 and/or 2, it will already be
+C                                    differentiated along with these
+C                                    centers, hence values transmitted
+C                                    for DERCX,DERCY,DERCZ are
+C                                    irrelevant in that case. If no
+C                                    nuclear attraction center is to
+C                                    be differentiated besides those
+C                                    which are possibly equal to
+C                                    centers 1 and/or 2, set this
+C                                    index value =< 0
 C                    DERyp        =  the order of differentiation on
 C                                    centers y = 1 and 2 with respect
 C                                    to the p = x,y,z coordinates
-C                    pMOMD        =  the type of moment integral
-C                                    with p = x, y, or z
+C                    DERCp        =  the order of differentiation for
+C                                    the IXDERC-th nuclear attraction
+C                                    center with respect to the
+C                                    p = x,y,z coordinates
 C                    ALPHA        =  primitive exponents for csh
 C                                    1 and 2 in that order
 C                    CC           =  contraction coefficient for csh
@@ -90,9 +110,10 @@ C                    NFIRST       =  first address location inside the
 C                                    ZCORE array containing the first
 C                                    derivative integral
 C                    ZCORE        =  full batch of contracted (1|2)
-C                                    derivative overlap integrals over
-C                                    cartesian or spherical gaussians
-C                                    starting at ZCORE (NFIRST)
+C                                    derivative nuclear attraction
+C                                    integrals over cartesian or
+C                                    spherical gaussians starting at
+C                                    ZCORE (NFIRST)
 C
 C
 C
@@ -103,11 +124,6 @@ C                'oed__tuning.inc'.
 C
 C
 C  AUTHOR      : Norbert Flocke
-C
-C  MODIFIED    : Thomas Watson
-C                   - Changed to do derivatives of moment integrals
-C              : Ajith Perere                p    q    r
-C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C
 C
@@ -116,6 +132,7 @@ C
 C
          IMPLICIT    NONE
 
+         INCLUDE     'oed__ftable.inc'
          INCLUDE     'oed__tuning.inc'
 
          LOGICAL     SCREEN
@@ -123,19 +140,26 @@ C
 
          INTEGER     DER1X,DER1Y,DER1Z
          INTEGER     DER2X,DER2Y,DER2Z
-         INTEGER     XMOMD,YMOMD,ZMOMD                     ! Watson Added
+         INTEGER     DERCX,DERCY,DERCZ
          INTEGER     IMAX,ZMAX
+         INTEGER     IXDERC
          INTEGER     NALPHA,NCOEFF,NCSUM
          INTEGER     NBATCH,NFIRST
          INTEGER     NCGTO1,NCGTO2
          INTEGER     NPGTO1,NPGTO2
+         INTEGER     NUCLEI,CNUCLEI
          INTEGER     SHELL1,SHELL2
 
          INTEGER     CCBEG (1:NCSUM)
          INTEGER     CCEND (1:NCSUM)
          INTEGER     ICORE (1:IMAX)
 
-         DOUBLE PRECISION  X1,Y1,Z1,X2,Y2,Z2,XC,YC,ZC
+         DOUBLE PRECISION  X1,Y1,Z1,X2,Y2,Z2
+
+         DOUBLE PRECISION  XN      (1:NUCLEI)
+         DOUBLE PRECISION  YN      (1:NUCLEI)
+         DOUBLE PRECISION  ZN      (1:NUCLEI)
+         DOUBLE PRECISION  NCHARGE (1:NUCLEI)
 
          DOUBLE PRECISION  ALPHA (1:NALPHA)
          DOUBLE PRECISION  CC    (1:NCOEFF)
@@ -148,7 +172,7 @@ C
 C             ...call csgto routine.
 C
 C
-         CALL  OED__XYZ_DERV_CSGTO
+         CALL  OED__EFIELD_CSGTO
      +
      +              ( IMAX,ZMAX,
      +                NALPHA,NCOEFF,NCSUM,
@@ -156,11 +180,14 @@ C
      +                NPGTO1,NPGTO2,
      +                SHELL1,SHELL2,
      +                X1,Y1,Z1,X2,Y2,Z2,
+     +                NUCLEI,CNUCLEI,
+     +                XN,YN,ZN,NCHARGE,
+     +                IXDERC,
      +                DER1X,DER1Y,DER1Z,
      +                DER2X,DER2Y,DER2Z,
-     +                XMOMD,YMOMD,ZMOMD,                   ! Watson Added
-     +                XC,YC,ZC,
+     +                DERCX,DERCY,DERCZ,
      +                ALPHA,CC,CCBEG,CCEND,
+     +                FTABLE,MGRID,NGRID,TMAX,TSTEP,TVSTEP,
      +                L1CACHE,TILE,NCTROW,
      +                SPHERIC,SCREEN,
      +                ICORE,

@@ -16,7 +16,7 @@ C  in the file COPYRIGHT.
      +
      +                    ( SHELLP,SHELLB,
      +                      NEXP,
-     +                      XP,YP,ZP,
+     +                      XP,YP,ZP,XC,YC,ZC,
      +                      PINVHF,
      +                      MOMENTX,MOMENTY,MOMENTZ,
      +                      XMINUS,YMINUS,ZMINUS,
@@ -41,6 +41,7 @@ C                    SHELLx       =  the shell type for csh x = A,B,P
 C                    NEXP         =  # of exponent pairs
 C                    xP           =  current NEXP coordinate x=X,Y,Z
 C                                    Gaussian Product centers
+C                    xC           =  Center X,Y,Z coordinates
 C                    PINVHF       =  current NEXP values of 1/(2*P),
 C                                    where P are the exponent sums
 C                                    for contraction shells A and B
@@ -63,6 +64,8 @@ C                  - Wrote original OED package
 C
 C  MODIFIER    : Thomas Watson Jr.                   p  q  r
 C                  - Modified OED package to handle X, Y, Z integrals
+C              : Ajith Perere                p    q    r
+C                  - Modified to handle (X-C)(Y-C)(Z-C)
 C------------------------------------------------------------------------
 C                      
 C             
@@ -76,7 +79,7 @@ C
          INTEGER     NEXP
          INTEGER     MOMENTX,MOMENTY,MOMENTZ
 
-         DOUBLE PRECISION  F,P1
+         DOUBLE PRECISION  F,P1,XC,YC,ZC
          DOUBLE PRECISION  ZERO,ONE
 
          DOUBLE PRECISION  PINVHF (1:NEXP)
@@ -125,7 +128,8 @@ C
                        P1 = F * PINVHF (N)
                        XMINUS (N)     = SCRMTX (N,0,0)
                        SCRMTX (N,0,0) = INT1DX (N,0,0)
-                       INT1DX (N,0,0) = XP (N) * SCRMTX (N,0,0)
+                       INT1DX (N,0,0) = (XP (N) - XC )
+     +                                         * SCRMTX (N,0,0)
      +                                   +  P1 * XMINUS (N)
                     END DO
                  F = F + ONE
@@ -139,7 +143,8 @@ C
                        P1 = F * PINVHF (N)
                        YMINUS (N)     = SCRMTY (N,0,0)
                        SCRMTY (N,0,0) = INT1DY (N,0,0)
-                       INT1DY (N,0,0) = YP (N) * SCRMTY (N,0,0)
+                       INT1DY (N,0,0) = (YP (N) - YC )
+     +                                         * SCRMTY (N,0,0)
      +                                   +  P1 * YMINUS (N)
                     END DO
                  F = F + ONE
@@ -153,7 +158,8 @@ C
                        P1 = F * PINVHF (N)
                        ZMINUS (N)     = SCRMTZ (N,0,0)
                        SCRMTZ (N,0,0) = INT1DZ (N,0,0)
-                       INT1DZ (N,0,0) = ZP (N) * SCRMTZ (N,0,0)
+                       INT1DZ (N,0,0) = (ZP (N) - ZC ) 
+     +                                         * SCRMTZ (N,0,0)
      +                                   +  P1 * ZMINUS (N)
                     END DO
                  F = F + ONE
@@ -173,21 +179,21 @@ C
 
              IF (MOMENTX .GT. 0) THEN
                  DO 300 N = 1,NEXP
-                    INT1DX (N,0,0) = XP (N)
+                    INT1DX (N,0,0) = XP (N) - XC
                     SCRMTX (N,0,0) = ONE
   300            CONTINUE
              END IF
 
              IF (MOMENTY .GT. 0) THEN
                  DO 310 N = 1,NEXP
-                    INT1DY (N,0,0) = YP (N)
+                    INT1DY (N,0,0) = YP (N) - YC
                     SCRMTY (N,0,0) = ONE
   310            CONTINUE  
              END IF
 
              IF (MOMENTZ .GT. 0) THEN
                  DO 320 N = 1,NEXP
-                    INT1DZ (N,0,0) = ZP (N)
+                    INT1DZ (N,0,0) = ZP (N) - ZC
                     SCRMTZ (N,0,0) = ONE
   320            CONTINUE  
              END IF
