@@ -32404,6 +32404,8 @@
          MO_DENSITY (p,p1) = tpp (p,p1)
       ENDDO p1
       ENDDO p
+
+#debug_begin-AP
       execute get_my_rank rank
       if rank == 0.0
       do p 
@@ -32412,6 +32414,7 @@
          enddo p1
       enddo p
       endif 
+#debug_end
 
       proot = iroot - 1.0
       IDENS = proot + inext

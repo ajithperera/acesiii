@@ -161,7 +161,6 @@ c      write(6,*) ' C2AA VECTOR FOR I,J = ',b,d,',A,B = ',a,c,' = ',
 c     *x(a,b,c,d)
 c      write(66,1000) ' C2AA VECTOR FOR I,J = ',b,d,',A,B = ',a,c,' = ',
 c    * x(a,b,c,d)
-
         write(66,1000) a, b, c, d, x(a,b,c,d)
       endif
 c     endif

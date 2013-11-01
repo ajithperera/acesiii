@@ -393,6 +393,15 @@
       execute server_barrier
       execute read_list_to_blocks
       execute server_barrier
+      
+      Do indone 
+         Do  kindex12
+             get REE(kindex12, indone)
+             get LEE(kindex12, indone)
+             execute dump_amp REE
+             execute dump_amp LEE
+          enddo kindex12
+       enddo indone
 
 #   Anitsymmetrize Vaaai 
 
@@ -5535,7 +5544,7 @@
       DO NT 
 
          ncount = ncount + 1.0  
-         execute print_scalar ncount 
+#         execute print_scalar ncount 
 
          whichi = 1.0 
          execute get_ijk whichi ncount  

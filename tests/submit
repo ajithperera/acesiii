@@ -1,0 +1,11 @@
+#!/bin/bash
+i=4
+end=44
+while test $i -lt $end
+do 
+i=`expr $i + 1`
+echo "submitting job $i"
+#qsub -v var1=$i runAces3_rc
+qsub -v var1=$i runA2
+done
+

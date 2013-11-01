@@ -35776,6 +35776,9 @@
          rootcount = 0.0
          DO kroot
             rootcount += 1
+#debug
+#            execute print_scalar rootcount 
+#            execute print_scalar proot
             if rootcount == proot
                PUT  L1A_VECS (i,a,kroot) = tpp (i,a)
             endif #rootcount ==proot
@@ -36526,6 +36529,7 @@
 #
           if spdim == 20
           if residuum < eomthresh
+          iroot += 1.0
           call AMPL_PRINT
           if iroot == rootmax
           iroot+=1.0
@@ -36543,6 +36547,7 @@
        enddo spdim
 #
              if imaxc > maxcycle
+             iroot += 1.0
              call AMPL_PRINT
              if iroot > 12.0
              exit
@@ -36582,6 +36587,18 @@
        ENDDO indone
 
        EXECUTE  EOMROOT_PRINT_NEW  SLEE  SRSD
+#debug
+#       execute get_my_rank rank
+#       if rank == 0.0
+#       DO kindex12
+#        PARDO I, A
+#              GET L1A_VECS(i,a,kindex12)
+#              tpp(i,a) =  L1A_VECS(i,a,kindex12)
+#              execute dump_amp  tpp(i,a)
+#        ENDPARDO I, A
+#       ENDDO kindex12
+#       endif
+
 
        EXECUTE  SIP_BARRIER
        EXECUTE  SERVER_BARRIER

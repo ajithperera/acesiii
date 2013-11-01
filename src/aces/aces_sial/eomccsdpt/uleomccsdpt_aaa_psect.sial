@@ -5776,6 +5776,12 @@
             etemp *= -1.0
          ENDIF
 
+         execute print_scalar omega
+         execute print_scalar l_omega
+         execute print_scalar etemp
+         execute print_scalar root_thresh
+
+
          rootcount += 1
          IF etemp < root_thresh
             ncount = rootcount
@@ -5787,6 +5793,10 @@
 
       EXECUTE  SIP_BARRIER
 
+#debug
+#      execute print_scalar rootcount
+#      execute print_scalar ncount
+#      execute print_scalar iroot  
 #
 #
 #          ...Grab an R  array...
@@ -5870,6 +5880,9 @@
             rootcount = 0
             DO kroot
                GET  L1A_VECS (i1,a1,kroot)
+#debug
+#               tt1ia (i1,a1) = L1A_VECS (i1,a1,kroot)
+#               execute dump_amp tt1ia(i1,a1)
                rootcount += 1
                IF  rootcount == ncount
                    tt1ia (i1,a1) = L1A_VECS (i1,a1,kroot)
@@ -5879,6 +5892,14 @@
                ENDIF
             ENDDO kroot
          ENDPARDO  a1, i1
+#Debug 
+#         execute server_barrier
+#         pardo a1, i1
+#               request sl1a (a1,i1) i1
+#               tt1ai (a1,i1)= sl1a(a1,i1)
+#               execute dump_amp tt1ai (a1,i1)
+#         endpardo a1, i1
+#debug end
 
          PARDO  bb, jj1
             rootcount = 0
@@ -6142,6 +6163,7 @@
          esum  += etemp
 
       ENDPARDO  i, a
+      execute print_scalar esum
 
       PARDO  jj1, bb
 
@@ -6151,6 +6173,7 @@
          esum  += etemp
 
       ENDPARDO  jj1, bb
+#      execute print_scalar esum
 
       PARDO  a, i, a1, i1
 
@@ -6161,6 +6184,7 @@
          esum  += etemp
 
       ENDPARDO  a, i, a1, i1
+#      execute print_scalar esum
 
       PARDO  bb, jj1, bb1, jj2
 
@@ -6171,6 +6195,7 @@
          esum  += etemp
 
       ENDPARDO  bb, jj1, bb1, jj2
+#      execute print_scalar esum
 
       PARDO  a, i, bb, jj1
 
@@ -6178,20 +6203,33 @@
          taibj (a,i,bb,jj1) = R2AB_VECS (a,i,bb,jj1,indstate) 
          etemp  = taibj (a,i,bb,jj1) * taibj (a,i,bb,jj1)
          esum  += etemp
-
       ENDPARDO  a, i, bb, jj1
 
+#      execute print_scalar esum
+     
       EXECUTE  SIP_BARRIER
       EXECUTE  SERVER_BARRIER
 
       COLLECTIVE  RNORM += esum
+
+      execute print_scalar RNORM 
 
       EXECUTE SIP_BARRIER
       EXECUTE  SQUARE_ROOT  RNORM  ONEHALF
 
       RNORM  = 1.0 / RNORM
 
-#
+#debug
+#      esum   = 0.0
+#      PARDO  i, a
+#         GET         R1A_VECS (a,i,indstate)
+#         tai (a,i) = R1A_VECS (a,i,indstate)
+#         etemp  = tai (a,i) * tai (a,i)
+#         esum  += etemp
+#         execute dump_amp tai
+#      ENDPARDO  i, a
+
+      EXECUTE  SERVER_BARRIER
 #
 # Leftp norm
 #
@@ -6203,9 +6241,8 @@
          GET         R1A_VECS (a,i,indstate)
          REQUEST         sl1a (a,i) a
          tai (a,i) = R1A_VECS (a,i,indstate)
-         etemp  = tai (a,i) * sl1a (a,i)
+         etemp  = tai (a,i) * Sl1a (a,i)
          esum  += etemp
-
       ENDPARDO  i, a
 
       PARDO  jj1, bb
@@ -6217,6 +6254,7 @@
          esum  += etemp
 
       ENDPARDO  jj1, bb
+#      execute print_scalar etemp
 
       PARDO  i, a, i1, a1
 
@@ -6228,6 +6266,7 @@
          esum  += etemp
 
       ENDPARDO  i, a, i1, a1
+      execute print_scalar etemp
 
       PARDO  jj1, bb, jj2, bb1
 
@@ -6239,6 +6278,7 @@
          esum  += etemp
 
       ENDPARDO  jj1, bb, jj2, bb1
+#      execute print_scalar etemp
 
       PARDO  a, i, bb, jj1
 
@@ -6249,6 +6289,7 @@
          esum  += etemp
 
       ENDPARDO  a, i, bb, jj1
+#      execute print_scalar etemp
 
       EXECUTE  SIP_BARRIER
       EXECUTE  SERVER_BARRIER
@@ -6264,12 +6305,11 @@
       LNORM = 1.0 / etemp
       LRNORM = LNORM * RNORM
 #
-      execute print_scalar R0
-      execute print_scalar rnorm
-      execute print_scalar lnorm
-      execute print_scalar lrnorm
+#debug
+#      execute print_scalar rnorm
+#      execute print_scalar lnorm
+#      execute print_scalar lrnorm
 #
-
 #
       ENDPROC  COMP_LR_NORM
 #-------------------------------------------------------------------------
@@ -6325,11 +6365,15 @@
       execute server_barrier 
       destroy Vxaai
 
-      iroot = 0
+      iroot = 0.0
       DO indstate
          iroot += 1
 
          EXECUTE  PRINT_SCALAR  iroot
+#debug
+#         IF IROOT == 6.0
+#         EXECUTE  PRINT_SCALAR  iroot
+#
          eaaa   = 0.0
          esum   = 0.0
          esum_S = 0.0
@@ -6497,6 +6541,8 @@
          EXECUTE  SIP_BARRIER
          DELETE  Sai
          DELETE  Xai
+#debug
+#         ENDIF 
 
       ENDDO indstate
 

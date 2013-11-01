@@ -22,6 +22,7 @@
 #
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       index kiter    = 1, cc_iter
+      index i8       = 1, 20 
 #
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
@@ -171,6 +172,11 @@
       served Vxxxa(mu,nu,lambda,a) 
       served Vxxaa(mu,nu,a1,a) 
       served Vxaaa(mu,a2,a1,a) 
+      local Lxxxx(mu,nu,lambda,sigma,i8) 
+      local Lxxxa(mu,nu,lambda,a) 
+      local Lxxaa(mu,nu,a1,a) 
+      local Lxaaa(mu,a2,a1,a) 
+      local Laaaa(a3,a2,a1,a) 
 #
 #    served arrays used in EOM
 #
@@ -1761,41 +1767,83 @@
 #    --------------
 
       PARDO mu, nu, lambda, sigma
-            compute_integrals aoint(mu,nu,lambda,sigma)
-            DO a
-               txxxa(mu,nu,lambda,a) = aoint(mu,nu,lambda,sigma)*ca(sigma,a)
-               PREPARE Vxxxa(mu,nu,lambda,a) +=  txxxa(mu,nu,lambda,a)
-            ENDDO a
+            allocate   Lxxxx(mu,nu,lambda,sigma,*) 
+            deallocate Lxxxx(mu,nu,lambda,sigma,*) 
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
 
-      PARDO mu, nu, lambda, a
+      PARDO mu, nu, lambda
+         allocate Lxxxa(mu,nu,lambda,*) 
+         DO sigma
+            compute_integrals aoint(mu,nu,lambda,sigma)
+            DO a
+               txxxa(mu,nu,lambda,a)  = aoint(mu,nu,lambda,sigma)*ca(sigma,a)
+               Lxxxa(mu,nu,lambda,a) +=  txxxa(mu,nu,lambda,a)
+            ENDDO a
+         ENDDO sigma
+         DO a
+           #txxxa(mu,nu,lambda,a)         = Lxxxa(mu,nu,lambda,a)
+            PREPARE Vxxxa(mu,nu,lambda,a) = Lxxxa(mu,nu,lambda,a)
+         ENDDO a
+         deallocate Lxxxa(mu,nu,lambda,*) 
+      ENDPARDO mu, nu, lambda
+
+      execute server_barrier
+
+      PARDO a, mu, nu 
+         allocate Lxxaa(mu,nu,*,a) 
+         DO lambda 
             REQUEST Vxxxa(mu,nu,lambda,a) a
             DO a1
-               txxaa(mu,nu,a1,a) = Vxxxa(mu,nu,lambda,a)*ca(lambda,a1)
-               PREPARE Vxxaa(mu,nu,a1,a) += txxaa(mu,nu,a1,a)
+               txxaa(mu,nu,a1,a)  = Vxxxa(mu,nu,lambda,a)*ca(lambda,a1)
+               Lxxaa(mu,nu,a1,a) += txxaa(mu,nu,a1,a)
             ENDDO a1
-      ENDPARDO mu, nu, lambda, a
+         ENDDO lambda 
+         DO a1
+           #txxaa(mu,nu,a1,a)         = Lxxaa(mu,nu,a1,a)
+            PREPARE Vxxaa(mu,nu,a1,a) = Lxxaa(mu,nu,a1,a)
+         ENDDO a1
+         deallocate Lxxaa(mu,nu,*,a) 
+      ENDPARDO a, mu, nu 
+
       execute server_barrier
       destroy Vxxxa
 
-      PARDO mu, nu, a1, a
+      PARDO mu, a1, a
+         allocate Lxaaa(mu,*,a1,a) 
+         DO nu 
             REQUEST Vxxaa(mu,nu,a1,a) a
             DO a2
-               txaaa(mu,a2,a1,a) = Vxxaa(mu,nu,a1,a)*ca(nu,a2)
-               PREPARE Vxaaa(mu,a2,a1,a) += txaaa(mu,a2,a1,a)
+               txaaa(mu,a2,a1,a)  = Vxxaa(mu,nu,a1,a)*ca(nu,a2)
+               Lxaaa(mu,a2,a1,a) += txaaa(mu,a2,a1,a)
             ENDDO a2
-      ENDPARDO mu, nu, a1, a
+         ENDDO nu 
+         DO a2
+           #txaaa(mu,a2,a1,a)         = Lxaaa(mu,a2,a1,a)
+            PREPARE Vxaaa(mu,a2,a1,a) = Lxaaa(mu,a2,a1,a)
+         ENDDO a2
+         deallocate Lxaaa(mu,*,a1,a) 
+      ENDPARDO mu, a1, a
+
       execute server_barrier
       destroy Vxxaa
 
-      PARDO mu, a2, a1, a
+      PARDO a2, a1, a
+         allocate Laaaa(*,a2,a1,a) 
+         DO mu 
             REQUEST Vxaaa(mu,a2,a1,a) a
             DO a3
-               taaaa(a3,a2,a1,a) = Vxaaa(mu,a2,a1,a)*ca(mu,a3)
-               PREPARE HBAR_aabb(a3,a2,a1,a) += taaaa(a3,a2,a1,a)
+               taaaa(a3,a2,a1,a)  = Vxaaa(mu,a2,a1,a)*ca(mu,a3)
+               Laaaa(a3,a2,a1,a) += taaaa(a3,a2,a1,a)
             ENDDO a3
-      ENDPARDO mu, a2, a1, a
+         ENDDO mu 
+         DO a3
+           #taaaa(a3,a2,a1,a)             = Laaaa(a3,a2,a1,a)
+            PREPARE HBAR_aabb(a3,a2,a1,a) = Laaaa(a3,a2,a1,a)
+         ENDDO a3
+         deallocate Laaaa(*,a2,a1,a) 
+      ENDPARDO a2, a1, a
+
       execute server_barrier
       destroy Vxaaa
 #

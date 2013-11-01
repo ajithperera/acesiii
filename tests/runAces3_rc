@@ -1,0 +1,49 @@
+#!/bin/bash
+#PBS -N aces3
+#PBS -o stdout
+#PBS -e stderr
+##PBS -j oe
+#PBS -m abe
+##PBS -M taylor@hpc.ufl.edu
+#PBS -l nodes=4:ppn=16:infiniband
+#PBS -l walltime=200:00:00
+#PBS -l pmem=3800mb
+
+export job=zmat.$var1
+export out_filename=out.$var1
+export inp_filename=$job
+#
+export WORKDIR=$PBS_JOBID
+############ END OF USER INPUT #######################
+
+cd $PBS_O_WORKDIR
+mkdir -p $WORKDIR
+cd $WORKDIR
+cp ../$inp_filename ZMAT
+
+######GENERAL PURPOSE GENBAS#####################
+ln -s ../GENBAS .
+
+######RUN ACES (ALL-INCLUSIVE)###################i
+#export ACES_EXE_PATH=/scratch/lfs/perera/acesiii/bin
+#ACES3=/scratch/lfs/perera/acesiii/bin
+export ACES_EXE_PATH=/apps/shared/bartlett/ACESIII-3.9.0/bin
+ACES3=/apps/shared/bartlett/ACESIII-3.9.0/bin
+
+module load intel/2013
+module load openmpi/1.6.5
+
+cat ZMAT >> aces3.out
+cp $ACES3/xaces3 . 
+
+mpiexec --mca pml ob1 \
+        --mca btl openib,self,sm \
+        --mca mpi_leave_pinned 0 \
+        --bind-to-core \
+        ./xaces3 >> aces3.out 2>&1
+
+cp summary.out ../out.$var1
+
+#echo "$tag  stop: `date`"
+
+

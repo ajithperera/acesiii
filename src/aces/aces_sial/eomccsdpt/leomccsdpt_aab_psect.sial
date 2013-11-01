@@ -3811,7 +3811,7 @@
       DO NT 
 
          ncount = ncount + 1.0  
-         execute print_scalar ncount 
+#         execute print_scalar ncount 
 
          whichi = 1.0 
          execute get_ijk whichi ncount  
@@ -4923,7 +4923,7 @@
          endif                      
       ENDDO NT                     
       TCOMB = ncount              
-      execute print_scalar ncount      
+#      execute print_scalar ncount      
 #
       xcount = 2.0
       execute pardo_sects xcount ncount
@@ -4934,8 +4934,8 @@
       endif
 #
       xtemp = TCOMB/nsects
-      execute print_scalar nsects
-      execute print_scalar xtemp
+#      execute print_scalar nsects
+#      execute print_scalar xtemp
 #
 # ----------------------------------------------------------
 # Compute occupied triplet combination.

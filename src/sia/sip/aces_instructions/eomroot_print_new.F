@@ -147,6 +147,7 @@ c
          if (i .le. amax) then  
             root = rootmat (i,1)
             resd = resdmat (i,1)
+            Write(6,*) i, root, root*27.21138505, resd
             write(66,100) i, root, root*27.21138505, resd
          endif 
       enddo
