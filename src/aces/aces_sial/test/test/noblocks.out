@@ -1,0 +1,2742 @@
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           0
+ ACESIII version, 3.0.7      is run on            4  processors.
+ Running initial xjoda...
+
+
+                      ACES STATE VARIABLE REGISTRATION LOG
+     ----------------------------------------------------------------------
+     The ACES State Variables were initialized.
+     Updating (CALCLEVEL,CCSD): 'CCSD' converts to 'CCSD' -> 10
+     Updating (BASIS,CC-PVDZ): String copy succeeded.
+     Updating (SPHERICAL,ON): 'ON' converts to 'ON' -> 1
+     Updating (EXCITE,EOMEE): 'EOMEE' converts to 'EOMEE' -> 3
+     Updating (REFERENCE,RHF): 'RHF' converts to 'RHF' -> 0
+     Updating (UNITS,ANGSTROM): 'ANGSTROM' converts to 'ANGSTROM' -> 0
+     Updating (COORDINATES,CARTESIAN): 'CARTESIAN' converts to 'CARTESIAN' -> 1
+     Updating (SCF_CONV,6): 7 -> 6
+     Updating (INTERFACE,NONE): 'NONE' converts to 'NONE' -> 0
+     Updating (SYMMETRY,NONE): 'NONE' converts to 'NONE' -> 0
+     ----------------------------------------------------------------------
+
+
+                       ACES STATE VARIABLE VALIDATION LOG
+     ----------------------------------------------------------------------
+     Updating (SYMMETRY,NONE): 'NONE' converts to 'NONE' -> 0
+     Updating (NOREORI,ON): 'ON' converts to 'ON' -> 1
+     Updating (DERIV_LEV,zero): 'zero' converts to 'OFF' -> 0
+     Updating (CC_MAXCYC,50): 0 -> 50
+     Updating (CC_EXPORDER,5): 0 -> 5
+     Updating (TAMP_SUM,5): 0 -> 5
+     Updating (ORBITALS,standard): 'standard' converts to 'STANDARD' -> 0
+     Updating (EOMREF,ccsd): 'ccsd' converts to 'CCSD' -> 1
+     Updating (DOHBAR,ON): 'ON' converts to 'ON' -> 1
+     Updating (ESTATE_TOL,5): 4294967295 -> 5
+     Updating (VTRAN,full): 'full' converts to 'FULL' -> 1
+     Updating (RESTART,0): '0' converts to 'OFF' -> 0
+     Updating (HBARABCD,OFF): 'OFF' converts to 'OFF' -> 1
+     Updating (HBARABCI,OFF): 'OFF' converts to 'OFF' -> 1
+     Updating (ABCDFULL,OFF): 'OFF' converts to 'OFF' -> 2
+     Updating (CACHE_RECS,45): 4294967295 -> 45
+     Updating (FILE_RECSIZ,16384): 4294967295 -> 16384
+     ----------------------------------------------------------------------
+
+          ASV#   ASV KEY DEFINITION =    CURRENT [   DEFAULT] UNITS
+          ------------------------------------------------------------
+            1:                PRINT =          0 [         0] 
+            2:            CALCLEVEL =         10 [         0] 
+            3:            DERIV_LEV =          0 [4294967295] 
+            4:              CC_CONV =          7 [         7] (tol)
+
+            5:             SCF_CONV =          6 [         7] (tol)
+            6:            XFORM_TOL =         11 [        11] (tol)
+            7:            CC_MAXCYC =         50 [         0] cycles
+            8:           LINDEP_TOL =          8 [         8] 
+
+            9:                  RDO = 4294967295 [4294967295] 
+           10:           SCF_EXTRAP =          1 [         1] 
+           11:            REFERENCE =          0 [         0] 
+           12:          CC_EXPORDER =          5 [         0] 
+
+           13:             TAMP_SUM =          5 [         0] 
+           14:            NTOP_TAMP =         15 [        15] 
+           15:              DAMPSCF =         20 [        20] x 0.01
+           16:           SCF_MAXCYC =        150 [       150] cycles
+
+           18:                PROPS =          0 [         0] 
+           19:              DENSITY =          0 [         0] 
+           20:          SCF_EXPORDE =          6 [         6] 
+           21:          CC_EXTRAPOL =          1 [         1] 
+
+           22:            BRUECKNER =          0 [         0] 
+           23:               XFIELD =          0 [         0] x 10-6
+           24:               YFIELD =          0 [         0] x 10-6
+           25:               ZFIELD =          0 [         0] x 10-6
+
+           26:            SAVE_INTS =          0 [         0] 
+           28:               CHARGE =          0 [         0] 
+           29:          MULTIPLICTY =          1 [         1] 
+           30:          CPHF_CONVER = MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           1
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           2
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           3
+         12 [        12] (tol)
+
+           31:          CPHF_MAXCYC =         64 [        64] cycles
+           35:               INCORE =          0 [         0] 
+           36:          MEMORY_SIZE =   15000000 [  15000000] Words
+           37:          FILE_RECSIZ =      16384 [4294967295] Words
+
+           38:                NONHF =          0 [         0] 
+           39:             ORBITALS =          0 [4294967295] 
+           40:          SCF_EXPSTAR =          8 [         8] 
+           41:          LOCK_ORBOCC =          0 [         0] 
+
+           42:          FILE_STRIPE =          0 [         0] 
+           43:               DOHBAR =          1 [         0] 
+           44:           CACHE_RECS =         45 [4294967295] 
+           45:                GUESS =          0 [         0] 
+
+           46:           JODA_PRINT =          0 [         0] 
+           47:           OPT_METHOD =          0 [         0] 
+           48:          CONVERGENCE =          4 [         4] H/bohr
+           49:          EIGENVECTOR =          1 [         1] 
+
+           50:              NEGEVAL =          2 [         2] 
+           51:          CURVILINEAR =          0 [         0] 
+           52:          STP_SIZ_CTL =          0 [         0] 
+           53:             MAX_STEP =        300 [       300] millibohr
+
+           54:            VIBRATION =          0 [         0] 
+           55:            EVAL_HESS = 4294967295 [4294967295] # of cyc.
+           56:            INTEGRALS =          1 [         1] 
+           57:          FD_STEPSIZE =          0 [         0] 10-4 bohr
+
+           58:               POINTS =          0 [         0] 
+           59:          CONTRACTION =          1 [         1] 
+           60:             SYMMETRY =          0 [         2] 
+           62:            SPHERICAL =          1 [         1] 
+
+           63:          RESET_FLAGS =          0 [         0] 
+           64:             PERT_ORB =          2 [         2] 
+           65:             GENBAS_1 =          0 [         0] 
+           66:             GENBAS_2 =          0 [         0] 
+
+           67:             GENBAS_3 =          0 [         0] 
+           68:          COORDINATES =          1 [         3] 
+           69:            CHECK_SYM =          1 [         1] 
+           70:            SCF_PRINT =          0 [         0] 
+
+           71:                  ECP =          0 [         0] 
+           72:              RESTART =          0 [         1] 
+           73:            TRANS_INV =          0 [         0] 
+           74:          HFSTABILITY =          0 [         0] 
+
+           75:             ROT_EVEC =          0 [         0] 
+           76:           BRUCK_CONV =          4 [         4] (tol)
+           78:                UNITS =          0 [         0] 
+           79:          FD_USEGROUP =          0 [         0] 
+
+           80:           FD_PROJECT =          0 [         0] 
+           83:                VTRAN =          1 [         0] 
+           84:             HF2_FILE =          1 [         1] 
+           85:             SUBGROUP =          0 [         0] 
+
+           86:           SUBGRPAXIS =          0 [         0] 
+           87:               EXCITE =          3 [         0] 
+           88:            ZETA_CONV =         12 [        12] (tol)
+           90:           TREAT_PERT =          0 [         0] 
+
+           91:          ESTATE_PROP =          0 [         0] 
+           92:           OPT_MAXCYC =         50 [        50] 
+           93:             ABCDTYPE =          0 [         0] 
+           95:           AO_LADDERS =          1 [         1] 
+
+           96:                 FOCK =          1 [         1] 
+           97:          ESTATE_MAXC =         20 [        20] 
+           98:           ESTATE_TOL =          5 [4294967295] (tol)
+           99:            TURBOMOLE =          0 [         0] 
+
+          100:           GAMMA_ABCD =          0 [         0] 
+          101:            ZETA_TYPE =          1 [         1] 
+          102:          ZETA_MAXCYC =         50 [        50] 
+          103:             RESRAMAN =          0 [         0] 
+
+          104:                  PSI =          0 [         0] 
+          105:             GEOM_OPT =          0 [         0] 
+          106:             EXTERNAL =          2 [         2] 
+          107:          HESS_UPDATE =          0 [         0] 
+
+          108:         INIT_HESSIAN =          0 [         0] 
+          109:          EXTRAPOLATE =          0 [         0] 
+          201:              EA_CALC =          0 [         0] 
+          203:                 TDHF =          0 [         0] 
+
+          204:           FUNCTIONAL =          4 [         4] 
+          205:           EOM_MAXCYC =         50 [        50] cycles
+          206:              EOMPROP =          0 [         0] 
+          207:             ABCDFULL =          2 [         0] 
+
+          208:           INTGRL_TOL =         14 [        14] (tol)
+          209:             DAMP_TYP =          0 [         0] 
+          210:             DAMP_TOL =         10 [        10] x 0.01
+          211:              LSHF_A1 =          0 [         0] x 0.01
+
+          212:              LSHF_B1 =          0 [         0] x 0.01
+          213:             POLYRATE =          0 [         0] 
+          214:              IP_CALC =          0 [         0] 
+          216:            IP_SEARCH =          0 [         0] 
+
+          217:               EOMREF =          1 [         0] 
+          218:              SOLVENT =          0 [         0] 
+          219:            EE_SEARCH =          0 [         0] 
+          220:            EOM_PRJCT =          0 [         0] 
+
+          221:               NEWVRT =          0 [         0] 
+          222:             HBARABCD =          1 [         0] 
+          223:             HBARABCI =          1 [         0] 
+          224:             NT3EOMEE =          0 [         0] 
+
+          225:              NOREORI =          1 [         2] 
+          227:               KS_POT =          0 [         0] 
+          228:             DIP_CALC =          0 [         0] 
+          230:             DEA_CALC =          0 [         0] 
+
+          232:              PROGRAM =          0 [         0] 
+          233:                CCR12 =          0 [         0] 
+          234:            EOMXFIELD =          0 [         0] x 10-6
+          235:            EOMYFIELD =          0 [         0] x 10-6
+
+          236:            EOMZFIELD =          0 [         0] x 10-6
+          237:              INSERTF =          0 [         0] 
+          238:            GRAD_CALC =          0 [         0] 
+          239:            IMEM_SIZE =    3000000 [   3000000] Words
+
+          240:              MAKERHF =          0 [         0] 
+          241:           GLOBAL_MEM =          0 [         0] Words
+          242:             PRP_INTS =          0 [         0] 
+          243:           TRUNC_ORBS =          0 [         0] 
+
+          244:             FNO_KEEP =          0 [         0] percent
+          245:             FNO_BSSE =          0 [         0] 
+          246:              NATURAL =          0 [         0] 
+          248:              UNO_REF =          0 [         0] 
+
+          249:           UNO_CHARGE =          0 [         0] 
+          250:             UNO_MULT =          1 [         1] 
+          251:                RAMAN =          0 [         0] 
+          252:            KUCHARSKI =          0 [         0] 
+
+          253:             SCF_TYPE =          0 [         0] 
+          254:               DIRECT =          0 [         0] 
+          255:         SINGLE_STORE =          0 [         0] 
+          256:             OOMP_CYC =         50 [        50] 
+
+          257:            DKH_ORDER =          0 [         0] 
+          258:           UNCONTRACT =          0 [         0] 
+          259:          OPT_CONTROL =          0 [         0] 
+          260:            INTERFACE =          0 [         0] 
+
+          ------------------------------------------------------------
+
+                         ACES STATE VARIABLES (STRINGS)
+          ------------------------------------------------------------
+          BASIS = CC-PVDZ
+          OCCUPATION = [ESTIMATED BY SCF]
+          ------------------------------------------------------------
+   Rotational constants (in cm-1): 
+     1.99820        1.99820
+********************************************************************************
+The symmetry processing is fully turned off and no symmetry opertion are applied.
+ 
+   The full molecular point group is C1  .
+   The largest Abelian subgroup of the full molecular point group is C1  .
+   The computational point group is C1  .
+********************************************************************************
+ 
+         -----------------------------------------------
+         Cartesian coordinates corresponding to internal 
+                 coordinate input (Angstroms) 
+ ----------------------------------------------------------------
+ Z-matrix   Atomic            C o o r d i n a t e s
+  Symbol    Number           X              Y              Z
+ ----------------------------------------------------------------
+     N         7         0.00000000     0.00000000    -0.54884000
+     N         7         0.00000000     0.00000000     0.54884000
+ ----------------------------------------------------------------
+   Interatomic distance matrix (Angstroms) 
+ 
+                 N             N    
+                [ 1]        [ 2]
+  N    [ 1]     0.00000
+  N    [ 2]     1.09768     0.00000
+ @GEOPT-W, Archive file not created for single-point calculation.
+ Initial xjoda is complete...
+           0          10           0
+ USE_2DER_INTEGRALS =  F
+ Next SIAL program: 
+ scf_aguess.sio                                                    
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_aguess.sio                                                                 
+  
+ VFL NAME : T
+  Skipping Calling ECP main 
+ Gather on company_rank succeeded.
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =            2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #          11  is first used on line           71
+ Static pre-defined array #          12  is first used on line           72
+ Static pre-defined array #          13  is first used on line           70
+ Static pre-defined array #          17  is first used on line           68
+ Static pre-defined array #          18  is first used on line           69
+ Task            3  BLKMGR has been initialized with              136788867 
+  double precision words, or         1593  blocks.
+ Task            3  stack base_addr:         47157904673744
+        47157905113856        47157906114920        47157907863920
+        47157910921808        47157917906360        47157930126464
+        47157958053224        47158006922192        47158202386616
+ Task            1  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            1  stack base_addr:         47552778243024
+        47552778683136        47552779690496        47552781439496
+        47552784497384        47552791481936        47552803702040
+        47552831628800        47552880497768        47553075962192
+ Task            2  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            2  stack base_addr:         47398851722192
+        47398852162304        47398853169664        47398854918664
+        47398857976552        47398864961104        47398877181208
+        47398905107968        47398953976936        47399149441360
+ Allocated                  31392  bytes for static arrays.
+ Allocated             1195263360  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            0  stack base_addr:         47137495216576
+        47137495656688        47137496664048        47137498413048
+        47137501470936        47137508455488        47137520675592
+        47137548602352        47137597471320        47137792935744
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1594
+ *** COMPLETED DRYRUN PASS FOR 
+ scf_aguess.sio                                                                 
+  
+ Next SIAL program: 
+ scf_rhf_aguess.sio                                                
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_rhf_aguess.sio                                                             
+  
+ VFL NAME : T
+ Gather on company_rank succeeded.
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =            2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           1  is first used on line          682
+ Static pre-defined array #           2  is first used on line          463
+ Static pre-defined array #           4  is first used on line         1410
+ Static pre-defined array #           5  is first used on line          603
+ Static pre-defined array #           6  is first used on line          606
+ Static pre-defined array #           9  is first used on line         3058
+ Static pre-defined array #          12  is first used on line         2681
+ Static pre-defined array #          13  is first used on line         1426
+ Static pre-defined array #          14  is first used on line          459
+ Static pre-defined array #          16  is first used on line         2555
+ Static pre-defined array #          17  is first used on line         1182
+ Static pre-defined array #          18  is first used on line         1183
+ Static pre-defined array #          19  is first used on line          603
+ Allocated                  58856  bytes for static arrays.
+ Allocated             1194889344  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              136843454 
+  double precision words, or         1724  blocks.
+ Task            0  stack base_addr:         47137495610288
+        47137496354880        47137497488160        47137499237160
+        47137502295048        47137509279600        47137521499704
+        47137549426464        47137598295432        47137793759856
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1724
+ *** COMPLETED DRYRUN PASS FOR 
+ scf_rhf_aguess.sio                                                             
+  
+ Next SIAL program: 
+ test.sio                                                          
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... F
+ IGNORE DROPMO PARAMETERS......... F
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ test.sio                                                                       
+  
+ VFL NAME : T
+ Gather on company_rank succeeded.
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =    Task            2  BLKMGR has been initialized with              136843108 
+  double precision words, or         1723  blocks.
+ Task            2  stack base_addr:         47398852116960
+        47398852858784        47398853992064        47398855741064
+        47398858798952        47398865783504        47398878003608
+        47398905930368        47398954799336        47399150263760
+ Task            1  BLKMGR has been initialized with              136790346 
+  double precision words, or         1596  blocks.
+ Task            1  stack base_addr:         47398851713408
+        47398852159056        47398853166416        47398854915416
+        47398857973304        47398864957856        47398877177960
+        47398905104720        47398953973688        47399149438112
+ Task            3  BLKMGR has been initialized with              136843108 
+  double precision words, or         1723  blocks.
+ Task            3  stack base_addr:         47157905068512
+        47157905810336        47157906943616        47157908692616
+        47157911750504        47157918735056        47157930955160
+        47157958881920        47158007750888        47158203215312
+ Task            2  BLKMGR has been initialized with              136790346 
+  double precision words, or         1596  blocks.
+ Task            2  stack base_addr:         47157904664960
+        47157905110608        47157906117968        47157907866968
+        47157910924856        47157917909408        47157930129512
+        47157958056272        47158006925240        47158202389664
+ Task            1  BLKMGR has been initialized with              136842762 
+  double precision words, or         1722  blocks.
+ Task            1  stack base_addr:         47552778637792
+        47552779376848        47552780510128        47552782259128
+        47552785317016        47552792301568        47552804521672
+        47552832448432        47552881317400        47553076781824
+         2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           2  is first used on line           73
+ Static pre-defined array #           3  is first used on line           84
+ Static pre-defined array #          13  is first used on line           73
+ Allocated                  18816  bytes for static arrays.
+ Allocated             1195271296  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              136790692 
+  double precision words, or         1597  blocks.
+ Task            0  stack base_addr:         47137495208208
+        47137495656624        47137496663984        47137498412984
+        47137501470872        47137508455424        47137520675528
+        47137548602288        47137597471256        47137792935680
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1597
+ *** COMPLETED DRYRUN PASS FOR 
+ test.sio                                                                       
+  
+ Next SIAL program: 
+ scf_aguess.sio                                                    
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_aguess.sio                                                                 
+  
+ VFL NAME : F
+ Gather on company_rank succeeded.
+ Task            1  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            1  stack base_addr:         47552778243944
+        47552778684056        47552779691416        47552781440416
+        47552784498304        47552791482856        47552803702960
+        47552831629720        47552880498688        47553075963112
+ Task            2  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            2  stack base_addr:         47398851723112
+        47398852163224        47398853170584        47398854919584
+        47398857977472        47398864962024        47398877182128
+        47398905108888        47398953977856        47399149442280
+ Task            3  BLKMGR has been initialized with              136788867 
+  double precision words, or         1593  blocks.
+ Task            3  stack base_addr:         47157904674664
+        47157905114776        47157906115840        47157907864840
+        47157910922728        47157917907280        47157930127384
+        47157958054144        47158006923112        47158202387536
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =            2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #          11  is first used on line           71
+ Static pre-defined array #          12  is first used on line           72
+ Static pre-defined array #          13  is first used on line           70
+ Static pre-defined array #          17  is first used on line           68
+ Static pre-defined array #          18  is first used on line           69
+ Allocated                  31392  bytes for static arrays.
+ Allocated             1195262592  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              136789654 
+  double precision words, or         1594  blocks.
+ Task            0  stack base_addr:         47137495217496
+        47137495657608        47137496664968        47137498413968
+        47137501471856        47137508456408        47137520676512
+        47137548603272        47137597472240        47137792936664
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1594
+MPI TAG_UB value is 2147483647
+ ---------- Finished! ---------------
+ Total energy:   0.000000000000000E+000
+ SCF energy:    23.6222625910934     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =   0.140050888061523       seconds.
+ Next SIAL program: 
+ scf_rhf_aguess.sio                                                
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_rhf_aguess.sio                                                             
+  
+ VFL NAME : F
+ Gather on company_rank succeeded.
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =            2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           1  is first used on line          682
+ Static pre-defined array #           2  is first used on line          463
+ Static pre-defined array #           4  is first used on line         1410
+ Static pre-defined array #           5  is first used on line          603
+ Static pre-defined array #           6  is first used on line          606
+ Static pre-defined array #           9  is first used on line         3058
+ Static pre-defined array #          12  is first used on line         2681
+ Static pre-defined array #          13  is first used on line         1426
+ Static pre-defined array #          14  is first used on line          459
+ Static pre-defined array #          16  is first used on line         2555
+ Static pre-defined array #          17  is first used on line         1182
+ Static pre-defined array #          18  is first used on line         1183
+ Static pre-defined array #          19  is first used on line          603
+ Allocated                  58856  bytes for static arrays.
+ Allocated             1194864128  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              136843454 
+  double precision words, or         1724  blocks.
+ Task            0  stack base_addr:         47137495636984
+        47137496381576        47137497514856        47137499263856
+        47137502321744        47137509306296        47137521526400
+        47137549453160        47137598322128        47137793786552
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1724
+MPI TAG_UB value is 2147483647
+ Task            0  Scalar value =   0.199999988079071       at line number 
+        2560
+ Task            0  Scalar value =   0.833333341611756       at line number 
+        2561
+ Task            3  BLKMGR has been initialized with              136843108 
+  double precision words, or         1723  blocks.
+ Task            3  stack base_addr:         47157905095208
+        47157905837032        47157906970312        47157908719312
+        47157911777200        47157918761752        47157930981856
+        47157958908616        47158007777584        47158203242008
+ Task            1  BLKMGR has been initialized with              136842762 
+  double precision words, or         1722  blocks.
+ Task            1  stack base_addr:         47552778664488
+        47552779403544        47552780536824        47552782285824
+        47552785343712        47552792328264        47552804548368
+        47552832475128        47552881344096        47553076808520
+ Task            2  BLKMGR has been initialized with              136843108 
+  double precision words, or         1723  blocks.
+ Task            2  stack base_addr:         47398852143656
+        47398852885480        47398854018760        47398855767760
+        47398858825648        47398865810200        47398878030304
+        47398905957064        47398954826032        47399150290456
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2603
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2604
+ -------------------------------------------
+ Linear dependency threshold  1.000000000000000E-009
+ -------------------------------------------
+ ===================================================
+ Basis of atomic orbitals contains           0 linear dependecies
+ ====================================================
+ Task            0  Scalar value =   -181.515307879462       at line number 
+        1412
+ Task            0  Scalar value =   -99.9001865360351       at line number 
+        1412
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =   -105.974421200138       at line number 
+        1412
+ Task            0  Scalar value =    3.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   0.300355616942666       at line number 
+        2413
+ Task            0  Scalar value =   0.699644383057334       at line number 
+        2414
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2415
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.849451620805       at line number 
+        1412
+ Task            0  Scalar value =    4.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    3.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   3.513307927078625E-002  at line number 
+        2413
+ Task            0  Scalar value =   5.531858551635387E-002  at line number 
+        2414
+ Task            0  Scalar value =   0.909548335212860       at line number 
+        2415
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.947133031143       at line number 
+        1412
+ Task            0  Scalar value =    5.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    4.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -5.138473048847409E-004  at line number 
+        2413
+ Task            0  Scalar value =  -2.967179878688323E-003  at line number 
+        2414
+ Task            0  Scalar value =   1.133425491214586E-002  at line number 
+        2415
+ Task            0  Scalar value =   0.992146772271427       at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.953505179643       at line number 
+        1412
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    5.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -4.977886656713057E-004  at line number 
+        2413
+ Task            0  Scalar value =  -6.260070737851678E-003  at line number 
+        2414
+ Task            0  Scalar value =  -2.421139787804769E-003  at line number 
+        2415
+ Task            0  Scalar value =   9.363608419582159E-002  at line number 
+        2416
+ Task            0  Scalar value =   0.915542914995506       at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.954064901430       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   4.133427420408442E-005  at line number 
+        2413
+ Task            0  Scalar value =  -1.327017247287921E-004  at line number 
+        2414
+ Task            0  Scalar value =   3.026780313491814E-004  at line number 
+        2415
+ Task            0  Scalar value =   1.836887177569450E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.425318286634803       at line number 
+        2417
+ Task            0  Scalar value =    1.42327008887641       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.954130433466       at line number 
+        1412
+ Task            0  Scalar value =    8.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   3.720413674448940E-006  at line number 
+        2413
+ Task            0  Scalar value =  -2.264424419752490E-005  at line number 
+        2414
+ Task            0  Scalar value =  -5.568412186939207E-005  at line number 
+        2415
+ Task            0  Scalar value =   4.720069530775056E-004  at line number 
+        2416
+ Task            0  Scalar value =  -6.916473994527442E-002  at line number 
+        2417
+ Task            0  Scalar value =   0.171950737693660       at line number 
+        2418
+ Task            0  Scalar value =   0.896816603250929       at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130760079       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -5.884342039029993E-006  at line number 
+        2413
+ Task            0  Scalar value =  -1.739996620621631E-006  at line number 
+        2414
+ Task            0  Scalar value =  -7.102149500650583E-005  at line number 
+        2415
+ Task            0  Scalar value =   1.189578142430041E-003  at line number 
+        2416
+ Task            0  Scalar value =  -3.959940475021748E-003  at line number 
+        2417
+ Task            0  Scalar value =    1.00284900816626       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130764751       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -1.879382948153953E-006  at line number 
+        2413
+ Task            0  Scalar value =   9.985928964165132E-006  at line number 
+        2414
+ Task            0  Scalar value =   5.599056684542634E-004  at line number 
+        2415
+ Task            0  Scalar value =  -1.916837982901008E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.153509724178253       at line number 
+        2417
+ Task            0  Scalar value =    1.15485854994668       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765062       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -2.934745479621294E-007  at line number 
+        2413
+ Task            0  Scalar value =   2.326659109121047E-004  at line number 
+        2414
+ Task            0  Scalar value =  -7.236358182773992E-004  at line number 
+        2415
+ Task            0  Scalar value =  -2.896138186358823E-002  at line number 
+        2416
+ Task            0  Scalar value =   2.911585824448035E-002  at line number 
+        2417
+ Task            0  Scalar value =    1.00033678700102       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765069       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -3.907360919996718E-005  at line number 
+        2413
+ Task            0  Scalar value =   1.397585905351365E-004  at line number 
+        2414
+ Task            0  Scalar value =   1.017890617273013E-003  at line number 
+        2415
+ Task            0  Scalar value =  -2.332792554227811E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.138966766348734       at line number 
+        2417
+ Task            0  Scalar value =    1.14018098330435       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765069       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -1.920101259820822E-006  at line number 
+        2413
+ Task            0  Scalar value =   3.548152003633923E-004  at line number 
+        2414
+ Task            0  Scalar value =  -1.221487406282686E-003  at line number 
+        2415
+ Task            0  Scalar value =   6.682133685187744E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.110798509644598       at line number 
+        2417
+ Task            0  Scalar value =    1.10498496826659       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ ---------- Finished! ---------------
+ Total energy:   -108.954130765069     
+ SCF energy:   -108.954130765069     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =    1.17548298835754       seconds.
+ Next SIAL program: 
+ test.sio                                                          
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................  -108.954130765069     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................          28
+ OCCUPIED SEGMENT SIZE............           7
+ VIRTUAL SEGMENT SIZE.............          21
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... F
+ IGNORE DROPMO PARAMETERS......... F
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ test.sio                                                                       
+  
+ VFL NAME : F
+ Task            1  BLKMGR has been initialized with              136790346 
+  double precision words, or         1596  blocks.
+ Task            1  stack base_addr:         47398851714640
+        47398852160288        47398853167648        47398854916648
+        47398857974536        47398864959088        47398877179192
+        47398905105952        47398953974920        47399149439344
+ Task            2  BLKMGR has been initialized with              136790346 
+  double precision words, or         1596  blocks.
+ Task            2  stack base_addr:         47157904666192
+        47157905111840        47157906119200        47157907868200
+        47157910926088        47157917910640        47157930130744
+        47157958057504        47158006926472        47158202390896
+ Servers were initialized with          255  blocks of       614656  words each.
+ Gather on company_rank succeeded.
+ norb =            1
+ nocc =            1
+ nvirt =            1
+ bocc =            1
+ eocc =            1
+ bvirt =            2
+ evirt =            2
+ naocc =            1
+ nbocc =            1
+ navirt =            1
+ nbvirt =            1
+ baocc =            1
+ bbocc =            1
+ eaocc =            1
+ ebocc =            1
+ bavirt =            2
+ bbvirt =            2
+ eavirt =            2
+ ebvirt =            2
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           2  is first used on line           73
+ Static pre-defined array #           3  is first used on line           84
+ Static pre-defined array #          13  is first used on line           73
+ Allocated                  18816  bytes for static arrays.
+ Allocated             1195270272  bytes for blkmgr.
+ Number of block_map entries           11
+ Task            0  BLKMGR has been initialized with              136790692 
+  double precision words, or         1597  blocks.
+ Task            0  stack base_addr:         47137495209440
+        47137495657856        47137496665216        47137498414216
+        47137501472104        47137508456656        47137520676760
+        47137548603520        47137597472488        47137792936912
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =         1597
+MPI TAG_UB value is 2147483647
+ Task            0  Scalar value =    28.0000000000002       at line number 
+         101
+ Task            0  at line number          159  ARRAY           30  BLOCK 
+           9  ind =            9          21  seg =            1           2 
+  actual size =          147
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           30           9
+         154
+ Task            0  Block          154  ARRAY ID:           30  BLOCK ID 
+           9  FLAGS            9  SEGS            1           2  ADDR 
+        47137495632944  DADDR         47137495632962 DATA ARRAY           30 
+  DATA BLOCK            9
+ Task            0  line          159  Array, block =           30           9
+
+             8           9          10          11          12          13          14
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+
+            15          16          17          18          19          20          21
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+
+            22          23          24          25          26          27          28
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          159  Array, block =           30           9 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           7           8
+          28
+ Task            0  at line number          170  ARRAY           32  BLOCK 
+          10  ind =           13          17  seg =            2           1 
+  actual size =          147
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           32          10
+         156
+ Task            0  Block          156  ARRAY ID:           32  BLOCK ID 
+          10  FLAGS            9  SEGS            2           1  ADDR 
+        47137495638480  DADDR         47137495638498 DATA ARRAY           32 
+  DATA BLOCK           10
+ Task            0  line          170  Array, block =           32          10
+
+             1           2           3           4           5           6           7
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          170  Array, block =           32          10 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          28           1
+           7
+ Task            0  at line number          181  ARRAY           33  BLOCK 
+          11  ind =           13          21  seg =            2           2 
+  actual size =          441
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           33          11
+         319
+ Task            0  Block          319  ARRAY ID:           33  BLOCK ID 
+          11  FLAGS            9  SEGS            2           2  ADDR 
+        47137496640032  DADDR         47137496640050 DATA ARRAY           33 
+  DATA BLOCK           11
+ Task            0  line          181  Array, block =           33          11
+
+             8           9          10          11          12          13          14
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+
+            15          16          17          18          19          20          21
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+
+            22          23          24          25          26          27          28
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          181  Array, block =           33          11 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          28           8
+          28
+ Task            0  at line number          192  ARRAY           35  BLOCK 
+          12  ind =            9          17  seg =            1           1 
+  actual size =           49
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           35          12
+         155
+ Task            0  Block          155  ARRAY ID:           35  BLOCK ID 
+          12  FLAGS            9  SEGS            1           1  ADDR 
+        47137495635712  DADDR         47137495635730 DATA ARRAY           35 
+  DATA BLOCK           12
+ Task            0  line          192  Array, block =           35          12
+
+             1           2           3           4           5           6           7
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          192  Array, block =           35          12 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           7           1
+           7
+ ---------- Finished! ---------------
+ Total energy:   -108.954130765069     
+ SCF energy:   -108.954130765069     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =   3.332686424255371E-002  seconds.
+  
+     ACESIII version,  3.0.7       is run on         4  processors.
+     REFERENCE = RHF 
+  
+     CALCULATION TYPE =  EOM_RHF_CCSD_ENERGY                                                             
+     Number of electrons =        14
+     Number of basis functions =        28
+  
+     AcesIII has finished in          0.14  seconds
+  
+ 
+ 
+  START OF SCF CALCULATION
+  ------------------------------------------------------------
+  Iteration#         SCF energy       Density difference
+  ------------------------------------------------------------
+         1           -99.9001865360    0.00000000
+         2          -105.9744212001    2.65012257
+         3          -108.8494516208    0.90379135
+         4          -108.9471330311    0.16742831
+         5          -108.9535051796    0.03717228
+         6          -108.9540649014    0.01096541
+         7          -108.9541304335    0.00467428
+         8          -108.9541307601    0.00035781
+         9          -108.9541307648    0.00003068
+        10          -108.9541307651    0.00000860
+        11          -108.9541307651    0.00000180
+        12          -108.9541307651    0.00000045
+ 
+ 
+  SUMMARY OF SCF CALCULATION
+  ------------------------------------------------------------
+  Iteration#         SCF energy       Density difference
+  ------------------------------------------------------------
+         1           -99.9001865360    0.00000000
+         2          -105.9744212001    2.65012257
+         3          -108.8494516208    0.90379135
+         4          -108.9471330311    0.16742831
+         5          -108.9535051796    0.03717228
+         6          -108.9540649014    0.01096541
+         7          -108.9541304335    0.00467428
+         8          -108.9541307601    0.00035781
+         9          -108.9541307648    0.00003068
+        10          -108.9541307651    0.00000860
+        11          -108.9541307651    0.00000180
+        12          -108.9541307651    0.00000045
+  ------------------------------------------------------------
+  Final SCF energy =      -108.9541307651  After        12  iterations
+  ------------------------------------------------------------
+ 
+ 
+ 
+ 
+  Orbital energies
+  ------------------------------------------------------------
+  Alpha orbital energies    Hartree         eV
+  ------------------------------------------------------------
+         1           -15.6864330239       -426.8495796924
+         2           -15.6830301374       -426.7569824349
+         3            -1.4712085738        -40.0336239863
+         4            -0.7740969124        -21.0642496728
+         5            -0.6262274850        -17.0405176484
+         6            -0.6081594481        -16.5488613267
+         7            -0.6081594471        -16.5488612984
+  ------------------------------------------------------------
+         8             0.1756581365          4.7799013096
+         9             0.1756581369          4.7799013185
+        10             0.5946353005         16.1808505286
+        11             0.8200840301         22.3156228712
+        12             0.8722140496         23.7341529398
+        13             0.8722140504         23.7341529614
+        14             0.9922437790         27.0003282062
+        15             1.0510425060         28.6003230469
+        16             1.0510425065         28.6003230584
+        17             1.1444103807         31.1409922979
+        18             1.6432297487         44.7145585296
+        19             1.7573912140         47.8210501974
+        20             1.7573912140         47.8210501974
+        21             1.8820552862         51.2133323518
+        22             1.8820552864         51.2133323574
+        23             2.2989875688         62.5586375171
+        24             2.2989875688         62.5586375171
+        25             2.8744946570         78.2189828810
+        26             2.9964772203         81.5382974626
+        27             2.9964772204         81.5382974660
+        28             3.2838419727         89.3578905856
+  ------------------------------------------------------------
+     PRINTING RHF COEFFICIENTS TO FILE
+  
+     AcesIII has finished in          1.18  seconds
+  
+  
+     AcesIII has finished in          0.03  seconds
+  
+  ONE PARTICLE AMPLITUDES 
+   1   8  0.00000000
+   2   8  0.00000000
+   3   8  0.00000000
+   4   8  0.00000000
+   5   8  0.00000000
+   6   8  0.00000000
+   7   8  0.00000000
+   1   9  0.00000000
+   2   9  0.00000000
+   3   9  0.00000000
+   4   9  0.00000000
+   5   9  0.00000000
+   6   9  0.00000000
+   7   9  0.00000000
+   1  10  0.00000000
+   2  10  0.00000000
+   3  10  0.00000000
+   4  10  0.00000000
+   5  10  0.00000000
+   6  10  0.00000000
+   7  10  0.00000000
+   1  11  0.00000000
+   2  11  0.00000000
+   3  11  0.00000000
+   4  11  0.00000000
+   5  11  0.00000000
+   6  11  0.00000000
+   7  11  0.00000000
+   1  12  0.00000000
+   2  12  0.00000000
+   3  12  0.00000000
+   4  12  0.00000000
+   5  12  0.00000000
+   6  12  0.00000000
+   7  12  0.00000000
+   1  13  0.00000000
+   2  13  0.00000000
+   3  13  0.00000000
+   4  13  0.00000000
+   5  13  0.00000000
+   6  13  0.00000000
+   7  13  0.00000000
+   1  14  0.00000000
+   2  14  0.00000000
+   3  14  0.00000000
+   4  14  0.00000000
+   5  14  0.00000000
+   6  14  0.00000000
+   7  14  0.00000000
+   1  15  0.00000000
+   2  15  0.00000000
+   3  15  0.00000000
+   4  15  0.00000000
+   5  15  0.00000000
+   6  15  0.00000000
+   7  15  0.00000000
+   1  16  0.00000000
+   2  16  0.00000000
+   3  16  0.00000000
+   4  16  0.00000000
+   5  16  0.00000000
+   6  16  0.00000000
+   7  16  0.00000000
+   1  17  0.00000000
+   2  17  0.00000000
+   3  17  0.00000000
+   4  17  0.00000000
+   5  17  0.00000000
+   6  17  0.00000000
+   7  17  0.00000000
+   1  18  0.00000000
+   2  18  0.00000000
+   3  18  0.00000000
+   4  18  0.00000000
+   5  18  0.00000000
+   6  18  0.00000000
+   7  18  0.00000000
+   1  19  0.00000000
+   2  19  0.00000000
+   3  19  0.00000000
+   4  19  0.00000000
+   5  19  0.00000000
+   6  19  0.00000000
+   7  19  0.00000000
+   1  20  0.00000000
+   2  20  0.00000000
+   3  20  0.00000000
+   4  20  0.00000000
+   5  20  0.00000000
+   6  20  0.00000000
+   7  20  0.00000000
+   1  21  0.00000000
+   2  21  0.00000000
+   3  21  0.00000000
+   4  21  0.00000000
+   5  21  0.00000000
+   6  21  0.00000000
+   7  21  0.00000000
+   1  22  0.00000000
+   2  22  0.00000000
+   3  22  0.00000000
+   4  22  0.00000000
+   5  22  0.00000000
+   6  22  0.00000000
+   7  22  0.00000000
+   1  23  0.00000000
+   2  23  0.00000000
+   3  23  0.00000000
+   4  23  0.00000000
+   5  23  0.00000000
+   6  23  0.00000000
+   7  23  0.00000000
+   1  24  0.00000000
+   2  24  0.00000000
+   3  24  0.00000000
+   4  24  0.00000000
+   5  24  0.00000000
+   6  24  0.00000000
+   7  24  0.00000000
+   1  25  0.00000000
+   2  25  0.00000000
+   3  25  0.00000000
+   4  25  0.00000000
+   5  25  0.00000000
+   6  25  0.00000000
+   7  25  0.00000000
+   1  26  0.00000000
+   2  26  0.00000000
+   3  26  0.00000000
+   4  26  0.00000000
+   5  26  0.00000000
+   6  26  0.00000000
+   7  26  0.00000000
+   1  27  0.00000000
+   2  27  0.00000000
+   3  27  0.00000000
+   4  27  0.00000000
+   5  27  0.00000000
+   6  27  0.00000000
+   7  27  0.00000000
+   1  28  0.00000000
+   2  28  0.00000000
+   3  28  0.00000000
+   4  28  0.00000000
+   5  28  0.00000000
+   6  28  0.00000000
+   7  28  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   8   1  0.00000000
+   9   1  0.00000000
+  10   1  0.00000000
+  11   1  0.00000000
+  12   1  0.00000000
+  13   1  0.00000000
+  14   1  0.00000000
+  15   1  0.00000000
+  16   1  0.00000000
+  17   1  0.00000000
+  18   1  0.00000000
+  19   1  0.00000000
+  20   1  0.00000000
+  21   1  0.00000000
+  22   1  0.00000000
+  23   1  0.00000000
+  24   1  0.00000000
+  25   1  0.00000000
+  26   1  0.00000000
+  27   1  0.00000000
+  28   1  0.00000000
+   8   2  0.00000000
+   9   2  0.00000000
+  10   2  0.00000000
+  11   2  0.00000000
+  12   2  0.00000000
+  13   2  0.00000000
+  14   2  0.00000000
+  15   2  0.00000000
+  16   2  0.00000000
+  17   2  0.00000000
+  18   2  0.00000000
+  19   2  0.00000000
+  20   2  0.00000000
+  21   2  0.00000000
+  22   2  0.00000000
+  23   2  0.00000000
+  24   2  0.00000000
+  25   2  0.00000000
+  26   2  0.00000000
+  27   2  0.00000000
+  28   2  0.00000000
+   8   3  0.00000000
+   9   3  0.00000000
+  10   3  0.00000000
+  11   3  0.00000000
+  12   3  0.00000000
+  13   3  0.00000000
+  14   3  0.00000000
+  15   3  0.00000000
+  16   3  0.00000000
+  17   3  0.00000000
+  18   3  0.00000000
+  19   3  0.00000000
+  20   3  0.00000000
+  21   3  0.00000000
+  22   3  0.00000000
+  23   3  0.00000000
+  24   3  0.00000000
+  25   3  0.00000000
+  26   3  0.00000000
+  27   3  0.00000000
+  28   3  0.00000000
+   8   4  0.00000000
+   9   4  0.00000000
+  10   4  0.00000000
+  11   4  0.00000000
+  12   4  0.00000000
+  13   4  0.00000000
+  14   4  0.00000000
+  15   4  0.00000000
+  16   4  0.00000000
+  17   4  0.00000000
+  18   4  0.00000000
+  19   4  0.00000000
+  20   4  0.00000000
+  21   4  0.00000000
+  22   4  0.00000000
+  23   4  0.00000000
+  24   4  0.00000000
+  25   4  0.00000000
+  26   4  0.00000000
+  27   4  0.00000000
+  28   4  0.00000000
+   8   5  0.00000000
+   9   5  0.00000000
+  10   5  0.00000000
+  11   5  0.00000000
+  12   5  0.00000000
+  13   5  0.00000000
+  14   5  0.00000000
+  15   5  0.00000000
+  16   5  0.00000000
+  17   5  0.00000000
+  18   5  0.00000000
+  19   5  0.00000000
+  20   5  0.00000000
+  21   5  0.00000000
+  22   5  0.00000000
+  23   5  0.00000000
+  24   5  0.00000000
+  25   5  0.00000000
+  26   5  0.00000000
+  27   5  0.00000000
+  28   5  0.00000000
+   8   6  0.00000000
+   9   6  0.00000000
+  10   6  0.00000000
+  11   6  0.00000000
+  12   6  0.00000000
+  13   6  0.00000000
+  14   6  0.00000000
+  15   6  0.00000000
+  16   6  0.00000000
+  17   6  0.00000000
+  18   6  0.00000000
+  19   6  0.00000000
+  20   6  0.00000000
+  21   6  0.00000000
+  22   6  0.00000000
+  23   6  0.00000000
+  24   6  0.00000000
+  25   6  0.00000000
+  26   6  0.00000000
+  27   6  0.00000000
+  28   6  0.00000000
+   8   7  0.00000000
+   9   7  0.00000000
+  10   7  0.00000000
+  11   7  0.00000000
+  12   7  0.00000000
+  13   7  0.00000000
+  14   7  0.00000000
+  15   7  0.00000000
+  16   7  0.00000000
+  17   7  0.00000000
+  18   7  0.00000000
+  19   7  0.00000000
+  20   7  0.00000000
+  21   7  0.00000000
+  22   7  0.00000000
+  23   7  0.00000000
+  24   7  0.00000000
+  25   7  0.00000000
+  26   7  0.00000000
+  27   7  0.00000000
+  28   7  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   8   8  0.00000000
+   9   8  0.00000000
+  10   8  0.00000000
+  11   8  0.00000000
+  12   8  0.00000000
+  13   8  0.00000000
+  14   8  0.00000000
+  15   8  0.00000000
+  16   8  0.00000000
+  17   8  0.00000000
+  18   8  0.00000000
+  19   8  0.00000000
+  20   8  0.00000000
+  21   8  0.00000000
+  22   8  0.00000000
+  23   8  0.00000000
+  24   8  0.00000000
+  25   8  0.00000000
+  26   8  0.00000000
+  27   8  0.00000000
+  28   8  0.00000000
+   8   9  0.00000000
+   9   9  0.00000000
+  10   9  0.00000000
+  11   9  0.00000000
+  12   9  0.00000000
+  13   9  0.00000000
+  14   9  0.00000000
+  15   9  0.00000000
+  16   9  0.00000000
+  17   9  0.00000000
+  18   9  0.00000000
+  19   9  0.00000000
+  20   9  0.00000000
+  21   9  0.00000000
+  22   9  0.00000000
+  23   9  0.00000000
+  24   9  0.00000000
+  25   9  0.00000000
+  26   9  0.00000000
+  27   9  0.00000000
+  28   9  0.00000000
+   8  10  0.00000000
+   9  10  0.00000000
+  10  10  0.00000000
+  11  10  0.00000000
+  12  10  0.00000000
+  13  10  0.00000000
+  14  10  0.00000000
+  15  10  0.00000000
+  16  10  0.00000000
+  17  10  0.00000000
+  18  10  0.00000000
+  19  10  0.00000000
+  20  10  0.00000000
+  21  10  0.00000000
+  22  10  0.00000000
+  23  10  0.00000000
+  24  10  0.00000000
+  25  10  0.00000000
+  26  10  0.00000000
+  27  10  0.00000000
+  28  10  0.00000000
+   8  11  0.00000000
+   9  11  0.00000000
+  10  11  0.00000000
+  11  11  0.00000000
+  12  11  0.00000000
+  13  11  0.00000000
+  14  11  0.00000000
+  15  11  0.00000000
+  16  11  0.00000000
+  17  11  0.00000000
+  18  11  0.00000000
+  19  11  0.00000000
+  20  11  0.00000000
+  21  11  0.00000000
+  22  11  0.00000000
+  23  11  0.00000000
+  24  11  0.00000000
+  25  11  0.00000000
+  26  11  0.00000000
+  27  11  0.00000000
+  28  11  0.00000000
+   8  12  0.00000000
+   9  12  0.00000000
+  10  12  0.00000000
+  11  12  0.00000000
+  12  12  0.00000000
+  13  12  0.00000000
+  14  12  0.00000000
+  15  12  0.00000000
+  16  12  0.00000000
+  17  12  0.00000000
+  18  12  0.00000000
+  19  12  0.00000000
+  20  12  0.00000000
+  21  12  0.00000000
+  22  12  0.00000000
+  23  12  0.00000000
+  24  12  0.00000000
+  25  12  0.00000000
+  26  12  0.00000000
+  27  12  0.00000000
+  28  12  0.00000000
+   8  13  0.00000000
+   9  13  0.00000000
+  10  13  0.00000000
+  11  13  0.00000000
+  12  13  0.00000000
+  13  13  0.00000000
+  14  13  0.00000000
+  15  13  0.00000000
+  16  13  0.00000000
+  17  13  0.00000000
+  18  13  0.00000000
+  19  13  0.00000000
+  20  13  0.00000000
+  21  13  0.00000000
+  22  13  0.00000000
+  23  13  0.00000000
+  24  13  0.00000000
+  25  13  0.00000000
+  26  13  0.00000000
+  27  13  0.00000000
+  28  13  0.00000000
+   8  14  0.00000000
+   9  14  0.00000000
+  10  14  0.00000000
+  11  14  0.00000000
+  12  14  0.00000000
+  13  14  0.00000000
+  14  14  0.00000000
+  15  14  0.00000000
+  16  14  0.00000000
+  17  14  0.00000000
+  18  14  0.00000000
+  19  14  0.00000000
+  20  14  0.00000000
+  21  14  0.00000000
+  22  14  0.00000000
+  23  14  0.00000000
+  24  14  0.00000000
+  25  14  0.00000000
+  26  14  0.00000000
+  27  14  0.00000000
+  28  14  0.00000000
+   8  15  0.00000000
+   9  15  0.00000000
+  10  15  0.00000000
+  11  15  0.00000000
+  12  15  0.00000000
+  13  15  0.00000000
+  14  15  0.00000000
+  15  15  0.00000000
+  16  15  0.00000000
+  17  15  0.00000000
+  18  15  0.00000000
+  19  15  0.00000000
+  20  15  0.00000000
+  21  15  0.00000000
+  22  15  0.00000000
+  23  15  0.00000000
+  24  15  0.00000000
+  25  15  0.00000000
+  26  15  0.00000000
+  27  15  0.00000000
+  28  15  0.00000000
+   8  16  0.00000000
+   9  16  0.00000000
+  10  16  0.00000000
+  11  16  0.00000000
+  12  16  0.00000000
+  13  16  0.00000000
+  14  16  0.00000000
+  15  16  0.00000000
+  16  16  0.00000000
+  17  16  0.00000000
+  18  16  0.00000000
+  19  16  0.00000000
+  20  16  0.00000000
+  21  16  0.00000000
+  22  16  0.00000000
+  23  16  0.00000000
+  24  16  0.00000000
+  25  16  0.00000000
+  26  16  0.00000000
+  27  16  0.00000000
+  28  16  0.00000000
+   8  17  0.00000000
+   9  17  0.00000000
+  10  17  0.00000000
+  11  17  0.00000000
+  12  17  0.00000000
+  13  17  0.00000000
+  14  17  0.00000000
+  15  17  0.00000000
+  16  17  0.00000000
+  17  17  0.00000000
+  18  17  0.00000000
+  19  17  0.00000000
+  20  17  0.00000000
+  21  17  0.00000000
+  22  17  0.00000000
+  23  17  0.00000000
+  24  17  0.00000000
+  25  17  0.00000000
+  26  17  0.00000000
+  27  17  0.00000000
+  28  17  0.00000000
+   8  18  0.00000000
+   9  18  0.00000000
+  10  18  0.00000000
+  11  18  0.00000000
+  12  18  0.00000000
+  13  18  0.00000000
+  14  18  0.00000000
+  15  18  0.00000000
+  16  18  0.00000000
+  17  18  0.00000000
+  18  18  0.00000000
+  19  18  0.00000000
+  20  18  0.00000000
+  21  18  0.00000000
+  22  18  0.00000000
+  23  18  0.00000000
+  24  18  0.00000000
+  25  18  0.00000000
+  26  18  0.00000000
+  27  18  0.00000000
+  28  18  0.00000000
+   8  19  0.00000000
+   9  19  0.00000000
+  10  19  0.00000000
+  11  19  0.00000000
+  12  19  0.00000000
+  13  19  0.00000000
+  14  19  0.00000000
+  15  19  0.00000000
+  16  19  0.00000000
+  17  19  0.00000000
+  18  19  0.00000000
+  19  19  0.00000000
+  20  19  0.00000000
+  21  19  0.00000000
+  22  19  0.00000000
+  23  19  0.00000000
+  24  19  0.00000000
+  25  19  0.00000000
+  26  19  0.00000000
+  27  19  0.00000000
+  28  19  0.00000000
+   8  20  0.00000000
+   9  20  0.00000000
+  10  20  0.00000000
+  11  20  0.00000000
+  12  20  0.00000000
+  13  20  0.00000000
+  14  20  0.00000000
+  15  20  0.00000000
+  16  20  0.00000000
+  17  20  0.00000000
+  18  20  0.00000000
+  19  20  0.00000000
+  20  20  0.00000000
+  21  20  0.00000000
+  22  20  0.00000000
+  23  20  0.00000000
+  24  20  0.00000000
+  25  20  0.00000000
+  26  20  0.00000000
+  27  20  0.00000000
+  28  20  0.00000000
+   8  21  0.00000000
+   9  21  0.00000000
+  10  21  0.00000000
+  11  21  0.00000000
+  12  21  0.00000000
+  13  21  0.00000000
+  14  21  0.00000000
+  15  21  0.00000000
+  16  21  0.00000000
+  17  21  0.00000000
+  18  21  0.00000000
+  19  21  0.00000000
+  20  21  0.00000000
+  21  21  0.00000000
+  22  21  0.00000000
+  23  21  0.00000000
+  24  21  0.00000000
+  25  21  0.00000000
+  26  21  0.00000000
+  27  21  0.00000000
+  28  21  0.00000000
+   8  22  0.00000000
+   9  22  0.00000000
+  10  22  0.00000000
+  11  22  0.00000000
+  12  22  0.00000000
+  13  22  0.00000000
+  14  22  0.00000000
+  15  22  0.00000000
+  16  22  0.00000000
+  17  22  0.00000000
+  18  22  0.00000000
+  19  22  0.00000000
+  20  22  0.00000000
+  21  22  0.00000000
+  22  22  0.00000000
+  23  22  0.00000000
+  24  22  0.00000000
+  25  22  0.00000000
+  26  22  0.00000000
+  27  22  0.00000000
+  28  22  0.00000000
+   8  23  0.00000000
+   9  23  0.00000000
+  10  23  0.00000000
+  11  23  0.00000000
+  12  23  0.00000000
+  13  23  0.00000000
+  14  23  0.00000000
+  15  23  0.00000000
+  16  23  0.00000000
+  17  23  0.00000000
+  18  23  0.00000000
+  19  23  0.00000000
+  20  23  0.00000000
+  21  23  0.00000000
+  22  23  0.00000000
+  23  23  0.00000000
+  24  23  0.00000000
+  25  23  0.00000000
+  26  23  0.00000000
+  27  23  0.00000000
+  28  23  0.00000000
+   8  24  0.00000000
+   9  24  0.00000000
+  10  24  0.00000000
+  11  24  0.00000000
+  12  24  0.00000000
+  13  24  0.00000000
+  14  24  0.00000000
+  15  24  0.00000000
+  16  24  0.00000000
+  17  24  0.00000000
+  18  24  0.00000000
+  19  24  0.00000000
+  20  24  0.00000000
+  21  24  0.00000000
+  22  24  0.00000000
+  23  24  0.00000000
+  24  24  0.00000000
+  25  24  0.00000000
+  26  24  0.00000000
+  27  24  0.00000000
+  28  24  0.00000000
+   8  25  0.00000000
+   9  25  0.00000000
+  10  25  0.00000000
+  11  25  0.00000000
+  12  25  0.00000000
+  13  25  0.00000000
+  14  25  0.00000000
+  15  25  0.00000000
+  16  25  0.00000000
+  17  25  0.00000000
+  18  25  0.00000000
+  19  25  0.00000000
+  20  25  0.00000000
+  21  25  0.00000000
+  22  25  0.00000000
+  23  25  0.00000000
+  24  25  0.00000000
+  25  25  0.00000000
+  26  25  0.00000000
+  27  25  0.00000000
+  28  25  0.00000000
+   8  26  0.00000000
+   9  26  0.00000000
+  10  26  0.00000000
+  11  26  0.00000000
+  12  26  0.00000000
+  13  26  0.00000000
+  14  26  0.00000000
+  15  26  0.00000000
+  16  26  0.00000000
+  17  26  0.00000000
+  18  26  0.00000000
+  19  26  0.00000000
+  20  26  0.00000000
+  21  26  0.00000000
+  22  26  0.00000000
+  23  26  0.00000000
+  24  26  0.00000000
+  25  26  0.00000000
+  26  26  0.00000000
+  27  26  0.00000000
+  28  26  0.00000000
+   8  27  0.00000000
+   9  27  0.00000000
+  10  27  0.00000000
+  11  27  0.00000000
+  12  27  0.00000000
+  13  27  0.00000000
+  14  27  0.00000000
+  15  27  0.00000000
+  16  27  0.00000000
+  17  27  0.00000000
+  18  27  0.00000000
+  19  27  0.00000000
+  20  27  0.00000000
+  21  27  0.00000000
+  22  27  0.00000000
+  23  27  0.00000000
+  24  27  0.00000000
+  25  27  0.00000000
+  26  27  0.00000000
+  27  27  0.00000000
+  28  27  0.00000000
+   8  28  0.00000000
+   9  28  0.00000000
+  10  28  0.00000000
+  11  28  0.00000000
+  12  28  0.00000000
+  13  28  0.00000000
+  14  28  0.00000000
+  15  28  0.00000000
+  16  28  0.00000000
+  17  28  0.00000000
+  18  28  0.00000000
+  19  28  0.00000000
+  20  28  0.00000000
+  21  28  0.00000000
+  22  28  0.00000000
+  23  28  0.00000000
+  24  28  0.00000000
+  25  28  0.00000000
+  26  28  0.00000000
+  27  28  0.00000000
+  28  28  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   1   1  0.00000000
+   2   1  0.00000000
+   3   1  0.00000000
+   4   1  0.00000000
+   5   1  0.00000000
+   6   1  0.00000000
+   7   1  0.00000000
+   1   2  0.00000000
+   2   2  0.00000000
+   3   2  0.00000000
+   4   2  0.00000000
+   5   2  0.00000000
+   6   2  0.00000000
+   7   2  0.00000000
+   1   3  0.00000000
+   2   3  0.00000000
+   3   3  0.00000000
+   4   3  0.00000000
+   5   3  0.00000000
+   6   3  0.00000000
+   7   3  0.00000000
+   1   4  0.00000000
+   2   4  0.00000000
+   3   4  0.00000000
+   4   4  0.00000000
+   5   4  0.00000000
+   6   4  0.00000000
+   7   4  0.00000000
+   1   5  0.00000000
+   2   5  0.00000000
+   3   5  0.00000000
+   4   5  0.00000000
+   5   5  0.00000000
+   6   5  0.00000000
+   7   5  0.00000000
+   1   6  0.00000000
+   2   6  0.00000000
+   3   6  0.00000000
+   4   6  0.00000000
+   5   6  0.00000000
+   6   6  0.00000000
+   7   6  0.00000000
+   1   7  0.00000000
+   2   7  0.00000000
+   3   7  0.00000000
+   4   7  0.00000000
+   5   7  0.00000000
+   6   7  0.00000000
+   7   7  0.00000000

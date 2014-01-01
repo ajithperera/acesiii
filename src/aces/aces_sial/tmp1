@@ -1,0 +1,54 @@
+input  file: s2expect/test.sial
+output file: s2expect/test.sio
+    No compilation errors
+
+array table
+================
+0,          c, 2, aoindex moindex 
+1,         ca, 2, aoindex moaindex 
+2,         cb, 2, aoindex mobindex 
+3,    scfeneg, 0.000000
+4,   totenerg, 0.000000
+5,          e, 2, aoindex moindex 
+6,         ea, 2, aoindex moaindex 
+7,         eb, 2, aoindex mobindex 
+8,     fock_a, 2, moaindex moaindex 
+9,     fock_b, 2, mobindex mobindex 
+10,    oed_nai, 2, aoindex aoindex 
+11,    oed_kin, 2, aoindex aoindex 
+12,    oed_ovl, 2, aoindex aoindex 
+13,       damp, 0.000000
+14,    cc_conv, 0.000000
+15,   scf_conv, 0.000000
+16, fockrohf_a, 2, aoindex aoindex 
+17, fockrohf_b, 2, aoindex aoindex 
+18,  stabvalue, 0.000000
+19,    eom_tol, 0.000000
+20,  eom_roots, 0.000000
+21,     excite, 0.000000
+22,         cp, 2,     mu      p 
+23,   mo_ovrlp, 2,      p      q 
+24, mo_ovrlp_oavb, 2,      i      b 
+25, mo_ovrlp_ovab, 2,      i      a 
+26, mo_ovrlp_vaob, 2,      a      j 
+27, mo_ovrlp_vavb, 2,      a      b 
+28, mo_ovrlp_oaob, 2,      i      j 
+29,     toavb1, 2,      i      b 
+30,     toavb2, 2,      i      b 
+31,      tvaob, 2,      a      j 
+32,     tvavb1, 2,      a      b 
+33,     tvavb2, 2,      a      b 
+34,     toaob1, 2,      i      j 
+35,     toaob2, 2,      i      j 
+36,     tdvaoa, 2,      a      i 
+37,     tdvbob, 2,      b      j 
+38,     tdvava, 2,      a     a1 
+39,     tdvbvb, 2,      b     b1 
+40,     tmp_pq, 2,      p      q 
+41,        txp, 2,     mu      p 
+42,  check_sum, 0.000000
+43,    tmp_sum, 0.000000
+44,       temp, 0.000000
+Writing tables to s2expect/test.sio
+
+SIO (Super Instruction Object) file is saved to "s2expect/test.sio".

@@ -1,0 +1,203 @@
+      SIAL TEST
+#
+      aoindex mu     = 1, norb
+      aoindex nu     = 1, norb
+      aoindex lambda = 1, norb
+      aoindex sigma  = 1, norb
+#
+      moaindex i = baocc, eaocc
+      moaindex i1= baocc, eaocc
+      moaindex i2= baocc, eaocc
+      moaindex i3= baocc, eaocc
+#
+      moaindex a = bavirt, eavirt
+      moaindex a1= bavirt, eavirt
+      moaindex a2= bavirt, eavirt
+      moaindex a3= bavirt, eavirt
+#
+      mobindex j = bbocc, ebocc
+      mobindex j1= bbocc, ebocc
+      mobindex j2= bbocc, ebocc
+      mobindex j3= bbocc, ebocc
+#
+      mobindex b = bbvirt, ebvirt
+      mobindex b1= bbvirt, ebvirt
+      mobindex b2= bbvirt, ebvirt
+      mobindex b3= bbvirt, ebvirt
+      moaindex p = baocc, eavirt
+      moaindex p1= baocc, eavirt
+      moaindex p2= baocc, eavirt
+      moaindex p3= baocc, eavirt
+#
+      mobindex q = bbocc, ebvirt
+      mobindex q1= bbocc, ebvirt
+      mobindex q2= bbocc, ebvirt
+      mobindex q3= bbocc, ebvirt
+# -----------------------------
+      Distributed CP(mu,p)
+      Distributed MO_OVRLP(p,q)
+      Distributed MO_OVRLP_OAVB(I, b)
+      Distributed MO_OVRLP_OVAB(i,a)
+      Distributed MO_OVRLP_VAOB(a,j)
+      Distributed MO_OVRLP_VAVB(a,b)
+      Distributed MO_OVRLP_OAOB(i,j)
+
+      Temp TOAVB1(I,b)
+      Temp TOAVB2(I,b)
+      Temp TVAOB(A,j)
+      Temp TVAVB1(A,b)
+      Temp TVAVB2(A,b)
+      Temp TOAOB1(I,j)
+      Temp TOAOB2(I,j)
+      Temp TDVAOA(A,I)
+      Temp TDVBOB(b,j)
+      Temp TDVAVA(A,A1)
+      Temp TDVBVB(b,b1)
+      Temp Tmp_pq(p,q)
+      Temp TXP(mu,P)
+      Scalar check_sum
+      Scalar tmp_sum
+
+# Declare served arrays
+# ---------------------
+      PROC MO_OVERLAP
+#     --------------- 
+
+      CREATE MO_OVRLP
+      CREATE CP
+
+      EXECUTE  SIP_BARRIER  # Watson, added since CP was just created and then used
+
+      PARDO  nu, mu
+            DO p
+               txp (mu,p)  = OED_OVL (mu,nu)*CA (nu,p)
+               PUT CP (mu,p) += txp (mu,p)
+            ENDDO p
+      ENDPARDO  nu, mu
+
+      EXECUTE SIP_BARRIER
+
+       PARDO mu, p
+             GET CP(mu, p)
+          DO q
+#             MO_OVRLP (p,q) = 0.0
+             tmp_pq(p,q)  = CP (mu,p)*CB (mu,q)
+             PUT MO_OVRLP (p,q) += tmp_pq (p,q)
+            ENDDO q
+
+      ENDPARDO mu, p
+      
+      EXECUTE  SIP_BARRIER
+
+#bn_debug
+      check_sum = 0.0
+      do p 
+         do q
+            get  MO_OVRLP (p,q)
+            tmp_sum =  MO_OVRLP (p,q)*MO_OVRLP (p,q)
+            check_sum +=  tmp_sum
+         enddo q
+      enddo p
+      execute print_scalar check_sum
+#en_debug
+
+
+      ENDPROC MO_OVERLAP
+#    -------------------
+      
+      PROC FORM_DELTABLOCKS
+#     ---------------------
+# Form the OAVB, VAOB, VAVB, OAOB blocks of the MO(A,b) overlap
+#
+      CREATE  MO_OVRLP_OAVB
+      CREATE  MO_OVRLP_VAOB
+      CREATE  MO_OVRLP_VAVB
+      CREATE  MO_OVRLP_OAOB
+
+      EXECUTE  SIP_BARRIER # Watson, arrays just created and then used 
+
+      PARDO I, b
+            GET  MO_OVRLP(I, b)
+            TOAVB1(I, b) = MO_OVRLP(I, b)
+            PUT MO_OVRLP_OAVB(I, b) += TOAVB1(I, b)
+            
+      ENDPARDO I, b 
+
+      PARDO A, j
+            GET  MO_OVRLP(A, j)
+            TVAOB(A, j) = MO_OVRLP(A, j)
+            PUT MO_OVRLP_VAOB(A, j) += TVAOB(A, j)
+            
+      ENDPARDO A, j 
+
+      PARDO A, b
+            GET  MO_OVRLP(A, b)
+            TVAVB1(A, b) = MO_OVRLP(A, b)
+            PUT MO_OVRLP_VAVB(A, b) += TVAVB1(A, b)
+      ENDPARDO A, b
+
+      PARDO I, j
+            GET  MO_OVRLP(I, j)
+            TOAOB1(I, j) = MO_OVRLP(I, j)
+            PUT MO_OVRLP_OAOB(I, j) += TOAOB1(I, j)
+      ENDPARDO I, j
+     
+      EXECUTE SIP_BARRIER
+
+      ENDPROC FORM_DELTABLOCKS
+#--------------------------------
+
+      PROC  CHECK_PUTS
+
+      PARDO I, b
+            GET  MO_OVRLP(I, b)
+            GET  MO_OVRLP_OAVB (I,b)
+
+            TOAVB1(I, b) = MO_OVRLP(I, b)
+            TOAVB1(I, b) -= MO_OVRLP_OAVB(I, b)
+
+            EXECUTE  DUMP_AMP  TOAVB1
+      ENDPARDO I, b
+
+      EXECUTE  SIP_BARRIER # To separate PRINT statements
+
+      PARDO A, j
+            GET  MO_OVRLP(A, j)
+            GET  MO_OVRLP_VAOB(A, j)
+            TVAOB(A, j) = MO_OVRLP(A, j)
+            TVAOB(A, j) -= MO_OVRLP_VAOB(A, j)
+
+            EXECUTE  DUMP_AMP  TVAOB
+      ENDPARDO A, j
+
+      EXECUTE  SIP_BARRIER # To separate PRINT statements
+
+      PARDO A, b
+            GET  MO_OVRLP(A, b)
+            GET  MO_OVRLP_VAVB(A, b)
+            TVAVB1(A, b) = MO_OVRLP(A, b)
+            TVAVB1(A, b) -= MO_OVRLP_VAVB(A, b)
+
+            EXECUTE  DUMP_AMP  TVAVB1
+      ENDPARDO A, b
+
+      EXECUTE  SIP_BARRIER # To separate PRINT statements
+
+      PARDO I, j
+            GET  MO_OVRLP(I, j)
+            GET  MO_OVRLP_OAOB(I, j)
+            TOAOB1(I, j) = MO_OVRLP(I, j)
+            TOAOB1(I, j) -= MO_OVRLP_OAOB(I, j)
+
+            EXECUTE  DUMP_AMP  TOAOB1
+      ENDPARDO I, j
+
+      EXECUTE  SIP_BARRIER # To separate PRINT statements
+
+      ENDPROC  CHECK_PUTS
+#--------------------------------
+
+      CALL MO_OVERLAP
+      CALL FORM_DELTABLOCKS
+      CALL CHECK_PUTS # Watson routine
+      ENDSIAL TEST

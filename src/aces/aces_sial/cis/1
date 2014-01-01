@@ -537,7 +537,6 @@
       scalar sval7
       scalar sval8
       scalar sval9
-      scalar amplthresh
 #
 #     eom scalars
 #
@@ -26060,208 +26059,6 @@
 #
       ENDPROC NORM_VEC
 #
-      PROC AMPL_PRINT
-#      --------------
-       amplthresh=0.01
-       allocate lai(*,*)
-       allocate lbj(*,*)
-       execute server_barrier
-#  
-
-       DO i
-       DO a
-         GET   VSTART1A1 (a,i)
-         lai (a,i) = VSTART1A1 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B1 (b,j)
-         lbj (b,j) = VSTART1B1 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A2 (a,i)
-         lai (a,i) = VSTART1A2 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B2 (b,j)
-         lbj (b,j) = VSTART1B2 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A3 (a,i)
-         lai (a,i) = VSTART1A3 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B3 (b,j)
-         lbj (b,j) = VSTART1B3 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A4 (a,i)
-         lai (a,i) = VSTART1A4 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B4 (b,j)
-         lbj (b,j) = VSTART1B4 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A5 (a,i)
-         lai (a,i) = VSTART1A5 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B5 (b,j)
-         lbj (b,j) = VSTART1B5 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A6 (a,i)
-         lai (a,i) = VSTART1A6 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B6 (b,j)
-         lbj (b,j) = VSTART1B6 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A7 (a,i)
-         lai (a,i) = VSTART1A7 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B7 (b,j)
-         lbj (b,j) = VSTART1B7 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A8 (a,i)
-         lai (a,i) = VSTART1A8 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B8 (b,j)
-         lbj (b,j) = VSTART1B8 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A9 (a,i)
-         lai (a,i) = VSTART1A9 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B9 (b,j)
-         lbj (b,j) = VSTART1B9 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A10 (a,i)
-         lai (a,i) = VSTART1A10 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B10 (b,j)
-         lbj (b,j) = VSTART1B10 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A11 (a,i)
-         lai (a,i) = VSTART1A11 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B11 (b,j)
-         lbj (b,j) = VSTART1B11 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-       DO i
-       DO a
-         GET   VSTART1A12 (a,i)
-         lai (a,i) = VSTART1A12 (a,i)
-         EXECUTE  C1_PRINT  lai  amplthresh
-       ENDDO a 
-       ENDDO i 
-       
-       DO j
-       DO b
-         GET  VSTART1B12 (b,j)
-         lbj (b,j) = VSTART1B12 (b,j)
-         EXECUTE  C1B_PRINT  lbj  amplthresh
-       ENDDO b
-       ENDDO j
-
-     ENDPROC AMPL_PRINT
-#    -------------------
 #======================================================
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #--end of script generated part of the code
@@ -26803,6 +26600,29 @@
 #
        CALL AMPL_PRINT
 
+       PROC AMPL_PRINT
+#      --------------
+       amplthresh=0.1
+
+       DO i
+       DO a
+         GET  VCE1A (a,i)
+         tai (a,i) = VCE1A (a,i)
+         EXECUTE  C1_PRINT  tai  amplthresh
+       ENDDO a 
+       ENDDO i 
+       
+       DO j
+       DO b
+         GET  VCE1B (b,j)
+         tbj (b,j) = VCE1B (b,j)
+         EXECUTE  C1B_PRINT  tbj  amplthresh
+       ENDDO b
+       ENDDO j
+
+       PROC AMPL_PRINT
+#    ----------------
+  
        call WRITEOUT
 #
        delete VEV

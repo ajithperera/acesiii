@@ -1,0 +1,2837 @@
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           1
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           2
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           3
+ MEMORY ALLOCATION Sucessfull: maxmem =         1200 PROC           0
+ ACESIII version, 3.0.7      is run on            4  processors.
+ Running initial xjoda...
+
+
+                      ACES STATE VARIABLE REGISTRATION LOG
+     ----------------------------------------------------------------------
+     The ACES State Variables were initialized.
+     Updating (CALCLEVEL,CCSD): 'CCSD' converts to 'CCSD' -> 10
+     Updating (BASIS,CC-PVDZ): String copy succeeded.
+     Updating (SPHERICAL,ON): 'ON' converts to 'ON' -> 1
+     Updating (EXCITE,EOMEE): 'EOMEE' converts to 'EOMEE' -> 3
+     Updating (REFERENCE,RHF): 'RHF' converts to 'RHF' -> 0
+     Updating (UNITS,ANGSTROM): 'ANGSTROM' converts to 'ANGSTROM' -> 0
+     Updating (COORDINATES,CARTESIAN): 'CARTESIAN' converts to 'CARTESIAN' -> 1
+     Updating (SCF_CONV,6): 7 -> 6
+     Updating (INTERFACE,NONE): 'NONE' converts to 'NONE' -> 0
+     Updating (SYMMETRY,NONE): 'NONE' converts to 'NONE' -> 0
+     ----------------------------------------------------------------------
+
+
+                       ACES STATE VARIABLE VALIDATION LOG
+     ----------------------------------------------------------------------
+     Updating (SYMMETRY,NONE): 'NONE' converts to 'NONE' -> 0
+     Updating (NOREORI,ON): 'ON' converts to 'ON' -> 1
+     Updating (DERIV_LEV,zero): 'zero' converts to 'OFF' -> 0
+     Updating (CC_MAXCYC,50): 0 -> 50
+     Updating (CC_EXPORDER,5): 0 -> 5
+     Updating (TAMP_SUM,5): 0 -> 5
+     Updating (ORBITALS,standard): 'standard' converts to 'STANDARD' -> 0
+     Updating (EOMREF,ccsd): 'ccsd' converts to 'CCSD' -> 1
+     Updating (DOHBAR,ON): 'ON' converts to 'ON' -> 1
+     Updating (ESTATE_TOL,5): 4294967295 -> 5
+     Updating (VTRAN,full): 'full' converts to 'FULL' -> 1
+     Updating (RESTART,0): '0' converts to 'OFF' -> 0
+     Updating (HBARABCD,OFF): 'OFF' converts to 'OFF' -> 1
+     Updating (HBARABCI,OFF): 'OFF' converts to 'OFF' -> 1
+     Updating (ABCDFULL,OFF): 'OFF' converts to 'OFF' -> 2
+     Updating (CACHE_RECS,45): 4294967295 -> 45
+     Updating (FILE_RECSIZ,16384): 4294967295 -> 16384
+     ----------------------------------------------------------------------
+
+          ASV#   ASV KEY DEFINITION =    CURRENT [   DEFAULT] UNITS
+          ------------------------------------------------------------
+            1:                PRINT =          0 [         0] 
+            2:            CALCLEVEL =         10 [         0] 
+            3:            DERIV_LEV =          0 [4294967295] 
+            4:              CC_CONV =          7 [         7] (tol)
+
+            5:             SCF_CONV =          6 [         7] (tol)
+            6:            XFORM_TOL =         11 [        11] (tol)
+            7:            CC_MAXCYC =         50 [         0] cycles
+            8:           LINDEP_TOL =          8 [         8] 
+
+            9:                  RDO = 4294967295 [4294967295] 
+           10:           SCF_EXTRAP =          1 [         1] 
+           11:            REFERENCE =          0 [         0] 
+           12:          CC_EXPORDER =          5 [         0] 
+
+           13:             TAMP_SUM =          5 [         0] 
+           14:            NTOP_TAMP =         15 [        15] 
+           15:              DAMPSCF =         20 [        20] x 0.01
+           16:           SCF_MAXCYC =        150 [       150] cycles
+
+           18:                PROPS =          0 [         0] 
+           19:              DENSITY =          0 [         0] 
+           20:          SCF_EXPORDE =          6 [         6] 
+           21:          CC_EXTRAPOL =          1 [         1] 
+
+           22:            BRUECKNER =          0 [         0] 
+           23:               XFIELD =          0 [         0] x 10-6
+           24:               YFIELD =          0 [         0] x 10-6
+           25:               ZFIELD =          0 [         0] x 10-6
+
+           26:            SAVE_INTS =          0 [         0] 
+           28:               CHARGE =          0 [         0] 
+           29:          MULTIPLICTY =          1 [         1] 
+           30:          CPHF_CONVER =         12 [        12] (tol)
+
+           31:          CPHF_MAXCYC =         64 [        64] cycles
+           35:               INCORE =          0 [         0] 
+           36:          MEMORY_SIZE =   15000000 [  15000000] Words
+           37:          FILE_RECSIZ =      16384 [4294967295] Words
+
+           38:                NONHF =          0 [         0] 
+           39:             ORBITALS =          0 [4294967295] 
+           40:          SCF_EXPSTAR =          8 [         8] 
+           41:          LOCK_ORBOCC =          0 [         0] 
+
+           42:          FILE_STRIPE =          0 [         0] 
+           43:               DOHBAR =          1 [         0] 
+           44:           CACHE_RECS =         45 [4294967295] 
+           45:                GUESS =          0 [         0] 
+
+           46:           JODA_PRINT =          0 [         0] 
+           47:           OPT_METHOD =          0 [         0] 
+           48:          CONVERGENCE =          4 [         4] H/bohr
+           49:          EIGENVECTOR =          1 [         1] 
+
+           50:              NEGEVAL =          2 [         2] 
+           51:          CURVILINEAR =          0 [         0] 
+           52:          STP_SIZ_CTL =          0 [         0] 
+           53:             MAX_STEP =        300 [       300] millibohr
+
+           54:            VIBRATION =          0 [         0] 
+           55:            EVAL_HESS = 4294967295 [4294967295] # of cyc.
+           56:            INTEGRALS =          1 [         1] 
+           57:          FD_STEPSIZE =          0 [         0] 10-4 bohr
+
+           58:               POINTS =          0 [         0] 
+           59:          CONTRACTION =          1 [         1] 
+           60:             SYMMETRY =          0 [         2] 
+           62:            SPHERICAL =          1 [         1] 
+
+           63:          RESET_FLAGS =          0 [         0] 
+           64:             PERT_ORB =          2 [         2] 
+           65:             GENBAS_1 =          0 [         0] 
+           66:             GENBAS_2 =          0 [         0] 
+
+           67:             GENBAS_3 =          0 [         0] 
+           68:          COORDINATES =          1 [         3] 
+           69:            CHECK_SYM =          1 [         1] 
+           70:            SCF_PRINT =          0 [         0] 
+
+           71:                  ECP =          0 [         0] 
+           72:              RESTART =          0 [         1] 
+           73:            TRANS_INV =          0 [         0] 
+           74:          HFSTABILITY =          0 [         0] 
+
+           75:             ROT_EVEC =          0 [         0] 
+           76:           BRUCK_CONV =          4 [         4] (tol)
+           78:                UNITS =          0 [         0] 
+           79:          FD_USEGROUP =          0 [         0] 
+
+           80:           FD_PROJECT =          0 [         0] 
+           83:                VTRAN =          1 [         0] 
+           84:             HF2_FILE =          1 [         1] 
+           85:             SUBGROUP =          0 [         0] 
+
+           86:           SUBGRPAXIS =          0 [         0] 
+           87:               EXCITE =          3 [         0] 
+           88:            ZETA_CONV =         12 [        12] (tol)
+           90:           TREAT_PERT =          0 [         0] 
+
+           91:          ESTATE_PROP =          0 [         0] 
+           92:           OPT_MAXCYC =         50 [        50] 
+           93:             ABCDTYPE =          0 [         0] 
+           95:           AO_LADDERS =          1 [         1] 
+
+           96:                 FOCK =          1 [         1] 
+           97:          ESTATE_MAXC =         20 [        20] 
+           98:           ESTATE_TOL =          5 [4294967295] (tol)
+           99:            TURBOMOLE =          0 [         0] 
+
+          100:           GAMMA_ABCD =          0 [         0] 
+          101:            ZETA_TYPE =          1 [         1] 
+          102:          ZETA_MAXCYC =         50 [        50] 
+          103:             RESRAMAN =          0 [         0] 
+
+          104:                  PSI =          0 [         0] 
+          105:             GEOM_OPT =          0 [         0] 
+          106:             EXTERNAL =          2 [         2] 
+          107:          HESS_UPDATE =          0 [         0] 
+
+          108:         INIT_HESSIAN =          0 [         0] 
+          109:          EXTRAPOLATE =          0 [         0] 
+          201:              EA_CALC =          0 [         0] 
+          203:                 TDHF =          0 [         0] 
+
+          204:           FUNCTIONAL =          4 [         4] 
+          205:           EOM_MAXCYC =         50 [        50] cycles
+          206:              EOMPROP =          0 [         0] 
+          207:             ABCDFULL =          2 [         0] 
+
+          208:           INTGRL_TOL =         14 [        14] (tol)
+          209:             DAMP_TYP =          0 [         0] 
+          210:             DAMP_TOL =         10 [        10] x 0.01
+          211:              LSHF_A1 =          0 [         0] x 0.01
+
+          212:              LSHF_B1 =          0 [         0] x 0.01
+          213:             POLYRATE =          0 [         0] 
+          214:              IP_CALC =          0 [         0] 
+          216:            IP_SEARCH =          0 [         0] 
+
+          217:               EOMREF =          1 [         0] 
+          218:              SOLVENT =          0 [         0] 
+          219:            EE_SEARCH =          0 [         0] 
+          220:            EOM_PRJCT =          0 [         0] 
+
+          221:               NEWVRT =          0 [         0] 
+          222:             HBARABCD =          1 [         0] 
+          223:             HBARABCI =          1 [         0] 
+          224:             NT3EOMEE =          0 [         0] 
+
+          225:              NOREORI =          1 [         2] 
+          227:               KS_POT =          0 [         0] 
+          228:             DIP_CALC =          0 [         0] 
+          230:             DEA_CALC =          0 [         0] 
+
+          232:              PROGRAM =          0 [         0] 
+          233:                CCR12 =          0 [         0] 
+          234:            EOMXFIELD =          0 [         0] x 10-6
+          235:            EOMYFIELD =          0 [         0] x 10-6
+
+          236:            EOMZFIELD =          0 [         0] x 10-6
+          237:              INSERTF =          0 [         0] 
+          238:            GRAD_CALC =          0 [         0] 
+          239:            IMEM_SIZE =    3000000 [   3000000] Words
+
+          240:              MAKERHF =          0 [         0] 
+          241:           GLOBAL_MEM =          0 [         0] Words
+          242:             PRP_INTS =          0 [         0] 
+          243:           TRUNC_ORBS =          0 [         0] 
+
+          244:             FNO_KEEP =          0 [         0] percent
+          245:             FNO_BSSE =          0 [         0] 
+          246:              NATURAL =          0 [         0] 
+          248:              UNO_REF =          0 [         0] 
+
+          249:           UNO_CHARGE =          0 [         0] 
+          250:             UNO_MULT =          1 [         1] 
+          251:                RAMAN =          0 [         0] 
+          252:            KUCHARSKI =          0 [         0] 
+
+          253:             SCF_TYPE =          0 [         0] 
+          254:               DIRECT =          0 [         0] 
+          255:         SINGLE_STORE =          0 [         0] 
+          256:             OOMP_CYC =         50 [        50] 
+
+          257:            DKH_ORDER =          0 [         0] 
+          258:           UNCONTRACT =          0 [         0] 
+          259:          OPT_CONTROL =          0 [         0] 
+          260:            INTERFACE =          0 [         0] 
+
+          ------------------------------------------------------------
+
+                         ACES STATE VARIABLES (STRINGS)
+          ------------------------------------------------------------
+          BASIS = CC-PVDZ
+          OCCUPATION = [ESTIMATED BY SCF]
+          ------------------------------------------------------------
+   Rotational constants (in cm-1): 
+     1.99820        1.99820
+********************************************************************************
+The symmetry processing is fully turned off and no symmetry opertion are applied.
+ 
+   The full molecular point group is C1  .
+   The largest Abelian subgroup of the full molecular point group is C1  .
+   The computational point group is C1  .
+********************************************************************************
+ 
+         -----------------------------------------------
+         Cartesian coordinates corresponding to internal 
+                 coordinate input (Angstroms) 
+ ----------------------------------------------------------------
+ Z-matrix   Atomic            C o o r d i n a t e s
+  Symbol    Number           X              Y              Z
+ ----------------------------------------------------------------
+     N         7         0.00000000     0.00000000    -0.54884000
+     N         7         0.00000000     0.00000000     0.54884000
+ ----------------------------------------------------------------
+   Interatomic distance matrix (Angstroms) 
+ 
+                 N             N    
+                [ 1]        [ 2]
+  N    [ 1]     0.00000
+  N    [ 2]     1.09768     0.00000
+ @GEOPT-W, Archive file not created for single-point calculation.
+ Initial xjoda is complete...
+           0          10           0
+ USE_2DER_INTEGRALS =  F
+ Next SIAL program: 
+ scf_aguess.sio                                                    
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_aguess.sio                                                                 
+  
+ VFL NAME : T
+  Skipping Calling ECP main 
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #          11  is first used on line           71
+ Static pre-defined array #          12  is first used on line           72
+ Static pre-defined array #          13  is first used on line           70
+ Static pre-defined array #          17  is first used on line           68
+ Static pre-defined array #          18  is first used on line           69
+ Allocated                  31392  bytes for static arrays.
+ Allocated             1195260416  bytes for blkmgr.
+ Task            3  BLKMGR has been initialized with              145419252 
+  double precision words, or       302960  blocks.
+ Task            3  stack base_addr:         47830567847216
+        47830575118256        47830587726800        47830603722032
+        47830624079600        47830660432400        47830706963984
+        47830790817776        47830898422064        47831148529328
+ Task            1  BLKMGR has been initialized with              145419304 
+  double precision words, or       302961  blocks.
+ Task            1  stack base_addr:         47026739914032
+        47026747185072        47026759794032        47026775789264
+        47026796146832        47026832499632        47026879031216
+        47026962885008        47027070489296        47027320596560
+ Task            2  BLKMGR has been initialized with              145419282 
+  double precision words, or       302961  blocks.
+ Task            2  stack base_addr:         47704875545904
+        47704882817184        47704895425728        47704911420960
+        47704931778528        47704968131328        47705014662912
+        47705098516704        47705206120992        47705456228256
+ Task            0  BLKMGR has been initialized with              145419326 
+  double precision words, or       302961  blocks.
+ Task            0  stack base_addr:         47811128511264
+        47811135782064        47811148391440        47811164386672
+        47811184744240        47811221097040        47811267628624
+        47811351482416        47811459086704        47811709193968
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       302961
+ *** COMPLETED DRYRUN PASS FOR 
+ scf_aguess.sio                                                                 
+  
+ Next SIAL program: 
+ scf_rhf_aguess.sio                                                
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_rhf_aguess.sio                                                             
+  
+ VFL NAME : T
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           1  is first used on line          682
+ Static pre-defined array #           2  is first used on line          463
+ Static pre-defined array #           4  is first used on line         1410
+ Static pre-defined array #           5  is first used on line          603
+ Static pre-defined array #           6  is first used on line          606
+ Static pre-defined array #           9  is first used on line         3058
+ Static pre-defined array #          12  is first used on line         2681
+ Static pre-defined array #          13  is first used on line         1426
+ Static pre-defined array #          14  is first used on line          459
+ Static pre-defined array #          16  is first used on line         2555
+ Static pre-defined array #          17  is first used on line         1182
+ Static pre-defined array #          18  is first used on line         1183
+ Static pre-defined array #          19  is first used on line          603
+ Allocated                  58856  bytes for static arrays.
+ Allocated             1194855552  bytes for blkmgr.
+ Task            2  BLKMGR has been initialized with              145365262 
+  double precision words, or       303154  blocks.
+ Task            2  stack base_addr:         47704875972992
+        47704883286032        47704895949072        47704911936912
+        47704932285072        47704968621072        47705015131152
+        47705098946192        47705206500752        47705456492432
+ Task            3  BLKMGR has been initialized with              145365328 
+  double precision words, or       303154  blocks.
+ Task            3  stack base_addr:         47830568274304
+        47830575586624        47830588250912        47830604238752
+        47830624586912        47830660922912        47830707432992
+        47830791248032        47830898802592        47831148794272
+ Task            1  BLKMGR has been initialized with              145365358 
+  double precision words, or       303155  blocks.
+ Task            1  stack base_addr:         47026740341120
+        47026747653680        47026760317968        47026776305808
+        47026796653968        47026832989968        47026879500048
+        47026963315088        47027070869648        47027320861328
+ Task            0  BLKMGR has been initialized with              145365432 
+  double precision words, or       303156  blocks.
+ Task            0  stack base_addr:         47811128937296
+        47811136249616        47811148914736        47811164902576
+        47811185250736        47811221586736        47811268096816
+        47811351911856        47811459466416        47811709458096
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       303156
+ *** COMPLETED DRYRUN PASS FOR 
+ scf_rhf_aguess.sio                                                             
+  
+ Next SIAL program: 
+ test.sio                                                          
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... T
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... F
+ IGNORE DROPMO PARAMETERS......... F
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ test.sio                                                                       
+  
+ VFL NAME : T
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           2  is first used on line           73
+ Static pre-defined array #           3  is first used on line           84
+ Static pre-defined array #          13  is first used on line           73
+ Allocated                  18816  bytes for static arrays.
+ Allocated             1195266048  bytes for blkmgr.
+ Task            0  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            0  stack base_addr:         47811128505136
+        47811135781216        47811148388096        47811164383328
+        47811184740896        47811221093696        47811267625280
+        47811351479072        47811459083360        47811709190624
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       302977
+ *** COMPLETED DRYRUN PASS FOR 
+ test.sio                                                                       
+  
+ Next SIAL program: 
+ scf_aguess.sio                                                    
+ Task            1  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            1  stack base_addr:         47704875539360
+        47704882815440        47704895422320        47704911417552
+        47704931775120        47704968127920        47705014659504
+        47705098513296        47705206117584        47705456224848
+ Task            2  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            2  stack base_addr:         47830567840672
+        47830575116752        47830587723632        47830603718864
+        47830624076432        47830660429232        47830706960816
+        47830790814608        47830898418896        47831148526160
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_aguess.sio                                                                 
+  
+ VFL NAME : F
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #          11  is first used on line           71
+ Static pre-defined array #          12  is first used on line           72
+ Static pre-defined array #          13  is first used on line           70
+ Static pre-defined array #          17  is first used on line           68
+ Static pre-defined array #          18  is first used on line           69
+ Allocated                  31392  bytes for static arrays.
+ Allocated             1195259392  bytes for blkmgr.
+ Task            3  BLKMGR has been initialized with              145419252 
+  double precision words, or       302960  blocks.
+ Task            3  stack base_addr:         47830567848136
+        47830575119176        47830587727720        47830603722952
+        47830624080520        47830660433320        47830706964904
+        47830790818696        47830898422984        47831148530248
+ Task            2  BLKMGR has been initialized with              145419282 
+  double precision words, or       302961  blocks.
+ Task            2  stack base_addr:         47704875546824
+        47704882818104        47704895426648        47704911421880
+        47704931779448        47704968132248        47705014663832
+        47705098517624        47705206121912        47705456229176
+ Task            0  BLKMGR has been initialized with              145419326 
+  double precision words, or       302961  blocks.
+ Task            0  stack base_addr:         47811128512184
+        47811135782984        47811148392360        47811164387592
+        47811184745160        47811221097960        47811267629544
+        47811351483336        47811459087624        47811709194888
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       302961
+MPI TAG_UB value is 2147483647
+ Task            1  BLKMGR has been initialized with              145419304 
+  double precision words, or       302961  blocks.
+ Task            1  stack base_addr:         47026739914952
+        47026747185992        47026759794952        47026775790184
+        47026796147752        47026832500552        47026879032136
+        47026962885928        47027070490216        47027320597480
+ ---------- Finished! ---------------
+ Total energy:   0.000000000000000E+000
+ SCF energy:    23.6222625910934     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =   0.202975034713745       seconds.
+ Next SIAL program: 
+ scf_rhf_aguess.sio                                                
+ Overriding COMPANY parameter, using            4  processes as workers.
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+  Computing the NN repulsion energy 
+              2   7.00000000000000        7.00000000000000     
+  NN rep computed =    23.6222625910934     
+ SCF ENERGY IS INITIALIZED FROM NUCLEAR-NUCLEAR REPULSION ENERGY: 
+   23.6222625910934     
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................   23.6222625910934     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... T
+ IGNORE DROPMO PARAMETERS......... T
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ scf_rhf_aguess.sio                                                             
+  
+ VFL NAME : F
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           1  is first used on line          682
+ Static pre-defined array #           2  is first used on line          463
+ Static pre-defined array #           4  is first used on line         1410
+ Static pre-defined array #           5  is first used on line          603
+ Static pre-defined array #           6  is first used on line          606
+ Static pre-defined array #           9  is first used on line         3058
+ Static pre-defined array #          12  is first used on line         2681
+ Static pre-defined array #          13  is first used on line         1426
+ Static pre-defined array #          14  is first used on line          459
+ Static pre-defined array #          16  is first used on line         2555
+ Static pre-defined array #          17  is first used on line         1182
+ Static pre-defined array #          18  is first used on line         1183
+ Static pre-defined array #          19  is first used on line          603
+ Allocated                  58856  bytes for static arrays.
+ Allocated             1194830336  bytes for blkmgr.
+ Task            1  BLKMGR has been initialized with              145365358 
+  double precision words, or       303155  blocks.
+ Task            1  stack base_addr:         47026740367816
+        47026747680376        47026760344664        47026776332504
+        47026796680664        47026833016664        47026879526744
+        47026963341784        47027070896344        47027320888024
+ Task            2  BLKMGR has been initialized with              145365262 
+  double precision words, or       303154  blocks.
+ Task            2  stack base_addr:         47704875999688
+        47704883312728        47704895975768        47704911963608
+        47704932311768        47704968647768        47705015157848
+        47705098972888        47705206527448        47705456519128
+ Task            3  BLKMGR has been initialized with              145365328 
+  double precision words, or       303154  blocks.
+ Task            3  stack base_addr:         47830568301000
+        47830575613320        47830588277608        47830604265448
+        47830624613608        47830660949608        47830707459688
+        47830791274728        47830898829288        47831148820968
+ Task            0  BLKMGR has been initialized with              145360632 
+  double precision words, or       303146  blocks.
+ Task            0  stack base_addr:         47811128963992
+        47811136276072        47811148940776        47811164928088
+        47811185275576        47811221610376        47811268118920
+        47811351931192        47811459482200        47811709465624
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       303146
+MPI TAG_UB value is 2147483647
+ Task            0  Scalar value =   0.199999988079071       at line number 
+        2560
+ Task            0  Scalar value =   0.833333341611756       at line number 
+        2561
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2603
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2604
+ -------------------------------------------
+ Linear dependency threshold  1.000000000000000E-009
+ -------------------------------------------
+ ===================================================
+ Basis of atomic orbitals contains           0 linear dependecies
+ ====================================================
+ Task            0  Scalar value =   -181.515307879462       at line number 
+        1412
+ Task            0  Scalar value =   -99.9001865360354       at line number 
+        1412
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =   -105.974421200139       at line number 
+        1412
+ Task            0  Scalar value =    3.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    2.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   0.297699896751039       at line number 
+        2413
+ Task            0  Scalar value =   0.702300103248961       at line number 
+        2414
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2415
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.851546600688       at line number 
+        1412
+ Task            0  Scalar value =    4.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    3.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   3.387126219034987E-002  at line number 
+        2413
+ Task            0  Scalar value =   5.319601874852511E-002  at line number 
+        2414
+ Task            0  Scalar value =   0.912932719061125       at line number 
+        2415
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.947236248536       at line number 
+        1412
+ Task            0  Scalar value =    5.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    4.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -8.369320905548284E-004  at line number 
+        2413
+ Task            0  Scalar value =  -2.898302623205550E-003  at line number 
+        2414
+ Task            0  Scalar value =   1.195260089785133E-002  at line number 
+        2415
+ Task            0  Scalar value =   0.991782633815909       at line number 
+        2416
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.953520329192       at line number 
+        1412
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    5.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -1.246171181211928E-003  at line number 
+        2413
+ Task            0  Scalar value =  -6.330132659941544E-003  at line number 
+        2414
+ Task            0  Scalar value =  -2.651496870728519E-003  at line number 
+        2415
+ Task            0  Scalar value =   9.343420592652217E-002  at line number 
+        2416
+ Task            0  Scalar value =   0.916793594785360       at line number 
+        2417
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.954069814643       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -1.098176740183366E-004  at line number 
+        2413
+ Task            0  Scalar value =  -2.410965207482153E-004  at line number 
+        2414
+ Task            0  Scalar value =   4.016063537043221E-004  at line number 
+        2415
+ Task            0  Scalar value =   3.354060274860226E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.370432080632340       at line number 
+        2417
+ Task            0  Scalar value =    1.36702732819854       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =   -108.954130270359       at line number 
+        1412
+ Task            0  Scalar value =    8.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =   1.165255239668019E-005  at line number 
+        2413
+ Task            0  Scalar value =  -2.030019550793465E-005  at line number 
+        2414
+ Task            0  Scalar value =  -5.223702407998542E-005  at line number 
+        2415
+ Task            0  Scalar value =   5.506169953174480E-004  at line number 
+        2416
+ Task            0  Scalar value =  -5.759717837651444E-002  at line number 
+        2417
+ Task            0  Scalar value =   0.119686221340498       at line number 
+        2418
+ Task            0  Scalar value =   0.937421224707890       at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130759301       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -7.776107736154189E-006  at line number 
+        2413
+ Task            0  Scalar value =  -4.646265205416892E-006  at line number 
+        2414
+ Task            0  Scalar value =  -4.469836720127730E-005  at line number 
+        2415
+ Task            0  Scalar value =  -9.242096731326029E-004  at line number 
+        2416
+ Task            0  Scalar value =   1.908092723155886E-003  at line number 
+        2417
+ Task            0  Scalar value =   0.999073237690120       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130764679       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -1.226770140183520E-006  at line number 
+        2413
+ Task            0  Scalar value =   1.004603898825859E-005  at line number 
+        2414
+ Task            0  Scalar value =   5.443547968696969E-004  at line number 
+        2415
+ Task            0  Scalar value =  -1.660274446020367E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.202758676020587       at line number 
+        2417
+ Task            0  Scalar value =    1.20386577640089       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765063       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -9.828316126529659E-007  at line number 
+        2413
+ Task            0  Scalar value =   1.662113782589426E-004  at line number 
+        2414
+ Task            0  Scalar value =  -5.403366279658335E-004  at line number 
+        2415
+ Task            0  Scalar value =  -2.766293445705867E-002  at line number 
+        2416
+ Task            0  Scalar value =   3.229584594093521E-002  at line number 
+        2417
+ Task            0  Scalar value =   0.995742196597443       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765069       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -2.507470811891338E-005  at line number 
+        2413
+ Task            0  Scalar value =   1.003524442743112E-004  at line number 
+        2414
+ Task            0  Scalar value =   1.387540994022191E-003  at line number 
+        2415
+ Task            0  Scalar value =  -2.345164500260260E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.146357348435241       at line number 
+        2417
+ Task            0  Scalar value =    1.14723969420532       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ Task            0  Scalar value =   -108.954130765069       at line number 
+        1412
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2852
+ Task            0  Scalar value =    6.00000000000000       at line number 
+        2868
+ Task            0  Scalar value =  -2.251390433782407E-006  at line number 
+        2413
+ Task            0  Scalar value =   3.353493666197132E-004  at line number 
+        2414
+ Task            0  Scalar value =  -1.174541127529354E-003  at line number 
+        2415
+ Task            0  Scalar value =   7.209759994092181E-003  at line number 
+        2416
+ Task            0  Scalar value =  -0.113062076423547       at line number 
+        2417
+ Task            0  Scalar value =    1.10669375958080       at line number 
+        2418
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2419
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2420
+ Task            0  Scalar value =   0.000000000000000E+000  at line number 
+        2421
+ Task            0  Scalar value =    7.00000000000000       at line number 
+        2876
+ ---------- Finished! ---------------
+ Total energy:   -108.954130765069     
+ SCF energy:   -108.954130765069     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =   0.746071100234985       seconds.
+ Next SIAL program: 
+ test.sio                                                          
+ Entering init_data
+  NBASIS AFTER SIMPLE_INSPECT           28
+  Resetting scf_beg to 2 
+  ieom_roots:            0
+ WARNING: ACES has defaulted ESTATE_SYM to 0,  resetting to 4.
+ *** WARNING: ACES has specified a RHF run. 
+  Either use REF=UHF in ACES or run a true RHF SIAL code.***
+  NALPHA_VIRT =          21
+  NBETA_VIRT =          21
+ --------- Required data from MOL file -----------
+ Number of centers.....................           2
+ Number of shells......................           6
+ Cartesian flag........................ F
+ Total number of basis functions.......          28
+ Total number of primitive functions...          28
+ Initial SCF energy....................  -108.954130765069     
+ SCF damping factor....................  0.199999988079071     
+ SCF convergence tolerance.............  1.000000000000000E-006
+ Number of SCF iterations..............         150
+ Number of SCF histories for DIIS......           6
+ Beginning iteration for SCF DIIS......           2
+ CCSD convergence tolerance............  1.000000000000000E-007
+ Number of CCSD iterations.............          50
+ Number of CCSD histories for DIIS.....           5
+ Beginning iteration for CCSD DIIS.....           2
+ Excited state computation............. T
+ EOM-CCSD converged tolerance..........  1.000000000000000E-005
+ Number of EOM-CCSD roots to find......           4
+ Geometry optimization calc............ F
+ Vibrational frequency calc............ F
+   Shell     Contracted fns.   Primitive Fns. 
+   -----     ---------------   --------------
+     1              3                 9   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     2              2                 4   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     3              1                 1   0.000000000000D+00   0.000000000000D+00  -0.103715721157D+01
+     4              3                 9   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     5              2                 4   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+     6              1                 1   0.000000000000D+00   0.000000000000D+00   0.103715721157D+01
+ out from init_data
+ ----------- Parameter Summary ----------------
+ DRYRUN........................... F
+ INTEGRAL_PACKAGE.................
+ ERD                                                                            
+  
+ MOLFILE..........................
+ MOL                                                                            
+                                          
+ MAXMEM...........................        1200
+ OCCUPIED.........................           7
+ ALPHA_OCCUPIED...................           7
+ BETA_OCCUPIED....................           7
+ AO SEGMENT SIZE..................           6
+ OCCUPIED SEGMENT SIZE............           3
+ VIRTUAL SEGMENT SIZE.............           7
+ Local scratch directory..........
+ .                                                                              
+                      
+ Number of centers................           2
+ Number of shells.................           6
+ Number of basis functions........          28
+ NO_SERVERS....................... F
+ IGNORE DROPMO PARAMETERS......... F
+ ITRIP............................           1           7
+ IHESS............................           1           2
+ JHESS............................           1           2
+ SIP_SUB_SEGSIZE..................           5
+ SIP_SUB_OCC_SEGSIZE..............           5
+ SIP_SUB_VIRT_SEGSIZE.............           5
+ SIP_SUB_AO_SEGSIZE...............           5
+ REGULARIZER......................  0.000000000000000E+000
+  
+ VFL NAME :
+ test.sio                                                                       
+  
+ VFL NAME : F
+ Gather on company_rank succeeded.
+ norb =            5
+ nocc =            3
+ nvirt =            3
+ bocc =            1
+ eocc =            3
+ bvirt =            4
+ evirt =            6
+ naocc =            3
+ nbocc =            3
+ navirt =            3
+ nbvirt =            3
+ baocc =            1
+ bbocc =            1
+ eaocc =            3
+ ebocc =            3
+ bavirt =            4
+ bbvirt =            4
+ eavirt =            6
+ ebvirt =            6
+ noccorb =            7
+ nvirtorb =            0
+ boccorb =            1
+ eoccorb =            7
+ bvirtorb =            8
+ evirtorb =           28
+ naoccorb =            7
+ nboccorb =            7
+ navirtorb =           21
+ nbvirtorb =           21
+ baoccorb =            1
+ bboccorb =            1
+ eaoccorb =            7
+ eboccorb =            7
+ bavirtorb =            8
+ bbvirtorb =            8
+ eavirtorb =           28
+ ebvirtorb =           28
+ cc_iter =           50
+ cc_hist =            5
+ cc_beg =            2
+ scf_iter =          150
+ scf_hist =            6
+ scf_beg =            2
+ ncenters =            2
+ itrips =            1
+ itripe =            7
+ ihess1 =            1
+ ihess2 =            2
+ jhess1 =            1
+ jhess2 =            2
+ subb =           -1
+ sube =           -1
+ sip_sub_segsize =            5
+ sip_sub_occ_segsize =            5
+ sip_sub_virt_segsize            5
+ sip_sub_ao_segsize =            5
+ Static pre-defined array #           2  is first used on line           73
+ Static pre-defined array #           3  is first used on line           84
+ Static pre-defined array #          13  is first used on line           73
+ Allocated                  18816  bytes for static arrays.
+ Allocated             1195265024  bytes for blkmgr.
+ Number of block_map entries          111
+ Servers were initialized with        50000  blocks of         2401  words each.
+ Task            1  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            1  stack base_addr:         47704875540592
+        47704882816672        47704895423552        47704911418784
+        47704931776352        47704968129152        47705014660736
+        47705098514528        47705206118816        47705456226080
+ Task            2  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            2  stack base_addr:         47830567841904
+        47830575117984        47830587724864        47830603720096
+        47830624077664        47830660430464        47830706962048
+        47830790815840        47830898420128        47831148527392
+ Task            3  at line number          159  ARRAY           30  BLOCK 
+         121  ind =            9          21  seg =            1           6 
+  actual size =           21
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           30         121
+       30275
+ Task            3  Block        30275  ARRAY ID:           30  BLOCK ID 
+         121  FLAGS            9  SEGS            1           6  ADDR 
+        47830575107664  DADDR         47830575107682 DATA ARRAY           30 
+  DATA BLOCK          121
+ Task            0  BLKMGR has been initialized with              145419674 
+  double precision words, or       302977  blocks.
+ Task            0  stack base_addr:         47811128506368
+        47811135782448        47811148389328        47811164384560
+        47811184742128        47811221094928        47811267626512
+        47811351480304        47811459084592        47811709191856
+ Total memory usage                   1140  MBytes.
+ Max. possible usage         1200  MBytes
+ Total blocks used =       302977
+MPI TAG_UB value is 2147483647
+ Task            0  Scalar value =    27.9999999999998       at line number 
+         101
+ Task            2  at line number          159  ARRAY           30  BLOCK 
+         121  ind =            9          21  seg =            1           5 
+  actual size =           21
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           30         121
+       30273
+ Task            2  Block        30273  ARRAY ID:           30  BLOCK ID 
+ Task            3  line          159  Array, block =           30         121
+         121  FLAGS            9  SEGS            1           5  ADDR 
+        47704882805872  DADDR         47704882805890 DATA ARRAY           30 
+  DATA BLOCK          121
+ Task            2  line          159  Array, block =           30         121
+
+            15          16          17          18          19          20          21
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  at line number          159  ARRAY           30  BLOCK 
+         127  ind =            9          21  seg =            1           4 
+  actual size =           21
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           30         127
+       30269
+ Task            0  Block        30269  ARRAY ID:           30  BLOCK ID 
+         127  FLAGS            9  SEGS            1           4  ADDR 
+        47811135770688  DADDR         47811135770706 DATA ARRAY           30 
+  DATA BLOCK          127
+ Task            0  line          159  Array, block =           30         127
+
+             8           9          10          11          12          13          14
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+
+            22          23          24          25          26          27          28
+    1    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          159  Array, block =           30         127 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3           8
+          14
+ Task            3  line          159  Array, block =           30         121 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3          22
+          28
+ Task            3  at line number          159  ARRAY           30  BLOCK 
+         122  ind =            9          21  seg =            2           6 
+  actual size =           14
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           30         122
+       30274
+ Task            3  Block        30274  ARRAY ID:           30  BLOCK ID 
+         122  FLAGS            9  SEGS            2           6  ADDR 
+        47830575107424  DADDR         47830575107442 DATA ARRAY           30 
+  DATA BLOCK          122
+ Task            3  line          159  Array, block =           30         122
+
+            22          23          24          25          26          27          28
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            2  line          159  Array, block =           30         121 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3          15
+          21
+ Task            2  at line number          159  ARRAY           30  BLOCK 
+         122  ind =            9          21  seg =            2           5 
+  actual size =           14
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           30         122
+       30273
+ Task            2  Block        30273  ARRAY ID:           30  BLOCK ID 
+         122  FLAGS            9  SEGS            2           5  ADDR 
+        47704882805872  DADDR         47704882805890 DATA ARRAY           30 
+  DATA BLOCK          122
+ Task            2  line          159  Array, block =           30         122
+
+            15          16          17          18          19          20          21
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  at line number          159  ARRAY           30  BLOCK 
+         128  ind =            9          21  seg =            2           4 
+  actual size =           14
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           30         128
+       30266
+ Task            0  Block        30266  ARRAY ID:           30  BLOCK ID 
+         128  FLAGS            9  SEGS            2           4  ADDR 
+        47811135769968  DADDR         47811135769986 DATA ARRAY           30 
+  DATA BLOCK          128
+ Task            0  line          159  Array, block =           30         128
+
+             8           9          10          11          12          13          14
+    4    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            2  line          159  Array, block =           30         122 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5          15
+          21
+ Task            2  at line number          159  ARRAY           30  BLOCK 
+         123  ind =            9          21  seg =            3           5 
+  actual size =           14
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           30         123
+       30269
+ Task            2  Block        30269  ARRAY ID:           30  BLOCK ID 
+         123  FLAGS            9  SEGS            3           5  ADDR 
+        47704882804912  DADDR         47704882804930 DATA ARRAY           30 
+  DATA BLOCK          123
+ Task            2  line          159  Array, block =           30         123
+
+            15          16          17          18          19          20          21
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            3  line          159  Array, block =           30         122 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5          22
+          28
+ Task            3  at line number          159  ARRAY           30  BLOCK 
+         123  ind =            9          21  seg =            3           6 
+  actual size =           14
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           30         123
+       30274
+ Task            3  Block        30274  ARRAY ID:           30  BLOCK ID 
+         123  FLAGS            9  SEGS            3           6  ADDR 
+        47830575107424  DADDR         47830575107442 DATA ARRAY           30 
+  DATA BLOCK          123
+ Task            3  line          159  Array, block =           30         123
+
+            22          23          24          25          26          27          28
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          159  Array, block =           30         128 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5           8
+          14
+ Task            2  line          159  Array, block =           30         123 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7          15
+          21
+ Task            0  at line number          159  ARRAY           30  BLOCK 
+         129  ind =            9          21  seg =            3           4 
+  actual size =           14
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           30         129
+       30265
+ Task            0  Block        30265  ARRAY ID:           30  BLOCK ID 
+         129  FLAGS            9  SEGS            3           4  ADDR 
+        47811135769728  DADDR         47811135769746 DATA ARRAY           30 
+  DATA BLOCK          129
+ Task            0  line          159  Array, block =           30         129
+
+             8           9          10          11          12          13          14
+    6    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            3  line          159  Array, block =           30         123 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7          22
+          28
+ Task            3  at line number          170  ARRAY           32  BLOCK 
+         124  ind =           13          17  seg =            4           3 
+  actual size =           14
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           32         124
+       30273
+ Task            3  Block        30273  ARRAY ID:           32  BLOCK ID 
+         124  FLAGS            9  SEGS            4           3  ADDR 
+        47830575107184  DADDR         47830575107202 DATA ARRAY           32 
+  DATA BLOCK          124
+ Task            3  line          170  Array, block =           32         124
+
+             6           7
+    8    0.0000000   0.0000000
+    9    0.0000000   0.0000000
+   10    0.0000000   0.0000000
+   11    0.0000000   0.0000000
+   12    0.0000000   0.0000000
+   13    0.0000000   0.0000000
+   14    0.0000000   0.0000000
+ Task            2  at line number          170  ARRAY           32  BLOCK 
+         124  ind =           13          17  seg =            4           2 
+  actual size =           14
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           32         124
+       30272
+ Task            2  Block        30272  ARRAY ID:           32  BLOCK ID 
+         124  FLAGS            9  SEGS            4           2  ADDR 
+        47704882805632  DADDR         47704882805650 DATA ARRAY           32 
+  DATA BLOCK          124
+ Task            2  line          170  Array, block =           32         124
+
+             4           5
+    8    0.0000000   0.0000000
+    9    0.0000000   0.0000000
+   10    0.0000000   0.0000000
+   11    0.0000000   0.0000000
+   12    0.0000000   0.0000000
+   13    0.0000000   0.0000000
+   14    0.0000000   0.0000000
+ Task            0  line          159  Array, block =           30         129 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7           8
+          14
+ Task            0  at line number          170  ARRAY           32  BLOCK 
+         130  ind =           13          17  seg =            4           1 
+  actual size =           21
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           32         130
+       30268
+ Task            0  Block        30268  ARRAY ID:           32  BLOCK ID 
+         130  FLAGS            9  SEGS            4           1  ADDR 
+        47811135770448  DADDR         47811135770466 DATA ARRAY           32 
+  DATA BLOCK          130
+ Task            0  line          170  Array, block =           32         130
+
+             1           2           3
+    8    0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000
+ Task            3  line          170  Array, block =           32         124 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14           6
+           7
+ Task            0  line          170  Array, block =           32         130 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14           1
+           3
+ Task            3  at line number          170  ARRAY           32  BLOCK 
+         125  ind =           13          17  seg =            5           3 
+  actual size =           14
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           32         125
+       30272
+ Task            3  Block        30272  ARRAY ID:           32  BLOCK ID 
+         125  FLAGS            9  SEGS            5           3  ADDR 
+        47830575106944  DADDR         47830575106962 DATA ARRAY           32 
+  DATA BLOCK          125
+ Task            3  line          170  Array, block =           32         125
+
+             6           7
+   15    0.0000000   0.0000000
+   16    0.0000000   0.0000000
+   17    0.0000000   0.0000000
+   18    0.0000000   0.0000000
+   19    0.0000000   0.0000000
+   20    0.0000000   0.0000000
+   21    0.0000000   0.0000000
+ Task            2  line          170  Array, block =           32         124 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14           4
+           5
+ Task            2  at line number          170  ARRAY           32  BLOCK 
+         125  ind =           13          17  seg =            5           2 
+  actual size =           14
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           32         125
+       30272
+ Task            2  Block        30272  ARRAY ID:           32  BLOCK ID 
+         125  FLAGS            9  SEGS            5           2  ADDR 
+        47704882805632  DADDR         47704882805650 DATA ARRAY           32 
+  DATA BLOCK          125
+ Task            2  line          170  Array, block =           32         125
+
+             4           5
+   15    0.0000000   0.0000000
+   16    0.0000000   0.0000000
+   17    0.0000000   0.0000000
+   18    0.0000000   0.0000000
+   19    0.0000000   0.0000000
+   20    0.0000000   0.0000000
+   21    0.0000000   0.0000000
+ Task            0  at line number          170  ARRAY           32  BLOCK 
+         131  ind =           13          17  seg =            5           1 
+  actual size =           21
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           32         131
+       30265
+ Task            0  Block        30265  ARRAY ID:           32  BLOCK ID 
+         131  FLAGS            9  SEGS            5           1  ADDR 
+        47811135769728  DADDR         47811135769746 DATA ARRAY           32 
+  DATA BLOCK          131
+ Task            0  line          170  Array, block =           32         131
+
+             1           2           3
+   15    0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000
+ Task            3  line          170  Array, block =           32         125 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21           6
+           7
+ Task            3  at line number          170  ARRAY           32  BLOCK 
+         126  ind =           13          17  seg =            6           3 
+  actual size =           14
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           32         126
+       30272
+ Task            3  Block        30272  ARRAY ID:           32  BLOCK ID 
+         126  FLAGS            9  SEGS            6           3  ADDR 
+        47830575106944  DADDR         47830575106962 DATA ARRAY           32 
+  DATA BLOCK          126
+ Task            3  line          170  Array, block =           32         126
+
+             6           7
+   22    0.0000000   0.0000000
+   23    0.0000000   0.0000000
+   24    0.0000000   0.0000000
+   25    0.0000000   0.0000000
+   26    0.0000000   0.0000000
+   27    0.0000000   0.0000000
+   28    0.0000000   0.0000000
+ Task            2  line          170  Array, block =           32         125 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21           4
+           5
+ Task            2  at line number          170  ARRAY           32  BLOCK 
+         126  ind =           13          17  seg =            6           2 
+  actual size =           14
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           32         126
+       30268
+ Task            2  Block        30268  ARRAY ID:           32  BLOCK ID 
+         126  FLAGS            9  SEGS            6           2  ADDR 
+        47704882804672  DADDR         47704882804690 DATA ARRAY           32 
+  DATA BLOCK          126
+ Task            2  line          170  Array, block =           32         126
+
+             4           5
+   22    0.0000000   0.0000000
+   23    0.0000000   0.0000000
+   24    0.0000000   0.0000000
+   25    0.0000000   0.0000000
+   26    0.0000000   0.0000000
+   27    0.0000000   0.0000000
+   28    0.0000000   0.0000000
+ Task            3  line          170  Array, block =           32         126 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28           6
+           7
+ Task            0  line          170  Array, block =           32         131 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21           1
+           3
+ Task            0  at line number          170  ARRAY           32  BLOCK 
+         132  ind =           13          17  seg =            6           1 
+  actual size =           21
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           32         132
+       30264
+ Task            0  Block        30264  ARRAY ID:           32  BLOCK ID 
+         132  FLAGS            9  SEGS            6           1  ADDR 
+        47811135769488  DADDR         47811135769506 DATA ARRAY           32 
+  DATA BLOCK          132
+ Task            0  line          170  Array, block =           32         132
+
+             1           2           3
+   22    0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000
+ Task            0  line          170  Array, block =           32         132 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28           1
+           3
+ Task            0  at line number          181  ARRAY           33  BLOCK 
+         133  ind =           13          21  seg =            4           4 
+  actual size =           49
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           33         133
+       60604
+ Task            0  Block        60604  ARRAY ID:           33  BLOCK ID 
+         133  FLAGS            9  SEGS            4           4  ADDR 
+        47811148381424  DADDR         47811148381442 DATA ARRAY           33 
+  DATA BLOCK          133
+ Task            0  line          181  Array, block =           33         133
+
+             8           9          10          11          12          13          14
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            2  line          170  Array, block =           32         126 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28           4
+           5
+ Task            2  at line number          181  ARRAY           33  BLOCK 
+         127  ind =           13          21  seg =            4           5 
+  actual size =           49
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           33         127
+       60601
+ Task            2  Block        60601  ARRAY ID:           33  BLOCK ID 
+         127  FLAGS            9  SEGS            4           5  ADDR 
+        47704895414400  DADDR         47704895414418 DATA ARRAY           33 
+  DATA BLOCK          127
+ Task            2  line          181  Array, block =           33         127
+
+            15          16          17          18          19          20          21
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            3  at line number          181  ARRAY           33  BLOCK 
+         127  ind =           13          21  seg =            4           6 
+  actual size =           49
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           33         127
+       60598
+ Task            3  Block        60598  ARRAY ID:           33  BLOCK ID 
+         127  FLAGS            9  SEGS            4           6  ADDR 
+        47830587714464  DADDR         47830587714482 DATA ARRAY           33 
+  DATA BLOCK          127
+ Task            3  line          181  Array, block =           33         127
+
+            22          23          24          25          26          27          28
+    8    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    9    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   10    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   11    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   12    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   13    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   14    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          181  Array, block =           33         133 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14           8
+          14
+ Task            2  line          181  Array, block =           33         127 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14          15
+          21
+ Task            2  at line number          181  ARRAY           33  BLOCK 
+         128  ind =           13          21  seg =            5           5 
+  actual size =           49
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           33         128
+       60601
+ Task            2  Block        60601  ARRAY ID:           33  BLOCK ID 
+         128  FLAGS            9  SEGS            5           5  ADDR 
+        47704895414400  DADDR         47704895414418 DATA ARRAY           33 
+  DATA BLOCK          128
+ Task            2  line          181  Array, block =           33         128
+
+            15          16          17          18          19          20          21
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  at line number          181  ARRAY           33  BLOCK 
+         134  ind =           13          21  seg =            5           4 
+  actual size =           49
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           33         134
+       60603
+ Task            0  Block        60603  ARRAY ID:           33  BLOCK ID 
+         134  FLAGS            9  SEGS            5           4  ADDR 
+        47811148381008  DADDR         47811148381026 DATA ARRAY           33 
+  DATA BLOCK          134
+ Task            0  line          181  Array, block =           33         134
+
+             8           9          10          11          12          13          14
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            3  line          181  Array, block =           33         127 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            8          14          22
+          28
+ Task            3  at line number          181  ARRAY           33  BLOCK 
+         128  ind =           13          21  seg =            5           6 
+  actual size =           49
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           33         128
+       60597
+ Task            3  Block        60597  ARRAY ID:           33  BLOCK ID 
+         128  FLAGS            9  SEGS            5           6  ADDR 
+        47830587714048  DADDR         47830587714066 DATA ARRAY           33 
+  DATA BLOCK          128
+ Task            3  line          181  Array, block =           33         128
+
+            22          23          24          25          26          27          28
+   15    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   16    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   17    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   18    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   19    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   20    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   21    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            2  line          181  Array, block =           33         128 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21          15
+          21
+ Task            2  at line number          181  ARRAY           33  BLOCK 
+         129  ind =           13          21  seg =            6           5 
+  actual size =           49
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           33         129
+       60599
+ Task            2  Block        60599  ARRAY ID:           33  BLOCK ID 
+         129  FLAGS            9  SEGS            6           5  ADDR 
+        47704895413568  DADDR         47704895413586 DATA ARRAY           33 
+  DATA BLOCK          129
+ Task            2  line          181  Array, block =           33         129
+
+            15          16          17          18          19          20          21
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            3  line          181  Array, block =           33         128 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21          22
+          28
+ Task            3  at line number          181  ARRAY           33  BLOCK 
+         129  ind =           13          21  seg =            6           6 
+  actual size =           49
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           33         129
+       60597
+ Task            3  Block        60597  ARRAY ID:           33  BLOCK ID 
+         129  FLAGS            9  SEGS            6           6  ADDR 
+        47830587714048  DADDR         47830587714066 DATA ARRAY           33 
+  DATA BLOCK          129
+ Task            3  line          181  Array, block =           33         129
+
+            22          23          24          25          26          27          28
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            0  line          181  Array, block =           33         134 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           15          21           8
+          14
+ Task            3  line          181  Array, block =           33         129 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28          22
+          28
+ Task            0  at line number          181  ARRAY           33  BLOCK 
+         135  ind =           13          21  seg =            6           4 
+  actual size =           49
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           33         135
+       60602
+ Task            0  Block        60602  ARRAY ID:           33  BLOCK ID 
+         135  FLAGS            9  SEGS            6           4  ADDR 
+        47811148380592  DADDR         47811148380610 DATA ARRAY           33 
+  DATA BLOCK          135
+ Task            0  line          181  Array, block =           33         135
+
+             8           9          10          11          12          13          14
+   22    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   23    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   24    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   25    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   26    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   27    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+   28    0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+ Task            2  line          181  Array, block =           33         129 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28          15
+          21
+ Task            2  at line number          192  ARRAY           35  BLOCK 
+         130  ind =            9          17  seg =            1           2 
+  actual size =            6
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           35         130
+       30271
+ Task            2  Block        30271  ARRAY ID:           35  BLOCK ID 
+         130  FLAGS            9  SEGS            1           2  ADDR 
+        47704882805392  DADDR         47704882805410 DATA ARRAY           35 
+  DATA BLOCK          130
+ Task            2  line          192  Array, block =           35         130
+
+             4           5
+    1    0.0000000   0.0000000
+    2    0.0000000   0.0000000
+    3    0.0000000   0.0000000
+ Task            3  at line number          192  ARRAY           35  BLOCK 
+         130  ind =            9          17  seg =            1           3 
+  actual size =            6
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           35         130
+       30271
+ Task            3  Block        30271  ARRAY ID:           35  BLOCK ID 
+         130  FLAGS            9  SEGS            1           3  ADDR 
+        47830575106704  DADDR         47830575106722 DATA ARRAY           35 
+  DATA BLOCK          130
+ Task            3  line          192  Array, block =           35         130
+
+             6           7
+    1    0.0000000   0.0000000
+    2    0.0000000   0.0000000
+    3    0.0000000   0.0000000
+ Task            0  line          181  Array, block =           33         135 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges           22          28           8
+          14
+ Task            0  at line number          192  ARRAY           35  BLOCK 
+         136  ind =            9          17  seg =            1           1 
+  actual size =            9
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           35         136
+       30267
+ Task            0  Block        30267  ARRAY ID:           35  BLOCK ID 
+         136  FLAGS            9  SEGS            1           1  ADDR 
+        47811135770208  DADDR         47811135770226 DATA ARRAY           35 
+  DATA BLOCK          136
+ Task            0  line          192  Array, block =           35         136
+
+             1           2           3
+    1    0.0000000   0.0000000   0.0000000
+    2    0.0000000   0.0000000   0.0000000
+    3    0.0000000   0.0000000   0.0000000
+ Task            2  line          192  Array, block =           35         130 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3           4
+           5
+ Task            2  at line number          192  ARRAY           35  BLOCK 
+         131  ind =            9          17  seg =            2           2 
+  actual size =            4
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           35         131
+       30271
+ Task            2  Block        30271  ARRAY ID:           35  BLOCK ID 
+         131  FLAGS            9  SEGS            2           2  ADDR 
+        47704882805392  DADDR         47704882805410 DATA ARRAY           35 
+  DATA BLOCK          131
+ Task            2  line          192  Array, block =           35         131
+
+             4           5
+    4    0.0000000   0.0000000
+    5    0.0000000   0.0000000
+ Task            2  line          192  Array, block =           35         131 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5           4
+           5
+ Task            2  at line number          192  ARRAY           35  BLOCK 
+         132  ind =            9          17  seg =            3           2 
+  actual size =            4
+ Task            2  DUMP_BLOCK_DATA: array, block, i =           35         132
+       30267
+ Task            2  Block        30267  ARRAY ID:           35  BLOCK ID 
+         132  FLAGS            9  SEGS            3           2  ADDR 
+        47704882804432  DADDR         47704882804450 DATA ARRAY           35 
+  DATA BLOCK          132
+ Task            2  line          192  Array, block =           35         132
+
+             4           5
+    6    0.0000000   0.0000000
+    7    0.0000000   0.0000000
+ Task            3  line          192  Array, block =           35         130 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3           6
+           7
+ Task            3  at line number          192  ARRAY           35  BLOCK 
+         131  ind =            9          17  seg =            2           3 
+  actual size =            4
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           35         131
+       30270
+ Task            3  Block        30270  ARRAY ID:           35  BLOCK ID 
+         131  FLAGS            9  SEGS            2           3  ADDR 
+        47830575106464  DADDR         47830575106482 DATA ARRAY           35 
+  DATA BLOCK          131
+ Task            3  line          192  Array, block =           35         131
+
+             6           7
+    4    0.0000000   0.0000000
+    5    0.0000000   0.0000000
+ Task            2  line          192  Array, block =           35         132 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7           4
+           5
+ Task            3  line          192  Array, block =           35         131 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5           6
+           7
+ Task            3  at line number          192  ARRAY           35  BLOCK 
+         132  ind =            9          17  seg =            3           3 
+  actual size =            4
+ Task            3  DUMP_BLOCK_DATA: array, block, i =           35         132
+       30270
+ Task            3  Block        30270  ARRAY ID:           35  BLOCK ID 
+         132  FLAGS            9  SEGS            3           3  ADDR 
+        47830575106464  DADDR         47830575106482 DATA ARRAY           35 
+  DATA BLOCK          132
+ Task            3  line          192  Array, block =           35         132
+
+             6           7
+    6    0.0000000   0.0000000
+    7    0.0000000   0.0000000
+ Task            3  line          192  Array, block =           35         132 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7           6
+           7
+ Task            0  line          192  Array, block =           35         136 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            1           3           1
+           3
+ Task            0  at line number          192  ARRAY           35  BLOCK 
+         137  ind =            9          17  seg =            2           1 
+  actual size =            6
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           35         137
+       30264
+ Task            0  Block        30264  ARRAY ID:           35  BLOCK ID 
+         137  FLAGS            9  SEGS            2           1  ADDR 
+        47811135769488  DADDR         47811135769506 DATA ARRAY           35 
+  DATA BLOCK          137
+ Task            0  line          192  Array, block =           35         137
+
+             1           2           3
+    4    0.0000000   0.0000000   0.0000000
+    5    0.0000000   0.0000000   0.0000000
+ Task            0  line          192  Array, block =           35         137 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            4           5           1
+           3
+ Task            0  at line number          192  ARRAY           35  BLOCK 
+         138  ind =            9          17  seg =            3           1 
+  actual size =            6
+ Task            0  DUMP_BLOCK_DATA: array, block, i =           35         138
+       30263
+ Task            0  Block        30263  ARRAY ID:           35  BLOCK ID 
+         138  FLAGS            9  SEGS            3           1  ADDR 
+        47811135769248  DADDR         47811135769266 DATA ARRAY           35 
+  DATA BLOCK          138
+ Task            0  line          192  Array, block =           35         138
+
+             1           2           3
+    6    0.0000000   0.0000000   0.0000000
+    7    0.0000000   0.0000000   0.0000000
+ Task            0  line          192  Array, block =           35         138 
+  first =   0.000000000000000E+000  last =   0.000000000000000E+000 
+  xmin, xmax, sumsq =   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000  ranges            6           7           1
+           3
+ ---------- Finished! ---------------
+ Total energy:   -108.954130765069     
+ SCF energy:   -108.954130765069     
+ HF Instability Value:   0.000000000000000E+000
+ Gradient data:
+ Atom #           1 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Atom #           2 :   0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+  
+  Symmetrized gradient information 
+           1  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+           2  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ Elapsed time =   0.355304002761841       seconds.
+  
+     ACESIII version,  3.0.7       is run on         4  processors.
+     REFERENCE = RHF 
+  
+     CALCULATION TYPE =  EOM_RHF_CCSD_ENERGY                                                             
+     Number of electrons =        14
+     Number of basis functions =        28
+  
+     AcesIII has finished in          0.20  seconds
+  
+ 
+ 
+  START OF SCF CALCULATION
+  ------------------------------------------------------------
+  Iteration#         SCF energy       Density difference
+  ------------------------------------------------------------
+         1           -99.9001865360    0.00000000
+         2          -105.9744212001    2.65012257
+         3          -108.8515466007    0.90431886
+         4          -108.9472362485    0.16505343
+         5          -108.9535203292    0.03685364
+         6          -108.9540698146    0.01107891
+         7          -108.9541302704    0.00425201
+         8          -108.9541307593    0.00044875
+         9          -108.9541307647    0.00003341
+        10          -108.9541307651    0.00000957
+        11          -108.9541307651    0.00000168
+        12          -108.9541307651    0.00000042
+ 
+ 
+  SUMMARY OF SCF CALCULATION
+  ------------------------------------------------------------
+  Iteration#         SCF energy       Density difference
+  ------------------------------------------------------------
+         1           -99.9001865360    0.00000000
+         2          -105.9744212001    2.65012257
+         3          -108.8515466007    0.90431886
+         4          -108.9472362485    0.16505343
+         5          -108.9535203292    0.03685364
+         6          -108.9540698146    0.01107891
+         7          -108.9541302704    0.00425201
+         8          -108.9541307593    0.00044875
+         9          -108.9541307647    0.00003341
+        10          -108.9541307651    0.00000957
+        11          -108.9541307651    0.00000168
+        12          -108.9541307651    0.00000042
+  ------------------------------------------------------------
+  Final SCF energy =      -108.9541307651  After        12  iterations
+  ------------------------------------------------------------
+ 
+ 
+ 
+ 
+  Orbital energies
+  ------------------------------------------------------------
+  Alpha orbital energies    Hartree         eV
+  ------------------------------------------------------------
+         1           -15.6864330252       -426.8495797286
+         2           -15.6830301387       -426.7569824711
+         3            -1.4712085750        -40.0336240190
+         4            -0.7740969129        -21.0642496857
+         5            -0.6262274857        -17.0405176649
+         6            -0.6081594488        -16.5488613442
+         7            -0.6081594476        -16.5488613115
+  ------------------------------------------------------------
+         8             0.1756581361          4.7799012986
+         9             0.1756581364          4.7799013046
+        10             0.5946353003         16.1808505228
+        11             0.8200840297         22.3156228598
+        12             0.8722140492         23.7341529281
+        13             0.8722140501         23.7341529536
+        14             0.9922437786         27.0003281947
+        15             1.0510425056         28.6003230346
+        16             1.0510425061         28.6003230490
+        17             1.1444103800         31.1409922789
+        18             1.6432297481         44.7145585147
+        19             1.7573912134         47.8210501800
+        20             1.7573912134         47.8210501800
+        21             1.8820552856         51.2133323350
+        22             1.8820552858         51.2133323406
+        23             2.2989875683         62.5586375030
+        24             2.2989875683         62.5586375030
+        25             2.8744946564         78.2189828655
+        26             2.9964772198         81.5382974497
+        27             2.9964772199         81.5382974532
+        28             3.2838419719         89.3578905638
+  ------------------------------------------------------------
+     PRINTING RHF COEFFICIENTS TO FILE
+  
+     AcesIII has finished in          0.75  seconds
+  
+  
+     AcesIII has finished in          0.36  seconds
+  
+  ONE PARTICLE AMPLITUDES 
+   1  15  0.00000000
+   2  15  0.00000000
+   3  15  0.00000000
+   1  16  0.00000000
+   2  16  0.00000000
+   3  16  0.00000000
+   1  17  0.00000000
+   2  17  0.00000000
+   3  17  0.00000000
+   1  18  0.00000000
+   2  18  0.00000000
+   3  18  0.00000000
+   1  19  0.00000000
+   2  19  0.00000000
+   3  19  0.00000000
+   1  20  0.00000000
+   2  20  0.00000000
+   3  20  0.00000000
+   1  21  0.00000000
+   2  21  0.00000000
+   3  21  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   4   8  0.00000000
+   5   8  0.00000000
+   4   9  0.00000000
+   5   9  0.00000000
+   4  10  0.00000000
+   5  10  0.00000000
+   4  25  0.00000000
+   5  25  0.00000000
+   4  12  0.00000000
+   5  12  0.00000000
+   4  13  0.00000000
+   5  13  0.00000000
+   4  14  0.00000000
+   5  14  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   6   8  0.00000000
+   7   8  0.00000000
+   6   9  0.00000000
+   7   9  0.00000000
+   6  10  0.00000000
+   7  10  0.00000000
+   6  11  0.00000000
+   7  11  0.00000000
+   6  12  0.00000000
+   7  12  0.00000000
+   6  13  0.00000000
+   7  13  0.00000000
+   6  14  0.00000000
+   7  14  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   8   4  0.00000000
+   9   4  0.00000000
+  10   4  0.00000000
+  11   4  0.00000000
+  12   4  0.00000000
+  13   4  0.00000000
+  14   4  0.00000000
+   8   5  0.00000000
+   9   5  0.00000000
+  10   5  0.00000000
+  11   5  0.00000000
+  12   5  0.00000000
+  13   5  0.00000000
+  14   5  0.00000000
+  ONE PARTICLE AMPLITUDES 
+  15   6  0.00000000
+  16   6  0.00000000
+  17   6  0.00000000
+  18   4  0.00000000
+  19   4  0.00000000
+  20   4  0.00000000
+  21   4  0.00000000
+  15   5  0.00000000
+  16   5  0.00000000
+  17   5  0.00000000
+  18   1  0.00000000
+  19   1  0.00000000
+  20   1  0.00000000
+  21   1  0.00000000
+  ONE PARTICLE AMPLITUDES 
+  22   4  0.00000000
+  23   4  0.00000000
+  24   4  0.00000000
+  25   4  0.00000000
+  26   4  0.00000000
+  27   4  0.00000000
+  28   4  0.00000000
+  22   5  0.00000000
+  23   5  0.00000000
+  24   5  0.00000000
+  25   5  0.00000000
+  26   5  0.00000000
+  27   5  0.00000000
+  28   5  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   8  15  0.00000000
+   9  15  0.00000000
+  10  15  0.00000000
+  11  15  0.00000000
+  12  15  0.00000000
+  13  15  0.00000000
+  14  15  0.00000000
+   8  16  0.00000000
+   9  16  0.00000000
+  10  16  0.00000000
+  11  16  0.00000000
+  12  16  0.00000000
+  13  16  0.00000000
+  14  16  0.00000000
+   8  17  0.00000000
+   9  17  0.00000000
+  10  17  0.00000000
+  11  17  0.00000000
+  12  17  0.00000000
+  13  17  0.00000000
+  14  17  0.00000000
+   8  18  0.00000000
+   9  18  0.00000000
+  10  18  0.00000000
+  11  18  0.00000000
+  12  18  0.00000000
+  13  18  0.00000000
+  14  18  0.00000000
+   8  19  0.00000000
+   9  19  0.00000000
+  10  19  0.00000000
+  11  19  0.00000000
+  12  19  0.00000000
+  13  19  0.00000000
+  14  19  0.00000000
+   8  20  0.00000000
+   9  20  0.00000000
+  10  20  0.00000000
+  11  20  0.00000000
+  12  20  0.00000000
+  13  20  0.00000000
+  14  20  0.00000000
+   8  21  0.00000000
+   9  21  0.00000000
+  10  21  0.00000000
+  11  21  0.00000000
+  12  21  0.00000000
+  13  21  0.00000000
+  14  21  0.00000000
+  ONE PARTICLE AMPLITUDES 
+  15  15  0.00000000
+  16  22  0.00000000
+  17  22  0.00000000
+  18  22  0.00000000
+  19  22  0.00000000
+  20  22  0.00000000
+  21  22  0.00000000
+  15  23  0.00000000
+  16  23  0.00000000
+  17  23  0.00000000
+  18  23  0.00000000
+  19  23  0.00000000
+  20  23  0.00000000
+  21  23  0.00000000
+  15  24  0.00000000
+  16  24  0.00000000
+  17  24  0.00000000
+  18  24  0.00000000
+  19  24  0.00000000
+  20  24  0.00000000
+  21  24  0.00000000
+  15  25  0.00000000
+  16  25  0.00000000
+  17  25  0.00000000
+  18  25  0.00000000
+  19  25  0.00000000
+  20  25  0.00000000
+  21  25  0.00000000
+  15  26  0.00000000
+  16  26  0.00000000
+  17  26  0.00000000
+  18  26  0.00000000
+  19  26  0.00000000
+  20  26  0.00000000
+  21  26  0.00000000
+  15  27  0.00000000
+  16  27  0.00000000
+  17  27  0.00000000
+  18  27  0.00000000
+  19  27  0.00000000
+  20  27  0.00000000
+  21  27  0.00000000
+  15  28  0.00000000
+  16  28  0.00000000
+  17  28  0.00000000
+  18  28  0.00000000
+  19  28  0.00000000
+  20  28  0.00000000
+  21  28  0.00000000
+  ONE PARTICLE AMPLITUDES 
+  22  15  0.00000000
+  23  15  0.00000000
+  24  15  0.00000000
+  25  15  0.00000000
+  26  15  0.00000000
+  27  15  0.00000000
+  28  15  0.00000000
+  22  16  0.00000000
+  23  16  0.00000000
+  24  16  0.00000000
+  25  16  0.00000000
+  26  16  0.00000000
+  27  16  0.00000000
+  28  16  0.00000000
+  22  17  0.00000000
+  23  17  0.00000000
+  24  17  0.00000000
+  25  17  0.00000000
+  26  17  0.00000000
+  27  17  0.000  ONE PARTICLE AMPLITUDES 
+  22   8  0.00000000
+  23   8  0.00000000
+  24   8  0.00000000
+  25   8  0.00000000
+  26   8  0.00000000
+  27   8  0.00000000
+  28   8  0.00000000
+  22   9  0.00000000
+  23   9  0.00000000
+  24   9  0.00000000
+  25   9  0.00000000
+  26   9  0.00000000
+  27   9  0.00000000
+  28   9  0.00000000
+  22  10  0.00000000
+  23  10  0.00000000
+  24  10  0.00000000
+  25  10  0.00000000
+  26  10  0.00000000
+  27  10  0.00000000
+  28  10  0.00000000
+  22  11  0.00000000
+  23  11  0.00000000
+  24  11  0.00000000
+  25  11  0.00000000
+  26  11  0.00000000
+  27  11  0.00000000
+  28  11  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   1   6  0.00000000
+   2   6  0.00000000
+   3   6  0.00000000
+   1   7  0.00000000
+   2   7  0.00000000
+   3   7  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   4   6  0.00000000
+   5   6  0.00000000
+   4   7  0.00000000
+   5   7  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   6   6  0.00000000
+   7   6  0.00000000
+   6   7  0.00000000
+   7   7  0.00000000
+00
+  26  14  0.00000000
+  27  14  0.00000000
+  28  14  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   1   1  0.00000000
+   2   1  0.00000000
+   3   1  0.00000000
+   1   2  0.00000000
+   2   2  0.00000000
+   3   2  0.00000000
+   1   3  0.00000000
+   2   3  0.00000000
+   3   3  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   4   1  0.00000000
+   5   1  0.00000000
+   4   2  0.00000000
+   5   2  0.00000000
+   4   3  0.00000000
+   5   3  0.00000000
+  ONE PARTICLE AMPLITUDES 
+   6   1  0.00000000
+   7   1  0.00000000
+   6   2  0.00000000
+   7   2  0.00000000
+   6   3  0.00000000
+   7   3  0.00000000

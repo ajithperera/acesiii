@@ -1,0 +1,9 @@
+#! /bin/bash 
+rm BLOCKDATA
+rm BLOCK_INDEX
+rm JAINDX
+rm JOBARC
+rm MOL
+rm ZMAT.AUTO
+rm ZMAT.BAS
+rm ca.data
