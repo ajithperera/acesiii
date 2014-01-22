@@ -1136,6 +1136,15 @@ C Hence, the limit NOrbDel+1.
 C         
       NORB = NORB - 1 
       CALL ZERO(CJUNK,NORB*NORB)
+
+#ifdef _DEBUG_LVLM
+      do i= 1, norxb
+      J=JTRAN(I)
+      Write(6,"(I3,1x,i3,1x,I3,1X,F5.1)")
+     &          i,j,(iTRAn(I,k), k=1,j), (CTRAN(I,K), K = 1,J)
+      enddo 
+#endif
+
       DO I=1,NORXB
          J=JTRAN(I)
          DO K=1,J
@@ -1158,14 +1167,14 @@ C
       CALL PUTREC(20,'JOBARC','NUMBASIR',MAXLOP,NXBAS)
       CALL PUTREC(20,'JOBARC','FULLSOAO',NORB*NORB*IINTFP,CJUNK)
 
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVLM
       Write(6,"(a,i4)") "The number of irreps", Maxlop
       Write(6,"(a)") "The number of basis function for irrep"
       Write(6,"(8i4)") (Nxbas(i), i=1, maxlop)
       Write(6,*)
       WRITE(6,*) '  @READIN-I, SYMTRANS matrix '
       CALL OUTPUT(CJUNK,1,NORB,1,NORB,NORB,NORB,1)
-C#endif
+#endif 
 C
 C This is the full cartesian basis AO -> SO transformation.
 C Include in this info the number of function in each irrep too,
@@ -1188,8 +1197,10 @@ C
          ENDDO
       ENDDO
       
-cSSS      WRITE(6,*) '  @READIN-I, CSYMTRAN matrix '
-cSSS      CALL OUTPUT(CJUNK,1,NORB,1,NORB,NORB,NORB,1)
+#ifdef _DEBUG_LVLM
+      WRITE(6,*) '  @READIN-I, CSYMTRAN matrix '
+      CALL OUTPUT(CJUNK,1,NORB,1,NORB,NORB,NORB,1)
+#endif
 C
 C Write some of the Cartesian stuff to JOBARC.
 C

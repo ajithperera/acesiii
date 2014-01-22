@@ -71,7 +71,7 @@ C
       I020 = 1
       I030 = I020 + NBASX
       I040 = I030 + NBASX
-  
+
       CALL EVLOUT(SCFEVAL, ICORE(I020), ICORE(I030), IREPS, NBAS,
      &            NIRREP, NOCC, ISPIN)
 

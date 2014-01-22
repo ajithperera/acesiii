@@ -19,7 +19,7 @@ c-----------------------------------------------------------------------------
       integer i, j, k, ii, jj, kk  
       integer nrows, n, ncolumns 
 
-#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVLM
       Write(6,"(6(1x,i5))") (erd_index(i), i=1, nrows)
       Write(6,*)
       Write(6,"(6(1x,F10.5))") (scalars(i), i=1, nrows)
@@ -41,7 +41,7 @@ c-----------------------------------------------------------------------------
       enddo
       enddo
 
-#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVLM
       write(6,"(a)") "The reordered and renormalized SCF vectors"
       call output(ovlp_vmol, 1, nrows, 1, ncolumns, nrows, 
      &            ncolumns,1)

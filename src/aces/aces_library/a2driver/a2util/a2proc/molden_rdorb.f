@@ -54,7 +54,7 @@ c sym.com : end
       parameter (zilch=0.0D0)
       data cscfener /'SCFEVLA0','SCFEVLB0'/
       data cscforb  /'SCFEVCA0','SCFEVCB0'/
-      data cscfa3orb/'SCFEVCA3','SCFEVCB3'/
+      data cscfa3orb/'SCFVECA3','SCFVECB3'/
       data cexxcoef /'EXXCOEFA','EXXCOEFB'/
       data cnumdrop /'NUMDROPA','NUMDROPB'/  
       data sptype   /'Alpha','Beta '/
@@ -113,6 +113,12 @@ c new routine a3_symadapt_scfvecs).
            if (ACESIII) Then
                call getrec(20,'JOBARC',cscfa3orb(ispin),
      $                     nmo*nao*iintfp,orb)
+              call getrec(20, "JOBARC", 'OCCUPYA0', 1, POP(1,1))
+              Vrt(1,1) = NMO - POP(1,1)
+              If (iuhf.eq.1) then
+                  call getrec(20, "JOBARC", 'OCCUPYB0', 1, POP(2,1))
+                  Vrt(2,1) = NMO - POP(2,1)
+              Endif
            else
                call getrec(20,'JOBARC',cscforb(ispin),
      $                     nmo**2*iintfp,scr(i010))

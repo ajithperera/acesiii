@@ -108,11 +108,14 @@ C
       Iedens     = Igdens     + Naobfns*Naobfns
       Inorbs     = Iedens     + Naobfns*Naobfns
       Iexseval_a = Inorbs     + Naobfns*Naobfns
-      Itmp1      = Iexseval_a + Naobfns*Naobfns
-      Iocc       = Itmp1      + Naobfns
+      Itmp1      = Iexseval_a + Naobfns
+      Iocc       = Itmp1      + Naobfns*Naobfns 
       Ioed2a_sc  = Iocc       + Naobfns
       Ioed2a_or  = Ioed2a_sc  + Naobfns
-      Inext      = Ioed2a_or  + Naobfns
+      Io_mos     = Ioed2a_or  + Naobfns
+      It_mos     = Io_mos     + Naobfns
+      IEng       = It_mos     + Naobfns
+      Inext      = IEng       + Naobfns
 
       If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
      &                                     Maxcor)
@@ -132,7 +135,10 @@ C
      &                                    Work(Inext), 
      &                                    Naobfns, Nbfns, Imemleft,
      &                                    Iuhf, Iroot(Roots),
-     &                                    Nbfns_4irrep, Nirrep)
+     &                                    Nbfns_4irrep, Nirrep,
+     &                                    Work(Io_mos), 
+     &                                    Work(It_mos),
+     &                                    Work(Ieng))
          Enddo
       Endif
 

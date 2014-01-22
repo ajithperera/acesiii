@@ -32,6 +32,7 @@ C
 20      CONTINUE
 10     CONTINUE
 C
+       Write(6,*) (NSPIN(i), i=1,2)
        CALL IZERO(NOCC(1,ISPIN),8)
        CALL PIKSR2(NBASTOT,EVAL,ISCR)
        DO 40 IOCC=1,NSPIN(ISPIN)
@@ -41,5 +42,6 @@ C
 40     CONTINUE
 30    CONTINUE
 C
+        Write(6,*) NOCC
       RETURN
       END

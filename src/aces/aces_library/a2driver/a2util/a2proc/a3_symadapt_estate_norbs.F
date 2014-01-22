@@ -1,7 +1,8 @@
       subroutine a3_symadapt_estate_norbs(ener,iocc,orb,dens,nlorb,
      &                                    edens,Oed2AScal, Ioed2Aord,
-     &                                    tmp1,scr, nao,nbas,maxcor,
-     &                                    iuhf,iroot,Nbfirr, Nirrep)
+     &                                    tmp1,scr,nao,nbas,maxcor,
+     &                                    iuhf,iroot,Nbfirr, Nirrep,
+     &                                    O_MOS, T_MOS, Eneg)
 c-----------------------------------------------------------------------
       implicit double precision (a-h,o-z)
 
@@ -17,9 +18,9 @@ C
       parameter (zilch=0.0D0)
       parameter (DENS_THRESH=1.0D-08)
 C
-      double precision ener(nbas),orb(nao,nbas),scr(maxcor)
-      double precision dens(nbas*nbas),edens(nbas,nbas),nlorb(nbas*nbas)
-      double precision nelec, tmp1(Nao, Nao)
+      double precision ener(nao),orb(nao*nao),scr(maxcor)
+      double precision dens(nao*nao),edens(nao,nao),nlorb(nao*nao)
+      double precision nelec, tmp1(Nao,Nao)
       
       Dimension Oed2AScale(Nao), Ioed2Aorder(Nao)
       Dimension Nprim_shell(Maxangshell*Mxatms)
@@ -34,9 +35,10 @@ C
       character*8 cnumdrop(2)
       character*5 sptype(2)
 
-      double precision  iocc(nbas)
+      double precision  iocc(nao), Eneg(Nao)
       integer  idrppop(8),idrpvrt(8)
       integer  nocc(8,2), Nbfirr(8)
+      integer  O_MOS(Nao), T_MOS(Nao)
 C
       data denstype /'REOMDN','LEOMDN'/
       data sptype   /'Alpha','Beta '/
@@ -75,9 +77,13 @@ C
       iend=i040+nbas
 
       if(Iend.gt.maxcor)
+
      &  call insmem('a3_symadapt_estate_norbs',iend,maxcor)
 
       do ispin=1,iuhf+1
+
+C Loop over Idens is for OO and VV blocks of the transition density.
+
          Do Idens = 1, 2
 C
 C Watson
@@ -141,7 +147,15 @@ C
 C Generate the occupation numbers for each irrep based on eigen
 C values (SCF) and the number of basis functions per irrep.
 C
-        Call Occupy(Nirrep, Nbfirr, Nbas, ener, scr, Nocc(1,Ispin),
+        If (Idens .EQ. 1) Call Getrec(20, "JOBARC", "SCFEVLA0", 
+     &                                Nbas*Iintfp, Ener)
+        If (Ispin .EQ. 2 .and. Idens .EQ. 1) Call Getrec(20, "JOBARC", 
+     &                                                   "SCFEVLB0",
+     &                                                    Nbas*Iintfp, 
+     &                                                    Ener)
+
+        Write(6,*) ener
+        Call Occupy(Nirrep, Nbfirr, Nbas, ener, scr, Nocc(1,1),
      &              1)
         If (Iuhf .EQ. 0) Call Icopy(8, Nocc(1, 1), 1, Nocc(1,2), 1)
 
@@ -192,16 +206,42 @@ C
 
 #ifdef _DEBUG_LVL0
         Write(6,*)
-        WRITE (6,"(a)") 'The eigenvalues and natural orbitals'
+        If (Idens .EQ. 1) then
+         WRITE (6,"(a)") 'The OO eigenvalues and natural orbitals'
+        Else
+         WRITE (6,"(a)") 'The VV eigenvalues and natural orbitals'
+        Endif
         CALL OUTPUT(dens,1,Norbs,1,Norbs,Norbs,NOrbs,1) 
         CALL OUTPUT(NlOrb,1,Norbs,1,NOrbs,Norbs,Norbs,1) 
 #endif
-        call dcopy(Norbs,dens,1,iocc,1)
+        If (Idens .EQ. 1) call dcopy(Norbs,dens,Norbs+1,iocc,1)
+        If (Idens .EQ. 2) call dcopy(Norbs,dens,Norbs+1,iocc(Noccs+1),
+     &                               1)
         nelec = 0.0D0
+        I     = 0
+        If (Idens .EQ. 1) Call IZero(O_mos, Nao)
+        If (Idens .EQ. 2) Call IZero(T_mos, Nao)
+
         DO imo = 1, Norbs
            nelec = nelec + iocc(imo)
-        ENDDO
+C
+C Track the occ-occ and virtual orbitals that at least have 0.5
+C contribution to the transition. Note that 0.5 is simply a choice
+C that I made and also those are the only orbitals that are 
+C printed. 
+           If (Idens .EQ. 1) Then
+              If (iocc(imo) .GT. 0.50D0) Then
+                 I = I + 1
+                 O_mos(I) = imo
+              Endif 
+           Else if (Idens .EQ. 2) then
+              If (iocc(Noccs+ imo) .GT. 0.50D0) Then
+                 I = I + 1
+                 T_mos(I) = imo
+              Endif
+           Endif
 
+        ENDDO
 #ifdef _DEBUG_LVL0
         Write(6,*)
         WRITE (6,"(a)") ' Trace of diagonalized MO density matrix: '
@@ -221,22 +261,46 @@ C spin type during first iteration of the inner loop (OO block)
 C
         call getrec(20,'JOBARC', SCFVECS(Ispin), Nbas*Nbas*iintfp,dens)
 C
+#ifdef _DEBUG_LVLM
+           WRITE (6,"(a)") ' The Alpha MO vectors'
+           CALL OUTPUT(Dens,1,NBAS,1,Nbas,NBAS,Nbas,1) 
+           If (Iuhf .Eq. 1 .AND. Ispin .eq. 2) Then
+              WRITE (6,"(a)") ' The Beta MO vectors'
+              CALL OUTPUT(Dens,1,NBAS,1,Nbas,NBAS,Nbas,1) 
+           Endif 
+           Write(6,*)
+#endif
+C
 C The eigenvectors in the JOBARC are not ACESIII order (not binpacked).
-C So, binpack them
+C So, binpack them becacuse OO and VV bolcks are in that order.
 C
         Call binpack(Dens, Nshells, Nprim_shell,
      &               Orig_nprim_shell, Reorder_Shell, Scr(I030),
      &               Scr(I040), Nbas, Nbas)
 
-        Ioffd = (Idens-1)*Nbas*Noccs + 1
+#ifdef _DEBUG_LVL0
+           WRITE (6,"(a)") ' The Alpha MO vectors (after binpack)'
+           CALL OUTPUT(Dens,1,NBAS,1,Nbas,NBAS,Nbas,1) 
+           If (Iuhf .Eq. 1 .AND. Ispin .eq. 2) Then
+             WRITE (6,"(a)") ' The Beta MO vectors (after binpack)'
+             CALL OUTPUT(Dens,1,NBAS,1,Nbas,NBAS,Nbas,1) 
+           Endif 
+           Write(6,*)
+#endif
+        If (Idens .EQ. 1) Call Dcopy(Nbas*Norbs, Dens, 1, Scr(I000), 1)
+        If (Idens .EQ. 2) Call Dcopy(Nbas*Norbs, Dens(Noccs*Nbas+1), 1, 
+     &                               Scr(I000), 1)
 
-        CALL XGEMM('N','N',nbas,norbs,norbs,
-     +                     1.0D0,DENS(ioffd),   nbas,
-     +                           NLORB,  norbs,
-     +                     0.0D0,SCR(I010),    nbas )
+        CALL XGEMM('N','N',Nbas,Nbas,Norbs,
+     +                     1.0D0, Scr(I000), nbas,
+     +                           Nlorb, Norbs,
+     +                     0.0D0,SCR(I010),    Nbas )
 
-CSSS       If (Idens .EQ. 1) Call Dcopy (Nbas*Norbs, SCR(I010), 1, Dens, 1)
-       
+        If (Idens .EQ. 1) Call Dcopy (Nbas*Norbs, SCR(I010), 1,
+     &                                Scr(I020), 1)
+        If (Idens .EQ. 2) Call Dcopy (Nbas*Norbs, SCR(I010), 1, 
+     &                                Scr(I020+Noccs*Nbas), 1)
+C       
 #ifdef _DEBUG_LVL0
         If (Idens .EQ. 1) Then
            WRITE (6,"(a)") ' The OO rotated MO vectors'
@@ -246,25 +310,28 @@ CSSS       If (Idens .EQ. 1) Call Dcopy (Nbas*Norbs, SCR(I010), 1, Dens, 1)
            CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1) 
         Endif
 #endif
+      Enddo 
 
+#ifdef _DEBUG_LVL0
+        Write(6,*)
+        WRITE (6,"(a)") "The OO and VV Rotated Eigenvetros"
+        CALL OUTPUT(scr(I020),1,NAO,1,NBAS,NAO,NBAS,1) 
+#endif
+C
 C Before we proceed further we need to convert the vectors from 
 C OED (ACESIII) scaling and order to ACESII scaling and order. 
 C
       Call Do_oed_to_vmol(Nbas, Norbs, Ioed2Aorder, Oed2AScale, 
-     &                    Scr(I010), Tmp1)
-      Call Dcopy(Nbas*Norbs, Tmp1, 1, Scr(I010), 1)
-      Call undo_binpack(Scr(I010), Nshells, Nprim_shell,
+     &                    Scr(I020), Tmp1)
+      Call Dcopy(Nbas*Norbs, Tmp1, 1, Scr(I020), 1)
+      Call undo_binpack(Scr(I020), Nshells, Nprim_shell,
      &                   Orig_nprim_shell, Reorder_Shell, Scr(I030),
      &                   Scr(I040), Nbas, Norbs)
 C
 #ifdef _DEBUG_LVL0
-        If (Idens .EQ. 1) Then
-           WRITE (6,"(a)") ' The OO rotated MO vectors after OED/VMOL'
-           CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1)
-        Else
-           WRITE (6,"(a)") ' The VV rotated MO vectors after OED/VMOL'
-           CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1)
-        Endif
+        Write(6,*)
+        WRITE (6,"(a)") "The Rotated ACES II like Eigenvectors"
+        CALL OUTPUT(SCR(I020),1,NBAS,1,Norbs,NBAS,Norbs,1)
 #endif
         call getrec(20,'JOBARC','CMP2ZMAT',nao*nbas*iintfp,scr(i000))
 
@@ -272,21 +339,51 @@ C
         WRITE (6,"(a)") "The CMP2ZMAT "
         CALL OUTPUT(scr(i000),1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
 #endif
-        call xgemm('n','n',nao,nbas,nbas,one,scr(i000),nao,scr(i010),
-     &    nbas,zilch,orb,nao)
+        call xgemm('n','n',nao,nbas,nbas,one,scr(i000),nao,scr(i020),
+     &              nbas,zilch,orb,nao)
 
 #ifdef _DEBUG_LVL0
         WRITE (6,"(a)") ' Nat. Orbs. NAOBFNS x MO ! '
         CALL OUTPUT(orb,1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
 #endif 
-        Enddo 
-
-#ifdef _NOSKIP
-        call getrec(-1,'JOBARC',cscfener,nbas*iintfp,ener)
+CSSS        call getrec(-1,'JOBARC',cscfener,nbas*iintfp,ener)
 C
-        Call Get_irreps(orb, Ener, Scr, Imemleft*Iintfp, Nbas,
-     &                  Nao, Ispin, Nocc, Iuhf)
+C Get the number of MOS that are relevent for the excitation from
+C O_mos and T_mos arrays and copy those MOs to a seperate array.
+
+        N_o_mos = 0
+        N_t_mos = 0
+        I       = 0
+        Write(6,*) O_MOS
+        Write(6,*) T_MOS
+        Do Imo = 1, Nao
+           If (O_MOS(Imo) .Gt. 0) N_o_mos = N_o_mos + 1
+           IF (T_MOS(Imo) .Gt. 0) N_t_mos = N_t_mos + 1
+        Enddo
+        Write(6,*) Ener
+        Do Imo = 1,  N_o_mos
+           Eneg(Imo) = Ener(O_MOS(Imo))
+        Enddo 
+        Do Imo = 1,  N_t_mos
+           Eneg(N_o_mos + Imo) = Ener(T_MOS(Imo))
+        Enddo 
+C
+        N_ot_total = N_o_mos + N_t_mos
+        Write(6,*) Eneg
+        
+        Call Dcopy(N_o_mos*Nao, Orb, 1, Nlorb, 1)
+        Call Dcopy(N_t_mos*Nao, Orb(Noccs*Nao+1), 1, 
+     &             Nlorb(N_o_mos*Nao+1), 1)
+#ifdef _DEBUG_LVL0
+        Write(6,*) 
+        WRITE (6,"(a)") ' Orbitals that we are interested'
+        CALL OUTPUT(Nlorb,1,NAO,1,N_ot_total,NAO,N_ot_total,1)
+        Write(6, "(a)") "The Eigenvalues"
+        Write(6,"(6(1x,F10.5))") (iocc(imo), imo=1, Norbs)
 #endif
+        Call Get_irreps(Nlorb, Eneg, Scr, Imemleft*Iintfp, N_ot_total,
+     &                  Nao, Ispin, Nocc, Iuhf)
+
       Enddo
 
       return

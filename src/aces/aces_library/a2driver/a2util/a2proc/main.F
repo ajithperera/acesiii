@@ -212,7 +212,6 @@ C
       endif
 
       if (module(1:9).eq.'symadapt ') then
-         Write(6,*) "Entering sym-adaptation"
          call a3_symadapt_main(Icore(I0), icrsiz)
          goto 9998
       endif

@@ -21,7 +21,8 @@ C
 C
 C  Now go get the eigenvalues.
 C
-      CALL GETREC(20,'JOBARC','SCFEVLA0',NBAS*IINTFP,EVAL(1))
+C This is not needed for ACES III interface
+CSSS      CALL GETREC(20,'JOBARC','SCFEVLA0',NBAS*IINTFP,EVAL(1))
 C
       If (ispin.eq.1) then
           CALL GETREC(20,'JOBARC','EVCSYMAF',NBAS*IINTFP,IRRSYM1)
