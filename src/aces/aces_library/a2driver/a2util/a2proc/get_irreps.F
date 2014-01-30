@@ -2,13 +2,14 @@ C
 C DRIVER FOR DETERMINATION OF ORBITAL SYMMETRIES. From ACES II. 
 C 
       SUBROUTINE GET_IRREPS(SCFVEC,SCFEVAL,ICORE,MAXCOR,NBAS,NBASX,
-     &                      ISPIN, NOCC, IUHF)
+     &                      ISPIN, NOCC, IUHF, STATE)
 C
       IMPLICIT INTEGER (A-Z)
 
       DIMENSION ICORE(MAXCOR), IREPS(9), NBFIRR(8), NOCC(8,2)
       DOuble Precision Scfvec(Nbasx*Nbas), Scfeval(Nbas)
       CHARACTER*1 SP(2)
+      CHARACTER*7 STATE
 C
 #include "machsp.com"
 C
@@ -54,7 +55,7 @@ C
       I040 = I030 + NBASX
 
       CALL EVLOUT(SCFEVAL, ICORE(I020), ICORE(I030), IREPS, NBAS,
-     &            NIRREP, NOCC, ISPIN)
+     &            NIRREP, NOCC, ISPIN, STATE)
 
       RETURN
       END

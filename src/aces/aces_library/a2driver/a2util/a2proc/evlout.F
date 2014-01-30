@@ -1,5 +1,5 @@
       SUBROUTINE EVLOUT(EVAL, IRERDR, IVMLSYM, IREPS, NBAS, NIRREP,
-     &                  NOCC, ISPIN)
+     &                  NOCC, ISPIN, STATE)
 C
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 C
@@ -11,6 +11,7 @@ C
       CHARACTER*8 IRRSYM1(MAXBASFN),IRRSYM2(MAXBASFN)
       CHARACTER*4 IRPCHAR
       CHARACTER*5 SPIN(2)
+      CHARACTER*7 STATE
       LOGICAL FANDUP, SYMINFO_EXIST
       DIMENSION EVAL(NBAS),IRERDR(NBAS)
       DIMENSION IVMLSYM(NBAS),IREPS(9)
@@ -93,6 +94,11 @@ C
      &              '  (1H = 27.2113957 eV)',/)
         ELSE
           WRITE(LUOUT,5002)SPIN(ISPIN)
+          IF (STATE .EQ. "EXCITED") Then
+          Write(6, "(2x,a)")
+     &    "THE EIGENVALUES REFER TO THE REFERENCE STATE ORBITALS" 
+          write(6,*)
+          ENDIF
  5002     FORMAT(T3,'ORBITAL EIGENVALUES (',A5,')',
      &              '  (1H = 27.2113957 eV)',/)
         ENDIF

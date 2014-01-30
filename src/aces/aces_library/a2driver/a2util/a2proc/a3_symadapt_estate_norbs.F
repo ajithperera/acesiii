@@ -80,6 +80,9 @@ C
 
      &  call insmem('a3_symadapt_estate_norbs',iend,maxcor)
 
+      N_o_mos = 0
+      N_t_mos = 0
+       
       do ispin=1,iuhf+1
 
 C Loop over Idens is for OO and VV blocks of the transition density.
@@ -153,8 +156,7 @@ C
      &                                                   "SCFEVLB0",
      &                                                    Nbas*Iintfp, 
      &                                                    Ener)
-
-        Write(6,*) ener
+C
         Call Occupy(Nirrep, Nbfirr, Nbas, ener, scr, Nocc(1,1),
      &              1)
         If (Iuhf .EQ. 0) Call Icopy(8, Nocc(1, 1), 1, Nocc(1,2), 1)
@@ -237,7 +239,7 @@ C printed.
            Else if (Idens .EQ. 2) then
               If (iocc(Noccs+ imo) .GT. 0.50D0) Then
                  I = I + 1
-                 T_mos(I) = imo
+                 T_mos(I) = imo + noccs 
               Endif
            Endif
 
@@ -247,7 +249,7 @@ C printed.
         WRITE (6,"(a)") ' Trace of diagonalized MO density matrix: '
         WRITE (6,"(F10.5)")  nelec
         Write(6,"(a)") "Eigenvalues"
-        Write(6,"(6(1x,F10.5))") (iocc(imo), imo=1, Norbs)
+        Write(6,"(6(1x,F10.5))") (iocc(imo), imo=1, Nbas)
 
 #endif 
 C
@@ -305,11 +307,100 @@ C
         If (Idens .EQ. 1) Then
            WRITE (6,"(a)") ' The OO rotated MO vectors'
            CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1) 
-        Else
+        Else if (Idens .EQ. 2) Then
            WRITE (6,"(a)") ' The VV rotated MO vectors'
            CALL OUTPUT(SCR(I010),1,NBAS,1,Norbs,NBAS,Norbs,1) 
         Endif
 #endif
+CSSS      Enddo 
+
+C#ifdef _EXPERIMENTAL
+
+        If (Idens .EQ. 1) then
+           Do Imo = 1, Nao
+              If (O_MOS(Imo) .Gt. 0) N_o_mos = N_o_mos + 1
+           Enddo
+         
+           k = 0
+           do j=1,N_o_mos
+              Ioff = I010 + (j-1)*Nbas
+           do i=1, Norbs
+               k = k + 1
+               orb(k)=Ddot(nbas,Scr(Ioff), 1, Scr(I000+(i-1)*Nbas), 1)
+           enddo
+           enddo
+
+#ifdef _DEBUG_LVL0
+        Write(6,*)
+        WRITE (6,"(a)") "The OO|MO overlap"
+        do i=1, N_o_mos
+           Write(6,"(4(F15.10))") (orb(j), j=1, Norbs)
+           write(6,*)
+        enddo
+#endif
+          I = 0
+          Do Imo = 1, N_o_mos
+             Ioff = Imo*Norbs 
+          Do Jmo = 1, Norbs
+             Joff = Ioff - (Jmo-1)
+             If (dabs(orb(Joff)) .Gt. 0.5D0) Then
+                 I = I + 1
+                 O_MOS(I) = Joff
+             Endif
+          Enddo
+          Enddo 
+
+#ifdef _DEBUG_LVL0
+        Write(6,*)
+        WRITE (6,"(a)") "The active occupied orbitals"
+        Write(6,"(6(i3))") (O_MOS(i), i=1, N_o_mos)
+#endif
+        Endif 
+C
+        I = 0
+        If (Idens .EQ. 2) then
+           Do Imo = 1, Nao
+              If (T_MOS(Imo) .Gt. 0) N_t_mos = N_t_mos + 1
+           Enddo
+
+           k = 0
+           do j=1,N_t_mos
+              Ioff = I010 + (j-1)*Nbas
+           do i=1, Norbs
+               k = k +1 
+               orb(k)=Ddot(nbas,Scr(Ioff), 1, Scr(I000+(i-1)*Nbas), 1)
+           enddo
+           enddo 
+
+#ifdef _DEBUG_LVL0
+        Write(6,*)
+        WRITE (6,"(a)") "The VV|MO overlap"
+        do i=1, N_t_mos 
+        Write(6,"(4(F15.10))") (orb(j), j=1, Norbs)
+        write(6,*)
+        enddo
+#endif
+          I = 0
+          Do Imo = 1, N_t_mos
+             Ioff = (Imo-1)*Norbs + 1
+          Do Jmo = 1, Norbs
+             Joff = Ioff + (Jmo-1)
+             If (dabs(orb(Joff)) .Gt. 0.5D0) Then
+                I = I +1
+                T_MOS(I) = Joff + Noccs
+             Endif
+          Enddo
+          Enddo
+
+#ifdef _DEBUG_LVL0
+        Write(6,*)
+        WRITE (6,"(a)") "The active virtuals orbitals"
+        Write(6,"(6(i3))") (T_MOS(i), i=1, N_t_mos)
+#endif
+
+        Endif 
+C#endif 
+
       Enddo 
 
 #ifdef _DEBUG_LVL0
@@ -337,7 +428,7 @@ C
 
 #ifdef _DEBUG_LVL0
         WRITE (6,"(a)") "The CMP2ZMAT "
-        CALL OUTPUT(scr(i000),1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
+        CALL OUTPUT(scr(i000),1,NAO,1,NBAS,NAO,NBAS,1) ! = 1 
 #endif
         call xgemm('n','n',nao,nbas,nbas,one,scr(i000),nao,scr(i020),
      &              nbas,zilch,orb,nao)
@@ -346,21 +437,7 @@ C
         WRITE (6,"(a)") ' Nat. Orbs. NAOBFNS x MO ! '
         CALL OUTPUT(orb,1,NAO,1,NBAS,NAO,NBAS,1) ! = 1
 #endif 
-CSSS        call getrec(-1,'JOBARC',cscfener,nbas*iintfp,ener)
 C
-C Get the number of MOS that are relevent for the excitation from
-C O_mos and T_mos arrays and copy those MOs to a seperate array.
-
-        N_o_mos = 0
-        N_t_mos = 0
-        I       = 0
-        Write(6,*) O_MOS
-        Write(6,*) T_MOS
-        Do Imo = 1, Nao
-           If (O_MOS(Imo) .Gt. 0) N_o_mos = N_o_mos + 1
-           IF (T_MOS(Imo) .Gt. 0) N_t_mos = N_t_mos + 1
-        Enddo
-        Write(6,*) Ener
         Do Imo = 1,  N_o_mos
            Eneg(Imo) = Ener(O_MOS(Imo))
         Enddo 
@@ -369,20 +446,19 @@ C O_mos and T_mos arrays and copy those MOs to a seperate array.
         Enddo 
 C
         N_ot_total = N_o_mos + N_t_mos
-        Write(6,*) Eneg
-        
+
         Call Dcopy(N_o_mos*Nao, Orb, 1, Nlorb, 1)
         Call Dcopy(N_t_mos*Nao, Orb(Noccs*Nao+1), 1, 
      &             Nlorb(N_o_mos*Nao+1), 1)
 #ifdef _DEBUG_LVL0
         Write(6,*) 
+        Write(6, "(6F10.5)") (Eneg(i), i=1, N_ot_total)
+        Write(6,*)
         WRITE (6,"(a)") ' Orbitals that we are interested'
         CALL OUTPUT(Nlorb,1,NAO,1,N_ot_total,NAO,N_ot_total,1)
-        Write(6, "(a)") "The Eigenvalues"
-        Write(6,"(6(1x,F10.5))") (iocc(imo), imo=1, Norbs)
 #endif
         Call Get_irreps(Nlorb, Eneg, Scr, Imemleft*Iintfp, N_ot_total,
-     &                  Nao, Ispin, Nocc, Iuhf)
+     &                  Nao, Ispin, Nocc, Iuhf, "EXCITED")
 
       Enddo
 

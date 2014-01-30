@@ -132,8 +132,10 @@ C
       Inquire(FILE='OPTARC',EXIST=OPTARC_EXIST)
       If (OPTARC_EXIST) Call runit("rm OPTARC")
 
-      call runit("xjoda")
-      call v2ja(icore(I0), icrsiz)
+      if (module(1:5).ne.'parfd') then
+         call runit("xjoda")
+         call v2ja(icore(I0), icrsiz)
+      endif
 
       if (module(1:5).eq.'test ') then
          call test(args,dimargs)
