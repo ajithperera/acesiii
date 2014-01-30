@@ -1,0 +1,83 @@
+     SIAL HF_Aiso        
+     
+     index jatom =1, natoms
+     index jx    =1, 1
+     aoindex mu     = 1, norb
+     aoindex nu     = 1, norb
+
+     moaindex i = baocc, eaocc
+     mobindex j = bbocc, ebocc
+     scalar one
+     scalar PRINT_TMP 
+
+
+# Declare one-particle density arrays
+     distributed dHFa(mu,nu)
+     distributed dHFb(mu,nu)
+#-------------------------------------------------------------
+     temp Txi(nu,i)
+     temp T1pq(mu,nu)
+     temp Tpq(mu,nu)
+
+     temp Txj(nu,j)
+     temp T2pq(mu,nu)
+     temp TTpq(mu,nu)
+
+     temp DXX(mu,nu)
+     temp AOINT(mu,nu) 
+
+#--------------------------------------------------------------
+      PROC HF_DENS
+         PARDO mu, nu
+            Tpq(mu,nu)     =0.0
+            DO i
+              Txi(nu,i)    = CA(nu,i)
+              T1pq(mu,nu)  = Txi(nu,i)*CA(mu,i)
+              Tpq(mu,nu)  += T1pq(mu,nu)
+            ENDDO i
+
+            PUT Dhfa(mu,nu) += Tpq(mu,nu)
+
+            TTpq(mu,nu)    =0.0
+            DO j
+              Txj(nu,j)    = CB(nu,j)
+              T2pq(mu,nu)  = TXj(nu,j)*CB(mu,j)
+              TTpq(mu,nu) += T2pq(mu,nu)
+            ENDDO j
+
+            PUT Dhfb(mu,nu) +=TTpq(mu,nu)
+        ENDPARDO mu, nu
+      ENDPROC HF_DENS
+#---------------------------------------
+      PROC CALC_Atens
+      one = 1
+           PARDO mu, nu
+               GET DHFa(mu,nu)
+               GET DHFb(mu,nu)
+               Dxx(mu,nu)  = DHFa(mu,nu)
+               Dxx(mu,nu) -= DHFb(mu,nu)
+               execute compute_delta_int Dxx(mu,nu) 
+         ENDPARDO mu, nu
+#
+    PRINT_TMP = 100.0
+    EXECUTE print_esr_tensors PRINT_TMP
+#
+    ENDPROC CALC_Atens
+   
+
+#----------------------------------------
+         create dHFa
+         create dHFb
+         execute sip_barrier
+
+         call HF_DENS
+         execute sip_barrier
+         call calc_Atens
+
+         execute sip_barrier
+         delete dHFa
+         delete dHFb
+
+#-----------------------------------------
+     ENDSIAL HF_Aiso          
+

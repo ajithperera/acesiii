@@ -88,13 +88,14 @@ c      subroutine beta()
       logical do_restart, file_exist
       logical flag
       logical do_write 
-      logical do_ecp  
+      logical do_ecp
+      logical props 
 
       double precision t1, t2
-      double precision vnn, diff, avg
+      double precision vnn, diff
       double precision dbuf(1)
 
-      integer i1, i2
+      integer i1, i2, props 
       integer*8 mpierr8, nprocs8
 
        common /flags/ iflags
@@ -960,7 +961,10 @@ c------------------------------------------------------------------------
          do i = 1, 3*ncenters
             gradient_data(i) = 0.
          enddo
-
+  
+         do i=1,ncenters
+           A_iso(i) = 0.d0
+         end do
 
          call mem_alloc(dbuf, 9*ncenters*ncenters,
      *               bytes_per_double, ix_hess,
@@ -1015,7 +1019,9 @@ c--------------------------------------------------------------------------
             go to 1000  ! skip this if dryrun
          endif
 
-        call handle_gradient()
+        props = (iflags(18) .ne. 0) 
+        if (.NOT. props) call handle_gradient()
+
         if (write_hess)
      *   call handle_hessian(dbuf(ix_hess), dbuf(ix_nnhess),
      *                       ncenters, write_hess)

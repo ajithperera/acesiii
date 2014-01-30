@@ -161,7 +161,66 @@ c---------------------------------------------------------------------------
       return
       end
 
+       subroutine move_integrals2_delta(v, va1,va2,vb1,vb2,
+     *                                  intblk, a1, a2, b1,
+     *                                  b2)
+      implicit none
+      integer va1, va2, vb1,vb2
+      integer a1, a2, b1, b2
+      integer a,b
+      integer brange1, brange2
+      integer arange1, arange2
 
+      integer ncenters, Rn
+      double precision v(va1:va2,vb1:vb2)
+      double precision intblk(a1:a2,b1:b2)
+      double precision sum
+
+      brange1 = max(vb1, b1)
+      brange2 = min(vb2, b2)
+      arange1 = max(va1, a1)
+      arange2 = min(va2, a2)
+
+      do b = brange1, brange2
+       do a = arange1, arange2
+         v(a,b) = intblk(a,b)
+c         write(*,*) 'a=',a,'b=',b,V(a,b)
+       enddo
+      enddo
+
+      return
+      end
+
+      subroutine move_integrals2_del(y,z,v, va1,va2,vb1,vb2,
+     *                                   a1, a2, b1,
+     *                                  b2)
+      implicit none
+      integer va1, va2, vb1,vb2
+      integer a1, a2, b1, b2
+      integer a,b
+      integer brange1, brange2
+      integer arange1, arange2
+
+      integer ncenters, Rn
+      double precision v(va1:va2,vb1:vb2)
+      double precision z(va1:va2,vb1:vb2) 
+      double precision y      
+
+      brange1 = max(vb1, b1)
+      brange2 = min(vb2, b2)
+      arange1 = max(va1, a1)
+      arange2 = min(va2, a2)
+
+      y=0.d0
+      do b = brange1, brange2
+       do a = arange1, arange2
+        y=y+v(a,b)*z(a,b)
+CSSS        write(*,*) 'a=',a,'b=',b,z(a,b),v(a,b)
+       enddo
+      enddo
+      
+      return
+      end
 
       subroutine add_integrals2(v, va1,va2,vb1,vb2,
      *                          intblk, a1, a2, b1, b2, fact)

@@ -169,7 +169,11 @@ C Ajith Perera, SOI instructions
      &         compute_2soi_zbatch
      
       external write_vecs2jarc
-
+c -------------------------------------------------------------------
+c Prakash Instructions needed for delta integraks
+c -------------------------------------------------------------------
+      external compute_delta_int
+      external print_esr_tensors
 c------------------------------------------------------
       external form_iad
       external form_ibd
@@ -693,7 +697,16 @@ c-------------------------------------------------------------------
      
       dummy = load_user_sub('write_vecs2jarc'//char(0), 
      &                       write_vecs2jarc)
-
+c
+c-----------------------------------------------------------------------
+c Prakash instructions for delta integrals
+c----------------------------------------------------------------------
+      dummy=load_user_sub('compute_delta_int'//char(0),
+     *                     compute_delta_int)
+      dummy=load_user_sub('print_esr_tensors'//char(0),
+     *                     print_esr_tensors)
+      call set_upgrade_flag(dummy)
+c---------------------------------------------------------------------
 c Instructions needed in the CCSD(T) gradient and ecpgradient   
 c --------------------------------------------------------------------
 c

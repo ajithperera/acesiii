@@ -29,6 +29,7 @@ C  in the file COPYRIGHT.
       include 'dbugcom.h'
       include 'trace.h'
       include 'hess.h'
+      include 'atomdata.h'  ! PV for Hyperfine constant
 #ifdef ALTIX
       include 'sheap.h'
 #endif
@@ -118,7 +119,14 @@ C  in the file COPYRIGHT.
       common x
 #endif
       double precision mygrad(3*ncenters) 
-
+cPV......................................................
+      double precision gfactor,abun
+      integer niso, isotope
+      double precision g_e,au2ev,ev2Mhz,Beta_e, Beta_N,con,fac,pi
+      double precision Eight_pi_by_3,C_light,M_pe,const_Aiso
+      common /flags/ iflags
+      integer iflags(100)
+cpv...................................................
       logical debug, validate
       logical atom_based
       save
@@ -182,9 +190,9 @@ c---------------------------------------------------------------------
       endif
 
 c---------------------------------------------------------------------
-c   experimental stack setup  
+c   experimental stack setup
 c---------------------------------------------------------------------
-      nstacks = 10  
+      nstacks = 10
 
       nocc_orbitals = noccupied
       naocc_orbitals = nalpha_occupied
@@ -307,11 +315,14 @@ c----------------------------------------------------------------------------
      *                       intsize)
 
 c------------------------------------------------------------------------
+c   Print all the symbolic constants
+c------------------------------------------------------------------------
+       if (me .eq. 0) call print_symbolic_constants()
+
+
+c------------------------------------------------------------------------
 c   Initialize all the tables.
 c------------------------------------------------------------------------
-
-       if (me .eq. 0) call print_symbolic_constants()  
-      
 
        call vtdemo_init(optable(iopt), noptable, 
      *                    array_table(iarray), narray_table,
@@ -677,16 +688,86 @@ c----------------------------------------------------------------------------
      *                company_comm, ierr)
             nxthess = nxthess + 3*ncenters
          enddo
+cPrakash for A-tensor
+         do i = 1, ncenters
+            mygrad(i) = A_iso(i)
+         enddo
+
+         call mpi_reduce(mygrad, A_iso, ncenters,
+     *                mpi_double_precision, mpi_sum, 0,
+     *                company_comm, ierr)
+
       endif
 
+cPV 
       if (my_company_rank .eq. 0) then
          print *,'Gradient data:'
          do i = 1, ncenters
             igrad = (i-1)*3 + 1
-            print *,'Atom #',i,': ',gradient_data(igrad),
+        write(*,'(A,1x,I4,1x,A,3(1x,F15.9))')'Atom #',i,': ',
+     *                gradient_data(igrad),
      *               gradient_data(igrad+1), gradient_data(igrad+2)
          enddo
+cPV     
+cPrakash start printing; Print only if property flag is set. At
+C the moment this printing handle HPCC couplings only. Eventually
+C this should handle all the first order properties. 
+C Ajith Perera, 03/2007.
+c 
+       If (iflags(18) .gt. 0) then
+       print  *
+       print  *,'-----------------------------------------------------'
+        print *,'Final Aiso in a.u. : Prakash'
+          do i =1, ncenters
+      write(*,'(A,1x,I3,1x,A,1x,F5.1,2x,A,1x,F24.16)')'atom:',i,'Atomic
+     * no:',charge(i),'Aiso = ',A_iso(i)
+          end do
+       print  *,'-----------------------------------------------------'
+       print *
+cPv.........................................................................
+      
+       print *
+       print *,'Final Aiso in MHz  : Prakash'
+
+       au2ev = 27.2113961d+00      ! Conversion from au to eV
+       ev2Mhz= 2.41798836d+08      ! Conversion from eV to MHz
+
+       g_e      =  2.002319304386d+00  ! Electron g-factor
+       C_light  = 137.0359895d+00      ! Speed of light in au
+       M_pe     = 1836.152701d+00      ! Proton-electron mass ratio
+       Beta_e   = 1.0d0/(2.0d0*C_light)
+       Beta_N   = Beta_e/M_pe          ! Beta_N =1/2*c*Mpe
+       pi       = acos(-1.0d0)
+       Eight_pi_by_3 = (8.0d0*pi/3.0d0)
+      
+       fac = Eight_pi_by_3 * g_e * Beta_e * Beta_N 
+       con  = fac * au2ev * ev2Mhz
      
+       write(*,*)'Aiso = 8*pi/3  * g_e * g_N * Beta_e * Beta_N *CalcTe'
+       Write(*,'(A,1x,F25.10)') 'Conversion from au to eV : ', au2ev
+       Write(*,'(A,1x,F25.10)') 'Conversion from eV to Mhz: ', ev2Mhz
+       Write(*,'(A,1x,F25.10)') 'g_e                      : ', g_e 
+       Write(*,'(A,1x,F25.10)') 'Beta_e                   : ', Beta_e
+       Write(*,'(A,1x,F25.10)')'Beta_N                   : ', Beta_N 
+       print *
+cPV............................................................................... 
+       do i = 1, ncenters
+        write(*,'(A,1x,I3,2x,A,1x,F10.4,1x,F10.4,1x,F10.4)') 
+     * 'Atom', i,'Coord =',acenter(i,1),acenter(i,2),acenter(i,3)
+        call atom_gfac(charge(i),gfactor,isotope,abun,niso)
+        write(*,'(A,2x,F5.1,5x,A,1x,I3)') 'Atomic no:',
+     *   charge(i),':  No. of isotopes:',niso
+      write(*,'(A,2x,I5,5x,A,1x,F10.4)')'Isotope  :',isotope
+     * , ':  Abundance       :',abun
+      write(*,'(A,1x,F10.4)') 'Nuclear g-factor  = ',gfactor
+      const_Aiso = con * gfactor
+      write(*,'(A,1x,F10.4)') 'Conversion factor = ', const_Aiso
+      Write(*,'(A,1x,F10.4)') 'Aiso in MHz       = ',const_Aiso*A_iso(i)
+      write(*,*)
+      end do
+      Endif
+ 
+cPrakash end printing
 c---------------------------------------------------------------------------
 c   Get addresses of CA, CB, FOCK_A, and FOCK_B arrays. 
 c   ONLY if the scf has just been performed. 

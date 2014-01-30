@@ -365,7 +365,12 @@ C Ajith Perera, miscellaneous developments.
       dummy = load_user_sub('compute_2soi_zbatch'//char(0),0)
 
       dummy = load_user_sub('write_vecs2jarc'//char(0),0)
-
+c -----------------------------------------------------------------
+c Prakash instructions need for delta integrals
+c ------------------------------------------------------------------
+      dummy = load_user_sub('compute_delta_int'//char(0), 0)
+      dummy = load_user_sub('print_esr_tensors'//char(0), 0)
+c ------------------------------------------------------------------
       dummy = load_user_sub('index_match'//char(0), 0)
       dummy = load_user_sub('ecp_dercont'//char(0), 0) 
 c--------------------------------------------------------------------

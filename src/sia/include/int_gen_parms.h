@@ -210,3 +210,7 @@ c nContAOs : total number of contracted functions
 
       double precision nngrad, charge, acenter
       common /NNgrad/nngrad(3,max_centers)
+
+      double precision A_iso
+      common /A_iso/A_iso(max_Centers)
+
