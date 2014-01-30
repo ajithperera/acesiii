@@ -95,7 +95,7 @@ c      subroutine beta()
       double precision vnn, diff
       double precision dbuf(1)
 
-      integer i1, i2, props 
+      integer i1, i2
       integer*8 mpierr8, nprocs8
 
        common /flags/ iflags
