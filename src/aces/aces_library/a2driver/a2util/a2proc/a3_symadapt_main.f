@@ -749,31 +749,31 @@ C Watson and I am simply moving things around to put all togther
 C into a nice organized form. 
 C
       Estate_calcs = (Iflags(87) .GT. 1) 
-      Nroots       = (Iflags(89)   )
 
-      Iexsvec_a  = 1
-      Igdens     = Iexsvec_a  + Naobfns*Naobfns
-      Iedens     = Igdens     + Naobfns*Naobfns
-      Inorbs     = Iedens     + Naobfns*Naobfns
-      Iexseval_a = Inorbs     + Naobfns*Naobfns
-      Itmp1      = Iexseval_a + Naobfns
-      Iocc       = Itmp1      + Naobfns*Naobfns 
-      Ioed2a_sc  = Iocc       + Naobfns
-      Ioed2a_or  = Ioed2a_sc  + Naobfns
-      Io_mos     = Ioed2a_or  + Naobfns
-      It_mos     = Io_mos     + Naobfns
-      IEng       = It_mos     + Naobfns
-      Inext      = IEng       + Naobfns
+      if (Estate_calcs) Then
+         call Getrec(20,'JOBARC','EESYMINF',1, Nroots)
 
-      If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
+         Iexsvec_a  = 1
+         Igdens     = Iexsvec_a  + Naobfns*Naobfns
+         Iedens     = Igdens     + Naobfns*Naobfns
+         Inorbs     = Iedens     + Naobfns*Naobfns
+         Iexseval_a = Inorbs     + Naobfns*Naobfns
+         Itmp1      = Iexseval_a + Naobfns
+         Iocc       = Itmp1      + Naobfns*Naobfns 
+         Ioed2a_sc  = Iocc       + Naobfns
+         Ioed2a_or  = Ioed2a_sc  + Naobfns
+         Io_mos     = Ioed2a_or  + Naobfns
+         It_mos     = Io_mos     + Naobfns
+         IEng       = It_mos     + Naobfns
+         Inext      = IEng       + Naobfns
+
+         If (Inext .GE. Maxcor) Call Insmem("A3_symadapt_main", Inext,
      &                                     Maxcor)
       
-      Imemleft = (Maxcor - Inext)
-
-      If (Estate_calcs)  Then
+         Imemleft = (Maxcor - Inext)
 
          Do Roots = 1, Nroots 
-            Call a3_symadapt_estate_norbs(Work(Iexsevl_a), Work(Iocc), 
+            Call a3_symadapt_estate_norbs(Work(Iexseval_a), Work(Iocc),
      &                                    Work(Iexsvec_a), 
      &                                    Work(Igdens), Work(Inorbs), 
      &                                    Work(Iedens), 
@@ -788,6 +788,7 @@ C
      &                                    Work(It_mos),
      &                                    Work(Ieng))
          Enddo
+
       Endif
 
       Return

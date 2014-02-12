@@ -191,7 +191,7 @@ MACHSTATS := \
    castor:athlonmp:freebsd:gnu pollux:athlonmp:freebsd:gnu \
    haku01:em64t:linux:gnu linx64:em64t:linux:intel linx32:pentium4:linux:intel \
    crunchb:native64:sunos:forte \
-   submit:x86_64:linux:intel \
+   hrothgar:x86_64:linux:intel \
    solx:x86:sunos:pg \
    simu:pwr3:aix:xl ock:itanium2:linux:intel\
    xena:p2sc:aix:xl xena00:p2sc:aix:xl yena00:p2sc:aix:xl

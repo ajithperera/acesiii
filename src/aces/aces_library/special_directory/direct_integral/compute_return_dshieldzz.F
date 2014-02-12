@@ -178,7 +178,7 @@ C
       goc_z = z1 - zg
 
       call add_integrals2(out_dsh_zz,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,goc_z)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-goc_z)
       endif 
 
       DER1X = 0
@@ -215,7 +215,7 @@ C
          end if
 
       call add_integrals2(out_dsh_zz,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,1.0d0)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-1.0d0)
        endif ! nints
 
        end do !n

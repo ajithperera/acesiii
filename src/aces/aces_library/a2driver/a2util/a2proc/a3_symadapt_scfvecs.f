@@ -209,7 +209,8 @@ C
      &                Nbfns, Naobfns, 1, Nocc, Iuhf)
       If (Iuhf .EQ. 1) Call Get_irreps(Scfvec_b, Scfevl_b, Work, 
      &                                 Imemleft*Iintfp, Nbfns, 
-     &                                 Naobfns, 1, Nocc, Iuhf)
+     &                                 Naobfns, 1, Nocc, Iuhf,
+     &                                 "GROUND ")
 C
       Return
       End

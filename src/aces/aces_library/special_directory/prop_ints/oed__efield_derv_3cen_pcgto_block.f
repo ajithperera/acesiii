@@ -608,8 +608,8 @@ C
 C
              PROCEED = DIFFA .AND. (DERAX.GT.0)
 
-             Write(6,*) "PROCEED-1", PROCEED
              IF (PROCEED) THEN
+             Write(6,*) "Entering procceed-x"
                  DERA = DERAX
                  DERB = DERBX
                  DO N = 1,DERAX
@@ -781,6 +781,7 @@ C
              PROCEED = DIFFA .AND. (DERAY.GT.0)
 
              IF (PROCEED) THEN
+             Write(6,*) "Enetring procced-y"
                  DERA = DERAY
                  DERB = DERBY
                  DO N = 1,DERAY
@@ -949,6 +950,7 @@ C
              PROCEED = DIFFA .AND. (DERAZ.GT.0)
 
              IF (PROCEED) THEN
+             Write(6,*) "Entering proceed-z"
                  DERA = DERAZ
                  DERB = DERBZ
                  DO N = 1,DERAZ
@@ -969,7 +971,7 @@ CSSS                    DERB = DERB - IXAEQB
                         STOP
                     END IF
 
-                    CALL    OED__NAI_1D_SHDERV_INTEGRALS
+                    CALL    OED__EFIELD_1D_SHDERV_INTEGRALS
      +
      +                           ( MGIJCEN,
      +                             SHELLA+DERA,SHELLB+DERB,

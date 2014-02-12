@@ -8,9 +8,9 @@ DEBUG=0
 64BIT=1
 INCDIRS= ./include ../include/mpi ../include ../intgrt/include/ ../sbtools/include
 MKL_GRP:= -Bstatic -lmkl_intel_ilp64 -lmkl_lapack95_ilp64 -lmkl_sequential -lmkl_core -Bdynamic 
-LDFLAGS_NUMLIBS:= -L/opt/intel/mkl/11.1.064/lib/em64t -Wl,--start-group $(MKL_GRP) -Wl,--end-group -pthread #-L/home/perera/ACESIII/lib  -llinpack
-DIR_INSTBIN := /home/perera/Develop/acesiii/bin
-DIR_INSTLIB := /home/perera/Develop/acesiii/lib
+LDFLAGS_NUMLIBS:= -L/lustre/work/apps/intel/mkl/lib/intel64 -Wl,--start-group $(MKL_GRP) -Wl,--end-group -pthread #-L/home/perera/ACESIII/lib  -llinpack
+DIR_INSTBIN := /home/aperera/acesiii/bin
+DIR_INSTLIB := /home/aperera/acesiii/lib
 DIR_SRCLIB  := ${DIR_INSTLIB}
 
 ###################################
