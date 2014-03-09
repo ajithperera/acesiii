@@ -967,6 +967,8 @@
        scalar c8 
        scalar c9 
        scalar c10  
+       Scalar property
+       Scalar beta_is_minus
 #
 #
 #______________________________________________________________________________
@@ -7859,7 +7861,7 @@ PARDO j, i, i1, j1
            REQUEST L2old_aa_y(i,a,i1,a1) a1
 
            etemp = L2old_aa_y(i,a,i1,a1)*L2old_aa_y(i,a,i1,a1)
-#           etemp = 0.25*etemp
+           etemp = 0.25*etemp
            esuma += etemp
      ENDPARDO a, a1, i, i1
      esumb    = 0.0
@@ -7869,7 +7871,7 @@ PARDO j, i, i1, j1
            REQUEST L2old_bb_y(j,b,j1,b1) b1
 
            etemp = L2old_bb_y(j,b,j1,b1)*L2old_bb_y(j,b,j1,b1)
-#           etemp = 0.25*etemp
+           etemp = 0.25*etemp
            esumb += etemp
      ENDPARDO b, b1, j, j1
      ecorrab = 0.0
@@ -12329,8 +12331,51 @@ PARDO j, i, i1, j1
      ENDPROC MOVE4
 #___________________________________________________________________
 # generate one-electron B-field integrals
-        PROC get_HBx
+        PROC get_HBx_Dipole 
+#       -------------------
          CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+              EXECUTE return_y Txx
+              PUT  HBx(mu,nu) += Txx(mu,nu)
+         ENDPARDO mu,nu
+         execute sip_barrier
+
+        ENDPROC get_HBx_Dipole 
+#       -----------------------
+     
+        PROC get_HBx_Angmom
+#       -------------------
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+              EXECUTE compute_angmom_ybatch Txx(mu,nu)
+              PUT  HBx(mu,nu) += Txx(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+        ENDPROC get_HBx_Angmom
+#       ----------------------
+
+        PROC get_HBx_Spin_orbit
+#       ----------------------
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+              EXECUTE compute_1soi_ybatch Txx(mu,nu)
+              PUT  HBx(mu,nu) += Txx(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+        ENDPROC get_HBx_Spin_orbit
+#       --------------------------
+
+         PROC TRANS2_MO
+#        --------------
+
          CREATE HBa_ae_x        #PV alpha virt-virt block
          CREATE HBa_me_x        #PV alpha Virt-occ block
          CREATE HBa_mi_x        #PV alpha occ-occ  block
@@ -12338,11 +12383,6 @@ PARDO j, i, i1, j1
          CREATE HBb_me_x        #PV beta  virt-virt block
          CREATE HBb_mi_x        #PV beta  virt-virt block
          execute sip_barrier
-
-         PARDO mu, nu
-              EXECUTE return_y Txx
-              PUT  HBx(mu,nu) += Txx(mu,nu)
-         ENDPARDO mu,nu
 
          PARDO mu,nu
             get HBx(mu,nu)
@@ -12377,6 +12417,47 @@ PARDO j, i, i1, j1
             enddo a
         ENDPARDO mu,nu
 #.................BETA PARTS.............................
+
+     IF BETA_IS_MINUS == 100.0
+
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do j1
+                   Tjj(j,j1) = Tjx(j,nu)*CB(nu,j1)
+                    Tjj(j,j1) *= -1.0
+                   PUT HBb_mi_x(j,j1) += Tjj(j,j1)
+                enddo j1
+            enddo j
+         ENDPARDO mu,nu
+#..................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do b
+                   Tjb(j,b)  = Tjx(j,nu)*CB(nu,b)
+                   Tjb(j,b)  *= -1.0
+                   PUT HBb_me_x(j,b) += Tjb(j,b)
+                enddo b
+             enddo j
+         ENDPARDO mu,nu
+#.....................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+             do b
+                Txb(mu,b) = HBx(mu,nu)*CB(nu,b)
+               do b1
+                   Tbb(b1,b)  = Txb(mu,b)*CB(mu,b1)
+                   Tbb(b1,b)  *= -1.0
+                   PUT HBb_ae_x(b1,b) += Tbb(b1,b)
+                enddo b1
+             enddo b
+         ENDPARDO mu,nu
+
+       ELSE
+
         PARDO mu,nu
             get HBx(mu,nu)
             do j
@@ -12409,7 +12490,13 @@ PARDO j, i, i1, j1
                 enddo b1
              enddo b
          ENDPARDO mu,nu
-        ENDPROC get_HBx
+
+       ENDIF 
+
+       execute sip_barrier
+
+       ENDPROC TRANS2_MO
+#      -----------------
 #__________________LMAIN________________________________________________                   
 
 
@@ -12606,13 +12693,27 @@ PARDO j, i, i1, j1
       ten = 10.0
 
 
-         call get_HBx
+       property = 30.0
+       if property == 10.0
+#          call get_HBx_Dipole
+       endif
 
-         create t1a_old 
-         create t1b_old 
+       if property == 20.0
+#          call get_HBx_Angmom
+       endif
 
-         create t1a_old_x
-         create t1b_old_x
+       if property == 30.0
+          beta_is_minus = 100.0
+          call get_HBx_Spin_orbit
+       endif
+
+       Call Trans2_MO
+
+       create t1a_old 
+       create t1b_old 
+
+       create t1a_old_x
+       create t1b_old_x
    
          create t1a_old_y
          create t1b_old_y

@@ -9112,7 +9112,7 @@
       six   = 6.0
       seven = 7.0
 
-      property = 10.0
+      property = 30.0
       beta_is_minus = 0.0
 
       if property == 10.0

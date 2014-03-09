@@ -1,5 +1,5 @@
-input  file: s2expect/s2expect_dropmo.sial
-output file: s2expect/s2expect_dropmo.sio
+input  file: perturb_ccsd_lt/CCSD_Lx.sial
+output file: perturb_ccsd_lt/CCSD_Lx.sio
     No compilation errors
 
 array table
@@ -26,489 +26,763 @@ array table
 19,    eom_tol, 0.000000
 20,  eom_roots, 0.000000
 21,     excite, 0.000000
-22,        dx1, 4,     mu     nu lambda  sigma 
-23,        dy1, 4,     mu     nu lambda  sigma 
-24,        dz1, 4,     mu     nu lambda  sigma 
-25,        dx2, 4,     mu     nu lambda  sigma 
-26,        dy2, 4,     mu     nu lambda  sigma 
-27,        dz2, 4,     mu     nu lambda  sigma 
-28,        dx3, 4,     mu     nu lambda  sigma 
-29,        dy3, 4,     mu     nu lambda  sigma 
-30,        dz3, 4,     mu     nu lambda  sigma 
-31,        dx4, 4,     mu     nu lambda  sigma 
-32,        dy4, 4,     mu     nu lambda  sigma 
-33,        dz4, 4,     mu     nu lambda  sigma 
-34,   t2old_aa, 4,      a      i     a1     i1 
-35,   t2old_bb, 4,      b      j     b1     j1 
-36,   t2old_ab, 4,      a      i      b      j 
-37,   l2old_aa, 4,      i      a     i1     a1 
-38,   l2old_bb, 4,      j      b     j1     b1 
-39,   l2old_ab, 4,      i      a      j      b 
-40,   dijab_aa, 4,      i     i1      a     a1 
-41,   dijab_ab, 4,      i      j      a      b 
-42,   dijab_bb, 4,      j     j1      b     b1 
-43,   dabcd_aa, 4,      a     a2     a3     a1 
-44,   dabcd_bb, 4,     b2     b1      b     b3 
-45,   dabcd_ab, 4,      a      b     a1     b1 
-46,   dijkl_aa, 4,     i2      i     i3     i1 
-47, vijmn_aaaa, 4,      i     i2     i1     i3 
-48,   dijkl_bb, 4,      j     j2     j1     j3 
-49, vijmn_bbbb, 4,      j     j2     j1     j3 
-50,   dijkl_ab, 4,      i      j     i1     j1 
-51, vijmn_abab, 4,      i      j     i1     j1 
-52, vibja_aaaa, 4,      i      a     i1     a1 
-53, dibja_aaaa, 4,      i      a     i1     a1 
-54, vibja_abab, 4,      i      b     i1     b1 
-55, dibja_abab, 4,      i      b     i1     b1 
-56, vibja_baba, 4,      j      a     j1     a1 
-57, dibja_baba, 4,      j      a     j1     a1 
-58, vibja_bbbb, 4,      j      b     j1     b1 
-59, dibja_bbbb, 4,      j      b     j1     b1 
-60, dibja_baab, 4,      j      a      i      b 
-61, vibja_baab, 4,      j      a      i      b 
-62, dibja_abba, 4,      i      b      j      a 
-63, vibja_abba, 4,      i      b      j      a 
-64, dabci_aaaa, 4,      a     a2     a1      i 
-65, dabci_abab, 4,      a      b     a1      j 
-66, dabci_baba, 4,      b      a     b1      i 
-67, dabci_bbbb, 4,      b     b2     b1      j 
-68, dijka_aaaa, 4,      i     i2     i1      a 
-69, dijka_abab, 4,      i      j     i1      b 
-70, dijka_baba, 4,      j      i     j1      a 
-71, dijka_bbbb, 4,      j     j2     j1      b 
-72,      dxaai, 4,     mu      a     a1      i 
-73,      dxxai, 4,     mu     nu     a1      i 
-74,      dxxxi, 4,     mu     nu  sigma      i 
-75,      dxbbj, 4,     mu      b     b1      j 
-76,      dxxbj, 4,     mu     nu     b1      j 
-77,      dxxxj, 4,     mu     nu  sigma      j 
-78,      dxbaj, 4,     mu      b     a1      j 
-79,      dxxaj, 4,     mu     nu     a1      j 
-80,      dxabi, 4,     mu      a     b1      i 
-81,      dxxbi, 4,     mu     nu     b1      i 
-82,      dxiii, 4,     mu      i     i1     i2 
-83,      dxxii, 4,     mu     nu     i1     i2 
-84,      dxjjj, 4,     mu      j     j1     j2 
-85,      dxxjj, 4,     mu     nu     j1     j2 
-86,      dxjij, 4,     mu      j     i1     j2 
-87,      dxxij, 4,     mu     nu     i1     j2 
-88,      diaix, 4,      i      a     i1  sigma 
-89,      dixix, 4,      i     nu     i1  sigma 
-90,      dxiix, 4,     nu      i     i1  sigma 
-91,      dixxx, 4,      i     nu lambda  sigma 
-92,      djbjx, 4,      j      b     j1  sigma 
-93,      djxjx, 4,      j     nu     j1  sigma 
-94,      dxjjx, 4,     nu      j     j1  sigma 
-95,      djxxx, 4,      j     nu lambda  sigma 
-96,      dibix, 4,      i      b     i1  sigma 
-97,      djajx, 4,      j      a     j1  sigma 
-98,      dibjx, 4,      i      b     j1  sigma 
-99,      dixjx, 4,      i     nu     j1  sigma 
-100,      dixxj, 4,      i     nu  sigma     j1 
-101,      djaix, 4,      j      a     i1  sigma 
-102,      djxix, 4,      j     nu     i1  sigma 
-103,      diiax, 4,      i     i1      a  sigma 
-104,      diixx, 4,      i     i1 lambda  sigma 
-105,      djjbx, 4,      j     j1      b  sigma 
-106,      djjxx, 4,      j     j1 lambda  sigma 
-107,      dijax, 4,      i     j1      a  sigma 
-108,      dijxx, 4,      i     j1 lambda  sigma 
-109,      diiix, 4,      i     i1     i2  sigma 
-110,      djjjx, 4,      j     j1     j2  sigma 
-111,      dijix, 4,      i     j1     i2  sigma 
-112,      djijx, 4,      j     i1     j2  sigma 
-113,      djixx, 4,      j     i1 lambda  sigma 
-114,       i3aa, 4,      i      a     i1     i2 
-115,       i3ab, 4,      i      a      j     j1 
-116,       i3ba, 4,      j      b      i     i1 
-117,       i3bb, 4,      j      b     j1     j2 
-118,     tao_aa, 4,     mu      i     nu     i1 
-119,     tao_ab, 4,     mu      i     nu      j 
-120,     tao_bb, 4,     mu      j     nu     j1 
-121,     lao_aa, 4,      i     mu     i1     nu 
-122,     lao_ab, 4,      i     mu      j     nu 
-123,     lao_bb, 4,      j     mu     j1     nu 
-124,     tau_aa, 4,      a      i     a1     i1 
-125,     tau_bb, 4,      b      j     b1     j1 
-126,     tau_ab, 4,      a      i      b      j 
-127,    t1a_old, 2,      a      i 
-128,    t1b_old, 2,      b      j 
-129,    l1a_old, 2,      i      a 
-130,    l1b_old, 2,      j      b 
-131,      gmi_a, 2,      i     i1 
-132,      gmi_b, 2,      j     j1 
-133,      gae_a, 2,      a     a1 
-134,      gae_b, 2,      b     b1 
-135,   doldai_a, 2,      a      i 
-136,   doldai_b, 2,      b      j 
-137,     dor_ii, 2,      i     i1 
-138,     dor_jj, 2,      j     j1 
-139,     dor_aa, 2,      a     a1 
-140,     dor_bb, 2,      b     b1 
-141,       dpqa, 2,     mu     nu 
-142,       dpqb, 2,     mu     nu 
-143,       dhfa, 2,     mu     nu 
-144,       dhfb, 2,     mu     nu 
-145,        tpq, 2,     mu     nu 
-146,        txx, 2,     mu     nu 
-147,        txi, 2,     mu      i 
-148,        txj, 2,     mu      j 
-149,      dij_a, 2,      i     i1 
-150,      dij_b, 2,      j     j1 
-151,      dab_a, 2,      a     a1 
-152,      dab_b, 2,      b     b1 
-153,        dii, 2,      i     i1 
-154,        daa, 2,     a1      a 
-155,        djj, 2,      j     j1 
-156,        dbb, 2,     b1      b 
-157,      pxxxx, 4,     mu     nu lambda  sigma 
-158,      txxxx, 4,     mu     nu lambda  sigma 
-159,     t1xxxx, 4,     mu     nu lambda  sigma 
-160,     t2xxxx, 4,     mu     nu lambda  sigma 
-161,     t3xxxx, 4,     mu     nu lambda  sigma 
-162,     p1xxxx, 4,     mu     nu lambda  sigma 
-163,      txaai, 4,     mu      a     a1      i 
-164,      txxai, 4,     mu     nu     a1      i 
-165,      txxxi, 4,     mu     nu  sigma      i 
-166,     t1xxxi, 4,     mu     nu  sigma      i 
-167,      txixx, 4,     mu      i lambda  sigma 
-168,     t1xixx, 4,     mu      i lambda  sigma 
-169,      txbbj, 4,     mu      b     b1      j 
-170,      txxbj, 4,     mu     nu     b1      j 
-171,      txxxj, 4,     mu     nu  sigma      j 
-172,     t1xxxj, 4,     mu     nu  sigma      j 
-173,      txjxx, 4,     mu      j lambda  sigma 
-174,     t1xjxx, 4,     mu      j lambda  sigma 
-175,      txbaj, 4,     mu      b     a1      j 
-176,      txxaj, 4,     mu     nu     a1      j 
-177,      txabi, 4,     mu      a     b1      i 
-178,      txxbi, 4,     mu     nu     b1      i 
-179,      txiii, 4,     mu      i     i1     i2 
-180,     t1xiii, 4,     mu      i     i1     i2 
-181,      txxii, 4,     mu     nu     i1     i2 
-182,     t1xxii, 4,     mu     nu     i1     i2 
-183,      txjjj, 4,     mu      j     j1     j2 
-184,     t1xjjj, 4,     mu      j     j1     j2 
-185,      txxjj, 4,     mu     nu     j1     j2 
-186,     t1xxjj, 4,     mu     nu     j1     j2 
-187,      txjij, 4,     mu      j     i1     j2 
-188,     t1xjij, 4,     mu      j     i1     j2 
-189,      txxij, 4,     mu     nu     i1     j2 
-190,     t1xxij, 4,     mu     nu     i1     j2 
-191,      tiaix, 4,      i      a     i1  sigma 
-192,     t1iaix, 4,      i      a     i1  sigma 
-193,      tixix, 4,      i     nu     i1  sigma 
-194,     t1ixix, 4,      i     nu     i1  sigma 
-195,      tixxx, 4,      i     nu lambda  sigma 
-196,     t1ixxx, 4,      i     nu lambda  sigma 
-197,      txiix, 4,     nu      i     i1  sigma 
-198,     t1xiix, 4,     nu      i     i1  sigma 
-199,      tjbjx, 4,      j      b     j1  sigma 
-200,     t1jbjx, 4,      j      b     j1  sigma 
-201,      tjxjx, 4,      j     nu     j1  sigma 
-202,     t1jxjx, 4,      j     nu     j1  sigma 
-203,      tjxxx, 4,      j     nu lambda  sigma 
-204,     t1jxxx, 4,      j     nu lambda  sigma 
-205,      txjjx, 4,     nu      j     j1  sigma 
-206,     t1xjjx, 4,     nu      j     j1  sigma 
-207,      tibix, 4,      i      b     i1  sigma 
-208,     t1ibix, 4,      i      b     i1  sigma 
-209,      tjajx, 4,      j      a     j1  sigma 
-210,     t1jajx, 4,      j      a     j1  sigma 
-211,      tibjx, 4,      i      b     j1  sigma 
-212,     t1ibjx, 4,      i      b     j1  sigma 
-213,      tixjx, 4,      i     nu     j1  sigma 
-214,      tixxj, 4,      i     nu  sigma     j1 
-215,     t1ixxj, 4,      i     nu  sigma     j1 
-216,      tjaix, 4,      j      a     i1  sigma 
-217,     t1jaix, 4,      j      a     i1  sigma 
-218,      tjxix, 4,      j     nu     i1  sigma 
-219,      tiiax, 4,      i     i1      a  sigma 
-220,     t1iiax, 4,      i     i1      a  sigma 
-221,      tiixx, 4,      i     i1 lambda  sigma 
-222,     t1iixx, 4,      i     i1 lambda  sigma 
-223,      tjjbx, 4,      j     j1      b  sigma 
-224,     t1jjbx, 4,      j     j1      b  sigma 
-225,      tjjxx, 4,      j     j1 lambda  sigma 
-226,     t1jjxx, 4,      j     j1 lambda  sigma 
-227,      tijax, 4,      i     j1      a  sigma 
-228,     t1ijax, 4,      i     j1      a  sigma 
-229,      tijxx, 4,      i     j1 lambda  sigma 
-230,     t1ijxx, 4,      i     j1 lambda  sigma 
-231,      tiiix, 4,      i     i1     i2  sigma 
-232,      tjjjx, 4,      j     j1     j2  sigma 
-233,      tijix, 4,      i     j1     i2  sigma 
-234,      tjijx, 4,      j     i1     j2  sigma 
-235,      tjixx, 4,      j     i1 lambda  sigma 
-236,        laa, 2,      a     a1 
-237,       l1aa, 2,     a1      a 
-238,        lbb, 2,      b     b1 
-239,       l1bb, 2,     b1      b 
-240,        lai, 2,      a      i 
-241,       l1ai, 2,     a1      i 
-242,        lbj, 2,      b      j 
-243,       l1bj, 2,     b1      j 
-244,      lxxai, 4,     mu     nu     a2      i 
-245,      lxxaj, 4,     mu     nu     a1      j 
-246,      lxxbj, 4,     mu     nu     b2      j 
-247,      lxxbi, 4,     mu     nu      b      i 
-248,      taiai, 4,      p      i     p1     i1 
-249,      laiai, 4,      p      i     p1     i1 
-250,      tiaia, 4,      i      a     i1     a1 
-251,     t1iaia, 4,      i      a     i1     a1 
-252,     t2iaia, 4,      i      a     i1     a1 
-253,     t3iaia, 4,      i      a     i1     a1 
-254,     t4iaia, 4,      i      a     i1     a1 
-255,     taiaia, 4,      i      a     i1     a1 
-256,      tjbjb, 4,      j      b     j1     b1 
-257,     t1jbjb, 4,      j      b     j1     b1 
-258,     t2jbjb, 4,      j      b     j1     b1 
-259,     t3jbjb, 4,      j      b     j1     b1 
-260,     t4jbjb, 4,      j      b     j1     b1 
-261,     tajbjb, 4,      j      b     j1     b1 
-262,      tiajb, 4,      i      a      j      b 
-263,     t1iajb, 4,      i      a      j      b 
-264,     t2iajb, 4,      i      a      j      b 
-265,     taiajb, 4,      i      a      j      b 
-266,      tibib, 4,      i      b     i1     b1 
-267,     t1ibib, 4,      i      b     i1     b1 
-268,     t2ibib, 4,      i      b     i1     b1 
-269,     taibib, 4,      i      b     i1     b1 
-270,      tjaja, 4,      j      a     j1     a1 
-271,     t1jaja, 4,      j      a     j1     a1 
-272,     t2jaja, 4,      j      a     j1     a1 
-273,     tajaja, 4,      j      a     j1     a1 
-274,      tbjbj, 4,      q      j     q1     j1 
-275,      lbjbj, 4,      q      j     q1     j1 
-276,      taibj, 4,      p      i      q      j 
-277,     t1aibj, 4,      p      i      q      j 
-278,  tmp1_aiai, 4,      a      i     a1     i1 
-279,  tmp2_aiai, 4,      a      i     a1     i1 
-280,  tmp1_bjbj, 4,      b      j     b1     j1 
-281,  tmp2_bjbj, 4,      b      j     b1     j1 
-282,  tmp1_aibj, 4,      a      i      b      j 
-283,        tai, 2,      a      i 
-284,       t1ai, 2,      a      i 
-285,        tbj, 2,      b      j 
-286,       t1bj, 2,      b      j 
-287,        taa, 2,      a     a1 
-288,       t1aa, 2,      a     a1 
-289,        tbb, 2,      b     b1 
-290,       t1bb, 2,      b     b1 
-291,      tae_a, 2,      a     a1 
-292,      tae_b, 2,      b     b1 
-293,        tia, 2,      i      a 
-294,       t1ia, 2,      i      a 
-295,       t2ia, 2,      i      a 
-296,       t3ia, 2,      i      a 
-297,       t4ia, 2,      i      a 
-298,        tjb, 2,      j      b 
-299,       t1jb, 2,      j      b 
-300,       t2jb, 2,      j      b 
-301,       t3jb, 2,      j      b 
-302,       t4jb, 2,      j      b 
-303,      tme_a, 2,      i      a 
-304,      tme_b, 2,      j      b 
-305,        tii, 2,      i     i1 
-306,       t1ii, 2,      i     i1 
-307,        tjj, 2,      j     j1 
-308,       t1jj, 2,      j     j1 
-309,      tmi_a, 2,      i     i1 
-310,      tmi_b, 2,      j     j1 
-311,      liaai, 4,      i      a     a1     i1 
-312,      tiaai, 4,      i      a     a1     i1 
-313,     t1iaai, 4,      i      a     a1     i1 
-314,      ljbbj, 4,      j      b     b1     j1 
-315,      tjbbj, 4,      j      b     b1     j1 
-316,     t1jbbj, 4,      j      b     b1     j1 
-317,      liabj, 4,      i      a      b      j 
-318,      tiabj, 4,      i      a      b      j 
-319,      lbjai, 4,      b      j      a      i 
-320,      tbjai, 4,      b      j      a      i 
-321,      ljbai, 4,      j      b      a      i 
-322,      tjbai, 4,      j      b      a      i 
-323,      taaaa, 4,      a     a1     a2     a3 
-324,     t1aaaa, 4,      a     a1     a2     a3 
-325,      taabb, 4,      a     a1      b     b1 
-326,     t1aabb, 4,      a     a1      b     b1 
-327,      tbbbb, 4,      b     b1     b2     b3 
-328,     t1bbbb, 4,      b     b1     b2     b3 
-329,      tiiii, 4,      i     i1     i2     i3 
-330,     t1iiii, 4,      i     i1     i2     i3 
-331,      tiijj, 4,      i     i1      j     j1 
-332,     t1iijj, 4,      i     i1      j     j1 
-333,      tjjjj, 4,      j     j1     j2     j3 
-334,     t1jjjj, 4,      j     j1     j2     j3 
-335,      tiiaa, 4,      i     i1      a     a1 
-336,     taiiaa, 4,      i     i1      a     a1 
-337,     t1iiaa, 4,      i     i1      a     a1 
-338,     t2iiaa, 4,      i     i1      a     a1 
-339,      tiibb, 4,      i     i1      b     b1 
-340,     t1iibb, 4,      i     i1      b     b1 
-341,     t2iibb, 4,      i     i1      b     b1 
-342,     taiibb, 4,      i     i1      b     b1 
-343,      tjjaa, 4,      j     j1      a     a1 
-344,     t1jjaa, 4,      j     j1      a     a1 
-345,     t2jjaa, 4,      j     j1      a     a1 
-346,     tajjaa, 4,      j     j1      a     a1 
-347,      tjjbb, 4,      j     j1      b     b1 
-348,     tajjbb, 4,      j     j1      b     b1 
-349,     t1jjbb, 4,      j     j1      b     b1 
-350,     t2jjbb, 4,      j     j1      b     b1 
-351,     t1iabj, 4,      i      a      b      j 
-352,     t1jbai, 4,      j      b      a      i 
-353,     t1bjia, 4,      b      j      i      a 
-354,      tiaii, 4,      i      a     i1     i2 
-355,      tjbjj, 4,      j      b     j1     j2 
-356,      tiajj, 4,      i      a      j     j1 
-357,      tjbii, 4,      j      b      i     i1 
-358,      taaai, 4,      a     a1     a2      i 
-359,     t1aaai, 4,      a     a1     a2      i 
-360,      taabj, 4,      a     a1      b      j 
-361,     t1aabj, 4,      a     a1      b      j 
-362,      tbbai, 4,      b     b1      a      i 
-363,     t1bbai, 4,      b     b1      a      i 
-364,      tbbbj, 4,      b     b1     b2      j 
-365,     t1bbbj, 4,      b     b1     b2      j 
-366,      tiiia, 4,      i     i1     i2      a 
-367,     t1iiia, 4,      i     i1     i2      a 
-368,      tiijb, 4,      i     i1      j      b 
-369,     t1iijb, 4,      i     i1      j      b 
-370,      tjjia, 4,      j     j1      i      a 
-371,     t1jjia, 4,      j     j1      i      a 
-372,      tjjjb, 4,      j     j1     j2      b 
-373,     t1jjjb, 4,      j     j1     j2      b 
-374,      tijab, 4,      i      j      a      b 
-375,     t1ijab, 4,      i      j      a      b 
-376,     t2ijab, 4,      i      j      a      b 
-377,      tabab, 4,      a      b     a1     b1 
-378,     t1abab, 4,      a      b     a1     b1 
-379,      tijij, 4,      i      j     i1     j1 
-380,     t1ijij, 4,      i      j     i1     j1 
-381,      tjbia, 4,      j      b      i      a 
-382,     t1jbia, 4,      j      b      i      a 
-383,     t2jbia, 4,      j      b      i      a 
-384,      tabaj, 4,      a      b     a1      j 
-385,     t1abaj, 4,      a      b     a1      j 
-386,      tbabi, 4,      b      a     b1      i 
-387,     t1babi, 4,      b      a     b1      i 
-388,      tijib, 4,      i      j     i1      b 
-389,     t1ijib, 4,      i      j     i1      b 
-390,      tjija, 4,      j      i     j1      a 
-391,     t1jija, 4,      j      i     j1      a 
-392,      tjaib, 4,      j      a      i      b 
-393,      tibja, 4,      i      b      j      a 
-394,      tbibi, 4,      b     i1     b1      i 
-395,     t1bibi, 4,      b     i1     b1      i 
-396,      lbibi, 4,      b     i1     b1      i 
-397,      tajaj, 4,      a     j1     a1      j 
-398,      lajaj, 4,      a     j1     a1      j 
-399,      tiixa, 4,      i     i1  sigma     a1 
-400,      tibaj, 4,      i      b      a     j1 
-401,      tjaaj, 4,      j     a1      a     j1 
-402,      taijb, 4,      a      i      j      b 
-403,      taaii, 4,      a     a1      i     i1 
-404,      tbbjj, 4,      b     b1      j     j1 
-405,      tabij, 4,      a      b     i1     j1 
-406,      tbaji, 4,      b      a      j      i 
-407,      tiiai, 4,      i     i1      a     i2 
-408,      tjjbj, 4,      j     j1      b     j2 
-409,      tijaj, 4,      i      j      a     j1 
-410,      tjibi, 4,      j      i      b     i1 
-411,      tbiaj, 4,      b      i      a      j 
-412,      tajbi, 4,      a      j     b1     i1 
-413,        jxi, 2,     mu      i 
-414,        jxj, 2,     mu      j 
-415,        ixa, 2,     mu      a 
-416,        ixb, 2,     mu      b 
-417,        ixx, 2,     mu     mu 
-418,       i1xx, 2,     mu     mu 
-419,        zaa, 4, lambda      i     a1     i1 
-420,       zzaa, 4, lambda      i  sigma     i1 
-421,        zbb, 4, lambda      j     b1     j1 
-422,       zzbb, 4, lambda      j  sigma     j1 
-423,        zab, 4, lambda      i     b1     j1 
-424,       zzab, 4, lambda      i  sigma     j1 
-425,        qaa, 4,      i lambda     i1     a1 
-426,       qqaa, 4,      i lambda     i1  sigma 
-427,        qbb, 4,      j lambda     j1     b1 
-428,       qqbb, 4,      j lambda     j1  sigma 
-429,        qab, 4,      i lambda      j      b 
-430,       qqab, 4,      i lambda      j  sigma 
-431,      etemp, 0.000000
-432,       esum, 0.000000
-433,      eacbd, 0.000000
-434,         cp, 2,     mu      p 
-435,   mo_ovrlp, 2,      p      q 
-436, mo_ovrlp_oavb, 2,      i      b 
-437, mo_ovrlp_ovab, 2,      i      a 
-438, mo_ovrlp_vaob, 2,      a      j 
-439, mo_ovrlp_vavb, 2,      a      b 
-440, mo_ovrlp_oaob, 2,      i      j 
-441,      dvaoa, 2,      a      i 
-442,      dvbob, 2,      b      j 
-443,      dvava, 2,      a     a1 
-444,      dvbvb, 2,      b     b1 
-445,      doaoa, 2,      i     i1 
-446,      dobob, 2,      j     j1 
-447,    intovba, 2,      j      a 
-448,    intovab, 2,      i      b 
-449,    intooab, 2,      i      j 
-450,    intvvab, 2,      a      b 
-451,     toavb1, 2,      i      b 
-452,     toavb2, 2,      i      b 
-453,      tvaob, 2,      a      j 
-454,     tvavb1, 2,      a      b 
-455,     tvavb2, 2,      a      b 
-456,     toaob1, 2,      i      j 
-457,     toaob2, 2,      i      j 
-458,     tdvaoa, 2,      a      i 
-459,     tdvbob, 2,      b      j 
-460,     tdvava, 2,      a     a1 
-461,     tdvbvb, 2,      b     b1 
-462,     tdobob, 2,      j     j1 
-463,     tdoaoa, 2,      i     i1 
-464,    tmpooab, 2,     i1     j1 
-465,    tmpovba, 2,     j1      a 
-466,    tmpovab, 2,      i      b 
-467,    tmpvvab, 2,     a1      b 
-468,        txp, 2,     mu      p 
-469,        txq, 2,     mu      q 
-470,     tmp_pq, 2,      p      q 
-471,    tmp_sum, 0.000000
-472,  check_sum, 0.000000
-473,   sum_oo_a, 0.000000
-474,   sum_oo_b, 0.000000
-475,   sum_vv_a, 0.000000
-476,   sum_vv_b, 0.000000
-477,   sum_ov_a, 0.000000
-478,   sum_ov_b, 0.000000
-479,     sum_ij, 0.000000
-480,     sum_ab, 0.000000
-481,     sum_ai, 0.000000
-482,   s2_one_p, 0.000000
-483,   s2_two_p, 0.000000
-484,   sum_ijkl, 0.000000
-485,   sum_ijka, 0.000000
-486,   sum_abij, 0.000000
-487,   sum_abci, 0.000000
-488,   sum_abcd, 0.000000
-489,       temp, 0.000000
-490,       temp, 0.500000
-491,       temp, -1.000000
-492,       temp, 0.125000
-493,       temp, -0.125000
-494,       temp, 0.062500
-495,       temp, 0.375000
-496,       temp, 2.000000
-497,       temp, -0.062500
-498,       temp, 4.000000
-499,       temp, 8.000000
-500,       temp, 0.250000
-501,       temp, -4.000000
-502,       temp, -0.250000
-503,       temp, -0.500000
-504,       temp, 14.000000
-Writing tables to s2expect/s2expect_dropmo.sio
+22,        tix, 2,      i     mu 
+23,        tjx, 2,      j     mu 
+24,        txa, 2,     mu      a 
+25,        txb, 2,     mu      b 
+26,        txx, 2,     mu     nu 
+27,        hbx, 2,     mu     nu 
+28,   hba_ae_x, 2,      a     a1 
+29,   hbb_ae_x, 2,      b     b1 
+30,   hba_me_x, 2,      i     a1 
+31,   hbb_me_x, 2,      j     b1 
+32,   hbb_mi_x, 2,      j     j1 
+33,   hba_mi_x, 2,      i     i1 
+34,   f1ae_a_x, 2,      a     a1 
+35,   f1ae_b_x, 2,      b     b1 
+36,   f1mi_a_x, 2,      i     i1 
+37,   f1mi_b_x, 2,      j     j1 
+38,  t1a_old_x, 2,      a      i 
+39,  t1b_old_x, 2,      b      j 
+40, t2old_aa_x, 4,      a      i     a1     i1 
+41, t2old_bb_x, 4,      b      j     b1     j1 
+42, t2old_ab_x, 4,      a      i      b      j 
+43,  t1a_old_y, 2,      a      i 
+44,  t1b_old_y, 2,      b      j 
+45, t2old_aa_y, 4,      a      i     a1     i1 
+46, t2old_bb_y, 4,      b      j     b1     j1 
+47, t2old_ab_y, 4,      a      i      b      j 
+48,  t1a_old_z, 2,      a      i 
+49,  t1b_old_z, 2,      b      j 
+50, t2old_aa_z, 4,      a      i     a1     i1 
+51, t2old_bb_z, 4,      b      j     b1     j1 
+52, t2old_ab_z, 4,      a      i      b      j 
+53,  l1a_old_x, 2,      i      a 
+54,  l1a_new_x, 2,      i      a 
+55,  l1b_old_x, 2,      j      b 
+56,  l1b_new_x, 2,      j      b 
+57, l2old_aa_x, 4,      i      a     i1     a1 
+58, l2new_aa_x, 4,      i      a     i1     a1 
+59, l2old_bb_x, 4,      j      b     j1     b1 
+60, l2new_bb_x, 4,      j      b     j1     b1 
+61, l2old_ab_x, 4,      i      a      j      b 
+62, l2new_ab_x, 4,      i      a      j      b 
+63, il2old_aa_x, 4,      i      a     i1     a1 
+64, il2old_bb_x, 4,      j      b     j1     b1 
+65, il2old_ab_x, 4,      i      a      j      b 
+66, il1a_old_x, 2,      i      a 
+67, il1b_old_x, 2,      j      b 
+68,      tmppv, 4,      a      i      b      j 
+69, tmp1pv_aiai, 4,      a      i     a1     i1 
+70, tmp2pv_aiai, 4,      a      i     a1     i1 
+71, tmp1pv_bjbj, 4,      b      j     b1     j1 
+72, tmp2pv_bjbj, 4,      b      j     b1     j1 
+73,   tau_aa_x, 4,      a      i     a1     i1 
+74,   tau_bb_x, 4,      b      j     b1     j1 
+75,   tau_ab_x, 4,      a      i      b      j 
+76,  taup_aa_x, 4,      a      i     a1     i1 
+77,  taup_bb_x, 4,      b      j     b1     j1 
+78,  taup_ab_x, 4,      a      i      b      j 
+79,    fme_a_x, 2,      i      a 
+80,    fme_b_x, 2,      j      b 
+81, w1imen_aa_x, 4,      i     i1      a     i2 
+82, w1imen_bb_x, 4,      j     j1      b     j2 
+83, w1imen_ab_x, 4,      i     i1      b      j 
+84, w1imen_ba_x, 4,      j     j1      a      i 
+85, w1minj_aa_x, 4,      i     i1     i2     i3 
+86, w1minj_bb_x, 4,      j     j1     j2     j3 
+87, w1minj_ab_x, 4,      i     i1      j     j1 
+88, w2mebj_aa_x, 4,      i      a     a1     i1 
+89, w2mebj_bb_x, 4,      j      b     b1     j1 
+90, w2mebj_ab_x, 4,      i      a      b      j 
+91, w2mebj_ba_x, 4,      j      b      a      i 
+92, w2mjbe_ab_x, 4,      i     i1      b     b1 
+93, w2mjbe_ba_x, 4,      j     j1      a     a1 
+94, w1mebj_aa_x, 4,      i      a     a1     i1 
+95, w1mebj_bb_x, 4,      j      b     b1     j1 
+96, w1mebj_ab_x, 4,      i      a      b      j 
+97, w1mebj_ba_x, 4,      j      b      a      i 
+98, w1mjbe_ab_x, 4,      i     i1      b     b1 
+99, w1mjbe_ba_x, 4,      j     j1      a     a1 
+100, w1eafm_aa_x, 4,      a     a1     a2      i 
+101, w1eafm_bb_x, 4,      b     b1     b2      j 
+102, w1eafm_ab_x, 4,     a1      a      b      j 
+103, w1eafm_ba_x, 4,     b1      b      a      i 
+104,    gae_a_x, 2,      a     a1 
+105,    gae_b_x, 2,      b     b1 
+106,    gmi_a_x, 2,      i     i1 
+107,    gmi_b_x, 2,      j     j1 
+108,    t1a_old, 2,      a      i 
+109,    t1b_old, 2,      b      j 
+110,      fae_a, 2,      a     a1 
+111,      fae_b, 2,      b     b1 
+112,      fme_a, 2,      i      a 
+113,      fme_b, 2,      j      b 
+114,      fmi_a, 2,      i     i1 
+115,      fmi_b, 2,      j     j1 
+116,      gae_a, 2,      a     a1 
+117,      gae_b, 2,      b     b1 
+118,      gmi_a, 2,      i     i1 
+119,      gmi_b, 2,      j     j1 
+120,     dsaaai, 4,      a     a1     a2      i 
+121,      daabj, 4,      a     a1      b      j 
+122,  d1eafm_aa, 4,     a1      a     a2      i 
+123,  d2eafm_aa, 4,     a2      a     a1      i 
+124,  d1eafm_ab, 4,     a1      a      b      j 
+125,  d1eafm_ba, 4,     b1      b     a1      i 
+126,     dsbbbj, 4,      b     b1     b2      j 
+127,  d1eafm_bb, 4,     b1      b     b2      j 
+128,  d2eafm_bb, 4,     b2      b     b1      j 
+129,  d2eafm_ba, 4,     b1      b      a      i 
+130,  d3eafm_ab, 4,     a1      a     b1      j 
+131,      dbbai, 4,      b     b1      a      i 
+132,      txixi, 4,     mu     i1 lambda      i 
+133,      txxii, 4,     mu     nu     i1      i 
+134,      tixxi, 4,     i1     nu lambda      i 
+135,      txipi, 4,     mu      i      p     i1 
+136,      tpipi, 4,     p1      i      p     i1 
+137,     t1pipi, 4,     p1      i      p     i1 
+138,      tixai, 4,      i     mu      a     i1 
+139,      txaii, 4,     mu      a      i     i1 
+140,      tiaai, 4,      i     a1      a     i1 
+141,      taaii, 4,      a     a1      i     i1 
+142,      txaai, 4,     mu     a1      a      i 
+143,      taaai, 4,     a2      a     a1      i 
+144,      txxai, 4,     mu     nu      a      i 
+145,     vspipi, 4,     p1      i      p     i1 
+146,      viaai, 4,      i     a1      a     i1 
+147,      vaaii, 4,      a     a1      i     i1 
+148,      vxaai, 4,     mu     a1      a      i 
+149,     vsaaai, 4,     a2      a     a1      i 
+150,      txjxj, 4,     mu     j1 lambda      j 
+151,      txxjj, 4,     mu     nu     j1      j 
+152,      tjjxx, 4,     j1     nu lambda      j 
+153,      tjxxj, 4,     j1     nu lambda      j 
+154,      txjqj, 4,     mu      j      q     j1 
+155,      tqjqj, 4,     q1      j      q     j1 
+156,     t1qjqj, 4,     q1      j      q     j1 
+157,      tjxbj, 4,      j     mu      b     j1 
+158,      txbjj, 4,     mu      b      j     j1 
+159,      tjbbj, 4,      j     b1      b     j1 
+160,      tbbjj, 4,      b     b1      j     j1 
+161,      txbbj, 4,     mu     b1      b      j 
+162,      tbbbj, 4,     b2      b     b1      j 
+163,      txxbj, 4,     mu     nu      b      j 
+164,     vsqjqj, 4,     q1      j      q     j1 
+165,      vjbbj, 4,      j     b1      b     j1 
+166,      vbbjj, 4,      b     b1      j     j1 
+167,     vsbbbj, 4,     b2      b     b1      j 
+168,      txixj, 4,     mu      i     nu      j 
+169,      txiqj, 4,     mu      i      q      j 
+170,      tpiqj, 4,      p      i      q      j 
+171,      tiixx, 4,      i     i1     mu     nu 
+172,      tiixb, 4,      i     i1     mu      b 
+173,      tiibb, 4,      i     i1     b1      b 
+174,      txajj, 4,     mu      a      j     j1 
+175,      taajj, 4,      a     a1      j     j1 
+176,      txabj, 4,     mu      a      b      j 
+177,      tixxj, 4,      i     mu     nu      j 
+178,      tixbj, 4,      i     mu      b      j 
+179,      tiabj, 4,      i      a      b      j 
+180,      taabj, 4,      a     a1      b      j 
+181,      vpiqj, 4,      p      i      q      j 
+182,      viibb, 4,      i     i1     b1      b 
+183,      vaajj, 4,      a     a1      j     j1 
+184,      viabj, 4,      i      a      b      j 
+185,      vaabj, 4,      a     a1      b      j 
+186,      txbii, 4,     mu      b      i     i1 
+187,      tbbii, 4,      b     b1      i     i1 
+188,      tjbii, 4,      j      b      i     i1 
+189,      txbai, 4,     mu      b      a      i 
+190,      tbbai, 4,      b     b1      a      i 
+191,      vbbii, 4,      b     b1      i     i1 
+192,      vjbii, 4,      j      b      i     i1 
+193,      vbbai, 4,      b     b1      a      i 
+194,      txxxi, 4,     mu     nu lambda      i 
+195,      txxxj, 4,     mu     nu lambda      j 
+196,      txiix, 4,     mu      i     i1     nu 
+197,      txjjx, 4,     mu      j     j1     nu 
+198,      txijx, 4,     mu      i      j     nu 
+199,      txpii, 4,     mu      p      i     i1 
+200,      txqii, 4,     mu      q      i     i1 
+201,      tppii, 4,      p     p1      i     i1 
+202,      tqqii, 4,      q     q1      i     i1 
+203,      txpjj, 4,     mu      p      j     j1 
+204,      txqjj, 4,     mu      q      j     j1 
+205,      tppjj, 4,      p     p1      j     j1 
+206,      tqqjj, 4,      q     q1      j     j1 
+207,      tixpi, 4,      i     mu      p     i1 
+208,      tippi, 4,      i      p     p1     i1 
+209,      tjxqj, 4,      j     mu      q     j1 
+210,      tjqqj, 4,      j      q     q1     j1 
+211,      tixqj, 4,      i     mu      q      j 
+212,      tipqj, 4,      i      p      q      j 
+213,     vblock, 4,      i     i1     i2     i3 
+214,      taiai, 4,      p      i     p1     i1 
+215,     t1aiai, 4,      p      i     p1     i1 
+216,     t2aiai, 4,      p      i     p1     i1 
+217,     t3aiai, 4,      p      i     p1     i1 
+218,      tiaia, 4,      i      a     i1     a1 
+219,     t1iaia, 4,      i      a     i1     a1 
+220,     t2iaia, 4,      i      a     i1     a1 
+221,     t3iaia, 4,      i      a     i1     a1 
+222,     t4iaia, 4,      i      a     i1     a1 
+223,     txiaia, 4,      i      a     i1     a1 
+224,      tjbjb, 4,      j      b     j1     b1 
+225,     t1jbjb, 4,      j      b     j1     b1 
+226,     t2jbjb, 4,      j      b     j1     b1 
+227,     t3jbjb, 4,      j      b     j1     b1 
+228,     t4jbjb, 4,      j      b     j1     b1 
+229,     txjbjb, 4,      j      b     j1     b1 
+230,      tiajb, 4,      i      a      j      b 
+231,     t1iajb, 4,      i      a      j      b 
+232,     t2iajb, 4,      i      a      j      b 
+233,      tbjbj, 4,      q      j     q1     j1 
+234,     t1bjbj, 4,      q      j     q1     j1 
+235,     t2bjbj, 4,      q      j     q1     j1 
+236,     t3bjbj, 4,      q      j     q1     j1 
+237,      taibj, 4,      p      i      q      j 
+238,     t1aibj, 4,      p      i      q      j 
+239,      txxxp, 4,     mu     nu lambda      p 
+240,      txxxq, 4,     mu     nu lambda      q 
+241,      txxpp, 4,     mu     nu     p1      p 
+242,      txxqq, 4,     mu     nu     q1      q 
+243,      txppp, 4,     mu     p2     p1      p 
+244,      txqqq, 4,     mu     q2     q1      q 
+245,      txpqq, 4,     mu      p     q1      q 
+246,      tpppp, 4,     p3     p2     p1      p 
+247,     t1pppp, 4,     p3     p2     p1      p 
+248,     t2pppp, 4,     p3     p2     p1      p 
+249,     tspppp, 4,     p3     p2     p1      p 
+250,      tqqqq, 4,     q3     q2     q1      q 
+251,     t1qqqq, 4,     q3     q2     q1      q 
+252,     t2qqqq, 4,     q3     q2     q1      q 
+253,     tsqqqq, 4,     q3     q2     q1      q 
+254,      tppqq, 4,     p1      p     q1      q 
+255,     t1ppqq, 4,     p1      p     q1      q 
+256,      tqqpp, 4,     q1      q     p1      p 
+257,     t1qqpp, 4,     q1      q     p1      p 
+258,      tixxx, 4,      i     mu     nu  sigma 
+259,      tipxx, 4,      i      p     nu  sigma 
+260,      tipqx, 4,      i      p      q  sigma 
+261,      tipqq, 4,      i      p      q     q1 
+262,      tpqqp, 4,     p1      q     q1      p 
+263,      tqppq, 4,     q1      p     p1      q 
+264,  tmp1_aiai, 4,      a      i     a1     i1 
+265,  tmp2_aiai, 4,      a      i     a1     i1 
+266,  tmp3_aiai, 4,      a      i     a1     i1 
+267,  tmp1_bjbj, 4,      b      j     b1     j1 
+268,  tmp2_bjbj, 4,      b      j     b1     j1 
+269,  tmp3_bjbj, 4,      b      j     b1     j1 
+270,  tmp1_aibj, 4,      a      i      b      j 
+271,  tmp2_aibj, 4,      a      i      b      j 
+272,        tai, 2,      a      i 
+273,       t1ai, 2,      a      i 
+274,        tbj, 2,      b      j 
+275,       t1bj, 2,      b      j 
+276,        taa, 2,      a     a1 
+277,       t1aa, 2,      a     a1 
+278,        tbb, 2,      b     b1 
+279,       t1bb, 2,      b     b1 
+280,      tae_a, 2,      a     a1 
+281,      tae_b, 2,      b     b1 
+282,        tia, 2,      i      a 
+283,       t1ia, 2,      i      a 
+284,       t2ia, 2,      i      a 
+285,       t3ia, 2,      i      a 
+286,       t4ia, 2,      i      a 
+287,        tjb, 2,      j      b 
+288,       t1jb, 2,      j      b 
+289,       t2jb, 2,      j      b 
+290,       t3jb, 2,      j      b 
+291,       t4jb, 2,      j      b 
+292,      tme_a, 2,      i      a 
+293,      tme_b, 2,      j      b 
+294,        tii, 2,      i     i1 
+295,       t1ii, 2,      i     i1 
+296,        tjj, 2,      j     j1 
+297,       t1jj, 2,      j     j1 
+298,      tmi_a, 2,      i     i1 
+299,      tmi_b, 2,      j     j1 
+300,      taiii, 4,      a      i     i1     i2 
+301,     t1aiii, 4,      a      i     i1     i2 
+302,      tiiii, 4,      i     i1     i2     i3 
+303,     t1iiii, 4,      i     i1     i2     i3 
+304,     t2iiii, 4,      i     i1     i2     i3 
+305,     txiiii, 4,      i     i1     i2     i3 
+306,      tjjjj, 4,      j     j1     j2     j3 
+307,     t1jjjj, 4,      j     j1     j2     j3 
+308,     t2jjjj, 4,      j     j1     j2     j3 
+309,     txjjjj, 4,      j     j1     j2     j3 
+310,      tbjjj, 4,      b      j     j1     j2 
+311,     t1bjjj, 4,      b      j     j1     j2 
+312,      tiijj, 4,      i     i1     j2     j3 
+313,     t1iijj, 4,      i     i1     j2     j3 
+314,     tmp_aa, 2,      a     a1 
+315,    tmp1_aa, 2,      a     a1 
+316,     tmp_ii, 2,      i     i1 
+317,    tmp1_ii, 2,      i     i1 
+318,      tiiai, 4,      i     i1      a     i2 
+319,     t1iiai, 4,      i     i1      a     i2 
+320,     t2iiai, 4,      i     i1      a     i2 
+321,     t3iiai, 4,      i     i1      a     i2 
+322,     t4iiai, 4,      i     i1      a     i2 
+323,     tsiiai, 4,      i     i1      a     i2 
+324,     tmp_bb, 2,      b     b1 
+325,    tmp1_bb, 2,      b     b1 
+326,     tmp_jj, 2,      j     j1 
+327,    tmp1_jj, 2,      j     j1 
+328,      tjjbj, 4,      j     j1      b     j2 
+329,     t1jjbj, 4,      j     j1      b     j2 
+330,     t2jjbj, 4,      j     j1      b     j2 
+331,     t3jjbj, 4,      j     j1      b     j2 
+332,     t4jjbj, 4,      j     j1      b     j2 
+333,     tsjjbj, 4,      j     j1      b     j2 
+334,     t1aaai, 4,      a     a1     a2      i 
+335,     t2aaai, 4,      a     a1     a2      i 
+336,      taaaa, 4,      a     a1     a2     a3 
+337,     t1aaaa, 4,      a     a1     a2     a3 
+338,     t1bbbj, 4,      b     b1     b2      j 
+339,     t2bbbj, 4,      b     b1     b2      j 
+340,      tbbbb, 4,      b     b1     b2     b3 
+341,     t1bbbb, 4,      b     b1     b2     b3 
+342,      taabb, 4,      a     a1      b     b1 
+343,     t1aabb, 4,      a     a1      b     b1 
+344,     r1aiai, 4,      a      i     a1     i1 
+345,     r2aiai, 4,      a      i     a1     i1 
+346,     r3aiai, 4,      a      i     a1     i1 
+347,     r4aiai, 4,      a      i     a1     i1 
+348,     r1bjbj, 4,      b      j     b1     j1 
+349,     r2bjbj, 4,      b      j     b1     j1 
+350,     r3bjbj, 4,      b      j     b1     j1 
+351,     r4bjbj, 4,      b      j     b1     j1 
+352,     r1aibj, 4,      a      i      b      j 
+353,     r2aibj, 4,      a      i      b      j 
+354,     r3aibj, 4,      a      i      b      j 
+355,     r4aibj, 4,      a      i      b      j 
+356,     t1iaai, 4,      i      a     a1     i1 
+357,     t2iaai, 4,      i      a     a1     i1 
+358,     t1jbbj, 4,      j      b     b1     j1 
+359,     t2jbbj, 4,      j      b     b1     j1 
+360,     t1iabj, 4,      i      a      b      j 
+361,     t2iabj, 4,      i      a      b      j 
+362,      tjjpp, 4,      j     j1      p     p1 
+363,     t1jjpp, 4,      j     j1      p     p1 
+364,     t2jjpp, 4,      j     j1      p     p1 
+365,      tiiqq, 4,      i     i1      q     q1 
+366,     t1iiqq, 4,      i     i1      q     q1 
+367,     t2iiqq, 4,      i     i1      q     q1 
+368,      tjjai, 4,      j     j1      a      i 
+369,     t1jjai, 4,      j     j1      a      i 
+370,     t2jjai, 4,      j     j1      a      i 
+371,      tiibj, 4,      i     i1      b      j 
+372,     t1iibj, 4,      i     i1      b      j 
+373,     t2iibj, 4,      i     i1      b      j 
+374,      tjbai, 4,      j      b      a      i 
+375,     t1jbai, 4,      j      b      a      i 
+376,     t2jbai, 4,      j      b      a      i 
+377,      taijj, 4,      a      i      j     j1 
+378,     t1aijj, 4,      a      i      j     j1 
+379,      tqqip, 4,      a      i      b     b1 
+380,     t1iibb, 4,      i     i1      b     b1 
+381,      tjjaa, 4,      j     j1      a     a1 
+382,     t1jjaa, 4,      j     j1      a     a1 
+383,      tjjii, 4,      j     j1      i     i1 
+384,      taibb, 4,      a      i      b     b1 
+385,     t1aibb, 4,      a      i      b     b1 
+386,      tbjaa, 4,      b      j      a     a1 
+387,     t1bjaa, 4,      b      j      a     a1 
+388,     t1jbii, 4,      j      b      i     i1 
+389,      tiajj, 4,      i      a      j     j1 
+390,     t1iajj, 4,      i      a      j     j1 
+391,      taiaa, 4,     a1      i     a2      a 
+392,     t1aiaa, 4,     a1      i     a2      a 
+393,      tbjbb, 4,     b1      j     b2      b 
+394,     t1bjbb, 4,     b1      j     b2      b 
+395,      tjibi, 4,      j      i      b     i1 
+396,      tbiba, 4,      b      i     b1      a 
+397,      tjiba, 4,      j      i      b      a 
+398,   t2old_aa, 4,      a      i     a1     i1 
+399,   t2old_bb, 4,      b      j     b1     j1 
+400,   t2old_ab, 4,      a      i      b      j 
+401,     tau_aa, 4,      a      i     a1     i1 
+402,     tau_bb, 4,      b      j     b1     j1 
+403,     tau_ab, 4,      a      i      b      j 
+404,    taup_aa, 4,      a      i     a1     i1 
+405,    taup_bb, 4,      b      j     b1     j1 
+406,    taup_ab, 4,      a      i      b      j 
+407,      aoint, 4,     mu     nu lambda  sigma 
+408,       pinf, 2,  kiter  kptr1 
+409,      tpinf, 2,  kiter  kptr1 
+410,        one, 0.000000
+411,        two, 0.000000
+412,       five, 0.000000
+413,        six, 0.000000
+414,      seven, 0.000000
+415,      eight, 0.000000
+416,       nine, 0.000000
+417,        ten, 0.000000
+418,    ncount1, 0.000000
+419,    ncount2, 0.000000
+420,     txaiai, 4,      a      i     nu     i1 
+421,     tyaiai, 4,      a      i     a1     i1 
+422,     txbjbj, 4,      b      j     nu     j1 
+423,     tybjbj, 4,      b      j     b1     j1 
+424,     txaibj, 4,      a      i     nu      j 
+425,     tyaibj, 4,      a      i      b      j 
+426,     f1me_a, 2,      i      a 
+427,     f1me_b, 2,      j      b 
+428,     f1ae_a, 2,      a     a1 
+429,     f1ae_b, 2,      b     b1 
+430,     f1mi_a, 2,      i     i1 
+431,     f1mi_b, 2,      j     j1 
+432,  w1minj_aa, 4,      i     i1     i2     i3 
+433,  w1minj_bb, 4,      j     j1     j2     j3 
+434,  w1minj_ab, 4,      i     i1      j     j1 
+435,  w2mebj_aa, 4,      i      a     a1     i1 
+436,  w2mebj_bb, 4,      j      b     b1     j1 
+437,  w2mebj_ab, 4,      i      a      b      j 
+438,  w2mebj_ba, 4,      j      b      a      i 
+439,  w2mjbe_ab, 4,      i     i1      b     b1 
+440,  w2mjbe_ba, 4,      j     j1      a     a1 
+441,  w1mebj_aa, 4,      i      a     a1     i1 
+442,  w1mebj_bb, 4,      j      b     b1     j1 
+443,  w1mebj_ab, 4,      i      a      b      j 
+444,  w1mebj_ba, 4,      j      b      a      i 
+445,  w1mjbe_ab, 4,      i     i1      b     b1 
+446,  w1mjbe_ba, 4,      j     j1      a     a1 
+447,  w1imen_aa, 4,      i     i1      a     i2 
+448,  w1imen_bb, 4,      j     j1      b     j2 
+449,  w1imen_ab, 4,      i     i1      b      j 
+450,  w1imen_ba, 4,      j     j1      a      i 
+451,  w1eafm_aa, 4,      a     a1     a2      i 
+452,  w1eafm_bb, 4,      b     b1     b2      j 
+453,  w1eafm_ab, 4,     a1      a      b      j 
+454,  w1eafm_ba, 4,     b1      b      a      i 
+455,    l1a_old, 2,      i      a 
+456,    l1b_old, 2,      j      b 
+457,   l2old_aa, 4,      i      a     i1     a1 
+458,   l2old_bb, 4,      j      b     j1     b1 
+459,   l2old_ab, 4,      i      a      j      b 
+460,        zaa, 4,      i     mu     i1     a1 
+461,        zab, 4,      i     mu      j      b 
+462,        zbb, 4,      j     mu     j1     b1 
+463,      liaix, 4,      i      a     i1     nu 
+464,      ljbjx, 4,      j      b     j1     nu 
+465,      liajx, 4,      i      a      j     nu 
+466,      laaaa, 4,     a3     a2      a     a1 
+467,      lbbbb, 4,     b3     b2      b     b1 
+468,      laabb, 4,      a     a1      b     b1 
+469,      lbbaa, 4,      b     b1      a     a1 
+470,      liaaa, 4,      i     a1     a3     a2 
+471,      ljbbb, 4,      j     b1     b3     b2 
+472,      liabb, 4,      i     a1      b     b1 
+473,      ljbaa, 4,      j     b1      a     a1 
+474,      liiia, 4,      i     i2     i1     a2 
+475,      liiii, 4,      i     i2     i1     i3 
+476,      ljjjb, 4,      j     j2     j1     b2 
+477,      ljjjj, 4,      j     j2     j1     j3 
+478,      liijb, 4,      i     i1      j     b1 
+479,      liajj, 4,      i     a1      j     j1 
+480,      liijj, 4,      i     i1      j     j1 
+481,     l1aiai, 4,      a      i     a2     i1 
+482,     l1aibj, 4,     a1      i      b      j 
+483,     l1bjbj, 4,     b1     j1     b2      j 
+484,     l2aibj, 4,      a      i     b1      j 
+485,     l2aiai, 4,     a2     i1      a     i2 
+486,     l3aibj, 4,      a     i1      b      j 
+487,     l2bjbj, 4,     b2     j1      b     j2 
+488,     l4aibj, 4,      a      i      b     j1 
+489,     l3aiai, 4,     a1     i1     a2      i 
+490,     l5aibj, 4,     a1      i      b      j 
+491,     l3bjbj, 4,     b1     j1     b2      j 
+492,     l6aibj, 4,      a      i     b1      j 
+493,     l4aiai, 4,      a     i1     a1     i2 
+494,     l7aibj, 4,      a     i1      b      j 
+495,     l4bjbj, 4,      b     j1     b1     j2 
+496,     l5aiai, 4,      a      i      b     j1 
+497,      liaia, 4,     i1      a     i2     a1 
+498,      liajb, 4,     i1      a      j      b 
+499,     l1iiii, 4,      i     i3     i2     i4 
+500,     l1iiia, 4,     i4     i2     i3      a 
+501,     l1jjjj, 4,      j     j3     j2     j4 
+502,     l1jjjb, 4,     j4     j2     j3      b 
+503,     l1jjii, 4,      j     j1     i2     i1 
+504,     l1jbii, 4,     j1      b     i1     i2 
+505,     l1iajj, 4,     i1      a     j1     j2 
+506,     l1iijj, 4,      i     i1     j2     j1 
+507,       llaa, 4,     i1     a1      i     a2 
+508,       llab, 4,      i     a1      j      b 
+509,       llba, 4,      i      a      j     b1 
+510,       llbb, 4,     j1     b1      j     b2 
+511,      xiiia, 4,      i     i1     i2      a 
+512,      xiiii, 4,      i     i1     i2     i3 
+513,      xiajj, 4,      i      a      j     j1 
+514,      xiibj, 4,      i     i1      b      j 
+515,      xjjjb, 4,      j     j1     j2      b 
+516,      xjjjj, 4,      j     j1     j2     j3 
+517,      xjbii, 4,      j      b      i     i1 
+518,      xjjai, 4,      j     j1      a      i 
+519,      xiijj, 4,      i     i1      j     j1 
+520,      xjjii, 4,      j     j1      i     i1 
+521,      tbbaa, 4,      b     b1      a     a1 
+522,      tjbaa, 4,      j     b1     a2     a3 
+523,      tjbbb, 4,      j     b1     b2     b3 
+524,      tiabb, 4,      i     a1     b2     b3 
+525,      tiaaa, 4,      i     a1     a2     a3 
+526,      tiijb, 4,      i     i1      j      b 
+527,      tixia, 4,      i     mu     i1     a1 
+528,      tixjb, 4,      i     mu      j      b 
+529,      tjxjb, 4,      j     mu     j1      b 
+530,      tixix, 4,      i     mu     i1     nu 
+531,      tixjx, 4,      i     mu      j     nu 
+532,      tjxjx, 4,      j     mu     j1     nu 
+533,        yaa, 4,      i     mu     i1     nu 
+534,        yab, 4,      i     mu      j     nu 
+535,        ybb, 4,      j     mu     j1     nu 
+536,      tiaix, 4,      i      a     i1     nu 
+537,      tiajx, 4,      i      a     j1     nu 
+538,      tjbjx, 4,      j      b     j1     nu 
+539,      tiiia, 4,      i     i2     i1      a 
+540,      tjjjb, 4,      j     j2     j1      b 
+541,      ljbjb, 4,      j      b     j1     b1 
+542,      tbjai, 4,      b      j      a      i 
+543,     t1bjai, 4,      b      j      a      i 
+544,      tjbia, 4,      j      b      i      a 
+545,      tjbix, 4,      j      b      i     mu 
+546,      tijaj, 4,      i      j      a     j1 
+547,     t1ijaj, 4,      i      j      a     j1 
+548,      tijib, 4,      i      j     i1      b 
+549,      tajab, 4,      a      j     a1      b 
+550,      tijab, 4,      i      j      a      b 
+551,     t1ijab, 4,      i      j      a      b 
+552,      tibab, 4,      i      b      a     b1 
+553,      tjija, 4,      j      i     j1      a 
+554,      tjaba, 4,      j      a      b     a1 
+555,       z2aa, 4,      i     mu     i1     nu 
+556,       z2ab, 4,      i     mu     j1     nu 
+557,       z2bb, 4,      j     mu     j1     nu 
+558,    l2ao_aa, 4,      i     mu     i1     nu 
+559,    l2ao_ab, 4,      i     mu     j1     nu 
+560,    l2ao_bb, 4,      j     mu     j1     nu 
+561,      iiiia, 4,      i     i1     i2     a2 
+562,      iiiii, 4,      i     i1     i2     i3 
+563,      ijjjb, 4,      j     j1     j2     b2 
+564,      ijjjj, 4,      j     j1     j2     j3 
+565,      iiijb, 4,      i     i1      j      b 
+566,      iiajj, 4,      i      a      j     j1 
+567,      iiijj, 4,      i     i1      j     j1 
+568,      etemp, 0.000000
+569,     etemp1, 0.000000
+570,       esum, 0.000000
+571,      esuma, 0.000000
+572,      esumb, 0.000000
+573,     esumab, 0.000000
+574,    ecorraa, 0.000000
+575,    ecorrbb, 0.000000
+576,    ecorrab, 0.000000
+577,     ecorrt, 0.000000
+578,     ecorrd, 0.000000
+579,      ecrit, 0.000000
+580,       eold, 0.000000
+581,      ediff, 0.000000
+582, mp2_energy, 0.000000
+583,     d0iaia, 4,      i      a     i1     a1 
+584,     d1iaia, 4,      i      a     i1     a1 
+585,     d2iaia, 4,      i      a     i1     a1 
+586,     d3iaia, 4,      i      a     i1     a1 
+587,     d4iaia, 4,      i      a     i1     a1 
+588,     d5iaia, 4,      i      a     i1     a1 
+589,     d0jbjb, 4,      j      b     j1     b1 
+590,     d1jbjb, 4,      j      b     j1     b1 
+591,     d2jbjb, 4,      j      b     j1     b1 
+592,     d3jbjb, 4,      j      b     j1     b1 
+593,     d4jbjb, 4,      j      b     j1     b1 
+594,     d5jbjb, 4,      j      b     j1     b1 
+595,     d0iajb, 4,      i      a      j      b 
+596,     d1iajb, 4,      i      a      j      b 
+597,     d2iajb, 4,      i      a      j      b 
+598,     d3iajb, 4,      i      a      j      b 
+599,     d4iajb, 4,      i      a      j      b 
+600,     d5iajb, 4,      i      a      j      b 
+601,       d0ia, 2,      i      a 
+602,       d1ia, 2,      i      a 
+603,       d2ia, 2,      i      a 
+604,       d3ia, 2,      i      a 
+605,       d4ia, 2,      i      a 
+606,       d5ia, 2,      i      a 
+607,       d0jb, 2,      j      b 
+608,       d1jb, 2,      j      b 
+609,       d2jb, 2,      j      b 
+610,       d3jb, 2,      j      b 
+611,       d4jb, 2,      j      b 
+612,       d5jb, 2,      j      b 
+613,       e1ia, 2,      i      a 
+614,       e2ia, 2,      i      a 
+615,       e3ia, 2,      i      a 
+616,       e4ia, 2,      i      a 
+617,       e5ia, 2,      i      a 
+618,       e1jb, 2,      j      b 
+619,       e2jb, 2,      j      b 
+620,       e3jb, 2,      j      b 
+621,       e4jb, 2,      j      b 
+622,       e5jb, 2,      j      b 
+623,     e1iaia, 4,      i      a     i1     a1 
+624,     e2iaia, 4,      i      a     i1     a1 
+625,     e3iaia, 4,      i      a     i1     a1 
+626,     e4iaia, 4,      i      a     i1     a1 
+627,     e5iaia, 4,      i      a     i1     a1 
+628,     e1jbjb, 4,      j      b     j1     b1 
+629,     e2jbjb, 4,      j      b     j1     b1 
+630,     e3jbjb, 4,      j      b     j1     b1 
+631,     e4jbjb, 4,      j      b     j1     b1 
+632,     e5jbjb, 4,      j      b     j1     b1 
+633,     e1iajb, 4,      i      a      j      b 
+634,     e2iajb, 4,      i      a      j      b 
+635,     e3iajb, 4,      i      a      j      b 
+636,     e4iajb, 4,      i      a      j      b 
+637,     e5iajb, 4,      i      a      j      b 
+638,        b11, 0.000000
+639,        b12, 0.000000
+640,        b13, 0.000000
+641,        b14, 0.000000
+642,        b15, 0.000000
+643,        b16, 0.000000
+644,        b17, 0.000000
+645,        b18, 0.000000
+646,        b19, 0.000000
+647,       b110, 0.000000
+648,        b22, 0.000000
+649,        b23, 0.000000
+650,        b24, 0.000000
+651,        b25, 0.000000
+652,        b26, 0.000000
+653,        b27, 0.000000
+654,        b28, 0.000000
+655,        b29, 0.000000
+656,       b210, 0.000000
+657,        b33, 0.000000
+658,        b34, 0.000000
+659,        b35, 0.000000
+660,        b36, 0.000000
+661,        b37, 0.000000
+662,        b38, 0.000000
+663,        b39, 0.000000
+664,       b310, 0.000000
+665,        b44, 0.000000
+666,        b45, 0.000000
+667,        b46, 0.000000
+668,        b47, 0.000000
+669,        b48, 0.000000
+670,        b49, 0.000000
+671,       b410, 0.000000
+672,        b55, 0.000000
+673,        b56, 0.000000
+674,        b57, 0.000000
+675,        b58, 0.000000
+676,        b59, 0.000000
+677,       b510, 0.000000
+678,        b66, 0.000000
+679,        b67, 0.000000
+680,        b68, 0.000000
+681,        b69, 0.000000
+682,       b610, 0.000000
+683,        b77, 0.000000
+684,        b78, 0.000000
+685,        b79, 0.000000
+686,       b710, 0.000000
+687,        b88, 0.000000
+688,        b89, 0.000000
+689,       b810, 0.000000
+690,        b99, 0.000000
+691,       b910, 0.000000
+692,      b1010, 0.000000
+693,       tb11, 0.000000
+694,       tb12, 0.000000
+695,       tb13, 0.000000
+696,       tb14, 0.000000
+697,       tb15, 0.000000
+698,       tb16, 0.000000
+699,       tb17, 0.000000
+700,       tb18, 0.000000
+701,       tb19, 0.000000
+702,      tb110, 0.000000
+703,       tb22, 0.000000
+704,       tb23, 0.000000
+705,       tb24, 0.000000
+706,       tb25, 0.000000
+707,       tb26, 0.000000
+708,       tb27, 0.000000
+709,       tb28, 0.000000
+710,       tb29, 0.000000
+711,      tb210, 0.000000
+712,       tb33, 0.000000
+713,       tb34, 0.000000
+714,       tb35, 0.000000
+715,       tb36, 0.000000
+716,       tb37, 0.000000
+717,       tb38, 0.000000
+718,       tb39, 0.000000
+719,      tb310, 0.000000
+720,       tb44, 0.000000
+721,       tb45, 0.000000
+722,       tb46, 0.000000
+723,       tb47, 0.000000
+724,       tb48, 0.000000
+725,       tb49, 0.000000
+726,      tb410, 0.000000
+727,       tb55, 0.000000
+728,       tb56, 0.000000
+729,       tb57, 0.000000
+730,       tb58, 0.000000
+731,       tb59, 0.000000
+732,      tb510, 0.000000
+733,       tb66, 0.000000
+734,       tb67, 0.000000
+735,       tb68, 0.000000
+736,       tb69, 0.000000
+737,      tb610, 0.000000
+738,       tb77, 0.000000
+739,       tb78, 0.000000
+740,       tb79, 0.000000
+741,      tb710, 0.000000
+742,       tb88, 0.000000
+743,       tb89, 0.000000
+744,      tb810, 0.000000
+745,       tb99, 0.000000
+746,      tb910, 0.000000
+747,     tb1010, 0.000000
+748,         c1, 0.000000
+749,         c2, 0.000000
+750,         c3, 0.000000
+751,         c4, 0.000000
+752,         c5, 0.000000
+753,         c6, 0.000000
+754,         c7, 0.000000
+755,         c8, 0.000000
+756,         c9, 0.000000
+757,        c10, 0.000000
+758,   property, 0.000000
+759, beta_is_minus, 0.000000
+760,       temp, 0.500000
+761,       temp, 0.000000
+762,       temp, -1.000000
+763,       temp, -0.500000
+764,       temp, 2.000000
+765,       temp, 0.250000
+766,       temp, 1.000000
+767,       temp, 4.000000
+768,       temp, 100.000000
+769,       temp, 5.000000
+770,       temp, 6.000000
+771,       temp, 7.000000
+772,       temp, 8.000000
+773,       temp, 9.000000
+774,       temp, 10.000000
+775,       temp, 20.000000
+776,       temp, 30.000000
+777,       temp, 26.000000
+778,       temp, 27.000000
+Writing tables to perturb_ccsd_lt/CCSD_Lx.sio
 
-SIO (Super Instruction Object) file is saved to "s2expect/s2expect_dropmo.sio".
+SIO (Super Instruction Object) file is saved to "perturb_ccsd_lt/CCSD_Lx.sio".

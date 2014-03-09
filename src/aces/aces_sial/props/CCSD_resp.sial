@@ -123,7 +123,9 @@
 #PV.............................................
        temp tpol(xyz,xyz1)
        static pol(xyz,xyz1)
-       static g_tensor(xyz,xyz1)
+       static g_tensor_BL(xyz,xyz1)
+       static g_tensor_MC(xyz,xyz1)
+       static g_tensor_1GC(xyz,xyz1)
        static g_tensor_dbg(xyz,xyz1)
        scalar ipol
 
@@ -272,6 +274,14 @@
       scalar Px
       scalar Py
       scalar Pz
+
+      scalar MCx
+      scalar MCy
+      scalar MCz
+
+      scalar GCx
+      scalar GCy
+      scalar GCz
 
       scalar Pxx
       scalar Pxy
@@ -1502,8 +1512,26 @@
       ENDPROC DAI
 #________________________________________________________________________
       PROC DAI_x
-      
-      PARDO  a, i
+       DO a
+       DO i
+          tai1(a,i) = 0.0
+          GET Doldai_a_x(a,i)
+          Doldai_a_x(a,i) = tai1(a,i)
+       ENDDO i
+       ENDDO a
+
+       DO b
+       DO j
+          tbj1(b,j) = 0.0
+          GET Doldai_b_x(b,j)
+           Doldai_b_x(b,j) = tbj1(b,j)
+       ENDDO j
+       ENDDO b
+       execute sip_barrier
+
+       PARDO  a, i
+#       DO a
+#       DO i
         tai1(a,i) = 0.0
          DO i1
             GET  T1L1_OO_A (i,i1)
@@ -1515,9 +1543,13 @@
           ENDDO i1
             PUT Doldai_a_x(a,i) += tai1 (a,i)
        ENDPARDO a,i
-       EXECUTE  SIP_BARRIER
+#        ENDDO i
+#        ENDDO a
+        EXECUTE  SIP_BARRIER
 #...................................
        PARDO  a, i
+#        DO a
+#        DO i
         tai1(a,i) = 0.0
          DO i1
             GET  T1L1_OO_A_x (i,i1)
@@ -1528,6 +1560,8 @@
             tai1(a,i) += taiT(a,i)
          ENDDO i1
          PUT Doldai_a_x(a,i) += tai1 (a,i)
+#         ENDDO i
+#         ENDDO a
        ENDPARDO a,i
        EXECUTE  SIP_BARRIER
 
@@ -1536,12 +1570,23 @@
            sumaa = 0.0
 
            pardo a, i
+#           pardo i, i1
                GET Doldai_a_x(a,i)
                 sum = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+#                GET T2L2_OO_A (i,i1)
+#                sum = T2L2_OO_A (i,i1)*T2L2_OO_A (i,i1)
                 suma += sum
            endpardo a, i
            execute sip_barrier
            collective sumaa += suma
+#           endpardo  i, i1
+#           do a
+#           do i1 
+#              sum = LT1A(a,i1)*LT1A(a,i1)
+#              suma += sum
+#           enddo i1
+#           enddo a
+#             
 #debug_end 
 #-------------------------------------------------------------------------
 # 6th term
@@ -1618,6 +1663,9 @@
 #    BETA                                                   BETA
 #.................................................................................
       PARDO  b, j
+
+#        DO b
+#        DO j
         tbj1(b,j) = 0.0
          DO j1
             GET  T1L1_OO_B (j,j1)
@@ -1631,9 +1679,13 @@
         PUT Doldai_b_x(b,j) += tbj1 (b,j)
   
       ENDPARDO b,j
+#       ENDDO j
+#       ENDDO b
       EXECUTE  SIP_BARRIER
       
       PARDO  b, j
+#       DO b
+#       DO j
         tbj1(b,j) = 0.0
          DO j1
             GET  T1L1_OO_B_x (j,j1)
@@ -1646,6 +1698,9 @@
             
          ENDDO j1
         PUT Doldai_b_x(b,j) += tbj1 (b,j)
+#        ENDDO j
+#        ENDDO b
+   
       ENDPARDO b,j
       EXECUTE  SIP_BARRIER
 
@@ -1653,15 +1708,30 @@
            sumb = 0.0
            sumbb = 0.0
            pardo b, j
+#           pardo j, j1
                GET Doldai_b_x(b,j)
                 sum = Doldai_b_x(b,j)*Doldai_b_x(b,j)
+#                GET T2L2_OO_B (j,j1)
+#                sum = T2L2_OO_B (j,j1)*T2L2_OO_B (j,j1)
                 sumb += sum
            endpardo b, j
+#           endpardo j, j1
            execute sip_barrier
            collective sumbb += sumb
            Diff = sumaa
            Diff-= sumbb 
            execute print_scalar Diff
+
+#           do b
+#           do j1 
+#              sum = LT1B(b,j1)*LT1B(b,j1)
+#              sumb += sum
+#           enddo j1
+#           enddo b
+#  
+#           Diff = suma
+#           Diff-= sumb 
+#           execute print_scalar Diff
 #debug_end
 
 #-----------------------------------------------------------------------------
@@ -2264,7 +2334,7 @@
 #     ---------------
         XX  = 0.0
         AXX = 0.0
-        Px  = 0.0
+        MCx  = 0.0
 
         PARDO mu, nu
 
@@ -2292,9 +2362,11 @@
         ENDPARDO mu, nu
 #
       execute sip_barrier
-      collective Px +=Axx
+      collective MCx +=Axx
       execute sip_barrier
-      execute print_scalar Px
+      MCy = MCx
+      MCz = MCx
+      execute print_scalar MCx
 #
       ENDPROC CCSD_MASSCR
 #     -------------------
@@ -2772,6 +2844,11 @@
 #
         PROC GET_HBXYZ_Dipole
 #       --------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier 
+
            PARDO mu, nu
               EXECUTE return_x Tpq(mu,nu)
 #begin_dbg
@@ -2804,8 +2881,8 @@
               EXECUTE return_z Tpq(mu,nu)
 #begin_dbg
 #              If mu > nu
-#                 execute print_scalar one
-#                 Tpq(mu, nu) *= -1.0
+#                execute print_scalar one
+#                Tpq(mu, nu) *= -1.0
 #              Endif
 #              if mu == nu
 #                execute  print_scalar two
@@ -2823,6 +2900,11 @@
 
         PROC GET_HBXYZ_Angmom
 #       --------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier 
+
            PARDO mu, nu
               EXECUTE compute_angmom_xbatch Tpq(mu,nu)
               PUT  HBx(mu,nu) = Tpq(mu,nu)
@@ -2839,6 +2921,11 @@
 
         PROC GET_HBXYZ_Spin_orbit
 #       -----------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier 
+
            PARDO mu, nu
               EXECUTE compute_1soi_xbatch Tpq(mu,nu)
               PUT  HBx(mu,nu) = Tpq(mu,nu)
@@ -3155,7 +3242,7 @@
             execute sip_barrier
             execute server_barrier
             
-            property = 10.0
+            property = 30.0
             if property == 10.0
 
                call get_HBXYZ_Dipole
@@ -3168,6 +3255,11 @@
 
             endif 
 
+            if property == 30.0
+
+               call get_HBXYZ_Angmom
+             
+            endif
 
             call ENERGY_X 
             call ENERGY_Y
@@ -3226,13 +3318,16 @@
 # 
 # Mass correction term.
           
-#          CALL CCSD_MASSCR
+          CALL CCSD_MASSCR 
+    
 
 # 1-el gauge correction
      
 #          CALL CCSD_1E_GAUGE
-
-             
+ 
+    
+              
+    
             if property == 10.0
 
             do xyz
@@ -3297,15 +3392,17 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pxx
-                     g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = MCx
+                     g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pxy
-                     G_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     G_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pxz
-                       g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3314,15 +3411,17 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pyx
-                     g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pyy
-                     g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = MCy
+                     g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pyz
-                       g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3331,15 +3430,17 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pzx
-                     g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pzy
-                     g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pzz
-                       g_tensor(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                       tpol(xyz,xyz1) = MCz
+                       g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3402,10 +3503,6 @@
       CREATE t1b_old_z
       CREATE l1a_old_z
       CREATE l1b_old_z
-
-      CREATE HBx
-      CREATE HBy
-      CREATE HBz
 
       execute sip_barrier
 
