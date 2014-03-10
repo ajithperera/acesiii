@@ -341,6 +341,71 @@ c     enddo
 
       endif 
 
+c................Prakash Start...........................................
+      if ((scalar_table(sind) .ge. 700.0) .and.
+     *    (scalar_table(sind) .le. 720.0)) then
+
+c----------------------------------------------------------------------------
+c   Locate the data for the input matrix which is to be analyses.
+c---------------------------------------------------------------------------
+
+      array      = op(c_op1_array)
+
+      array_type = array_table(c_array_type, array)
+      nindex     = array_table(c_nindex, array)
+
+      daddr = address_table(array)
+      iarray  = get_index_from_base(daddr, x, 2)
+
+      if (array .eq. 0) then
+         print *,'Error: The first argument in return_sval  
+     *            must be an array.'
+         print *,(op(i),i=1,loptable_entry)
+         call abort_job()
+      endif
+
+      do i = 1, nindex
+         ind(i) = array_table(c_index_array1+i-1,array)
+      enddo
+
+      n1 = index_table(c_index_size, ind(1))  ! pick up length of index
+      n2 = index_table(c_index_size, ind(2))  ! pick up length of index
+
+      if (scalar_table(sind) .ge. 700 .and. scalar_table(sind) .le. 710)
+     *   then
+          call print_ccsdTx_cinfo(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+       endif
+c Note that above is not used in printing anything?
+
+       if (scalar_table(sind) .eq. 711) then
+          call print_pol_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+
+       endif
+       if (scalar_table(sind) .eq. 712) then
+          call print_pol_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+       endif
+
+       if (scalar_table(sind) .eq. 713) then
+          call print_gten_mc_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+       endif
+
+       if (scalar_table(sind) .eq. 714) then
+          call print_gten_1egc_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+        endif
+
+       if (scalar_table(sind) .eq. 715) then
+          call print_gten_1bl_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+        endif
+
+      endif
+c................... END_prakash......................................       
+
 c----------------------------------------------------------------------------
 c   SCF gradient Print Flag = 11     
 c---------------------------------------------------------------------------
@@ -1501,7 +1566,324 @@ c      if (me .eq. my_company_rank)then
 
       return
       end
+c.......................................................
+c......................Prakash.............................................
 
+      subroutine print_ccsdTx_cinfo(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp
+      double precision efinal, conv
+      open(66,file='summary.out')
+       ival = sval
+       conv = 27.21138505
+c       if (me .eq. my_company_rank)then
+       if (me .eq. 0)then
+       if (ival .eq. 6) then
+          do a = a1, a2
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,108)
+               write(66,101)
+               write(66,110)
+               write(66,101)
+            endif
+c           if (dabs(array1(a,b1)) .gt. 0.0001) then 
+               write(66,99) a-1, (array1(a,i), i=b1, b2)
+               write(66,101)
+               write(66,*)
+               write(66,*)
+               return
+c           endif 
+          enddo
+       endif
+       if (ival .eq. 700) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,98)
+               write(66,101)
+               write(66,100)
+               write(66,101)
+            endif
+            if (dabs(array1(a,b1)) .gt. 0.0001) then
+               write(66,99) a, (array1(a,i), i=b1, b2)
+               return
+            endif
+          enddo
+       endif
+       if (ival .eq. 701) then
+          do a = a1, a2
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,97)
+               write(66,101)
+               write(66,100)
+               write(66,101)
+            endif
+            if (dabs(array1(a,b1)) .lt. 0.0001) then
+c              write(66,99) a-1, (array1(a-1,i), i=b1, b2) 
+               amax = a - 1
+               efinal = array1(a-1,2)
+            go to 10
+            endif
+            write(66,99) a, (array1(a,i), i=b1, b2)
+          enddo
+10        continue
+          write(66,101)
+          write(66,102) efinal, amax
+          write(66,101)
+          write(66,*)
+          write(66,*)
+       endif
+      endif
+97    format(2x,"SUMMARY OF CCSD T X-derivative CALCULATION")
+98    format(2x,"START OF CCSD T X-derivative CALCULATION")
+108   format(2x,"SUMMARY OF MBPT(2) CALCULATION")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+100   format(2x,"Iteration#",9x,"CCSD Tx corr energy",7x,"Total energy")
+110   format(2x,"Iteration#",9x,"MBPT(2) corr energy",7x,"Total energy")
+101   format(2x,60('-'))
+102   format(2x,"Final CCSD energy = ",F20.10,2x,"After",2x,I8,2x,
+     *       "iterations")
+      return
+      end
+c...............................................................
+      subroutine print_pol_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp
+      double precision efinal, conv
+      open(66,file='summary.out')
+       ival = sval
+       conv = 27.21138505
+c       if (me .eq. my_company_rank)then
+       if (me .eq. 0)then
+       if (ival .eq. 711) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+c            if (dabs(array1(a,b1)) .gt. 0.0001) then
+c               write(66,99) a, (array1(a,i), i=b1, b2)
+c               return
+c            endif
+          enddo
+       endif
+       if (ival .eq. 712) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (array1(1,i), i=b1, b2)
+               write(66,103)  (array1(2,i), i=b1, b2)
+               write(66,104)  (array1(3,i), i=b1, b2)
+               write(66,*)
+               Write(66,105)  (array1(1,1)+array1(2,2)+array1(3,3))/3
+c          enddo 
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD Polarizability Results")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+105   format(2x,"Isotropic =",F20.7)
+      return
+      end
+c
+c...............................................................
+c
+      subroutine print_gten_mc_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac, Two
+      open(66,file='summary.out')
+      ival = sval
+      conv = 27.21138505
+
+c Fine structure constant and parts per million
+
+      FNS = 7.29735308D-03
+      PPM = 1.0D+06
+      Two = 2.0D0
+c
+c External multiplication constant for Relativistic Mass correction 
+c 
+  
+      Fac = -FNS*FNS*PPM*Two
+
+       if (me .eq. 0)then
+       if (ival .eq. 713) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+          enddo
+       endif
+
+       if (ival .eq. 713) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (Fac*array1(1,i), i=b1, b2)
+               write(66,103)  (Fac*array1(2,i), i=b1, b2)
+               write(66,104)  (Fac*array1(3,i), i=b1, b2)
+               write(66,*)
+c          enddo
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD g-tensor: Relativistic Mass Correction")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+      Return
+      End
+c
+c-------------------------------------------------------------------------
+c
+      subroutine print_gten_1egc_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac
+      open(66,file='summary.out')
+      ival = sval
+      conv = 27.21138505
+
+c Fine structure constant and parts per million
+
+      FNS = 7.29735308D-03
+      PPM = 1.0D+06
+
+c External multiplication constant for 1-el gauge correction 
+  
+      Fac = FNS*FNS*PPM*(1.0D0/4.0D0)
+
+       if (me .eq. 0)then
+       if (ival .eq. 714) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+          enddo
+       endif
+
+       if (ival .eq. 714) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (Fac*array1(1,i), i=b1, b2)
+               write(66,103)  (Fac*array1(2,i), i=b1, b2)
+               write(66,104)  (Fac*array1(3,i), i=b1, b2)
+               write(66,*)
+c          enddo
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD g-tensor: 1el-Diamagnetic Spin-orbit Gauge 
+     &       Correction")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+      Return
+      End
+c
+c---------------------------------------------------------------------
+c
+      subroutine print_gten_1bl_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac
+      open(66,file='summary.out')
+      ival = sval
+      conv = 27.21138505
+
+c Fine structure constant and parts per million
+
+       FNS = 7.29735308D-03
+       PPM = 1.0D+06
+
+c External multiplication constant for Relativistic Mass correction 
+  
+       Fac = FNS*FNS*PPM*(1.0D0/4.0D0)
+
+       if (me .eq. 0)then
+       if (ival .eq. 715) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+          enddo
+       endif
+
+       if (ival .eq. 715) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (Fac*array1(1,i), i=b1, b2)
+               write(66,103)  (Fac*array1(2,i), i=b1, b2)
+               write(66,104)  (Fac*array1(3,i), i=b1, b2)
+               write(66,*)
+c          enddo
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD g-tensor: 1el-Paramagnetc Spin-orbit")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+      Return
+      End
+c................END Prakash...............................    
 
       subroutine print_lccd_cinfo(array1,sval,a1,a2,b1,b2) 
 

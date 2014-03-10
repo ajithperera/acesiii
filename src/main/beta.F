@@ -1054,7 +1054,8 @@ c---------------------------------------------------------------------------
      *         '----------- Normal termination of beta -----------'
             t2 = mpi_wtime()
             print *,'Elapsed time = ',t2-t1,' seconds.'
-
+C            Write(66,"(15x,a,a)") "-----ACESIII calculation "
+C     *                             "successefully finished-----"
             write(66,*) ' ' 
             write(66,113) t2-t1  
 113         FORMAT(5x,'AcesIII has finished in',2x,F12.2,2x,'seconds') 

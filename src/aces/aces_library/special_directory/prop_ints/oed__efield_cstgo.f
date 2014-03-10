@@ -462,7 +462,7 @@ C
      +
 C         WRITE (*,*) ' Finished set derivative ijc triples '
 
-         Write(6,*) "EMPTY HERE? ", EMPTY, SCREEN
+CSSS         Write(6,*) "EMPTY HERE? ", EMPTY, SCREEN
          IF (EMPTY) THEN
              NBATCH = 0
              RETURN
@@ -589,7 +589,6 @@ C
                 MIJ = NIJEND - NIJBEG + 1
                 MIJCEN  = MIJ * NCENC
                 MGIJCEN = NGQP * MIJCEN
-                Write(6,*) "Entering OED__EFIELD_DERV_3CEN_PCGTO_BLOCK"
 
                 CALL  OED__EFIELD_DERV_3CEN_PCGTO_BLOCK
      +

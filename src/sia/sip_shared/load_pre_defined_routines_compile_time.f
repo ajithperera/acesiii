@@ -364,6 +364,19 @@ C Ajith Perera, miscellaneous developments.
       dummy = load_user_sub('compute_2soi_ybatch'//char(0),0)
       dummy = load_user_sub('compute_2soi_zbatch'//char(0),0)
 
+      dummy = load_user_sub('compute_angmom_xbatch'//char(0),0)
+      dummy = load_user_sub('compute_angmom_ybatch'//char(0),0)
+      dummy = load_user_sub('compute_angmom_zbatch'//char(0),0)
+
+      dummy = load_user_sub('compute_dshield_xxbatch'//char(0),0)
+      dummy = load_user_sub('compute_dshield_xybatch'//char(0),0)
+      dummy = load_user_sub('compute_dshield_xzbatch'//char(0),0)
+      dummy = load_user_sub('compute_dshield_yybatch'//char(0),0)
+      dummy = load_user_sub('compute_dshield_yzbatch'//char(0),0)
+      dummy = load_user_sub('compute_dshield_zzbatch'//char(0),0)
+
+      dummy = load_user_sub('compute_kin_batch'//char(0),0)
+
       dummy = load_user_sub('write_vecs2jarc'//char(0),0)
 c -----------------------------------------------------------------
 c Prakash instructions need for delta integrals

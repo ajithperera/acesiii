@@ -439,11 +439,11 @@ C
      +              .OR. DERAY.NE.DERBY
      +              .OR. DERAZ.NE.DERBZ
 
-             IF (ALERT) THEN
-                 WRITE (*,*) ' Center A = B / derv order wrong! '
-                 WRITE (*,*) ' oed__nai_set_derv_ab '
+CSSS             IF (ALERT) THEN
+CSSS                 WRITE (*,*) ' Center A = B / derv order wrong! '
+CSSS                 WRITE (*,*) ' oed__nai_set_derv_ab '
 CSSS                 STOP
-             END IF
+CSSS             END IF
 
              DIFFA = (DERAX + DERAY + DERAZ) .NE. 0
 CSSS             DIFFB = DIFFA
@@ -493,7 +493,7 @@ CSSS         DO N = 2,NUCLEI
             XC = XN (CNUCLEI)
             YC = YN (CNUCLEI)
             ZC = ZN (CNUCLEI)
-            Write(6,*) "XC,YC,ZC", XC,YC,ZC, CNUCLEI
+CSSS            Write(6,*) "XC,YC,ZC", XC,YC,ZC, CNUCLEI
 
             ATOMAC = (XA.EQ.XC) .AND. (YA.EQ.YC) .AND. (ZA.EQ.ZC)
             ATOMBC = (XB.EQ.XC) .AND. (YB.EQ.YC) .AND. (ZB.EQ.ZC)

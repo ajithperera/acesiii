@@ -74,6 +74,7 @@
 
       temp Tpq (mu,nu)
       temp TKin (mu,nu)
+      temp Tdshld (mu,nu)
 
       temp Tpq_x(mu,nu)
       temp Tpq_y(mu,nu)
@@ -123,9 +124,9 @@
 #PV.............................................
        temp tpol(xyz,xyz1)
        static pol(xyz,xyz1)
-       static g_tensor_BL(xyz,xyz1)
+       static g_tensor_1E_BL(xyz,xyz1)
        static g_tensor_MC(xyz,xyz1)
-       static g_tensor_1GC(xyz,xyz1)
+       static g_tensor_1E_GC(xyz,xyz1)
        static g_tensor_dbg(xyz,xyz1)
        scalar ipol
 
@@ -263,12 +264,17 @@
       distributed HBz(mu,nu)
 
       scalar XX
-      scalar Axx
-       
+      scalar XY
+      scalar XZ
       scalar YY
-      scalar Ayy
-
+      scalar YZ
       scalar ZZ
+
+      scalar Axx
+      scalar Axy
+      scalar Axz
+      scalar Ayy
+      scalar Ayz
       scalar Azz
 
       scalar Px
@@ -279,9 +285,12 @@
       scalar MCy
       scalar MCz
 
-      scalar GCx
-      scalar GCy
-      scalar GCz
+      scalar GC1xx
+      scalar GC1xy
+      scalar GC1xz
+      scalar GC1yy
+      scalar GC1yz
+      scalar GC1zz
 
       scalar Pxx
       scalar Pxy
@@ -2334,7 +2343,7 @@
 #     ---------------
         XX  = 0.0
         AXX = 0.0
-        MCx  = 0.0
+        MCx = 0.0
 
         PARDO mu, nu
 
@@ -2343,18 +2352,21 @@
             GET DHF_aa(mu,nu)
             GET DHF_bb(mu,nu)
 
+            execute print_scalar one
             execute compute_kin_batch Tkin(mu,nu)
 
             Dccsd(mu,nu)  = DpqA(mu,nu)
-            Dccsd(mu,nu) += DpqB(mu,nu)
+            Dccsd(mu,nu) -= DpqB(mu,nu)
             
 #            GET DHF_aa(mu,nu)
 #            GET DHF_bb(mu,nu)
-#            Dscf(mu,nu)   = DHF_aa(mu,nu)
-#            Dscf(mu,nu)  += DHF_bb(mu,nu)
-#            Tpq(mu,nu) = Dscf(mu,nu)
+#
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            Tpq(mu,nu) = Dscf(mu,nu)
 
-            Tpq(mu,nu)  = Dccsd(mu,nu)
+#            Tpq(mu,nu)  = Dccsd(mu,nu)
+#            Tpq(mu,nu) += Dscf(mu,nu)
 
             XX   = Tpq(mu,nu)*Tkin(mu,nu)
             Axx += XX
@@ -2364,14 +2376,98 @@
       execute sip_barrier
       collective MCx +=Axx
       execute sip_barrier
+
       MCy = MCx
       MCz = MCx
+
       execute print_scalar MCx
 #
       ENDPROC CCSD_MASSCR
 #     -------------------
 
+      PROC CCSD_1E_GAUGECR
+#     --------------------
+        AXX = 0.0
+        AXY = 0.0
+        AXZ = 0.0
+        AYY = 0.0
+        AYZ = 0.0
+        AZZ = 0.0
+        
+        GC1xx  = 0.0
+        GC1xy  = 0.0
+        GC1xz  = 0.0
+        GC1yy  = 0.0
+        GC1yz  = 0.0
+        GC1zz  = 0.0
+
+        PARDO mu, nu
+
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) -= DpqB(mu,nu)
+            
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+#
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            Tpq(mu,nu) = Dscf(mu,nu)
+
+#            Tpq(mu,nu)  = Dccsd(mu,nu)
+#            Tpq(mu,nu) += Dscf(mu,nu)
+
+            execute compute_dshield_xxbatch TDshld(mu,nu)
+            XX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axx += XX
+
+            execute compute_dshield_xybatch TDshld(mu,nu)
+            XY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axy += XY
+
+            execute compute_dshield_xzbatch TDshld(mu,nu)
+            XZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axz += XZ
+           
+            execute compute_dshield_yybatch TDshld(mu,nu)
+            YY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayy += YY
+
+            execute compute_dshield_yzbatch TDshld(mu,nu)
+            YZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayz += YZ
+
+            execute compute_dshield_zzbatch TDshld(mu,nu)
+            ZZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azz += ZZ
+
+        ENDPARDO mu, nu
+#
+      execute sip_barrier
+
+      collective GC1xx +=Axx
+      collective GC1xy +=Axy
+      collective GC1xz +=Axz
+      collective GC1yy +=Ayy
+      collective GC1yz +=Ayz
+      collective GC1zz +=Azz
+
+      execute print_scalar GC1xx
+      execute print_scalar GC1xy
+      execute print_scalar GC1xz
+      execute print_scalar GC1yy
+      execute print_scalar GC1yz
+      execute print_scalar GC1zz
+#
+      ENDPROC CCSD_1E_GAUGECR
+#     -----------------------
+
       PROC D1TRANS_x
+#     ---------------
 #     Transform Dai_aa
       PARDO a, i
             GET Doldai_a_x(a,i)
@@ -3318,17 +3414,18 @@
 # 
 # Mass correction term.
           
-          CALL CCSD_MASSCR 
-    
+          property = 20.0
+          if property == 20.0
+
+             CALL CCSD_MASSCR 
 
 # 1-el gauge correction
      
-#          CALL CCSD_1E_GAUGE
- 
+#          CALL CCSD_1E_GAUGECR
+
+          endif 
     
-              
-    
-            if property == 10.0
+          if property == 10.0
 
             do xyz
                if xyz == 1
@@ -3392,17 +3489,17 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pxx
-                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                      tpol(xyz,xyz1) = MCx
                      g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pxy
-                     G_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     G_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pxz
-                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3411,17 +3508,17 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pyx
-                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pyy
-                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                      tpol(xyz,xyz1) = MCy
                      g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pyz
-                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3430,15 +3527,15 @@
                do xyz1
                   if xyz1 == 1
                      tpol(xyz,xyz1) = Pzx
-                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pzy
-                     g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pzz
-                       g_tensor_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                        tpol(xyz,xyz1) = MCz
                        g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
@@ -3448,10 +3545,22 @@
             enddo xyz
             endif
 
-           ipol = 777
-           execute print_rel_info ipol pol 
-           ipol = 778
-           execute print_rel_info ipol pol
+           if property == 10.0
+              ipol = 711
+              execute print_rel_info ipol pol 
+              ipol = 712
+              execute print_rel_info ipol pol
+
+           endif 
+
+	   if property == 20.0
+	      ipol = 713
+	      execute print_rel_info ipol g_tensor_MC
+	      ipol = 714 
+	      execute print_rel_info ipol g_tensor_1E_GC
+	      ipol = 715
+	      execute print_rel_info ipol g_tensor_1E_BL
+	   endif 
 #
       tmpnuc = 0.0
       DO jatom

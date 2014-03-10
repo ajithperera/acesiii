@@ -1,4 +1,4 @@
-      subroutine compute_return_dshieldxx(out_dsh_xx,da1,da2,db1,
+      subroutine compute_return_dshieldyz(out_dsh_yz,da1,da2,db1,
      &                                    db2,nsend)
 
       implicit none
@@ -16,7 +16,7 @@ c--------------------------------------------------------------------------
       integer nsend
       integer da1, da2, db1, db2
       integer adim, bdim
-      double precision out_dsh_xx(da1:da2, db1:db2)
+      double precision out_dsh_yz(da1:da2, db1:db2)
 c.........................................................................
       double precision dbuf(1), temp
       integer ibuf(1)
@@ -36,10 +36,10 @@ c.........................................................................
       double precision goc_x,goc_y,goc_c
       double precision xn(max_centers), yn(max_centers),
      *                 zn(max_centers)
-      double precision ncharge 
+      double precision ncharge
 
 cPV we need electric filed integrals 
-      integer iatom, Iatm
+      integer iatom,iatm
       integer DERCX,DERCY,DERCZ
       integer DER1X, DER1Y,DER1Z,IXDERC,DER2X,DER2Y,DER2Z
       integer XMOMDER, YMOMDER, ZMOMDER
@@ -92,21 +92,23 @@ C
        DER2X = 0
        DER2Y = 0
        DER2Z = 0
-C
+
 C Loop over the centers and build the diamagnetic shileding intgeral using
-C field integral. For g-tensor, the sum over centers and scaling by 
-C effective charge is also done. 
+C field integral. For g-tensor, the sum over centers and scaling by
+C effective charge is also done.
 
       do b = db1, db2
       do a = da1, da2
-         out_dsh_xx(a,b) = 0.d0
+         out_dsh_yz(a,b) = 0.d0
       end do
       end do
-C
+      
       do iatm =1, Ncenters
 
       ixderc = iatm
       ncharge = charge(iatm)
+C
+C The z component of the electric field; {<mu|derz_C(y-C)|nu>
 C
        do m = m1, m2
 
@@ -133,12 +135,12 @@ C
 CSSS      Write(6,*) "@-entry to OED_batch"
 CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
-          DERCX = 1
-          DERCY = 0
-          DERCZ = 0
-          DER1X = 0
-          DER1Y = 0
-          DER1Z = 0
+      DERCX = 0
+      DERCY = 0
+      DERCZ = 1
+      DER1X = 0
+      DER1Y = 0
+      DER1Z = 0
 
       call oed__gener_efield_batch(intmax,zmax,
      *                 nalpha,ncoeff,
@@ -168,16 +170,19 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
          else
            Eb1 = end_nfps(n-1)+1
          end if
+C
+C Xg, Yg, and Zg are the gauge origin (currently set to the origin of
+C Cartesian coordinate system.
+C
+      goc_y = y1 - yg
 
-      goc_x = x1 - xg
-
-      call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
+      call add_integrals2(out_dsh_yz,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                   -goc_x*ncharge)
+     *                   -goc_y*ncharge)
       endif 
 
-      DER1X = 1
-      DER1Y = 0
+      DER1X = 0
+      DER1Y = 1
       DER1Z = 0
 
       call oed__gener_efield_batch(intmax,zmax,
@@ -209,21 +214,21 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
            Eb1 = end_nfps(n-1)+1
          end if
 
-      call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
+      call add_integrals2(out_dsh_yz,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                  -Ncharge)
+     *                  -ncharge)
        endif ! nints
 
        end do !n
        end do !m
 
-       if (dbg) write(6,*) " Finished xx dia. shielding integral comp."
+       if (dbg) write(6,*) " Finished zy dia. shielding integral comp."
 
 #ifdef _DEBUG_LVL0
-      Write(6,*) "The <mu| Dsh_xx |nu > integral matrix"
+      Write(6,*) "The <mu| Dsh_yz |nu > integral matrix"
       do b = db1, db2
          Write(6,*)
-         Write(6, "(5(1x,F15.10))") (out_dsh_xx(a,b), a=da1, da2)
+         Write(6, "(5(1x,F15.10))") (out_dsh_yz(a,b), a=da1, da2)
       enddo
 #endif
       enddo ! loop over centers

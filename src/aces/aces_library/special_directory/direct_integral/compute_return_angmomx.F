@@ -208,13 +208,13 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
        if (dbg) write(6,*) " Finished Lx angular mom. integral comp."
 
-#ifdef _DEBUG_LVL0
+C#ifdef _DEBUG_LVL0
       Write(6,*) "The <mu| L_x |nu > integral matrix"
       do b = db1, db2
          Write(6,*)
-         Write(6, "(5(1x,F15.10))") (SOI_LP1(a,b), a=da1, da2)
+         Write(6, "(5(1x,F15.10))") (out_lx(a,b), a=da1, da2)
       enddo
-#endif
+C#endif
 
       return
       end

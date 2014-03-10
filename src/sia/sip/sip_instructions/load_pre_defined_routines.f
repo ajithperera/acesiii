@@ -167,8 +167,15 @@ C Ajith Perera, SOI instructions
 
       external compute_2soi_xbatch, compute_2soi_ybatch,
      &         compute_2soi_zbatch
+
+      external compute_angmom_xbatch, compute_angmom_ybatch,
+     &         compute_angmom_zbatch
+
+      external compute_dshield_xxbatch, compute_dshield_xybatch,
+     &         compute_dshield_xzbatch, compute_dshield_yybatch,
+     &         compute_dshield_yzbatch, compute_dshield_zzbatch
      
-      external write_vecs2jarc
+      external write_vecs2jarc, compute_kin_batch
 c -------------------------------------------------------------------
 c Prakash Instructions needed for delta integraks
 c -------------------------------------------------------------------
@@ -694,6 +701,29 @@ c-------------------------------------------------------------------
      &                       compute_2soi_ybatch)
       dummy = load_user_sub('compute_2soi_zbatch'//char(0),
      &                       compute_2soi_zbatch)
+
+      dummy = load_user_sub('compute_angmom_xbatch'//char(0),
+     &                       compute_angmom_xbatch)
+      dummy = load_user_sub('compute_angmom_ybatch'//char(0),
+     &                       compute_angmom_ybatch)
+      dummy = load_user_sub('compute_angmom_zbatch'//char(0),
+     &                       compute_angmom_zbatch)
+
+      dummy = load_user_sub('compute_dshield_xxbatch'//char(0),
+     &                       compute_dshield_xxbatch)
+      dummy = load_user_sub('compute_dshield_xybatch'//char(0),
+     &                       compute_dshield_xybatch)
+      dummy = load_user_sub('compute_dshield_xzbatch'//char(0),
+     &                       compute_dshield_xzbatch)
+      dummy = load_user_sub('compute_dshield_yybatch'//char(0),
+     &                       compute_dshield_yybatch)
+      dummy = load_user_sub('compute_dshield_yzbatch'//char(0),
+     &                       compute_dshield_yzbatch)
+      dummy = load_user_sub('compute_dshield_zzbatch'//char(0),
+     &                       compute_dshield_zzbatch)
+
+      dummy = load_user_sub('compute_kin_batch'//char(0),
+     &                       compute_kin_batch)
      
       dummy = load_user_sub('write_vecs2jarc'//char(0), 
      &                       write_vecs2jarc)

@@ -523,15 +523,15 @@ C                the 1DX AB integrals and perform differentiation
 C                sequence, if necessary.
 C
 C
-         WRITE (*,*) ' ATOMIC = ',ATOMIC
-         WRITE (*,*) ' NCEN = ',NCEN
-         WRITE (*,*) ' NGQP = ',NGQP
-         WRITE (*,*) ' IXAEQB = ',IXAEQB
-         WRITE (*,*) ' DIFFA,DIFFB,DIFFC = ',DIFFA,DIFFB,DIFFC
-         WRITE (*,*) ' DIFFX,DIFFY,DIFFZ = ',DIFFX,DIFFY,DIFFZ
-         WRITE (*,*) ' DERAX,DERAY,DERAZ = ',DERAX,DERAY,DERAZ
-         WRITE (*,*) ' DERBX,DERBY,DERBZ = ',DERBX,DERBY,DERBZ
-         WRITE (*,*) ' DERCX,DERCY,DERCZ = ',DERCX,DERCY,DERCZ
+CSSS         WRITE (*,*) ' ATOMIC = ',ATOMIC
+CSSS         WRITE (*,*) ' NCEN = ',NCEN
+CSSS         WRITE (*,*) ' NGQP = ',NGQP
+CSSS         WRITE (*,*) ' IXAEQB = ',IXAEQB
+CSSS         WRITE (*,*) ' DIFFA,DIFFB,DIFFC = ',DIFFA,DIFFB,DIFFC
+CSSS         WRITE (*,*) ' DIFFX,DIFFY,DIFFZ = ',DIFFX,DIFFY,DIFFZ
+CSSS         WRITE (*,*) ' DERAX,DERAY,DERAZ = ',DERAX,DERAY,DERAZ
+CSSS         WRITE (*,*) ' DERBX,DERBY,DERBZ = ',DERBX,DERBY,DERBZ
+CSSS         WRITE (*,*) ' DERCX,DERCY,DERCZ = ',DERCX,DERCY,DERCZ
 
          IF (DIFFX) THEN
 
@@ -558,7 +558,7 @@ C                centers A and B.
 C
 C
              PROCEED = DIFFC .AND. (DERCX.GT.0)
-             Write(6,*) "PROCEED-0", PROCEED, MGIJCEN
+CSSS             Write(6,*) "PROCEED-0", PROCEED, MGIJCEN
 
              IF (PROCEED) THEN
                  IXC = NUCCEN (1)
@@ -597,8 +597,8 @@ CSSS                 NINT = MGIJCEN
                  END DO
              END IF
 
-             Write(6,*) "After proceed-0"
-             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
+CSSS             Write(6,*) "After proceed-0"
+CSSS             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
 C
 C
 C             ...perform differentiation (if any) of the 1DX AB
@@ -609,12 +609,12 @@ C
              PROCEED = DIFFA .AND. (DERAX.GT.0)
 
              IF (PROCEED) THEN
-             Write(6,*) "Entering procceed-x"
+CSSS             Write(6,*) "Entering procceed-x"
                  DERA = DERAX
                  DERB = DERBX
                  DO N = 1,DERAX
                     NINT = MGIJCEN * (SHELLA+DERA+1) * (SHELLB+DERB+1)
-CSSSS                    NINT = MGIJCEN 
+CSSS                    NINT = MGIJCEN 
 
                     DO M = 1,NINT
                        BATCH (M) = INT1DX (M)
@@ -646,15 +646,15 @@ CSSS     +                             1,IXAEQB,
                  END DO
              END IF
 C
-             Write(6,*) "After proceed-1"
-             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
+CSSS             Write(6,*) "After proceed-1"
+CSSS             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
 C
 C             ...if not atomic, perform differentiation (if any) of
 C                the 1DX AB integrals on the remaining shell center B.
 C
 C
              PROCEED = (.NOT.ATOMIC) .AND. DIFFB .AND. (DERBX.GT.0)
-            Write(6,*) "PROCEED-2", PROCEED
+CSSS            Write(6,*) "PROCEED-2", PROCEED
 
              IF (PROCEED) THEN
                  DERB = DERBX
@@ -781,7 +781,7 @@ C
              PROCEED = DIFFA .AND. (DERAY.GT.0)
 
              IF (PROCEED) THEN
-             Write(6,*) "Enetring procced-y"
+CSSS             Write(6,*) "Enetring procced-y"
                  DERA = DERAY
                  DERB = DERBY
                  DO N = 1,DERAY
@@ -1046,16 +1046,16 @@ C
 C             ...assemble the 1D AB integrals to the [A|B] batch.
 C
 C
-             Write(6,*) "Int1dx"
-             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
-             Write(6,*) "Int1dy"
-             Write(6,"(6(1x,F10.5))")(Int1dy(i), i=1,nint)
-             Write(6,*) "Int1dz"
-             Write(6,"(6(1x,F10.5))")(Int1dz(i), i=1,nint)
+CSSS             Write(6,*) "Int1dx"
+CSSS             Write(6,"(6(1x,F10.5))")(Int1dx(i), i=1,nint)
+CSSS             Write(6,*) "Int1dy"
+CSSS             Write(6,"(6(1x,F10.5))")(Int1dy(i), i=1,nint)
+CSSS             Write(6,*) "Int1dz"
+CSSS             Write(6,"(6(1x,F10.5))")(Int1dz(i), i=1,nint)
 C
 
          IF (SHELLP.EQ.0) THEN
-             Write(6,*) "I am here-0"
+CSSS             Write(6,*) "I am here-0"
 
              CALL    OED__NAI_DERV_INT1D_TO_00
      +
@@ -1069,7 +1069,7 @@ C
      +
      +
          ELSE IF (SHELLB.EQ.0) THEN
-             Write(6,*) "I am here-B"
+CSSS             Write(6,*) "I am here-B"
 
              CALL    OED__NAI_DERV_INT1D_TO_A0
      +
@@ -1086,7 +1086,7 @@ C
      +
          ELSE IF (SHELLA.EQ.0) THEN
 
-             Write(6,*) "I am here-A", NGQPCEN, MGIJCEN
+CSSS             Write(6,*) "I am here-A", NGQPCEN, MGIJCEN
              CALL    OED__NAI_DERV_INT1D_TO_A0
      +
      +                    ( SHELLB,
@@ -1101,7 +1101,7 @@ C
      +
      +
          ELSE
-             Write(6,*) "I am here-AB"
+CSSS             Write(6,*) "I am here-AB"
              CALL    OED__NAI_DERV_INT1D_TO_AB
      +
      +                    ( SHELLA,SHELLB,
@@ -1116,8 +1116,8 @@ C
      +
      +
          END IF
-             Write(6,*) "Batch"
-             Write(6,"(6(1x,F10.5))")(Batch(i), i=1,nint)
+CSSS             Write(6,*) "Batch"
+CSSS             Write(6,"(6(1x,F10.5))")(Batch(i), i=1,nint)
 C
 C
 C             ...ready!

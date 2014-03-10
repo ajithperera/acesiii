@@ -36,6 +36,7 @@ c.........................................................................
       double precision goc_x,goc_y,goc_c
       double precision xn(max_centers), yn(max_centers),
      *                 zn(max_centers)
+      double precision ncharge
 
 cPV we need electric filed integrals 
       integer iatom,iatm
@@ -92,22 +93,21 @@ C
        DER2Y = 0
        DER2Z = 0
 C
-C Loop over the centers and compute the electric field integral x, y and
-C z component for each center.
+C Loop over the centers and build the diamagnetic shileding intgeral using
+C field integral. For g-tensor, the sum over centers and scaling by
+C effective charge is also done.
 C
-      do iatm =1, Ncenters
-
-c----------------------------------------------------------------------------
-c   Clear the output array.
-c----------------------------------------------------------------------------
-
       do b = db1, db2
       do a = da1, da2
          out_dsh_yy(a,b) = 0.d0
       end do
       end do
       
+C
+      do iatm =1, Ncenters
+
       ixderc = iatm
+      ncharge = charge(iatm)
 C
 C The y component of the electric field; {<mu|dery_C(y-C)|nu>
 C
@@ -181,7 +181,8 @@ C
       goc_y = y1 - yg
 
       call add_integrals2(out_dsh_yy,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-goc_y)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
+     *                   -goc_y*ncharge)
       endif 
 
       DER1X = 0
@@ -218,7 +219,8 @@ C
          end if
 
       call add_integrals2(out_dsh_yy,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-1.0d0)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
+     *                  -ncharge)
        endif ! nints
 
        end do !n

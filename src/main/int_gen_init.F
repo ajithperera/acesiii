@@ -92,10 +92,10 @@ c---------------------------------------------------------------------------
          endif
 C----Debuggin (no sorting of shells) : Ajith Perera
 
-CSSS            do i = 1, nshells
-CSSS               ixshells(i) = i
-CSSS            enddo
-CSSS            go to 1000
+            do i = 1, nshells
+               ixshells(i) = i
+            enddo
+            go to 1000
 C----Debuggin ends
 c---------------------------------------------------------------------------
 c   Reorder data according to the index array returned by binpack.

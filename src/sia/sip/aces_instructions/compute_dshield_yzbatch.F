@@ -12,14 +12,14 @@ C  GNU General Public License for more details.
 
 C  The GNU General Public License is included in this distribution
 C  in the file COPYRIGHT.
-      subroutine compute_dshield_xxbatch(array_table, 
+      subroutine compute_dshield_yzbatch(array_table, 
      *                      narray_table, index_table,
      *                      nindex_table, segment_table, nsegment_table,
      *                      block_map_table, nblock_map_table,
      *                      scalar_table, nscalar_table, 
      *                      address_table, op)
 c--------------------------------------------------------------------------
-C Return the xx-component of the 1-particle diamganetic shielding integrals.
+C Return the zy-component of the 1-particle diamganetic shielding integrals.
 C--------------------------------------------------------------------------
 
       implicit none
@@ -151,7 +151,7 @@ c   Compute data block of integrals.
 c---------------------------------------------------------------------------
 
       if (intpkg .eq.flocke_package .and. .not. dryrun) then
-         call compute_return_dshieldxx(x(indblk), a1, a2, b1, b2,nsend)
+         call compute_return_dshieldyz(x(indblk), a1, a2, b1, b2,nsend)
       else
         write(6,*) ' MUST USE ERD FOR DIA. SHIELDING INTEGRALS !!! ' 
       endif 

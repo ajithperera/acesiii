@@ -108,8 +108,8 @@ C             ...derivative on center A (if any).
 C
 C
          FIRST = .TRUE.
-         Write(6,*) "SHELLAB", SHELLA, SHELLB
-         Write(6,*) "DERAB", DERA, DERB
+CSSS         Write(6,*) "SHELLAB", SHELLA, SHELLB
+CSSS         Write(6,*) "DERAB", DERA, DERB
 
          IF (DERA.EQ.1) THEN
 
@@ -134,7 +134,7 @@ C
                     OUT1D (N,0,B) =  INT1D (N,1,B)
                     OUT1D (N,1,B) =  INT1D (N,2,B)
 
-                       Write(6,*) OUT1D (N,0,B), OUT1D (N,1,B)
+CSSS                       Write(6,*) OUT1D (N,0,B), OUT1D (N,1,B)
                  END DO
                  END DO
 
@@ -147,7 +147,7 @@ CSSS                       OUT1D (N,1,B) = EXP2A (N) * INT1D (N,2,B)
 CSSS     +                                           - INT1D (N,0,B)
                        OUT1D (N,0,B) =  INT1D (N,1,B)
                        OUT1D (N,1,B) =  INT1D (N,2,B)
-                       Write(6,*) OUT1D (N,0,B), OUT1D (N,1,B)
+CSSS                       Write(6,*) OUT1D (N,0,B), OUT1D (N,1,B)
                        
                     END DO
                     F = TWO
@@ -159,7 +159,7 @@ CSSS                           OUT1D (N,A,B) = EXP2A (N) * INT1D (N,AP,B)
 CSSS     +                                          - F * INT1D (N,AM,B)
 
                           OUT1D (N,A,B) =  INT1D (N,AP,B)
-                       Write(6,*) "OUT1D (N,A,B) =", OUT1D (N,A,B) 
+CSSS                       Write(6,*) "OUT1D (N,A,B) =", OUT1D (N,A,B) 
 
                        END DO
 CSSS                       F = F + ONE
