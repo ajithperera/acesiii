@@ -253,7 +253,7 @@ c---------------------------------------------------------------------------
 
       do b = brange1, brange2
       do a = arange1, arange2
-         v(a,b) = v(a,b)*fact + intblk(a,b) 
+         v(a,b) = v(a,b) + intblk(a,b)*fact
       enddo
       enddo
 

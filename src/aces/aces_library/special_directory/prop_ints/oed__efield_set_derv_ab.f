@@ -303,6 +303,8 @@ C
 C
 CSSSS         SWAP12 = SHELL1 .LT. SHELL2
          SWAP12 = .FALSE. 
+C         EQUALAB = .FALSE.
+C         ATOMIC  = .FALSE.
 C
 C
 C             ...according to the previously gathered info, set the

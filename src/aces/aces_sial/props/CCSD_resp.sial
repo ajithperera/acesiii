@@ -265,16 +265,22 @@
 
       scalar XX
       scalar XY
+      scalar YX
       scalar XZ
+      scalar ZX
       scalar YY
       scalar YZ
+      scalar ZY
       scalar ZZ
 
       scalar Axx
       scalar Axy
+      scalar Ayx
       scalar Axz
+      scalar Azx
       scalar Ayy
       scalar Ayz
+      scalar Azy
       scalar Azz
 
       scalar Px
@@ -285,11 +291,24 @@
       scalar MCy
       scalar MCz
 
+      scalar GC1xx_tmp
+      scalar GC1xy_tmp
+      scalar GC1yx_tmp
+      scalar GC1xz_tmp
+      scalar GC1zx_tmp
+      scalar GC1yy_tmp
+      scalar GC1yz_tmp
+      scalar GC1zy_tmp
+      scalar GC1zz_tmp
+
       scalar GC1xx
       scalar GC1xy
+      scalar GC1yx
       scalar GC1xz
+      scalar GC1zx
       scalar GC1yy
       scalar GC1yz
+      scalar GC1zy
       scalar GC1zz
 
       scalar Pxx
@@ -2394,6 +2413,13 @@
         AYZ = 0.0
         AZZ = 0.0
         
+        GC1xx_tmp  = 0.0
+        GC1xy_tmp  = 0.0
+        GC1xz_tmp  = 0.0
+        GC1yy_tmp  = 0.0
+        GC1yz_tmp  = 0.0
+        GC1zz_tmp  = 0.0
+
         GC1xx  = 0.0
         GC1xy  = 0.0
         GC1xz  = 0.0
@@ -2429,9 +2455,17 @@
             XY   = Tpq(mu,nu)*TDshld(mu,nu) 
             Axy += XY
 
+            execute compute_dshield_yxbatch TDshld(mu,nu)
+            YX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayx += YX
+
             execute compute_dshield_xzbatch TDshld(mu,nu)
             XZ   = Tpq(mu,nu)*TDshld(mu,nu) 
             Axz += XZ
+
+            execute compute_dshield_zxbatch TDshld(mu,nu)
+            ZX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azx += ZX
            
             execute compute_dshield_yybatch TDshld(mu,nu)
             YY   = Tpq(mu,nu)*TDshld(mu,nu) 
@@ -2441,6 +2475,10 @@
             YZ   = Tpq(mu,nu)*TDshld(mu,nu) 
             Ayz += YZ
 
+            execute compute_dshield_zybatch TDshld(mu,nu)
+            ZY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azy += ZY
+
             execute compute_dshield_zzbatch TDshld(mu,nu)
             ZZ   = Tpq(mu,nu)*TDshld(mu,nu) 
             Azz += ZZ
@@ -2449,12 +2487,46 @@
 #
       execute sip_barrier
 
-      collective GC1xx +=Axx
-      collective GC1xy +=Axy
-      collective GC1xz +=Axz
-      collective GC1yy +=Ayy
-      collective GC1yz +=Ayz
-      collective GC1zz +=Azz
+      collective GC1xx_tmp +=Axx
+      collective GC1xy_tmp +=Axy
+      collective GC1yx_tmp +=Ayx
+      collective GC1xz_tmp +=Axz
+      collective GC1zx_tmp +=Azx
+      collective GC1yy_tmp +=Ayy
+      collective GC1yz_tmp +=Ayz
+      collective GC1zy_tmp +=Azy
+      collective GC1zz_tmp +=Azz
+
+      execute print_scalar GC1xx_tmp
+      execute print_scalar GC1xy_tmp
+      execute print_scalar GC1yx_tmp
+      execute print_scalar GC1xz_tmp
+      execute print_scalar GC1zx_tmp
+      execute print_scalar GC1yy_tmp
+      execute print_scalar GC1yz_tmp
+      execute print_scalar GC1zy_tmp
+      execute print_scalar GC1zz_tmp
+
+      GC1xx  = GC1xy_tmp
+      GC1xx += GC1xy_tmp
+      GC1xx += GC1yy_tmp
+      GC1xx += GC1yz_tmp
+      GC1xx += GC1yz_tmp
+      GC1xx += GC1zz_tmp
+ 
+      GC1yy  = GC1xy_tmp
+      GC1yy += GC1xy_tmp
+      GC1yy += GC1xx_tmp
+      GC1yy += GC1yz_tmp
+      GC1yy += GC1yz_tmp
+      GC1yy += GC1zz_tmp
+
+      GC1zz  = GC1xy_tmp
+      GC1zz += GC1xy_tmp
+      GC1zz += GC1xx_tmp
+      GC1zz += GC1yz_tmp
+      GC1zz += GC1yz_tmp
+      GC1zz += GC1yy_tmp
 
       execute print_scalar GC1xx
       execute print_scalar GC1xy
@@ -2462,6 +2534,7 @@
       execute print_scalar GC1yy
       execute print_scalar GC1yz
       execute print_scalar GC1zz
+
 #
       ENDPROC CCSD_1E_GAUGECR
 #     -----------------------
@@ -3421,7 +3494,7 @@
 
 # 1-el gauge correction
      
-#          CALL CCSD_1E_GAUGECR
+          CALL CCSD_1E_GAUGECR
 
           endif 
     
@@ -3492,6 +3565,28 @@
                      g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                      tpol(xyz,xyz1) = MCx
                      g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = GC1xx
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pxy
+                     G_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pxz
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif
+               enddo xyz1
+               endif
+
+               if xyz == 2
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pyx
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pyy
                   endif
                   if xyz1 == 2
                      tpol(xyz,xyz1) = Pxy
@@ -3515,6 +3610,8 @@
                      g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                      tpol(xyz,xyz1) = MCy
                      g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = GC1yy
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
                   endif
                     if xyz1 == 3
                        tpol(xyz,xyz1) = Pyz
@@ -3538,6 +3635,8 @@
                        g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
                        tpol(xyz,xyz1) = MCz
                        g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                       tpol(xyz,xyz1) = GC1zz
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
                     endif
                enddo xyz1
                endif
@@ -3556,8 +3655,8 @@
 	   if property == 20.0
 	      ipol = 713
 	      execute print_rel_info ipol g_tensor_MC
-	      ipol = 714 
-	      execute print_rel_info ipol g_tensor_1E_GC
+              ipol = 714 
+              execute print_rel_info ipol g_tensor_1E_GC
 	      ipol = 715
 	      execute print_rel_info ipol g_tensor_1E_BL
 	   endif 

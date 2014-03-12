@@ -33,9 +33,10 @@ c.........................................................................
       double precision x1,y1,z1
       double precision x2,y2,z2
       double precision xg,yg,zg
-      double precision goc_x,goc_y,goc_c
+      double precision goc_x,goc_y,goc_z
       double precision xn(max_centers), yn(max_centers),
      *                 zn(max_centers)
+      double precision ncharge 
 
 cPV we need electric filed integrals 
       integer iatom,iatm
@@ -92,24 +93,27 @@ C
        DER2Y = 0
        DER2Z = 0
 C
-C Loop over the centers and compute the electric field integral x, y and
-C z component for each center.
+C Loop over the centers and build the diamagnetic shileding intgeral using
+C field integral. For g-tensor, the sum over centers and scaling by
+C effective charge is also done.
 C
-      do iatm =1, Ncenters
-
-c----------------------------------------------------------------------------
-c   Clear the output array.
-c----------------------------------------------------------------------------
 
       do b = db1, db2
       do a = da1, da2
          out_dsh_zx(a,b) = 0.d0
       end do
       end do
-      
+
+      do iatm =1, Ncenters
+
+c----------------------------------------------------------------------------
+c   Clear the output array.
+c----------------------------------------------------------------------------
+
       ixderc = iatm
+      ncharge = charge(iatm)
 C
-C The z component of the electric field; {<mu|derz_C(y-C)|nu>
+C The y component of the electric field; {<mu|dery_C(y-C)|nu>
 C
        do m = m1, m2
 
@@ -136,9 +140,9 @@ C
 CSSS      Write(6,*) "@-entry to OED_batch"
 CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
-      DERCX = 0
+      DERCX = 1
       DERCY = 0
-      DERCZ = 1
+      DERCZ = 0
       DER1X = 0
       DER1Y = 0
       DER1Z = 0
@@ -175,15 +179,16 @@ C
 C Xg, Yg, and Zg are the gauge origin (currently set to the origin of
 C Cartesian coordinate system.
 C
-      goc_x = x1 - xg
+      goc_z = z1 - zg
 
       call add_integrals2(out_dsh_zx,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-goc_x)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
+     *                   -goc_z*ncharge)
       endif 
 
-      DER1X = 1
+      DER1X = 0
       DER1Y = 0
-      DER1Z = 0
+      DER1Z = 1
 
       call oed__gener_efield_batch(intmax,zmax,
      *                 nalpha,ncoeff,
@@ -215,7 +220,8 @@ C
          end if
 
       call add_integrals2(out_dsh_zx,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-1.0d0)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
+     *                   -ncharge)
        endif ! nints
 
        end do !n
@@ -230,7 +236,17 @@ C
          Write(6, "(5(1x,F15.10))") (out_dsh_zx(a,b), a=da1, da2)
       enddo
 #endif
-      enddo !loop over centres
+
+      enddo !loop over centers 
+
+C#ifdef _DEBUG_LVL0
+      Write(6,*) "The <mu| Dsh_xz |nu > integral matrix"
+      do b = db1, db2
+         Write(6,*)
+         Write(6, "(5(1x,F15.10))") (out_dsh_zx(a,b), a=da1, da2)
+      enddo
+C#endif
+
       return
       end
 

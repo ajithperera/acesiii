@@ -33,7 +33,7 @@ c.........................................................................
       double precision x1,y1,z1
       double precision x2,y2,z2
       double precision xg,yg,zg
-      double precision goc_x,goc_y,goc_c
+      double precision goc_x,goc_y,goc_z
       double precision xn(max_centers), yn(max_centers),
      *                 zn(max_centers)
       double precision ncharge 
@@ -102,7 +102,7 @@ C effective charge is also done.
          out_dsh_xx(a,b) = 0.d0
       end do
       end do
-C
+
       do iatm =1, Ncenters
 
       ixderc = iatm
@@ -173,9 +173,12 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
       call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                   -goc_x*ncharge)
+     *                   -goc_x)
       endif 
 
+      DERCX = 1
+      DERCY = 0
+      DERCZ = 0
       DER1X = 1
       DER1Y = 0
       DER1Z = 0
@@ -211,7 +214,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
       call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                  -Ncharge)
+     *                  -1.0D0)
        endif ! nints
 
        end do !n
@@ -227,6 +230,14 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
       enddo
 #endif
       enddo ! loop over centers
+
+C#ifdef _DEBUG_LVL0
+      Write(6,*) "The <mu| Dsh_xx |nu > integral matrix"
+      do b = db1, db2
+         Write(6,*)
+         Write(6, "(5(1x,F15.10))") (out_dsh_xx(a,b), a=da1, da2)
+      enddo
+C#endif
 
       return
       end

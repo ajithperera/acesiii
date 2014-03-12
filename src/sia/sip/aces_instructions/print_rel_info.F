@@ -1728,7 +1728,8 @@ c Fine structure constant and parts per million
       Two = 2.0D0
 c
 c External multiplication constant for Relativistic Mass correction 
-c 
+c c Note: At the moment this is for one unpaired electron (for
+C 2 unpaired electons, this get dvided by 2.
   
       Fac = -FNS*FNS*PPM*Two
 
@@ -1787,8 +1788,10 @@ c Fine structure constant and parts per million
       PPM = 1.0D+06
 
 c External multiplication constant for 1-el gauge correction 
-  
-      Fac = FNS*FNS*PPM*(1.0D0/4.0D0)
+c Note: At the moment this is for one unpaired electron (for
+C 2 unpaired electons, 1/2 becomes 1/4 
+ 
+      Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
 
        if (me .eq. 0)then
        if (ival .eq. 714) then
@@ -1816,8 +1819,8 @@ c          enddo
        endif
       endif
 97    format(17x," X                        Y                      Z")
-98    format(26x,"CCSD g-tensor: 1el-Diamagnetic Spin-orbit Gauge 
-     &       Correction")
+98    format(26x,"CCSD g-tensor: 1el-Diamagnetic Spin-orbit ",
+     &       39x, "Gauge Correction")
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
@@ -1844,10 +1847,11 @@ c Fine structure constant and parts per million
 
        FNS = 7.29735308D-03
        PPM = 1.0D+06
-
-c External multiplication constant for Relativistic Mass correction 
+c
+c External multiplication constant for paramagnetic spin-orbit 
+c contribution.
   
-       Fac = FNS*FNS*PPM*(1.0D0/4.0D0)
+       Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
 
        if (me .eq. 0)then
        if (ival .eq. 715) then

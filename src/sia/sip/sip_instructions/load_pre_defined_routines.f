@@ -692,55 +692,41 @@ c-------------------------------------------------------------------
 
       dummy = load_user_sub('compute_1soi_xbatch'//char(0),
      &                       compute_1soi_xbatch)
-
       dummy = load_user_sub('compute_1soi_ybatch'//char(0),
      &                       compute_1soi_ybatch)
-
       dummy = load_user_sub('compute_1soi_zbatch'//char(0),
      &                       compute_1soi_zbatch)
 
       dummy = load_user_sub('compute_2soi_xbatch'//char(0),
      &                       compute_2soi_xbatch)
-
       dummy = load_user_sub('compute_2soi_ybatch'//char(0),
      &                       compute_2soi_ybatch)
-
       dummy = load_user_sub('compute_2soi_zbatch'//char(0),
      &                       compute_2soi_zbatch)
 
       dummy = load_user_sub('compute_angmom_xbatch'//char(0),
      &                       compute_angmom_xbatch)
-
       dummy = load_user_sub('compute_angmom_ybatch'//char(0),
      &                       compute_angmom_ybatch)
-
       dummy = load_user_sub('compute_angmom_zbatch'//char(0),
      &                       compute_angmom_zbatch)
 
       dummy = load_user_sub('compute_dshield_xxbatch'//char(0),
      &                       compute_dshield_xxbatch)
-
       dummy = load_user_sub('compute_dshield_xybatch'//char(0),
      &                       compute_dshield_xybatch)
-
       dummy = load_user_sub('compute_dshield_yxbatch'//char(0),
      &                       compute_dshield_yxbatch)
-
       dummy = load_user_sub('compute_dshield_xzbatch'//char(0),
      &                       compute_dshield_xzbatch)
-
       dummy = load_user_sub('compute_dshield_zxbatch'//char(0),
      &                       compute_dshield_zxbatch)
-
       dummy = load_user_sub('compute_dshield_yybatch'//char(0),
      &                       compute_dshield_yybatch)
-
       dummy = load_user_sub('compute_dshield_yzbatch'//char(0),
      &                       compute_dshield_yzbatch)
-
       dummy = load_user_sub('compute_dshield_zybatch'//char(0),
      &                       compute_dshield_zybatch)
-
       dummy = load_user_sub('compute_dshield_zzbatch'//char(0),
      &                       compute_dshield_zzbatch)
 

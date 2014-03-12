@@ -237,6 +237,14 @@ C
       enddo
 #endif
       enddo !loop over centers 
+
+#ifdef _DEBUG_LVL0
+      Write(6,*) "The <mu| Dsh_xy |nu > integral matrix"
+      do b = db1, db2
+         Write(6,*)
+         Write(6, "(5(1x,F15.10))") (out_dsh_xy(a,b), a=da1, da2)
+      enddo
+#endif
       return
       end
 
