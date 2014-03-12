@@ -151,7 +151,7 @@ c   Compute data block of integrals.
 c---------------------------------------------------------------------------
 
       if (intpkg .eq.flocke_package .and. .not. dryrun) then
-         call compute_return_dshieldxx(x(indblk), a1, a2, b1, b2,nsend)
+         call compute_return_dshieldzz(x(indblk), a1, a2, b1, b2,nsend)
       else
         write(6,*) ' MUST USE ERD FOR DIA. SHIELDING INTEGRALS !!! ' 
       endif 
