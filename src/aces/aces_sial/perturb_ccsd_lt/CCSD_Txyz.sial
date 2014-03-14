@@ -1207,9 +1207,7 @@
 #PV           Tbjbj(b,j,b1,j1)            = VSqjqj(b,j,b1,j1)
 #PV           execute energy_denominator    Tbjbj
            Tbjbj(b,j,b1,j1)            = 0.0
-           execute print_scalar two
            PREPARE T2old_bb_x(b,j,b1,j1) = Tbjbj(b,j,b1,j1)
-           execute print_scalar two
            PREPARE D0bjbj(b,j,b1,j1) = Tbjbj(b,j,b1,j1)
      ENDPARDO b, b1, j, j1
      PARDO a, b, i, j
@@ -6211,16 +6209,17 @@
 #____________________________________________________________________________
      PROC ENERGY_NEW 
 
-    esuma   =0.0
-    ecorraa = 0.0
+    esuma   = 0.0
+    ecorrT  = 0.0
+    ecorrD  = 0.0
+    esumb   = 0.0
+
     PARDO a,i
            GET t1a_old_x(a,i)
            etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
            esuma += etemp
      ENDPARDO a,i
-     ecorrbb = 0.0
-     esumb   = 0.0
-    PARDO b,j
+     PARDO b,j
           get T1b_old_x(b,j)
           etemp  = T1b_old_x(b,j)*T1b_old_x(b,j)
           esumb += etemp
@@ -6234,10 +6233,10 @@
      collective ecorrbb += esumb
      execute print_scalar ecorrbb
 
-     ecorrT  = ecorraa 
+     ecorrT   = ecorraa 
      ecorrT  += ecorrbb
 
-     ecorrD  += ecorrbb
+     ecorrD   = ecorrbb
      ecorrD  -= ecorrbb
      
      execute print_scalar ecorrD
@@ -6315,7 +6314,7 @@
      execute print_scalar ecorrbb 
 
      collective ecorrab += esumab
-    execute print_scalar ecorrab 
+     execute print_scalar ecorrab 
 
      ecorrT  += ecorraa 
      ecorrT  += ecorrbb
@@ -9650,6 +9649,7 @@
          eold = ecorrT 
 
         ENDDO KITER 
+        EXECUTE SERVER_BARRIER
 #
         DELETE HBa_ae_x
         DELETE HBa_me_x
@@ -9783,12 +9783,23 @@
       execute blocks_to_list                l2old_bb
 
 
-      execute blocks_to_list                t1a_old_x
-      execute blocks_to_list                t1b_old_x
-      execute blocks_to_list                T2old_aa_x
-      execute blocks_to_list                T2old_ab_x
-      execute blocks_to_list                T2old_bb_x
+      execute blocks_to_list                t1a_x
+      execute blocks_to_list                t1b_x
+      execute blocks_to_list                T2aa_x
+      execute blocks_to_list                T2ab_x
+      execute blocks_to_list                T2bb_x
 
+      execute blocks_to_list                t1a_y
+      execute blocks_to_list                t1b_y
+      execute blocks_to_list                T2aa_y
+      execute blocks_to_list                T2ab_y
+      execute blocks_to_list                T2bb_z
+
+      execute blocks_to_list                t1a_z
+      execute blocks_to_list                t1b_z
+      execute blocks_to_list                T2aa_z
+      execute blocks_to_list                T2ab_z
+      execute blocks_to_list                T2bb_z
       
       execute server_barrier
       execute sip_barrier
