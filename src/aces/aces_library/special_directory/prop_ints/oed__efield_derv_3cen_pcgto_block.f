@@ -950,7 +950,7 @@ C
              PROCEED = DIFFA .AND. (DERAZ.GT.0)
 
              IF (PROCEED) THEN
-             Write(6,*) "Entering proceed-z"
+CSSS             Write(6,*) "Entering proceed-z"
                  DERA = DERAZ
                  DERB = DERBZ
                  DO N = 1,DERAZ

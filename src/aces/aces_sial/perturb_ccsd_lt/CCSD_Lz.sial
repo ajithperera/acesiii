@@ -12342,7 +12342,7 @@ PARDO j, i, i1, j1
          execute sip_barrier
 
          PARDO mu, nu
-              EXECUTE compute_angmom_ybatch Txx(mu,nu)
+              EXECUTE compute_angmom_zbatch Txx(mu,nu)
               PUT  HBx(mu,nu) += Txx(mu,nu)
          ENDPARDO mu,nu
 
@@ -12356,7 +12356,7 @@ PARDO j, i, i1, j1
          execute sip_barrier
 
          PARDO mu, nu
-              EXECUTE compute_1soi_ybatch Txx(mu,nu)
+              EXECUTE compute_1soi_zbatch Txx(mu,nu)
               PUT  HBx(mu,nu) += Txx(mu,nu)
          ENDPARDO mu,nu
 
@@ -12630,12 +12630,14 @@ PARDO j, i, i1, j1
       ten = 10.0
 
        property = 30.0
+       beta_is_minus = 0.0
+
        if property == 10.0
 #          call get_HBx_Dipole
        endif
 
        if property == 20.0
-          call get_HBx_Angmom
+#          call get_HBx_Angmom
        endif
 
        if property == 30.0

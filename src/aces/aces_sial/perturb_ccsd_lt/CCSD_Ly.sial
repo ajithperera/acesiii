@@ -12694,6 +12694,8 @@ PARDO j, i, i1, j1
 
 
        property = 30.0
+       beta_is_minus = 100.0
+
        if property == 10.0
 #          call get_HBx_Dipole
        endif

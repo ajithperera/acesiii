@@ -330,6 +330,8 @@
       SCALAR  TWO
       SCALAR  THREE
       SCALAR  PROPERTY
+      SCALAR  ASYM
+      SCALAR  SPIN_DEN
 #
       Scalar suma
       Scalar sumb
@@ -2550,7 +2552,13 @@
                   Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                   PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
-                   PUT DpqA_x(nu,mu) += I1xx(nu,mu) #PV
+                  IF  ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0 
+                      PUT DpqA_x(nu,mu) += I1xx(nu,mu) #PV
+                  ELSE 
+                      PUT DpqA_x(nu,mu) += I1xx(nu,mu) #PV
+                  ENDIF 
+         
                ENDDO nu
             ENDDO mu
       ENDPARDO a, i
@@ -2563,7 +2571,12 @@
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                    PUT DpqB_x(mu,nu) += Ixx(mu,nu)  #PV
-                   PUT DpqB_x(nu,mu) += I1xx(nu,mu) #PV
+                   IF  ASYM == 1.0
+                       I1xx(nu,mu) *= -1.0 
+                       PUT DpqB_x(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE 
+                       PUT DpqB_x(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
                ENDDO nu
             ENDDO mu
       ENDPARDO b, j
@@ -2639,7 +2652,12 @@
             get HBz(mu,nu)
 
             Dccsd_x(mu,nu)   = DpqA_x(mu,nu)
-            Dccsd_x(mu,nu)  += DpqB_x(mu,nu)
+            IF SPIN_DEN == 1.0
+               DpqB_x(mu,nu)  *= -1.0
+               Dccsd_x(mu,nu) += DpqB_x(mu,nu)
+            ELSE
+               Dccsd_x(mu,nu) += DpqB_x(mu,nu)
+            ENDIF 
             Tpq_x(mu,nu)     = Dccsd_x(mu,nu)
  
              XX   = Tpq_x(mu,nu)*HBx(mu,nu)            
@@ -2697,7 +2715,12 @@
                   Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                    PUT DpqA_y(mu,nu) += Ixx(mu,nu) #PV
-                   PUT DpqA_y(nu,mu) += I1xx(nu,mu) #PV
+                   IF ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0 
+                      PUT DpqA_y(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE
+                      PUT DpqA_y(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
                ENDDO nu
             ENDDO mu
       ENDPARDO a, i
@@ -2710,7 +2733,12 @@
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                    PUT DpqB_y(mu,nu) += Ixx(mu,nu)  #PV
-                   PUT DpqB_y(nu,mu) += I1xx(nu,mu) #PV
+                   IF ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0
+                      PUT DpqB_y(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE 
+                      PUT DpqB_y(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
                ENDDO nu
             ENDDO mu
       ENDPARDO b, j
@@ -2789,7 +2817,12 @@
             get HBz(mu,nu)
 
             Dccsd_y(mu,nu)   = DpqA_y(mu,nu)
-            Dccsd_y(mu,nu)  += DpqB_y(mu,nu)
+            IF SPIN_DEN == 1.0
+               DpqB_y(mu,nu)   *= -1.0
+               Dccsd_y(mu,nu)  += DpqB_y(mu,nu)
+            ELSE
+               Dccsd_y(mu,nu)  += DpqB_y(mu,nu)
+            ENDIF 
             Tpq_y(mu,nu)     = Dccsd_y(mu,nu)
 
             XX=  Tpq_y(mu,nu)*HBx(mu,nu)
@@ -2848,7 +2881,12 @@
                   Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                    PUT DpqA_z(mu,nu) += Ixx(mu,nu) #PV
-                   PUT DpqA_z(nu,mu) += I1xx(nu,mu) #PV
+                   IF ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0
+                      PUT DpqA_z(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE 
+                      PUT DpqA_z(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
                ENDDO nu
             ENDDO mu
       ENDPARDO a, i
@@ -2861,7 +2899,12 @@
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                    PUT DpqB_z(mu,nu) += Ixx(mu,nu)  #PV
-                  PUT DpqB_z(nu,mu) += I1xx(nu,mu) #PV
+                   IF ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0
+                      PUT DpqB_z(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE
+                      PUT DpqB_z(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
                ENDDO nu
             ENDDO mu
       ENDPARDO b, j
@@ -2939,7 +2982,12 @@
             get HBz(mu,nu)
 
             Dccsd_z(mu,nu)  = DpqA_z(mu,nu)
-            Dccsd_z(mu,nu)  += DpqB_z(mu,nu)
+            IF SPIN_DEN == 1.0
+                DpqB_z(mu,nu)  *= -1.0
+                Dccsd_z(mu,nu) += DpqB_z(mu,nu)
+            ELSE
+                Dccsd_z(mu,nu) += DpqB_z(mu,nu)
+            ENDIF
             Tpq_z(mu,nu)  = Dccsd_z(mu,nu)
            
              XX   = Tpq_z(mu,nu)*HBx(mu,nu)
@@ -3411,21 +3459,34 @@
             execute sip_barrier
             execute server_barrier
             
+# eventually set based on a input key-word. 
+
             property = 30.0
+#
+# Two variables that control the formation of antisymmetric or
+# symmetric density or total or spin density.
+# 
+
+            ASYM     = 0.0
+            SPIN_DEN = 0.0
+
             if property == 10.0
 
+               SPIN_DEN = 0.0
                call get_HBXYZ_Dipole
 
             endif 
 
             if property == 20.0
-
+               ASYM     = 1.0
+               SPIN_DEN = 1.0
                call get_HBXYZ_spin_orbit
 
             endif 
 
             if property == 30.0
-
+               ASYM     = 1.0
+               SPIN_DEN = 0.0
                call get_HBXYZ_Angmom
              
             endif
