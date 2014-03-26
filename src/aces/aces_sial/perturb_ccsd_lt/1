@@ -1,4 +1,4 @@
-                           SIAL LXYZ                    
+                           SIAL LXYZ                     
 #
 # Working version of UHF based lambda code which computes the VVVV 
 # integrals on the fly. No VVVV OR VVVO intermediates are stored. 
@@ -16,7 +16,7 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
-      index   npert  = 1, 1
+      index   npert  = 1, 3
 #
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
@@ -1601,28 +1601,6 @@
           Tia(i,a)        = HBa_me_x(i,a)
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
-
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do a
-      do i
-         get Fme_a_x(i,a)
-         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do i
-         get HBa_me_x(i,a)
-         tmp  = HBa_me_x(i,a) * HBa_me_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-#end_debug
 
 #----BB
 
@@ -5793,7 +5771,6 @@
             Tjb(j,b)          = l1b_old(j,b1)*F1ae_b_x(b1,b)
             PUT l1b_old_x(j,b) += Tjb(j,b)
       ENDPARDO j, b, b1  
-
 #.....................................................................
 #pv      PARDO b, j, b1, b2 
 #pv            REQUEST             VSbbbj(b2,b1,b,j) j
@@ -5866,19 +5843,6 @@
             Tjb(j,b) = Vpiqj(a,i,b,j)*T2ia(i,a)
             PUT l1b_old_x(j,b) += Tjb(j,b)
       ENDPARDO b, a, j, i
-
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
 
       ENDPROC L1BOLD_X
 #     ----------------
@@ -7168,8 +7132,8 @@
      ecorrD -= ecorrbb
 
      ecorrT += ecorrab
-     execute print_scalar ecorrT
-#     execute print_scalar ecorrD
+#     execute print_scalar ecorrT
+     execute print_scalar ecorrD
 
 
       esuma   = 0.0
@@ -7197,6 +7161,9 @@
 
      collective ecorrbb += esumb
      execute print_scalar ecorrbb
+
+     collective ecorrab += esumab
+     execute print_scalar ecorrab
 
      ecorrT  = ecorraa 
      ecorrT += ecorrbb
@@ -7246,11 +7213,9 @@
 #    b. L2 contributions       --> PROC L2WABCD 
 #
 # ------------------------------------------------------------------------------- 
-#  PROC LLADDER: This long procedure is combined to stay within the 
-# allowed limit for maximum no. of calls.
+#      PROC LLADDER 
 
       PROC VABCDOLD_X
-#     ----------------
 
 #     First zero-out intermediate arrays
       PARDO mu, nu, i, i1
@@ -7429,22 +7394,9 @@
       ENDPARDO mu, nu, i, j
       execute server_barrier   
 
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
-
-# ENDPROC LLADDER 
+#      ENDPROC LLADDER 
 #_____________________________________________________________________________
-# PROC L2WABCDaa  
+#      PROC L2WABCDaa  
 
 #     AA spin combination 
       create Iiiia 
@@ -7494,10 +7446,10 @@
       delete Iiiia 
       delete Iiiii 
 
-# ENDPROC L2WABCDaa  
-#___________________________________________________________________________
-# PROC L2WABCDbb  
+#      ENDPROC L2WABCDaa  
+#_____________________________________________________________________________
 
+#      PROC L2WABCDbb  
       create Ijjjb 
       create Ijjjj 
       execute sip_barrier 
@@ -7544,11 +7496,10 @@
       execute sip_barrier 
       delete Ijjjb 
       delete Ijjjj 
-
-#  ENDPROC L2WABCDbb  
+#      ENDPROC L2WABCDbb  
 #______________________________________________________________________________ 
-#  PROC L2WABCDab  
 
+#      PROC L2WABCDab  
       create Iiijb 
       create Iiajj 
       create Iiijj 
@@ -7613,12 +7564,10 @@
       delete Iiijb 
       delete Iiajj 
       delete Iiijj 
-
-# ENDPROC L2WABCDab  
+#      ENDPROC L2WABCDab  
 #______________________________________________________________________________
-# PROC L1WABCDa 
+#      PROC L1WABCDa 
 #     First piece
-
       create Xiiia
       execute sip_barrier
       PARDO i, i2, a1, a2
@@ -7793,9 +7742,9 @@
       delete Xiijj 
       delete Xiajj 
 
-# ENDPROC L1WABCDa 
+#      ENDPROC L1WABCDa 
 #_____________________________________________________________________________
-# PROC L1WABCDaX
+#      PROC L1WABCDaX
 
 #     First piece
       create Xiiia
@@ -7969,12 +7918,13 @@
       execute sip_barrier
       delete Xiijj
       delete Xiajj
+#      ENDPROC L1WABCDaX
 
-# ENDPROC L1WABCDaX
+       ENDPROC VABCDOLD_X
+
 #_____________________________________________________________________________
-# PROC L1WABCDb 
+      PROC L1WABCDb 
 #     First piece
-
       create Xjjjb
       execute sip_barrier
       PARDO j, j2, b1, b2
@@ -8144,11 +8094,10 @@
       execute sip_barrier 
       delete Xjjii 
       delete Xjbii 
-
-# ENDPROC L1WABCDb 
-# PROC L1WABCDbX
+      ENDPROC L1WABCDb 
+#_________________________________________________________________________________
+      PROC L1WABCDbX
 #     First piece
-
       create Xjjjb
       execute sip_barrier
       PARDO j, j2, b1, b2
@@ -8318,17 +8267,10 @@
       execute sip_barrier
       delete Xjjii
       delete Xjbii
+      ENDPROC L1WABCDbX
+#     -----------------
 
-#ENDPROC L1WABCDbX
-#-----------------
-      
-     ENDPROC VABCDOLD_X
-#    ------------------
-#
-# End of the long VABCDOLD_X
-#
      PROC LLADDER_X
-#     ---------------
 
 #     First zero-out intermediate arrays
       PARDO mu, nu, i, i1
@@ -11672,19 +11614,17 @@
          PARDO mu, nu
 
              IF X_COMP == 9.0
-                execute print_scalar nine
                 EXECUTE compute_1soi_xbatch Txx(mu,nu)
              ENDIF
 
              IF Y_COMP == 9.0
-                execute print_scalar nine
                 EXECUTE compute_1soi_ybatch Txx(mu,nu)
              ENDIF
 
              IF Z_COMP == 9.0
-                execute print_scalar nine
                 EXECUTE compute_1soi_zbatch Txx(mu,nu)
              ENDIF
+             PUT  HBx(mu,nu) = Txx(mu,nu)
 
               PUT  HBx(mu,nu) += Txx(mu,nu)
          ENDPARDO mu,nu
@@ -11784,6 +11724,7 @@
                 Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
                 do j1
                    Tjj(j,j1) = Tjx(j,nu)*CB(nu,j1)
+                   Tjj(j,j1) *= -1.0
                    PUT HBb_mi_x(j,j1) += Tjj(j,j1)
                 enddo j1
             enddo j
@@ -12241,7 +12182,7 @@
           Y_COMP = 9.0
       ENDIF
 
-      IF NCOUNT == 3.0
+      IF NCOUNT == 1.0
           Z_COMP = 9.0
       ENDIF
 
@@ -12330,7 +12271,6 @@
       CALL W1MINJ_X
       CALL W2MEBJ_X
       CALL W2MJBE_X
-
       execute server_barrier
       execute sip_barrier 
 
@@ -12338,7 +12278,6 @@
       CALL W1EAFM_S_x
       CALL W1MEBJ_S_x
       CALL W1MEBJ_S_x
-
       execute sip_barrier
       execute server_barrier
 
@@ -12352,64 +12291,28 @@
       CALL L1AOLD_X
       CALL L1BOLD_X
 
+      execute server_barrier
+
+      CALL LOLDENERGY_X
+
       CALL L2OLDAA_X
       CALL L2OLDBB_X
       CALL L2OLDAB_X
 
       CALL VABCDOLD_X
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
-
       CALL W1EAFMOLD_X
-
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
-
       call W1MEBJOLD_X
-
-      execute sip_barrier
       execute server_barrier
-
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
 
       CALL UPDATEL1x
+      execute print_scalar nine
       CALL UPDATEL2x
+      execute print_scalar nine
       CALL LIGUESS_X
+      execute print_scalar nine
       execute sip_barrier
       execute server_barrier
 
-      execute print_scalar nine
       CALL LOLDENERGY_X
       execute server_barrier 
       eold = ecorrT 

@@ -849,6 +849,9 @@
        scalar c9 
        scalar c10  
 # Varible introduced by Ajith Perera, 03/2014. 
+     
+       scalar sum0
+       scalar tmp
 
        scalar property
        scalar beta_is_minus
@@ -9257,14 +9260,35 @@
          PARDO A, I
             Get t1a_old_x(a,i)
             Tai(a,i) = t1a_old_x(a,i)
-            T1a_x(a,i) = Tai(a,i)
+            PUT T1a_x(a,i) = Tai(a,i)
          ENDPARDO A, I
 
          PARDO B, J
             Get t1b_old_x(b,j)
             Tbj(b,j) = t1b_old_x(b,j)
-            T1b_x(b,j) = Tbj(b,j)
+            PUT T1b_x(b,j) = Tbj(b,j)
          ENDPARDO B, J
+#bgn_debug
+      execute sip_barrier
+      sum0 = 0.0
+      do a
+      do i
+         get t1a_x(a,i)
+         tmp  =  t1a_x(a,i) * t1a_x(a,i)
+         sum0 +=tmp
+      enddo i
+      enddo a
+      execute print_scalar sum0
+      sum0 = 0.0
+      do b
+      do j
+         get t1b_x(b,j)
+         tmp  = t1b_x(b,j) * t1b_x(b,j)
+         sum0 +=tmp
+      enddo j
+      enddo b
+      execute print_scalar sum0
+#end_debug
 
          PARDO a, a1, i, i1
            REQUEST T2old_aa_x(a,i,a1,i1) i1
@@ -9284,6 +9308,8 @@
            PREPARE T2ab_x(a,i,b,j) = Taibj(a,i,b,j)
          ENDPARDO a, b, i, j
 
+        execute server_barrier
+
      ENDPROC PUT_PERT_TX
 #    -------------------
 
@@ -9293,13 +9319,13 @@
          PARDO A, I
             Get t1a_old_x(a,i)
             Tai(a,i) = t1a_old_x(a,i)
-            T1a_y(a,i) = Tai(a,i)
+            PUT T1a_y(a,i) = Tai(a,i)
          ENDPARDO A, I
 
          PARDO B, J
             Get t1b_old_x(b,j)
             Tbj(b,j) = t1b_old_x(b,j)
-            T1b_y(b,j) = Tbj(b,j)
+            PUT T1b_y(b,j) = Tbj(b,j)
          ENDPARDO B, J
 
          PARDO a, a1, i, i1
@@ -9320,6 +9346,8 @@
            PREPARE T2ab_y(a,i,b,j) = Taibj(a,i,b,j)
          ENDPARDO a, b, i, j
 
+        execute server_barrier
+
      ENDPROC PUT_PERT_TY
 #    -------------------
 
@@ -9329,13 +9357,13 @@
          PARDO A, I
             Get t1a_old_x(a,i)
             Tai(a,i) = t1a_old_x(a,i)
-            T1a_z(a,i) = Tai(a,i)
+            PUT T1a_z(a,i) = Tai(a,i)
          ENDPARDO A, I
 
          PARDO B, J
             Get t1b_old_x(b,j)
             Tbj(b,j) = t1b_old_x(b,j)
-            T1b_z(b,j) = Tbj(b,j)
+            PUT T1b_z(b,j) = Tbj(b,j)
          ENDPARDO B, J
 
          PARDO a, a1, i, i1
@@ -9355,6 +9383,8 @@
            Taibj(a,i,b,j) = T2old_ab_x(a,i,b,j)
            PREPARE T2ab_z(a,i,b,j) = Taibj(a,i,b,j)
          ENDPARDO a, b, i, j
+
+        execute server_barrier
 
      ENDPROC PUT_PERT_TZ
 #    -------------------
