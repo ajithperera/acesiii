@@ -7893,7 +7893,7 @@ PARDO j, i, i1, j1
      ecorrD -= ecorrbb
 
      ecorrT += ecorrab
-     execute print_scalar ecorrD
+     execute print_scalar ecorrT
 
 
       esuma   = 0.0
@@ -7922,17 +7922,10 @@ PARDO j, i, i1, j1
      collective ecorrbb += esumb
      execute print_scalar ecorrbb
 
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
-
      ecorrT  = ecorraa 
      ecorrT += ecorrbb
 
-     ecorrT  = ecorraa 
-     ecorrT -= ecorrbb
-
-     ecorrT += ecorrab
-     execute print_scalar ecorrD
+     execute print_scalar ecorrT
 
      if kiter > 0
             ncount1 = 0.0

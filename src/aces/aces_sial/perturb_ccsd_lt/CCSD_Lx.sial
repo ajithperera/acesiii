@@ -7696,7 +7696,6 @@
      ecorrD  = ecorraa
      ecorrD -= ecorrbb
 
-     ecorrT += ecorrab
      execute print_scalar ecorrT
 
      if kiter > 0
