@@ -9522,15 +9522,16 @@
        CALL FME
        EXECUTE SIP_BARRIER
  
-       property = 30.0
+       property = 10.0
        beta_is_minus = 0.0
+
+       ICOUNT = 0.0
+# 
+       DO NPERT 
 
        X_COMP = 0.0
        Y_COMP = 0.0
        Z_COMP = 0.0
-       ICOUNT = 0.0
-# 
-       DO NPERT 
 #  
 # Get the interested perturbation componenet
 #

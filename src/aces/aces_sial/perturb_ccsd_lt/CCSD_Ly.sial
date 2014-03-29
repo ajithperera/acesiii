@@ -1644,12 +1644,14 @@
             PUT Fme_b(j,b) += Tjb(j,b)
       ENDPARDO j, b, i, a
 #.........................
+
       PARDO j, b, j1, b1
             REQUEST VSqjqj(b,j,b1,j1) j1
             GET t1b_old_y(b1,j1)
             Tjb(j,b)        = VSqjqj(b,j,b1,j1)*t1b_old_y(b1,j1)
             PUT Fme_b_x(j,b) += Tjb(j,b)
       ENDPARDO j, b, j1, b1
+
       PARDO j, b, i, a
             REQUEST Vpiqj(a,i,b,j) j
             GET t1a_old_y(a,i)
@@ -1661,6 +1663,28 @@
           Tjb(j,b)          = HBb_me_x(j,b)
           put Fme_b_x(j,b) += Tjb(j,b)
       ENDPARDO j,b
+#bgn_debug
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get Fme_b_x(j,b)
+#         tmp  =  Fme_b_x(j,b)* Fme_b_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get HBb_me_x(j,b)
+#         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
+#end_debug
+
       ENDPROC FME
 #____________________________________________________________________________ 
       PROC F1MIA
@@ -12836,11 +12860,11 @@ PARDO j, i, i1, j1
       ten = 10.0
 
 
-       property = 30.0
-       beta_is_minus = 100.0
+       property = 10.0
+       beta_is_minus = 0.0
 
        if property == 10.0
-#          call get_HBx_Dipole
+          call get_HBx_Dipole
        endif
 
        if property == 20.0
@@ -12849,7 +12873,7 @@ PARDO j, i, i1, j1
 
        if property == 30.0
           beta_is_minus = 100.0
-          call get_HBx_Spin_orbit
+#          call get_HBx_Spin_orbit
        endif
 
        Call Trans2_MO

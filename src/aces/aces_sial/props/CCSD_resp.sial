@@ -511,6 +511,29 @@
          LT1B_x(b,j) = t1b_old_x(b,j)
       ENDDO j
       ENDDO b
+#bgn_debug
+    execute sip_barrier
+    suma = 0.0
+    DO a
+      DO i
+         GET         t1a_old_x(a,i)
+         tai(a,i) = t1a_old_x(a,i) 
+         sum =  tai(a,i) *  tai(a,i)
+         suma += sum
+      ENDDO i
+      ENDDO a
+      execute print_scalar suma
+      sumb =0.0
+      DO b
+      DO j
+         GET         t1b_old_x(b,j)
+         tbj(b,j) = t1b_old_x(b,j)
+         sum  =  tbj(b,j) * tbj(b,j) 
+         sumb += sum
+      ENDDO j
+      ENDDO b
+      execute print_scalar sumb
+#end_debug
 
 #.......................................
       DO a
@@ -1576,6 +1599,33 @@
 #        ENDDO i
 #        ENDDO a
         EXECUTE  SIP_BARRIER
+
+#debug_bgn
+           suma  = 0.0
+           sumaa = 0.0
+
+#           pardo a, i
+           pardo a, i1
+#               GET Doldai_a_x(a,i)
+#                sum = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+#                GET LT1A_x (a,i1)
+#                sum = T2L2_OO_A (i,i1)*T2L2_OO_A (i,i1)
+                sum = LT1A_x (a,i1) * LT1A_x (a,i1)
+                suma += sum
+           endpardo a, i1
+           execute sip_barrier
+           collective sumaa += suma
+           execute print_scalar sumaa
+
+#           endpardo  i, i1
+#           do a
+#           do i1
+#              sum = LT1A(a,i1)*LT1A(a,i1)
+#              suma += sum
+#           enddo i1
+#           enddo a
+#
+#debug_end
 #...................................
        PARDO  a, i
 #        DO a
@@ -1609,6 +1659,8 @@
            endpardo a, i
            execute sip_barrier
            collective sumaa += suma
+           execute print_scalar sumaa
+
 #           endpardo  i, i1
 #           do a
 #           do i1 
@@ -3461,7 +3513,7 @@
             
 # eventually set based on a input key-word. 
 
-            property = 30.0
+            property = 10.0
 #
 # Two variables that control the formation of antisymmetric or
 # symmetric density or total or spin density.
@@ -3548,7 +3600,7 @@
 # 
 # Mass correction term.
           
-          property = 20.0
+#          property = 20.0
           if property == 20.0
 
              CALL CCSD_MASSCR 
