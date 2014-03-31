@@ -325,6 +325,8 @@
       SCALAR  dipnucx
       SCALAR  dipnucy
       SCALAR  dipnucz
+     
+      SCALAR TMP
 
       SCALAR  ONE
       SCALAR  TWO
@@ -511,7 +513,6 @@
          LT1B_x(b,j) = t1b_old_x(b,j)
       ENDDO j
       ENDDO b
-
 #.......................................
       DO a
       DO i
@@ -1418,6 +1419,27 @@
          PUT Doldai_a(a,i) += tai1 (a,i)
        ENDPARDO a,i
        EXECUTE  SIP_BARRIER
+#bgn_debug
+     sum = 0.0
+     do i 
+     do i1
+        GET  T1L1_OO_A (i,i1)
+        tmp = T1L1_OO_A (i,i1) * T1L1_OO_A (i,i1)
+        sum += tmp
+     enddo i1
+     enddo i
+     execute print_scalar sum 
+     sum = 0.0
+     do i 
+     do a 
+     do i 
+        get Doldai_a(a,i)
+        tmp = Doldai_a(a,i) * Doldai_a(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum 
+#end_debug
 #-------------------------------------------------------------------------
 # 6th term
        PARDO  a, a1, i
@@ -1426,7 +1448,19 @@
             tai (a,i)            *= -1.0
             PUT  Doldai_a(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
+
 # end 6th term
+#bgn_debug
+     sum = 0.0
+     do a
+     do i
+        get Doldai_a(a,i)
+        tmp = Doldai_a(a,i) * Doldai_a(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum
+#end_debug
 
 # -------------------------------------------------------------------------
       PARDO   a1,i1
@@ -1440,6 +1474,17 @@
            ENDDO i
          ENDDO a
       ENDPARDO   a1,i1
+#bgn_debug
+     sum = 0.0
+     do a
+     do i
+        get Doldai_a(a,i)
+        tmp = Doldai_a(a,i) * Doldai_a(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum
+#end_debug
 
 
       PARDO  b,j 
@@ -1453,6 +1498,18 @@
             ENDDO i
          ENDDO a
       ENDPARDO  b,j 
+#bgn_debug
+     sum = 0.0
+     do a
+     do i
+        get Doldai_a(a,i)
+        tmp = Doldai_a(a,i) * Doldai_a(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum
+#end_debug
+
 # R--------------------------------------------------------------------------
 
       PARDO  a, i
@@ -1463,7 +1520,17 @@
                tai (a,i) *=0.5
                PUT  Doldai_a(a,i) += tai (a,i)
       ENDPARDO  a, i
-
+#bgn_debug
+     sum = 0.0
+     do a
+     do i
+        get Doldai_a(a,i)
+        tmp = Doldai_a(a,i) * Doldai_a(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum
+#end_debug
 
       EXECUTE  SIP_BARRIER
 
@@ -1490,6 +1557,26 @@
       ENDPARDO b,j
 
        EXECUTE  SIP_BARRIER
+#bgn_debug
+     sum = 0.0
+     do j
+     do j1
+        get T1L1_OO_B (j,j1) 
+        tmp = T1L1_OO_B (j,j1) * T1L1_OO_B (j,j1)
+        sum += tmp
+     enddo j1
+     enddo j
+     execute print_scalar sum
+     sum = 0.0
+     do b
+     do j
+        get Doldai_b(b,j)
+        tmp = Doldai_b(b,j) * Doldai_b(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+#end_debug
 
 #-----------------------------------------------------------------------------
        PARDO  b, b1, j
@@ -1498,6 +1585,18 @@
             tbj(b,j)            *= -1.0
             PUT  Doldai_b(b,j)   += tbj (b,j)
        ENDPARDO  b, b1, j
+
+#bgn_debug
+     sum = 0.0
+     do b
+     do j
+        get Doldai_b(b,j)
+        tmp = Doldai_b(b,j) * Doldai_b(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+#end_debug
 
 #-----------------------------------------------------------------------------
       PARDO  b1,j1
@@ -1511,6 +1610,17 @@
             ENDDO j
          ENDDO b
       ENDPARDO  b1,j1
+#bgn_debug
+     sum = 0.0
+     do b
+     do j
+        get Doldai_b(b,j)
+        tmp = Doldai_b(b,j) * Doldai_b(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+#end_debug
 
 
       PARDO  i, a
@@ -1524,6 +1634,19 @@
             ENDDO j
          ENDDO b
       ENDPARDO  i, a
+#bgn_debug
+     sum = 0.0
+     do b
+     do j
+        get Doldai_b(b,j)
+        tmp = Doldai_b(b,j) * Doldai_b(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+#end_debug
+
+
 #-------------------------------------------------------------------------------------
 # First and second term of Dai
       PARDO  b, j
@@ -1534,7 +1657,17 @@
                tbj (b,j) *=0.5
                PUT  Doldai_b(b,j) += tbj (b,j)
       ENDPARDO  b, j
-# end
+#ibgn_debug
+     sum = 0.0
+     do b
+     do j
+        get Doldai_b(b,j)
+        tmp = Doldai_b(b,j) * Doldai_b(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+#end_debug
 
       EXECUTE  SERVER_BARRIER
       execute load_balance_off
@@ -1576,6 +1709,33 @@
 #        ENDDO i
 #        ENDDO a
         EXECUTE  SIP_BARRIER
+
+#debug_bgn
+           suma  = 0.0
+           sumaa = 0.0
+
+#           pardo a, i
+           pardo a, i1
+#               GET Doldai_a_x(a,i)
+#                sum = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+#                GET LT1A_x (a,i1)
+#                sum = T2L2_OO_A (i,i1)*T2L2_OO_A (i,i1)
+                sum = LT1A_x (a,i1) * LT1A_x (a,i1)
+                suma += sum
+           endpardo a, i1
+           execute sip_barrier
+           collective sumaa += suma
+           execute print_scalar sumaa
+
+#           endpardo  i, i1
+#           do a
+#           do i1
+#              sum = LT1A(a,i1)*LT1A(a,i1)
+#              suma += sum
+#           enddo i1
+#           enddo a
+#
+#debug_end
 #...................................
        PARDO  a, i
 #        DO a
@@ -1609,6 +1769,8 @@
            endpardo a, i
            execute sip_barrier
            collective sumaa += suma
+           execute print_scalar sumaa
+
 #           endpardo  i, i1
 #           do a
 #           do i1 
@@ -2359,6 +2521,34 @@
 #
       ENDPROC D1TRANS
 #     ----------------
+
+      PROC CCSD_AISO
+#     -------------
+        PARDO mu, nu
+
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) -= DpqB(mu,nu)
+
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+
+            Tpq(mu,nu)  = Dccsd(mu,nu)
+            Tpq(mu,nu) += Dscf(mu,nu)
+
+            execute compute_delta_int Tpq(mu,nu)
+
+        ENDPARDO mu, nu
+
+        IPOL =100.0
+        EXECUTE print_esr_tensors IPOL
+#
+      ENDPROC CCSD_AISO
+#     -------------------
 
       PROC CCSD_MASSCR
 #     ---------------
@@ -3439,22 +3629,22 @@
             CALL HFDENS
             CALL CREATE_XARRAYS
             call DAB
-            call DAB_x
-            call DAB_y
-            call DAB_z
+#            call DAB_x
+#            call DAB_y
+#            call DAB_z
 
             call DIJ
-            call DIJ_x
-            call DIJ_y
-            call DIJ_z
+#            call DIJ_x
+#            call DIJ_y
+#            call DIJ_z
 
             execute sip_barrier
             execute server_barrier
 
             call DAI
-            call DAI_x
-            call DAI_y
-            call DAI_z
+#            call DAI_x
+#            call DAI_y
+#            call DAI_z
 
             execute sip_barrier
             execute server_barrier
@@ -3549,15 +3739,19 @@
 # Mass correction term.
           
 #          property = 20.0
-          if property == 20.0
+#          if property == 20.0
 
-             CALL CCSD_MASSCR 
+#             CALL CCSD_MASSCR 
 
 # 1-el gauge correction
      
-          CALL CCSD_1E_GAUGECR
+#            CALL CCSD_1E_GAUGECR
 
-          endif 
+# Isotropic HPCC
+
+            CALL CCSD_AISO
+
+#          endif 
     
           if property == 10.0
 

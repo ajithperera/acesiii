@@ -1451,6 +1451,7 @@
             ENDDO a1
             deallocate L1aiai(*,i,a2,i1)
       ENDPARDO i, i1, a2
+
       PARDO i, j, b
             allocate L1aibj(*,i,b,j)
             DO a1
@@ -1524,6 +1525,7 @@
             ENDDO i
             PUT F1ae_b_x(b,b1) += Tae_b(b,b1)
       ENDPARDO b, b1
+
 #...............................
       PARDO j, j1, b2
             allocate L1bjbj(*,j1,b2,j)
@@ -1541,6 +1543,7 @@
             ENDDO b
             deallocate L1bjbj(*,j1,b2,j)
       ENDPARDO j, j1, b2
+
       PARDO i, j, a
             allocate L2aibj(a,i,*,j)
             DO b1
@@ -1557,6 +1560,7 @@
             ENDDO b
             deallocate L2aibj(a,i,*,j)
       ENDPARDO i, j, a
+
 #..............................
       PARDO b,b1
            get HBb_ae_x(b,b1)
@@ -12479,7 +12483,6 @@
       ENDIF
 #
       if property == 10.0
-          execute print_scalar two
           call get_HBx_Dipole
       endif
 

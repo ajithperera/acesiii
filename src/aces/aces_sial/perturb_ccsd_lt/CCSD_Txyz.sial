@@ -9824,7 +9824,7 @@
       execute blocks_to_list                t1b_y
       execute blocks_to_list                T2aa_y
       execute blocks_to_list                T2ab_y
-      execute blocks_to_list                T2bb_z
+      execute blocks_to_list                T2bb_y
 
       execute blocks_to_list                t1a_z
       execute blocks_to_list                t1b_z
