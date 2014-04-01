@@ -62,6 +62,9 @@
       distributed Dscf(mu,nu)
       
 
+      temp tbjbj(b1,j,b2,j1)
+      temp taiai(a,i,a2,i2)
+
       temp Txi (nu,i)
       temp Txj (nu,j)
       temp Jxi (mu,i)
@@ -659,8 +662,8 @@
                Taa(a1,a)       += TaaT(a1,a)
                Taa(a1,a)       *= 0.25
                T1aa(a,a1)       = Taa(a1,a)
-               PUT Dab_a_x(a,a1) += Taa(a1,a)
-               PUT Dab_a_x(a1,a) += T1aa(a,a1)
+               PUT Dab_a_x(a1,a) += Taa(a1,a)
+               PUT Dab_a_x(a,a1) += T1aa(a,a1)
                PUT T2L2_VV_A_x(a,a1) += T1aa(a,a1)
             ENDDO i1
             ENDDO a2
@@ -1542,26 +1545,8 @@
       ENDPROC DAI
 #________________________________________________________________________
       PROC DAI_x
-       DO a
-       DO i
-          tai1(a,i) = 0.0
-          GET Doldai_a_x(a,i)
-          Doldai_a_x(a,i) = tai1(a,i)
-       ENDDO i
-       ENDDO a
-
-       DO b
-       DO j
-          tbj1(b,j) = 0.0
-          GET Doldai_b_x(b,j)
-           Doldai_b_x(b,j) = tbj1(b,j)
-       ENDDO j
-       ENDDO b
-       execute sip_barrier
 
        PARDO  a, i
-#       DO a
-#       DO i
         tai1(a,i) = 0.0
          DO i1
             GET  T1L1_OO_A (i,i1)
@@ -1570,31 +1555,18 @@
             tii (i,i1) += T2L2_OO_A (i,i1)
             tai (a,i)   = LT1A_x (a,i1) * tii (i,i1)
             tai1(a,i) += tai(a,i)
-          ENDDO i1
-            PUT Doldai_a_x(a,i) += tai1 (a,i)
-       ENDPARDO a,i
-#        ENDDO i
-#        ENDDO a
-        EXECUTE  SIP_BARRIER
-#...................................
-       PARDO  a, i
-#        DO a
-#        DO i
-        tai1(a,i) = 0.0
-         DO i1
+
             GET  T1L1_OO_A_x (i,i1)
             GET  T2L2_OO_A_x (i,i1)
             tiiT (i,i1)  = T1L1_OO_A_x (i,i1)
             tiiT (i,i1) += T2L2_OO_A_x (i,i1)
             taiT (a,i)   = LT1A (a,i1) * tiiT (i,i1)
             tai1(a,i) += taiT(a,i)
-         ENDDO i1
-         PUT Doldai_a_x(a,i) += tai1 (a,i)
-#         ENDDO i
-#         ENDDO a
+          ENDDO i1
+            PUT Doldai_a_x(a,i) += tai1 (a,i)
        ENDPARDO a,i
        EXECUTE  SIP_BARRIER
-
+#...................................
 #debug_bgn
            suma  = 0.0
            sumaa = 0.0
@@ -1693,9 +1665,6 @@
 #    BETA                                                   BETA
 #.................................................................................
       PARDO  b, j
-
-#        DO b
-#        DO j
         tbj1(b,j) = 0.0
          DO j1
             GET  T1L1_OO_B (j,j1)
@@ -1705,19 +1674,7 @@
             tjj (j,j1) += T2L2_OO_B (j,j1)
             tbj (b,j)   = LT1B_x (b,j1) * tjj (j,j1)
             tbj1(b,j) += tbj(b,j)
-         ENDDO j1
-        PUT Doldai_b_x(b,j) += tbj1 (b,j)
-  
-      ENDPARDO b,j
-#       ENDDO j
-#       ENDDO b
-      EXECUTE  SIP_BARRIER
-      
-      PARDO  b, j
-#       DO b
-#       DO j
-        tbj1(b,j) = 0.0
-         DO j1
+
             GET  T1L1_OO_B_x (j,j1)
             GET  T2L2_OO_B_x (j,j1)
 
@@ -1725,15 +1682,12 @@
             tjjT (j,j1) += T2L2_OO_B_x (j,j1)
             tbjT (b,j)   = LT1B (b,j1) * tjjT (j,j1)
             tbj1(b,j) += tbjT(b,j)
-            
          ENDDO j1
-        PUT Doldai_b_x(b,j) += tbj1 (b,j)
-#        ENDDO j
-#        ENDDO b
-   
+         PUT Doldai_b_x(b,j) += tbj1 (b,j)
+  
       ENDPARDO b,j
       EXECUTE  SIP_BARRIER
-
+      
 #debug_bgn
            sumb = 0.0
            sumbb = 0.0
@@ -3438,6 +3392,120 @@
 
             CALL HFDENS
             CALL CREATE_XARRAYS
+#debug_bgn
+           suma  = 0.0
+           sumb  = 0.0
+           sumaa = 0.0
+           sumbb = 0.0
+           sum = 0.0
+
+           pardo a, i
+               GET  t1a_old_x(a,i)
+               GET  l1a_old_x(i,a)
+                sum = t1a_old_x(a,i) * t1a_old_x(a,i)
+                suma += sum
+                sum = l1a_old_x(i,a) * l1a_old_x(i,a)
+                suma += sum
+           endpardo a, i
+
+           sum = 0.0
+           pardo  b, j
+               GET t1b_old_x(b,j)
+               GET l1b_old_x(j,b)
+                sum =   t1b_old_x(b,j) *  t1b_old_x(b,j)
+                sumb += sum
+                sum =   l1b_old_x(j,b) * l1b_old_x(j,b)
+                sumb += sum
+           endpardo b, j
+
+           execute server_barrier
+           collective sumaa += suma
+           collective sumbb += sumb
+
+#           diff = sumaa
+#           diff -= sumbb
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+
+           suma  = 0.0
+           sumb  = 0.0
+           sumaa = 0.0
+           sumbb = 0.0
+           sum = 0.0
+
+           pardo a, i
+               GET  t1a_old_y(a,i)
+               GET  l1a_old_y(i,a)
+                sum = t1a_old_y(a,i) * t1a_old_y(a,i)
+                suma += sum
+                sum = l1a_old_y(i,a) * l1a_old_y(i,a)
+                suma += sum
+           endpardo a, i
+
+           sum = 0.0
+           pardo  b, j
+               GET t1b_old_y(b,j)
+               GET l1b_old_y(j,b)
+                sum =  t1b_old_y(b,j) * t1b_old_y(b,j)
+                sumb += sum
+                sum =   l1b_old_y(j,b) * l1b_old_y(j,b)
+                sumb += sum
+           endpardo b, j
+           execute server_barrier
+           collective sumaa += suma
+           collective sumbb += sumb
+
+#           diff = sumaa
+#           diff -= sumbb
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+
+           suma  = 0.0
+           sumb  = 0.0
+           sumaa = 0.0
+           sumbb = 0.0
+           sum = 0.0
+     
+           PARDO a, i, a2, i1
+               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
+               REQUEST L2old_aa(i,a,i1,a2) a2 # read from list
+               REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
+#               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+               taiai(a,i,a2,i1) = L2old_aa_x(i,a,i1,a2)
+               sum = T2old_aa(a,i,a2,i1) * taiai(a,i,a2,i1)
+               suma += sum
+#               sum = L2old_aa(i,a,i1,a2) * L2old_aa(i,a,i1,a2)
+#               suma += sum
+#               sum = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
+#               suma += sum
+#               sum =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
+#               suma += sum
+           ENDPARDO a, i, a2, i1
+           PARDO b1, j, b2, j1
+               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
+               REQUEST L2old_bb(j,b1,j1,b2)  j1 # Read from the list
+               REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
+#               REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
+               REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
+               tbjbj(b1,j,b2,j1) = L2old_bb_x(j,b1,j1,b2)
+
+               sum = T2old_bb(b1,j,b2,j1) * tbjbj(b1,j,b2,j1)
+               sumb += sum
+#               sum = L2old_bb(j,b1,j1,b2) * L2old_bb(j,b1,j1,b2)
+#               sumb += sum
+#               sum = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
+#               sumb += sum
+#               sum = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
+#               sumb += sum
+           ENDPARDO b1, j, b2, j1
+           execute server_barrier
+           collective sumaa += suma
+           collective sumbb += sumb
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+#debug_end
+
             call DAB
             call DAB_x
             call DAB_y
@@ -3516,23 +3584,25 @@
            sumbb = 0.0
            sum = 0.0
 
-           pardo a, i 
-               GET Doldai_a_x(a,i)
-                sum = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+           pardo mu, nu
+               GET DpqA_x(mu,nu)
+                sum = DpqA_x(mu,nu) * DpqA_x(mu,nu)
                 suma += sum
-           endpardo a, i
+           endpardo mu, nu
 
            sum = 0.0
-           pardo b, j 
-               GET Doldai_b_x(b,j)
-                sum = Doldai_b_x(b,j)*Doldai_b_x(b,j)
+           pardo mu, nu
+               GET DpqA_y(mu,nu)
+                sum =  DpqA_y(mu,nu) * DpqA_y(mu,nu)
                 sumb += sum
-           endpardo b, j
+           endpardo mu, nu
+           execute server_barrier
            collective sumaa += suma
            collective sumbb += sumb
-           diff = sumaa 
-           diff -= sumbb
-           execute print_scalar diff
+#           diff = sumaa 
+#           diff -= sumbb
+           execute print_scalar sumaa
+           execute print_scalar sumbb
 #debug_end
 #
 # compute the 2nd order terms that involve 1st order response.
