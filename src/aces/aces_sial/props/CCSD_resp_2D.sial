@@ -1,5 +1,5 @@
-#  Copyright (c) 2003-2010 University of Florida
-
+#  Copyright (c) 2003-2010 University of Florida 
+ 
                     SIAL TWO_GRAD_XYZ        
 
 # ------------------------------------------------------------------------------- 
@@ -2294,9 +2294,15 @@
             REQUEST Tau_aa_x(a,i,a1,i1)   i1
             REQUEST L2old_aa_x(i,a,i1,a1) i1          
 
+# Terms 1 and 2 in Eqn 33.
             Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
-            T1iiaa(i,i1,a,a1) = L2old_aa_x(i,a,i1,a1)  # PV neeed to rethink 
-            Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+# Move to DABIJ_X
+#            T1iiaa(i,i1,a,a1) = L2old_aa_x(i,a,i1,a1)  # PV neeed to rethink 
+#            Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+# 1/4 [Tau(ij,ab)]
+# Factor??
+
             Tiiaa(i,i1,a,a1) *= 0.125
             DO i2
                REQUEST Tau_aa(a,i2,a1,i)  i2
@@ -2309,9 +2315,11 @@
                GET Dii_x(i1,i2)
                GET Dii_x(i,i2)
 
+# Term 4:Eqn 33
 # -1/4P_(ij)[Tau(mj,ab)*t1(i,e)*l1_x(e,m)+Tau(mj,ab)*l1(e,m)*t1_x(e,i) +
-#         1/2Tau(mj,ab)*t2(in,ef)*l2_x(ef,mn) + 1/4Tau(mj,ab)*t2_x(mn,af)
+#         1/2Tau(mj,ab)*t2(in,ef)*l2_x(ef,mn) + 1/2Tau(mj,ab)*t2_x(mn,af)
 #           *l2(ef,mn)]
+# Factor??
 
                T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i)*Dii_x(i1,i2)
                T1iiaa(i,i1,a,a1)*= 0.125
@@ -2337,8 +2345,10 @@
                   REQUEST Tau_aa_x(a,i2,a1,i3)     i3
                   REQUEST Vijmn_aaaa_x(i,i1,i2,i3) i3
 
+#Term 3: Eqn 33.
 # 1/16[Tau(ij,ef)*L2(ef,mn)*Tau_x(mj,ab) + Tau_x(ij,ef)*l2(ef,mn)*Tau(mn,ab) +
-       Tau(ij,ef)*Tau(mn,ab)L2_x(ef,mn)] 
+#      Tau(ij,ef)*Tau(mn,ab)L2_x(ef,mn)] 
+# Here the factor is right!
 
                   T2iiaa(i2,i3,a,a1)    = Tau_aa(a,i2,a1,i3)
                   T2iiaa_x(i2,i3,a,a1)  = Tau_aa_x(a,i2,a1,i3)
@@ -2363,11 +2373,11 @@
                REQUEST Tau_aa_x(a2,i,a,i1)  i1
                GET Daa_x(a2,a)
                GET Daa_x(a2,a1)
-
-# -1/4[Tau(ij,eb)*l1(e,m)*t1_x(a,m) + Tau(ij,eb)*t1(m,a)*l1_x(e,m) +
-    1/2Tau_x(ij,eb)*t2_x(mn,af)*l2(ef,mn) + 1//2Tau(ij,eb)*t2(mn,af)*
-#      l2_x(ef,mn)]
-
+# Term:5 Eqn.33
+# -1/4_(ab)[Tau(ij,eb)*l1(e,m)*t1_x(a,m) + Tau(ij,eb)*t1(m,a)*l1_x(e,m) +
+#        1/2Tau_x(ij,eb)*t2(mn,af)*l2(ef,mn) + 1//2Tau(ij,eb)*t2(mn,af)*
+#        l2_x(ef,mn)]
+# Factor??
                T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a1,i1)*Daa_x(a2,a)
                T1iiaa(i,i1,a,a1)*= 0.125
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
@@ -2388,7 +2398,7 @@
             PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
       ENDPARDO a, a1, i, i1
 
-# Final term in Eq. 33 
+# Term  5 in Eqn 33.
 
       CREATE L1aa
       CREATE L1aa_x
@@ -2444,6 +2454,7 @@
 # 3/4P(ij)P(ab)[l1_x(e,m)*t1(i,a)*t1(j,e)*t(m,b) + t1_x(m,b)*l1(e,m)*
 #               t1(i,a)*t1(j,e) + t1_x(i,a)*t1(j,e)*l1(e,m)*t(m,b) +
 #               t1(i,a)*t1_x(j,e)*l1(e,m)*t1(m,b)]
+# Facto is right; no assumptions 
 
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai_x(a1,i1)
             Tiiaa(i,i1,a,a1)        *= 0.375
@@ -2482,6 +2493,11 @@
       DELETE L1ai_x
 
 # Sixth-term in Eq. 33 
+
+# 1/8P_(ij)P_(ab){(l1_x(e,m)*t1(m,a) + l1(e,m)*t1_x(m,a) + l2_x(ef,mn)t2(mi,ae)
+#                 + l2(ef,mn)t2_x(mi,ae)] piece
+# A question about factor 2
+
 
       PARDO i2, a2, a1, i1
             GET l1a_old(i2,a2)
@@ -2544,15 +2560,19 @@
           
                   REQUEST T2old_aa_x(a,i2,a2,i) i      #PV
                   GET t1a_old_x(a,i2)                  #PV
-         
+
+# 2.0 t1_x(m,a)t(e,i) + t1(m,a)t1_x(e,i) + t2(mi,ae)
+# multiplication of these two pieces should complete this contribution
 
                   Tiaia(i,a,i2,a2)         = t1a_old(a,i2)^tai(a2,i)
                   Tiaia(i,a,i2,a2)        *= 2.0
                   T1iaia(i,a,i2,a2)        = T2old_aa(a,i2,a2,i)
                   Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
                   Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai_x(i2,a2,a1,i1)
+# What is the origin of 0.0625??
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
+
                   PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
@@ -2574,6 +2594,7 @@
 
                   Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai(i2,a2,a1,i1)
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
+
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
                   PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
@@ -2636,6 +2657,7 @@
                Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
             ENDDO b1
             ENDDO j1
+# Why is only T2 here (Can't T1 T1 contribute??)
             DO i
             DO a
                REQUEST T2old_ab(a,i,b,j) a
@@ -2717,7 +2739,10 @@
             REQUEST L2old_ab_x(i,a,j,b) j
 
             Tijab(i,j,a,b)  = Tau_ab_x(a,i,b,j)
-            T1ijab(i,j,a,b) = L2old_ab_x(i,a,j,b)
+
+# Move to DABIJ_X
+#            T1ijab(i,j,a,b) = L2old_ab_x(i,a,j,b)
+
             Tijab(i,j,a,b) += T1ijab(i,j,a,b)
             Tijab(i,j,a,b) *= 0.125
             DO i1
@@ -3456,7 +3481,10 @@
             REQUEST L2old_bb_x(j,b,j1,b1) b   # assuming the density to be symmetric
 
             Tjjbb(j,j1,b,b1)  = Tau_bb_x(b,j,b1,j1)
-            T1jjbb(j,j1,b,b1) = L2old_bb_x(j,b,j1,b1)  # PV neeed to rethink
+
+# Move to ABIJ_X
+#            T1jjbb(j,j1,b,b1) = L2old_bb_x(j,b,j1,b1)  # PV neeed to rethink
+
             Tjjbb(j,j1,b,b1) += T1jjbb(j,j1,b,b1)
             Tjjbb(j,j1,b,b1) *= 0.125
             DO j2
@@ -3855,7 +3883,164 @@
 
       ENDPROC DIJABBB_X
 #     -----------------
-#____________________________________________________________________
+#-----------------------------------------------------
+      PROC DABIJ_X
+#     -------------
+           CALL DABIJAA_x
+           CALL DABIJBB_x
+           CALL DABIJAB_x
+
+      ENDPROC DABIJ_X
+#     ---------------
+#--------------------------------------------------------
+
+     PROC  DABIJAA_x
+#    ---------------
+
+     PARDO a, a1, i, i1
+
+# 1/4L2_x(ab.ij)
+
+           REQUEST L2old_aa(i,a,i1,a1)
+           T1iiaa(i,i1,a,a1) = L2old_aa_x(i,a,i1,a1)
+
+           T1iiaa(i,i1,a,a1) *= 0.25
+
+# For the time being, lets use Dijab_aa_x
+
+           PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
+     ENDPARDO a, a1, i, i1
+     execute server_barrier
+
+#  Back transformation of two indices
+#  Two particle contribution to G-tensor: O(pq,rs)*<|S_z(1)+S_z(2)pqsr|>
+#  DAAAA = 1/2 DAAAA + DAAAA
+
+      PARDO sigma, a, i, i1
+            Tiiax(i,i1,a,sigma) = 0.0
+            DO a1
+               REQUEST Dijab_aa_x(i,i1,a,a1) a1
+               T1iiaa(i1,i,a1,a) = Dijab_aa_x(i,i1,a,a1)
+
+               T1iiaa(i1,i,a1,a) *= 1.5
+
+               T1iiax(i,i1,a,sigma) = Dijab_aa_x(i,i1,a,a1)*ca(sigma,a1)
+               Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)
+            ENDDO a1
+            PREPARE Diiax_x(i,i1,a,sigma) = Tiiax(i,i1,a,sigma)
+      ENDPARDO sigma, a, i, i1
+      execute server_barrier
+
+      PARDO lambda, sigma, i, i1
+            Tiixx(i,i1,lambda,sigma) = 0.0
+            DO a
+               REQUEST Diiax_x(i,i1,a,sigma) a
+               T1iixx(i,i1,lambda,sigma) = Diiax_x(i,i1,a,sigma)*ca(lambda,a)
+               Tiixx(i,i1,lambda,sigma)  += T1iixx(i,i1,lambda,sigma)
+            ENDDO a
+            Tiixx(i,i1,lambda,sigma)         *= 4.0
+            PREPARE Diixx_aaaa_x(i,i1,lambda,sigma) += Tiixx(i,i1,lambda,sigma)
+      ENDPARDO lambda, sigma, i, i1
+
+     ENDPROC DABIJAA_x
+#    -----------------
+
+     PROC  DABIJBB_x
+#    ---------------
+     PARDO b, b1, j, j1
+           T1jjbb(j,j1,b,b1) = L2old_bb_x(j,b,j1,b1)
+
+           T1jjbb(j,j1,b,b1) *= 0.25
+
+# For the time being lets use Dijab_bb_x(j1,j,b1,b)
+
+           PREPAPRE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
+
+      ENDPARDO i, a, b1, j1
+      execute server_barrier
+
+#  Back transformation of two indices
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  DBBBB = -1/2 DBBBB - DBBBB
+#
+      PARDO b, sigma, j, j1
+            Tjjbx(j,j1,b,sigma) = 0.0
+            DO b1
+               REQUEST Dijab_bb_x(j,j1,b,b1) b1
+
+               T1jjbb(j1,j,b1,b) = Dijab_bb_x(j,j1,b,b1)
+
+               T1jjbb(j,j1,b,b1) *= -1.5
+
+               T1jjbx(j,j1,b,sigma) = T1jjbb(j,j1,b,b1)*cb(sigma,b1)
+               Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)
+            ENDDO b1
+            PREPARE Djjbx_x(j,j1,b,sigma) = Tjjbx(j,j1,b,sigma)
+      ENDPARDO b, sigma, j, j1
+      execute server_barrier
+
+      PARDO lambda, sigma, j, j1
+            Tjjxx(j,j1,lambda,sigma) = 0.0
+            DO b
+               REQUEST Djjbx_x(j,j1,b,sigma) b
+               T1jjxx(j,j1,lambda,sigma)  = Djjbx_x(j,j1,b,sigma)*cb(lambda,b)
+               Tjjxx(j,j1,lambda,sigma)  += T1jjxx(j,j1,lambda,sigma)
+            ENDDO b
+          Tjjxx(j,j1,lambda,sigma)         *= 4.0
+          PREPARE Djjxx_bbbb_x(j,j1,lambda,sigma) += Tjjxx(j,j1,lambda,sigma)
+      ENDPARDO lambda, sigma, j, j1
+
+     ENDPROC DABIJBB_x
+#    -----------------
+
+     PROC  DABIJAB_x
+#    ---------------
+      PARDO a, b, i, j
+            T1ijab(i,j,a,b) = L2old_ab_x(i,a,j,b)
+              
+            T1ijab(i,j,a,b) *= 0.25
+
+# For the time being lets use Dijab_bb_x(j1,j,b1,b)
+
+              PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
+      ENDPARDO a, a1, j1, j
+
+      execute server_barrier
+
+#  Back transformation of two indices
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  DAAAA = 1/2 DABAB - DABAB
+
+      PARDO a, sigma, i, j1
+            Tijax(i,j1,a,sigma) = 0.0
+            DO b1
+               REQUEST Dijab_ab_x(i,j1,a,b1) b1
+               Tijab(i,j1,a,b1) = Dijab_ab_x(i,j1,a,b1)
+
+               Tijab(i,j1,a,b1) *= -0.5
+
+               T1ijax(i,j1,a,sigma) = *cb(sigma,b1)
+               Tijax(i,j1,a,sigma) += T1ijax(i,j1,a,sigma)
+            ENDDO b1
+            PREPARE Dijax_x(i,j1,a,sigma) = Tijax(i,j1,a,sigma)
+      ENDPARDO a, sigma, i, j1
+      execute server_barrier
+
+      PARDO lambda, sigma, i, j1
+            Tijxx(i,j1,lambda,sigma) = 0.0
+            DO a
+               REQUEST Dijax_x(i,j1,a,sigma) a
+               T1ijxx(i,j1,lambda,sigma)  = Dijax_x(i,j1,a,sigma)*ca(lambda,a)
+               Tijxx(i,j1,lambda,sigma)  += T1ijxx(i,j1,lambda,sigma)
+            ENDDO a
+            Tijxx(i,j1,lambda,sigma)         *= 8.0
+            PREPARE Dijxx_abab_x(i,j1,lambda,sigma) += Tijxx(i,j1,lambda,sigma)
+      ENDPARDO lambda, sigma, i, j1
+
+     ENDPROC DABIJAB_x
+#    -----------------
+
+#--------------------------------------------------------
       PROC DIJAB
 # Create gamma arrays and one-particle intermediates 
 # Note that Dii and Daa are computed in DIJABAA and 
@@ -3877,7 +4062,7 @@
 #           DELETE Djj
 #           DELETE Dbb
       ENDPROC DIJAB
-#___________________________________________________________
+#------------------------------------------------------------
              
       PROC DIJAB_X
            CREATE Dii_x
@@ -4104,6 +4289,9 @@
                Tiiii(i,i1,i2,i3)          *= 0.25
                T1iiii(i2,i3,i,i1)          = Tiiii(i,i1,i2,i3)
 
+# Note the factor (1/4 as a result of 2*1/8); is this a problem 
+# for anti-symmetric perturbations?
+
                PREPARE Dijkl_aa_x(i,i1,i2,i3)   += Tiiii(i,i1,i2,i3)
                PREPARE Dijkl_aa_x(i2,i3,i,i1)   += T1iiii(i2,i3,i,i1)
 
@@ -4139,6 +4327,8 @@
 
                Tiiii(i,i1,i2,i3)   = Dijkl_aa_x(i,i1,i2,i3)
                T1iiii(i,i1,i2,i3)  = Dijkl_aa_x(i,i1,i3,i2)
+
+# What is this step?? 
                Tiiii(i,i1,i2,i3)  -= T1iiii(i,i1,i2,i3)
 
                Tiiii(i,i1,i2,i3) *= 1.5
@@ -4184,6 +4374,8 @@
                Tijij(i,j,i1,j1)          *= 0.5
                T1ijij(i1,j1,i,j)          = Tijij(i,j,i1,j1)
 
+# ABAB+BABA makes the factor 1/4 (1/2 = 1/4 +1/4)
+
                PREPARE Dijkl_ab_x(i,j,i1,j1)   += Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_x(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
 
@@ -4205,7 +4397,7 @@
       execute server_barrier
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
-#  DABAB = -1/2 DABAB - DABAB
+#  DABAB = 1/2 DABAB - DABAB
 #
 # Perform backtransformation to AO representation 
       PARDO mu, i1, j, j1
@@ -4214,7 +4406,7 @@
                REQUEST Dijkl_ab_x(i,j,i1,j1) j1
                Tijij(i,j,i1,j1) = Dijkl_ab_x(i,j,i1,j1)
                
-               Tijij(i,j,i1,j1) *= -1.5
+               Tijij(i,j,i1,j1) *= -0.5
 
                T1xjij(mu,j,i1,j1) = Dijkl_ab_x(i,j,i1,j1)*ca(mu,i)
                Txjij(mu,j,i1,j1) += T1xjij(mu,j,i1,j1)
@@ -4253,6 +4445,8 @@
                Tbbjj_x(b,b1,j2,j3) = Tau_bb_x(b,j2,b1,j3)
 #              Tjjjj(j,j1,j2,j3)           = L2old_bb(j,b,j1,b1)*Tau_bb(b,j2,b1,j3)
                Tjjjj(j,j1,j2,j3)           = Tjjbb(j,j1,b,b1)*Tbbjj_x(b,b1,j2,j3)
+# Correctly, the factor is 1/4 due to symmetrization.
+
                Tjjjj(j,j1,j2,j3)          *= 0.25
                T1jjjj(j2,j3,j,j1)          = Tjjjj(j,j1,j2,j3)
                PREPARE Dijkl_bb_x(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
@@ -4284,10 +4478,12 @@
             DO j
                REQUEST Dijkl_bb_x(j,j1,j2,j3) j3
                REQUEST Dijkl_bb_x(j,j1,j3,j2) j3
+
+# Needs and explanation  
                Tjjjj(j,j1,j2,j3)   = Dijkl_bb_x(j,j1,j2,j3)
                T1jjjj(j,j1,j2,j3)  = Dijkl_bb_x(j,j1,j3,j2)
                Tjjjj(j,j1,j2,j3)  -= T1jjjj(j,j1,j2,j3)
-  
+
                Tjjjj(j,j1,j2,j3) *= -1.5
 
                T1xjjj(mu,j1,j2,j3) = Tjjjj(j,j1,j2,j3)*cb(mu,j)
@@ -5117,7 +5313,7 @@
 #bgn_debug
       execute server_barrier
       esuma   = 0.0
-      ecorraa = 0.0
+      Ecorraa = 0.0
       PARDO mu, nu, lambda, sigma
             request Dxxxx_baab(mu,nu,lambda,sigma) sigma
             etemp = Dxxxx_baab(mu,nu,lambda,sigma)*Dxxxx_baab(mu,nu,lambda,sigma)
@@ -5140,7 +5336,7 @@
 
         CALL DIBJABAAB_X
         CALL DIBJAABBA_X
-      ENDPROC DIBJA_X
+      ENDPROC 
 #----------------------------------------------------
 
       PROC DIBJAAAAA_X
@@ -5154,7 +5350,8 @@
             GET t1a_old_x(a,i)
             GET l1a_old_x(i1,a1)
 
-# 1/4[l1_x(a,i)*t1(j,b) + l1(a,i)*t1_x(j,b)] 
+# 1/4P(ia,jb)[l1_x(a,i)*t1(j,b) + l1(a,i)*t1_x(j,b)] 
+# Overall Factor is 1/??
 
             T1iaia(i,a1,i1,a)  = t1a_old(a,i)^l1a_old_x(i1,a1)
             T1iaia(i,a1,i1,a) *= 0.125
@@ -5185,6 +5382,7 @@
                   GET t1a_old_x(a2,i)
 
 # 1/4[l2(ae,im)*t2_x(eb,mj) + l2_x(ae,im)*t(mj,eb)] from T2 and L2 AA
+# The overall factor here is 1/8??
 
                   Tiaai(i2,a2,a,i)           = T2old_aa_x(a,i,a2,i2)
                   T1iaai(i1,a1,a,i)          = L2old_aa(i1,a1,i2,a2)*Tiaai(i2,a2,a,i)
@@ -5210,8 +5408,9 @@
                   T2iaia(i1,a,i,a1)          = T1iaia(i,a1,i1,a)
                   TAiaia(i1,a,i,a1)         += T2iaia(i1,a,i,a1)
  
-# -1/4[l2(ae,im)*t_x(j,e)*t(m,b) - l2_x(ae,im)*t1(j,e)*t1(m,b) +
-       l2(ae,im)*t1_x(j,e)*t(m,b) _ l2(ae,im)*t1(j,e)*t1_x(m,b)]
+# -1/4[l2(ae,im)*t_x(j,e)*t(m,b) + l2_x(ae,im)*t1(j,e)*t1(m,b) +
+#      l2(ae,im)*t1_x(j,e)*t(m,b) + l2(ae,im)*t1(j,e)*t1_x(m,b)]
+# Overall factor used is 1/8??
 
                   tai(a,i2)                  = t1a_old_x(a,i2)
                   T3iaia(i2,a2,i,a)          = t1a_old(a2,i)^tai(a,i2)
@@ -5301,6 +5500,7 @@
                REQUEST Dibja_aaaa_x(i,a1,i1,a) a 
 
                Tiaia(i,a1,i1,a)  = Dibja_aaaa_x(i,a1,i1,a)
+
                Tiaia(i,a1,i1,a) *= 1.5
 
                T1iaix(i,a1,i1,sigma)  = Tiaia(i,a1,i1,a)*ca(sigma,a)
@@ -5667,7 +5867,7 @@
                REQUEST Dibja_bbbb_x(j,b1,j1,b) b 
                Tjbjb(j,b1,j1,b) = Dibja_bbbb_x(j,b1,j1,b)
    
-               Tjbjb(j,b1,j1,b) *= 1.5
+               Tjbjb(j,b1,j1,b) *= -1.5
 
                T1jbjx(j,b1,j1,sigma) = Tjbjb(j,b1,j1,b)*cb(sigma,b)
                Tjbjx(j,b1,j1,sigma) += T1jbjx(j,b1,j1,sigma) 
@@ -6069,8 +6269,9 @@
 
 # Backtransform to AO representation 
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
-# DABAB = -1/2 DBABA + DBABA
+# Two particle contribution to G-tensor: O(pq,rs)*<A(1)B|S_z(1)+S_z(2)pqsr|AB>
+# DABAB = -1/2 DABAB + DABAB
+# Here particle-1 is B and particle-2 is A
 
       PARDO sigma, a1, j, i1
             Tjaix(j,a1,i1,sigma) = 0.0
@@ -6079,7 +6280,7 @@
                
                Tjaib(j,a,i,b) = Dibja_baab_x(j,a1,i1,b)
                  
-               Tjaib(j,a,i,b) *= 
+               Tjaib(j,a,i,b) *= -0.5
                 
                T1jaix(j,a1,i1,sigma) = Tjaib(j,a,i,b)*cb(sigma,b)
                Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)
@@ -6304,8 +6505,12 @@
             DO a
                REQUEST Dibja_abba_x(i,b1,j1,a) a
                Tibja(i,b,j,a) = Dibja_abba_x(i,b1,j1,a)
+#                                                                  ++
+# Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+# DABAB = +1/2 DABAB - DABAB
+# Here particle-1 is A and particle-2 is B
  
-               Tibja(i,b,j,a) = 
+               Tibja(i,b,j,a) = 0.5
 
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b,j,a)*ca(sigma,a)
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)
@@ -6993,6 +7198,9 @@ end_debug
             GET Gae_a_x(a2,a1)
             GET t1a_old_x(a,i)
 
+# -1/4P_(ab)[t2(mn,ae)*l2(ce,mn)*t1_x(i,b)]
+# Question about the factor??
+
             T1aaai(a,a1,a2,i)  = Gae_a(a2,a)^t1a_old_x(a1,i)
             T1aaai(a,a1,a2,i) *= -0.125
             Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
@@ -7000,6 +7208,9 @@ end_debug
             T1aaai(a,a1,a2,i)  = Gae_a(a2,a1)^t1a_old_x(a,i)
             T1aaai(a,a1,a2,i) *= 0.125
             Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
+
+# 1/8P_(ab)[t2_x(mn,ae)*l2(ce_mn)*t1(i,b) + t2(mn,ae)*l2_x(ce,mn)*t1(i,b)]
+# Factor is right.
 
             T1aaai(a,a1,a2,i)  = Gae_a_x(a2,a)^t1a_old(a1,i)
             T1aaai(a,a1,a2,i) *= -0.125
@@ -7029,26 +7240,28 @@ end_debug
                GET t1a_old_x(a,i1)
 
 # 1/4[Tau_x(mi,ab)*l1(c,m) + Tau(mi,ab)*l1_x(c,m)]
+# A question about factor??
              
                T1aaai(a,a1,a2,i)  = Tau_aa_x(a,i1,a1,i)*l1a_old(i1,a2)
                T1aaai(a,a1,a2,i) *= 0.125                              
-               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
+               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)  {Stanton&Gauus has 1/4}
 
                T1aaai(a,a1,a2,i)  = Tau_aa(a,i1,a1,i)*l1a_old_x(i1,a2)
                T1aaai(a,a1,a2,i) *= 0.125                           
                Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
 
-# 1/4[l2_x(ab,mi)*t1(m,c) + l2(ab,mi)*t1(m,c)]
+# 1/8[l2_x(ab,mi)*t1(m,c) + l2(ab,mi)*t1(m,c)] {Stanton&Gauus has 1/4}
+# Moved DABCI
+#
+#               T1aaai(a,a1,a2,i)  = L2old_aa(i1,a,i,a1)*t1a_old_x(a2,i1)
+#               T1aaai(a,a1,a2,i) *= 0.125
+#               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
+#
+#               T1aaai(a,a1,a2,i)  = L2old_aa_x(i1,a,i,a1)*t1a_old(a2,i1)
+#               T1aaai(a,a1,a2,i) *= 0.125
+#               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
 
-               T1aaai(a,a1,a2,i)  = L2old_aa(i1,a,i,a1)*t1a_old_x(a2,i1)
-               T1aaai(a,a1,a2,i) *= 0.125
-               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
-
-               T1aaai(a,a1,a2,i)  = L2old_aa_x(i1,a,i,a1)*t1a_old(a2,i1)
-               T1aaai(a,a1,a2,i) *= 0.125
-               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
-
-#-1/4P_(ab)[t2(in,ae)*l2(ce,mn)*t1_x(m,b) + 1/2t2(mn,ae)*l2(ce,mn)*t1_x(i,b)]
+#-1/4P_(ab)[t2(in,ae)*l2(ce,mn)*t1_x(m,b)]
 
                T1aaai(a,a1,a2,i)  = Vibja_aaaa(i,a2,i1,a)*t1a_old_x(a1,i1)
                T1aaai(a,a1,a2,i) *= -0.25
@@ -7058,7 +7271,7 @@ end_debug
                T1aaai(a,a1,a2,i) *= 0.25
                Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)
 
-#-1/4P_(ab)[t2_x(in,ae)*l2(ce,mn)*t1(m,b) + 1/2t2(in,ae)*l2_x(ce,mn)*t1(m,b)]
+#-1/4P_(ab)[t2_x(in,ae)*l2(ce,mn)*t1(m,b) + t2(in,ae)*l2_x(ce,mn)*t1(m,b)]
 
                T1aaai(a,a1,a2,i)  = Vibja_aaaa_x(i,a2,i1,a)*t1a_old(a1,i1)
                T1aaai(a,a1,a2,i) *= -0.25
@@ -7076,7 +7289,8 @@ end_debug
                   REQUEST Tau_aa_x(a,i1,a1,i2) i2
 
 # -1/8[t1_x(i,e)*l2(ce,mn)*Tau(mn,ab) + t1(i,e)*l2_x(ce,mn)*Tau(mn,ab) +
-       Tau_x(mn,ab)*l2(ce,mn)*t(i,e)]
+#      Tau_x(mn,ab)*l2(ce,mn)*t(i,e)] [1/8 in Gauss & Stanton)
+# Question about the factor??
 
                   Taaii(a,a1,i1,i2)  = Tau_aa_x(a,i1,a1,i2)
                   Tiiai(i1,i2,a2,i)  = I3aa(i1,a2,i2,i)
@@ -7094,8 +7308,11 @@ end_debug
 # Multiply by 4 to match aces 
 #           Taaai(a,a1,a2,i) *= 4.0 
 #           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
-
-            DO mu
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DAAAA = 1/2 DAAAA + DAAAA
+#
+            dO mu
 
                Taaai(a,a1,a2,i) *= 1.5
 
@@ -7206,13 +7423,14 @@ end_debug
                T1bbbj(b,b1,b2,j) *= 0.125
                Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)
 
-               T1bbbj(b,b1,b2,j)  = L2old_bb(j1,b,j,b1)*t1b_old_x(b2,j1)
-               T1bbbj(b,b1,b2,j) *= 0.125
-               Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)
-
-               T1bbbj(b,b1,b2,j)  = L2old_bb_x(j1,b,j,b1)*t1b_old(b2,j1)
-               T1bbbj(b,b1,b2,j) *= 0.125
-               Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)
+# Moved to DABCI_X
+#               T1bbbj(b,b1,b2,j)  = L2old_bb(j1,b,j,b1)*t1b_old_x(b2,j1)
+#               T1bbbj(b,b1,b2,j) *= 0.125
+#               Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)
+#
+#               T1bbbj(b,b1,b2,j)  = L2old_bb_x(j1,b,j,b1)*t1b_old(b2,j1)
+#               T1bbbj(b,b1,b2,j) *= 0.125
+#               Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)
 
                T1bbbj(b,b1,b2,j)  = Vibja_bbbb(j,b2,j1,b)*t1b_old_x(b1,j1)
                T1bbbj(b,b1,b2,j) *= -0.25
@@ -7254,7 +7472,10 @@ end_debug
 # Multiply by 4 to match aces 
 #           Tbbbj(b,b1,b2,j) *= 4.0 
 #           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DBBBB = -1/2 DBBBB - DBBBB
+#
             DO mu
 
                Tbbbj(b,b1,b2,j) += -1.5
@@ -7347,13 +7568,14 @@ end_debug
                T1babi(b1,a,b,i) *= 0.125
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 
-               T1babi(b1,a,b,i)  = L2old_ab(i,a,j,b1)*t1b_old_x(b,j)
-               T1babi(b1,a,b,i) *= 0.125
-               Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
-
-               T1babi(b1,a,b,i)  = L2old_ab_x(i,a,j,b1)*t1b_old(b,j)
-               T1babi(b1,a,b,i) *= 0.125
-               Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
+# Moved to DABCI_X
+#               T1babi(b1,a,b,i)  = L2old_ab(i,a,j,b1)*t1b_old_x(b,j)
+#               T1babi(b1,a,b,i) *= 0.125
+#               Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
+#
+#               T1babi(b1,a,b,i)  = L2old_ab_x(i,a,j,b1)*t1b_old(b,j)
+#               T1babi(b1,a,b,i) *= 0.125
+#               Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 
                T1babi(b1,a,b,i)  = Vibja_abba(i,b,j,a)*t1b_old_x(b1,j)
                T1babi(b1,a,b,i) *= 0.25
@@ -7398,9 +7620,13 @@ end_debug
                   Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
                ENDDO j
             ENDDO i1
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DBABA = 1/2 DBABA - DBABA
+#
             DO mu
   
-               Tbabi(b1,a,b,i) *= 0.5
+               Tbabi(b1,a,b,i) *=-0.5
 
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1)
                PREPARE Dxabi_x(mu,a,b,i) += Txabi(mu,a,b,i)
@@ -7506,13 +7732,14 @@ end_debug
                T1abaj(a,b,a1,j) *= 0.125
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
-               T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
-               T1abaj(a,b,a1,j) *= 0.125
-               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
-
-               T1abaj(a,b,a1,j)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
-               T1abaj(a,b,a1,j) *= 0.125
-               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
+# Moved to DABCI_X
+#               T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
+#               T1abaj(a,b,a1,j) *= 0.125
+#               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
+#
+#               T1abaj(a,b,a1,j)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
+#               T1abaj(a,b,a1,j) *= 0.125
+#               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old_x(a,i)
                T1abaj(a,b,a1,j) *= 0.25
@@ -7559,10 +7786,13 @@ end_debug
                ENDDO i
             ENDDO j1
 # Multiply by 4 to match aces 
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DABAB = 1/2 DABAB - DABAB
+#
             DO mu
 
-               Tabaj(a,b,a1,j) *= 0.5
+               Tabaj(a,b,a1,j) *= -0.5
 
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a)
                PREPARE Dxbaj_x(mu,b,a1,j) += Txbaj(mu,b,a1,j)
@@ -7625,14 +7855,18 @@ end_debug
 
      ENDPROC DCIABABAB_x
 #    -------------------
-#----------------------------------------------------------
+#------------------------------------------------------------
       PROC DABCI_X
+#     ------------
+
         CALL DABCIAAAA_x
         CALL DABCIBBBB_x
         CALL DABCIABAB_x
         CALL DABCIBABA_x
-      ENDPROC DABCI_X
 
+      ENDPROC DABCI_X
+#     ----------------
+#--------------------------------------------------------------
       PROC DABCIAAAA_x
 #     ----------------
       PARDO a, a1, a2, i
@@ -7658,7 +7892,10 @@ end_debug
 # Multiply by 4 to match aces
 #           Taaai(a,a1,a2,i) *= 4.0
 #           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i)
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DAAAA = 1/2 DAAAA + DAAAA
+#
             DO mu
 
                Taaai(a,a1,a2,i) *= 1.5
@@ -7742,7 +7979,10 @@ end_debug
 # Multiply by 4 to match aces
 #           Tbbbj(b,b1,b2,j) *= 4.0
 #           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j)
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+S_z(2)pqsr|BB>
+#  DBBBB = -1/2 DBBBB - DBBBB
+#
             DO mu
 
                Tbbbj(b,b1,b2,j) += -1.5
@@ -7816,10 +8056,13 @@ end_debug
 
                   ENDDO i
 # Multiply by 4 to match aces
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  DABAB = 1/2 DABAB - DABAB
+#
             DO mu
 
-               Tabaj(a,b,a1,j) *= 0.5
+               Tabaj(a,b,a1,j) *= -0.5
 
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a)
                PREPARE Dxbaj_x(mu,b,a1,j) += Txbaj(mu,b,a1,j)
@@ -7902,7 +8145,10 @@ end_debug
                T1babi(b1,a,b,i) *= 0.125
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
             ENDDO j
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+#  DBABA = -1/2 DBABA + DBABA
+#
             DO mu
 
                Tbabi(b1,a,b,i) *= 0.5
@@ -8331,7 +8577,8 @@ end_debug
             GET Gmi_a_x(i1,i2)
             GET t1a_old_x(a,i)
 
-# -1/8P(ij)G(i,k)t_x(j,a)
+# -1/8[P(ij)G(i,k)t_x(j,a) + P(ij)G_x(i,k)t(j,a)]
+
 
             T1iiia(i,i1,i2,a)  = Gmi_a(i,i2)^t1a_old_x(a,i1)
             T1iiia(i,i1,i2,a) *= -0.125 
@@ -8368,7 +8615,7 @@ end_debug
                GET t1a_old_x(a1,i)
                GET t1a_old_x(a1,i2)
 
-#-1/4 [Tau(ij,ea)l1_x(e,k) - Tau_x(ij,ea)l1(e,k)]
+#-1/8 [Tau(ij,ea)l1_x(e,k) - Tau_x(ij,ea)l1(e,k)] (Gauss&Stanton 1/4??)
 
                T1iiia(i,i1,i2,a) = Tau_aa(a1,i,a,i1)*l1a_old_x(i2,a1)
                T1iiia(i,i1,i2,a)*= -0.125
@@ -8378,15 +8625,15 @@ end_debug
                T1iiia(i,i1,i2,a)*= -0.125
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
 
-#-/4 [l2(ae,ij)*t1i_x(k,e) + L2_x(ae,ij)*t(k,e)]
-
-               T1iiia(i,i1,i2,a) = L2old_aa(i,a1,i1,a)*t1a_old_x(a1,i2)
-               T1iiia(i,i1,i2,a)*= -0.125
-               Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
-
-               T1iiia(i,i1,i2,a) = L2old_aa_x(i,a1,i1,a)*t1a_old(a1,i2)
-               T1iiia(i,i1,i2,a)*= -0.125
-               Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
+#-/4 [l2(ae,ij)*t1i_x(k,e) + L2_x(ae,ij)*t(k,e)] (moved to DAKIJ_X)
+#
+#               T1iiia(i,i1,i2,a) = L2old_aa(i,a1,i1,a)*t1a_old_x(a1,i2)
+#               T1iiia(i,i1,i2,a)*= -0.125
+#               Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
+#
+#               T1iiia(i,i1,i2,a) = L2old_aa_x(i,a1,i1,a)*t1a_old(a1,i2)
+#               T1iiia(i,i1,i2,a)*= -0.125
+#               Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
 
 # 1/4 P_(ij)[t1_x(j,f)*T2(im,ae)*L2(ef,mk)]
 
@@ -8398,7 +8645,7 @@ end_debug
                T1iiia(i,i1,i2,a)*= -0.25
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
 
-#-1/8 P_(ij)[t1(j,a)*T2_x(im,ef)*L2(ef,km)]
+#-1/4 P_(ij)[t1(j,a)*T2_x(im,ef)*L2(ef,km)]
 
                T1iiia(i,i1,i2,a) = Vibja_aaaa_x(i,a1,i2,a)*t1a_old(a1,i1)
                T1iiia(i,i1,i2,a)*= 0.25
@@ -8427,9 +8674,14 @@ end_debug
             ENDDO i3
 
 # Multiply by 4 to match aces 
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DAAAA = 1/2 DAAAA + DAAAA
+#
             DO sigma
+
                Tiiia(i,i1,i2,a)  *= 1.5
+
                Tiiix(i,i1,i2,sigma)      = Tiiia(i,i1,i2,a)*ca(sigma,a)
                PREPARE Diiix_x(i,i1,i2,sigma) += Tiiix(i,i1,i2,sigma)
             ENDDO sigma
@@ -8510,13 +8762,14 @@ end_debug
                T1jjjb(j,j1,j2,b)*= -0.125
                Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b)
 
-               T1jjjb(j,j1,j2,b) = L2old_bb(j,b1,j1,b)*t1b_old_x(b1,j2)
-               T1jjjb(j,j1,j2,b)*= -0.125
-               Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b)
-
-               T1jjjb(j,j1,j2,b) = L2old_bb_x(j,b1,j1,b)*t1b_old(b1,j2)
-               T1jjjb(j,j1,j2,b)*= -0.125
-               Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b)
+# Moved to DAKIJ_X
+#               T1jjjb(j,j1,j2,b) = L2old_bb(j,b1,j1,b)*t1b_old_x(b1,j2)
+#               T1jjjb(j,j1,j2,b)*= -0.125
+#               Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b)
+#
+#               T1jjjb(j,j1,j2,b) = L2old_bb_x(j,b1,j1,b)*t1b_old(b1,j2)
+#               T1jjjb(j,j1,j2,b)*= -0.125
+#               Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b)
 
                T1jjjb(j,j1,j2,b) = Vibja_bbbb(j,b1,j2,b)*t1b_old_x(b1,j1)
                T1jjjb(j,j1,j2,b)*= 0.25
@@ -8553,7 +8806,10 @@ end_debug
 # Multiply by 4 to match aces 
 #           Tjjjb(j,j1,j2,b) *= 4.0 
 #           PUT Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+S_z(2)pqsr|BB>
+#  -1/2 BBBBB - BBBB
+#
             DO sigma
 
                Tjjjb(j,j1,j2,b) * = -1.5
@@ -8621,13 +8877,14 @@ end_debug
                T1ijib(i,j,i1,b)*= -0.125
                Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
 
-               T1ijib(i,j,i1,b) = L2old_ab(i,a,j,b)*t1a_old_x(a,i1)
-               T1ijib(i,j,i1,b)*= -0.125
-               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
-
-               T1ijib(i,j,i1,b) = L2old_ab_x(i,a,j,b)*t1a_old(a,i1)
-               T1ijib(i,j,i1,b)*= -0.125
-               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
+# Moved to DAKIJ_X
+#               T1ijib(i,j,i1,b) = L2old_ab(i,a,j,b)*t1a_old_x(a,i1)
+#               T1ijib(i,j,i1,b)*= -0.125
+#               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
+#
+#               T1ijib(i,j,i1,b) = L2old_ab_x(i,a,j,b)*t1a_old(a,i1)
+#               T1ijib(i,j,i1,b)*= -0.125
+#               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
 
                T1ijib(i,j,i1,b) = Vibja_baab(j,a,i1,b)*t1a_old_x(a,i)
                T1ijib(i,j,i1,b)*= -0.25
@@ -8671,7 +8928,10 @@ end_debug
 # Multiply by 4 to match aces 
 #           Tijib(i,j,i1,b) *= 4.0 
 #           PUT Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  DABAB = 1/2 DABAB - DABAB
+#
             DO sigma
                   
                Tijib(i,j,i1,b) *= -0.5
@@ -8749,13 +9009,14 @@ end_debug
                T1jija(j,i,j1,a)*= -0.125
                Tjija(j,i,j1,a) += T1jija(j,i,j1,a)
 
-               T1jija(j,i,j1,a) = Tau_ab_x(a,i,b,j)*l1b_old(j1,b)
-               T1jija(j,i,j1,a)*= -0.125
-               Tjija(j,i,j1,a) += T1jija(j,i,j1,a)
-
-               T1jija(j,i,j1,a) = L2old_ab(i,a,j,b)*t1b_old_x(b,j1)
-               T1jija(j,i,j1,a)*= -0.125
-               Tjija(j,i,j1,a) += T1jija(j,i,j1,a)
+# Move to DAKIJ_X
+#               T1jija(j,i,j1,a) = Tau_ab_x(a,i,b,j)*l1b_old(j1,b)
+#               T1jija(j,i,j1,a)*= -0.125
+#               Tjija(j,i,j1,a) += T1jija(j,i,j1,a)
+#
+#               T1jija(j,i,j1,a) = L2old_ab(i,a,j,b)*t1b_old_x(b,j1)
+#               T1jija(j,i,j1,a)*= -0.125
+#               Tjija(j,i,j1,a) += T1jija(j,i,j1,a)
 
                T1jija(j,i,j1,a) = L2old_ab_x(i,a,j,b)*t1b_old(b,j1)
                T1jija(j,i,j1,a)*= -0.125
@@ -8801,6 +9062,9 @@ end_debug
 # Multiply by 4 to match aces 
 #           Tjija(j,i,j1,a) *= 4.0 
 #           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+#  DABAB = -1/2 DABAB + DABAB
 
             DO sigma
                
@@ -8873,9 +9137,14 @@ end_debug
                T1iiia(i,i1,i2,a)*= -0.125
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
             ENDDO a1
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DAAAA = 1/2 DAAAA + DAAAA
+#
             DO sigma
+
                Tiiia(i,i1,i2,a)  *= 1.5
+
                Tiiix(i,i1,i2,sigma)      = Tiiia(i,i1,i2,a)*ca(sigma,a)
                PREPARE Diiix_x(i,i1,i2,sigma) += Tiiix(i,i1,i2,sigma)
             ENDDO sigma
@@ -8920,7 +9189,10 @@ end_debug
 # Multiply by 4 to match aces
 #           Tjjjb(j,j1,j2,b) *= 4.0
 #           PUT Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b)
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  DBBBB = 1/2 DBBBB + DBBBB
+#
             DO sigma
 
                Tjjjb(j,j1,j2,b) * = -1.5
@@ -8967,7 +9239,10 @@ end_debug
 # Multiply by 4 to match aces
 #           Tijib(i,j,i1,b) *= 4.0
 #           PUT Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b)
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  DABAB = 1/2 DABAB - DABAB
+#
             DO sigma
 
                Tijib(i,j,i1,b) *= -0.5
@@ -9014,7 +9289,10 @@ end_debug
 # Multiply by 4 to match aces
 #           Tjija(j,i,j1,a) *= 4.0
 #           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a)
-
+#                                                                   ++
+#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+#  DBABA = -1/2 DBABA + DBABA
+#
             DO sigma
 
                Tjija(j,i,j1,a)  *= 0.5
@@ -9602,11 +9880,6 @@ end_debug
      PARDO b, b1, j, j1
            REQUEST L2old_bb_x(j,b,j1,b1) b
 
-#           REQUEST L2old_bb_x(j,b1,j1,b) b
-#           Tjbjb(j,b,j1,b1)    = L2old_bb_x(j,b1,j1,b)            
-#           Tjbjb(j,b,j1,b1)   -= L2old_bb_x(j,b,j1,b1)     
-#           Tjbjb(j,b,j1,b1)   *= -1.0
-
            DO lambda
               Qbb(j,lambda,j1,b1) = L2old_bb_x(j,b,j1,b1)*cb(lambda,b)
               DO sigma
@@ -9642,6 +9915,7 @@ end_debug
      ENDPARDO a, b, i, j
      execute server_barrier
      ENDPROC DPQRSTODXXXX_X
+#    ----------------------
 #--------------------------------------------------------------------
       PROC HFDENS  
       PARDO mu, nu, i  
@@ -9657,11 +9931,12 @@ end_debug
       ENDPROC HFDENS  
 #______________________________________________________________________________
       PROC PDCONT
+
        esuma   = 0.0
        ecorraa = 0.0
-       esumb    = 0.0
+       esumb   = 0.0
        ecorrbb = 0.0
-#.......
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
              DO i
@@ -9677,6 +9952,7 @@ end_debug
             PREPARE Dxxxx_aaaa(mu,nu,lambda,sigma) += Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
              DO j
@@ -9692,6 +9968,7 @@ end_debug
             PREPARE Dxxxx_bbbb(mu,nu,lambda,sigma) +=Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
             DO i
@@ -9707,7 +9984,7 @@ end_debug
             PREPARE Dxxxx_abab(mu,nu,lambda,sigma) +=Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
-#......
+#.....
       PARDO mu, nu, lambda, sigma
             PXXXX_aa(mu,nu,lambda,sigma) = 0.0
             PXXXX_bb(mu,nu,lambda,sigma) = 0.0
@@ -9757,14 +10034,17 @@ end_debug
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
       ENDPROC PDCONT 
-#_______________________________________________________________
+#     --------------
+#--------------------------------------------------------------------
       PROC PDCONT_x
-       esuma   = 0.0
-       ecorraa = 0.0
-       esumb    = 0.0
-       ecorrbb = 0.0
+#     --------------
+      esuma   = 0.0
+      ecorraa = 0.0
+      esumb   = 0.0
+      ecorrbb = 0.0
 
-#.......
+# fully back-transform the AAAA block
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
              DO i
@@ -9780,6 +10060,9 @@ end_debug
             PREPARE Dxxxx_aaaa_x(mu,nu,lambda,sigma) += Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
+
+# fully back-transform the BBBB block
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
              DO j
@@ -9795,6 +10078,9 @@ end_debug
             PREPARE Dxxxx_bbbb_x(mu,nu,lambda,sigma) +=Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
       execute server_barrier
+
+# fully back-transform the BBBB block
+
       PARDO mu, nu, lambda, sigma
             TXXXX_aa(mu,nu,lambda,sigma) = 0.0
             DO i
@@ -9809,15 +10095,17 @@ end_debug
              ENDDO i
             PREPARE Dxxxx_abab_x(mu,nu,lambda,sigma) +=Txxxx_aa(mu,nu,lambda,sigma)
       ENDPARDO mu, nu, lambda, sigma
-       execute server_barrier 
-                        
-
+      execute server_barrier 
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
       PARDO mu, nu, lambda, sigma
             PXXXX_aa_x(mu,nu,lambda,sigma) = 0.0
             PXXXX_bb_x(mu,nu,lambda,sigma) = 0.0
             PXXXX_ab_x(mu,nu,lambda,sigma) = 0.0
-#pv            PXXXX_ba_x(mu,nu,lambda,sigma) = 0.0
-#...........AAAA spin case...................................................
+
+# AAAA spin case
+
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
@@ -9829,8 +10117,8 @@ end_debug
                PXXXX_aa_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
             ENDDO i
-#..........
-           DO i
+
+          DO i
             DO i1
                REQUEST TAO_AA_x(mu,i,nu,i1)        i
                REQUEST LAO_AA(i,lambda,i1,sigma) i
@@ -9841,8 +10129,9 @@ end_debug
                PXXXX_aa_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
             ENDDO i
-#....................................DONE AAAA................Part    
-#...........BBBB spin case....................................... 
+
+# BBBB spin case
+
             DO j
             DO j1
                REQUEST TAO_bb(mu,j,nu,j1)        j1 
@@ -9853,7 +10142,6 @@ end_debug
                PXXXX_bb_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-#..........
            DO j
             DO j1
                REQUEST TAO_bb_x(mu,j,nu,j1)        j1
@@ -9864,8 +10152,9 @@ end_debug
                PXXXX_bb_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-#................................DONE BBBB.................Part
-#           ABAB spin case 
+
+# ABAB spin case 
+
             DO i
             DO j
                REQUEST TAO_ab(mu,i,nu,j)        j 
@@ -9877,7 +10166,7 @@ end_debug
                PXXXX_ab_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
             ENDDO i
-#.........
+
             DO i
             DO j
                REQUEST TAO_ab_x(mu,i,nu,j)        j
@@ -9889,7 +10178,11 @@ end_debug
                PXXXX_ab_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
             ENDDO i
-
+#
+# The 1/4 factor is D(ab,cd) = D(cd,ab) (symmetrization is not done though)
+#
+# <ab | Sz(1) + 2 S_z(2)| cd > gives additional 3/2, -3/2 and -1/2.
+#
             Pxxxx_aa_x(mu,nu,lambda,sigma) *= 0.25         
             Pxxxx_bb_x(mu,nu,lambda,sigma) *= 0.25
             Pxxxx_ab_x(mu,nu,lambda,sigma) *= 0.25 
@@ -9899,7 +10192,8 @@ end_debug
             PREPARE Dxxxx_abab_x(mu,nu,lambda,sigma) = Pxxxx_ab_x(mu,nu,lambda,sigma)
        ENDPARDO mu, nu, lambda, sigma
       ENDPROC PDCONT_x
-#____________________________________________________________________
+#     ----------------
+#-----------------------------------------------------------------------
       PROC S2DIJ 
            esum = 0.0 
            DO i 
@@ -10530,15 +10824,28 @@ end_debug
 
              execute server_barrier
 
+# Construct Tau(mn,munu), Tau_x(mn,munu), L2(munu,ij) and L2_x(munu,ij)
+# for D(ab,cd). No external factors. 
+
              CALL DPQRSTODXXXX_X
-             CALL DIJKL_X   #Eqn. 31; 1st term;checked; factor?
-             CALL DIJKA_X   #Eqn. 34; 2nd term;checked; factor?
-             CALL DAKIJ_x   #Eqn. 34; 3rd term; need to separate.
-             CALL DIJAB_X   #Eqn. 33; 4th term
-             CALL DIBJA_X   #Eqn. 32; 5th term;checked; factor
-             CALL DABIJ_X             6th term
-             CALL DABCI_X   #Eqn. 35; 7th term;checked; need separate 
-             CALL DCIAB_X             8th term
+#
+             CALL DIJKL_X   1st term;checked
+#(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
+             CALL DIJKA_X   2nd term;checked; factor?
+#factors are right; no assumption are made;Vibja/vmnij isused.
+             CALL DAKIJ_x   3rd term; 
+#factors are right;no assumption are made;
+             CALL DIJAB_X   4th term
+#factors??Vibja_aaaa_x is made. 
+             CALL DIBJA_X   5th term;checked; factor
+#
+             CALL DABIJ_X   6th term
+#text book factors are used 
+
+             CALL DABCI_X   7th term
+             CALL DCIAB_X   8th term
+
+#checked; there are questions about factor; No assumptions
 
              execute server_barrier
 
@@ -10658,4 +10965,4 @@ end_debug
 
                     ENDSIAL TWO_GRAD_XYZ           
 #
-# ---------------------------------------------------------------------- 
+# ---------------------------------------------------------------------

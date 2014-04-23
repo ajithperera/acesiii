@@ -9581,8 +9581,6 @@
  
          CALL TAU_X  
  
-         CALL TAU_X  
-
          CALL T2NEW_ZERO
 
          CREATE Fae_a_X 
