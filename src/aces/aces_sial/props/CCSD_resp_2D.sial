@@ -112,8 +112,23 @@
       served Dxbbj(mu,b,b1,j) 
       served Dxxbj(mu,nu,b1,j) 
       served Dxxxj(mu,nu,sigma,j) 
-
 #PV 
+      served VSpipi(p1,i,p,i1)
+      served Viaai(i,a1,a,i1)
+      served Vaaii(a,a1,i,i1)
+      served VSaaai(a2,a,a1,i)
+      served VSqjqj(q1,j,q,j1)
+      served Vjbbj(j,b1,b,j1)
+      served Vbbjj(b,b1,j,j1)
+      served VSbbbj(b2,b,b1,j)
+      served Vjbii(j,b,i,i1)
+      served Vbbai(b,b1,a,i)
+      served Vbbii(b,b1,i,i1)
+      served Vpiqj(p,i,q,j)
+      served Vaajj(a,a1,j,j1)
+      served Viabj(i,a,b,j)
+      served Vaabj(a,a1,b,j)
+
       served Vibja_aaaa_x(i,a,i1,a1)
       served Dibja_aaaa_x(i,a,i1,a1)
       served Vibja_abab_x(i,b,i1,b1)
@@ -2742,8 +2757,8 @@
 
 # Move to DABIJ_X
 #            T1ijab(i,j,a,b) = L2old_ab_x(i,a,j,b)
+#            Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
-            Tijab(i,j,a,b) += T1ijab(i,j,a,b)
             Tijab(i,j,a,b) *= 0.125
             DO i1
                REQUEST Tau_ab(a,i1,b,j) i1
@@ -3484,8 +3499,8 @@
 
 # Move to ABIJ_X
 #            T1jjbb(j,j1,b,b1) = L2old_bb_x(j,b,j1,b1)  # PV neeed to rethink
+#            Tjjbb(j,j1,b,b1) += T1jjbb(j,j1,b,b1)
 
-            Tjjbb(j,j1,b,b1) += T1jjbb(j,j1,b,b1)
             Tjjbb(j,j1,b,b1) *= 0.125
             DO j2
                REQUEST Tau_bb(b,j2,b1,j1) j2
@@ -3995,7 +4010,7 @@
 
 # For the time being lets use Dijab_bb_x(j1,j,b1,b)
 
-              PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
+              PREPARE Dijab_ab_x(i,j,a,b) += T1ijab(i,j,a,b)
       ENDPARDO a, b, i, j
 
       execute server_barrier
@@ -10755,6 +10770,14 @@
 #___________________________________________________
 
       PROC DMAIN
+
+         CREATE T1A_OLD_X
+         CREATE L1A_OLD_X
+         CREATE T1B_OLD_X
+         CREATE L1B_OLD_X
+
+         EXECUTE SIP_BARRIER
+
          CALL TAU 
          CALL GAE 
          CALL GMI 
@@ -10833,14 +10856,18 @@
 #
              CALL DIJKL_X   #1st term;checked
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
+
+             CALL DIBJA_X   #5th term
+#factors? Vbja is built
+
              CALL DIJKA_X   #2nd term;checked; factor?
 #factors are right; no assumption are made;Vibja/vmnij isused.
+
              CALL DAKIJ_X   #3rd term; 
 #factors are right;no assumption are made;
+
              CALL DIJAB_X   #4th term
-#factors??Vibja_aa
-             CALL DIBJA_X   #5th term;checked; factor
-#
+
              CALL DABIJ_X   #6th term
 #text book factors are used 
 
@@ -10905,6 +10932,23 @@
       execute sip_barrier 
       execute server_barrier
 
+      execute server_barrier
+      execute list_to_blocks                VSpipi
+      execute list_to_blocks                Vaaii
+      execute list_to_blocks                Viaai
+      execute list_to_blocks                VSaaai
+      execute list_to_blocks                VSqjqj
+      execute list_to_blocks                Vbbjj
+      execute list_to_blocks                Vjbbj
+      execute list_to_blocks                VSbbbj
+      execute list_to_blocks                Vbbii
+      execute list_to_blocks                Vjbii
+      execute list_to_blocks                Vbbai
+      execute list_to_blocks                Vpiqj
+      execute list_to_blocks                Vaajj
+      execute list_to_blocks                Viabj
+      execute list_to_blocks                Vaabj
+
       execute list_to_blocks t1a_old
       execute list_to_blocks t1b_old
       execute list_to_blocks T2old_aa
@@ -10916,7 +10960,6 @@
       execute list_to_blocks L2old_aa
       execute list_to_blocks L2old_ab
       execute list_to_blocks L2old_bb
-
 
       execute list_to_blocks  t1a_x
       execute list_to_blocks  t1b_x
