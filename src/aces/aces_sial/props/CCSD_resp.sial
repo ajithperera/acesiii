@@ -3455,7 +3455,36 @@
            collective sumaa += suma
            collective sumbb += sumb
 
-#           diff = sumaa
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+
+           suma  = 0.0
+           sumb  = 0.0
+           sumaa = 0.0
+           sumbb = 0.0
+           sum = 0.0
+
+           pardo a, i
+               GET  t1a_old_z(a,i)
+               GET  l1a_old_z(i,a)
+                sum = t1a_old_z(a,i) * t1a_old_z(a,i)
+                suma += sum
+                sum = l1a_old_z(i,a) * l1a_old_z(i,a)
+                suma += sum
+           endpardo a, i
+
+           sum = 0.0
+           pardo  b, j
+               GET t1b_old_z(b,j)
+               GET l1b_old_z(j,b)
+                sum =  t1b_old_z(b,j) * t1b_old_z(b,j)
+                sumb += sum
+                sum =   l1b_old_z(j,b) * l1b_old_z(j,b)
+                sumb += sum
+           endpardo b, j
+           execute server_barrier
+           collective sumaa += suma
+           collective sumbb += sumb
 #           diff -= sumbb
            execute print_scalar sumaa
            execute print_scalar sumbb
@@ -3467,37 +3496,34 @@
            sum = 0.0
      
            PARDO a, i, a2, i1
-               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
-               REQUEST L2old_aa(i,a,i1,a2) a2 # read from list
-               REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
-#               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
-               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
-               taiai(a,i,a2,i1) = L2old_aa_x(i,a,i1,a2)
-               sum = T2old_aa(a,i,a2,i1) * taiai(a,i,a2,i1)
-               suma += sum
+#               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
+#               REQUEST L2old_aa(i,a,i1,a2) a2 # read from list
+               REQUEST T2old_aa_z(a,i,a2,i1) i1  # read from list
+               REQUEST L2old_aa_z(i,a,i1,a2) a2 # read from list
+#               taiai(a,i,a2,i1) = L2old_aa_x(i,a,i1,a2)
+#               sum = T2old_aa(a,i,a2,i1) * taiai(a,i,a2,i1)
+#               suma += sum
 #               sum = L2old_aa(i,a,i1,a2) * L2old_aa(i,a,i1,a2)
 #               suma += sum
-#               sum = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
-#               suma += sum
-#               sum =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
-#               suma += sum
+               sum = T2old_aa_z(a,i,a2,i1) * T2old_aa_z(a,i,a2,i1)
+               suma += sum
+               sum =  L2old_aa_z(i,a,i1,a2) * L2old_aa_z(i,a,i1,a2)
+               suma += sum
            ENDPARDO a, i, a2, i1
            PARDO b1, j, b2, j1
-               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
-               REQUEST L2old_bb(j,b1,j1,b2)  j1 # Read from the list
-               REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
-#               REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
-               REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
-               tbjbj(b1,j,b2,j1) = L2old_bb_x(j,b1,j1,b2)
-
-               sum = T2old_bb(b1,j,b2,j1) * tbjbj(b1,j,b2,j1)
-               sumb += sum
+#               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
+#               REQUEST L2old_bb(j,b1,j1,b2)  j1 # Read from the list
+               REQUEST T2old_bb_z(b1,j,b2,j1) j1 # Read from the list
+               REQUEST L2old_bb_z(j,b1,j1,b2)  j1 # Read from the list
+#               tbjbj(b1,j,b2,j1) = L2old_bb_x(j,b1,j1,b2)
+#               sum = T2old_bb(b1,j,b2,j1) * tbjbj(b1,j,b2,j1)
+#               sumb += sum
 #               sum = L2old_bb(j,b1,j1,b2) * L2old_bb(j,b1,j1,b2)
 #               sumb += sum
-#               sum = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
-#               sumb += sum
-#               sum = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
-#               sumb += sum
+               sum = T2old_bb_z(b1,j,b2,j1) * T2old_bb_z(b1,j,b2,j1)
+               sumb += sum
+               sum = L2old_bb_z(j,b1,j1,b2) * L2old_bb_z(j,b1,j1,b2)
+               sumb += sum
            ENDPARDO b1, j, b2, j1
            execute server_barrier
            collective sumaa += suma

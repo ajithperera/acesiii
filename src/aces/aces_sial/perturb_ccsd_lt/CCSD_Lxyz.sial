@@ -12953,7 +12953,11 @@
       ENDDO b
       ENDDO j
 
+# We don't need MO ints in density codes. Lets write it for
+# debugging purposes. 
+
       CALL WRITE_2EL 
+
       execute blocks_to_list t1a_old
       execute blocks_to_list t1b_old
       execute blocks_to_list T2old_aa
