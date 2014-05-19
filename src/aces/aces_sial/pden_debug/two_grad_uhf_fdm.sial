@@ -89,37 +89,75 @@
       served L2old_aa(i,a,i1,a1)
       served L2old_bb(j,b,j1,b1)
       served L2old_ab(i,a,j,b)
-      served Dijab_aa(i,i1,a,a1)
-      served Dijab_ab(i,j,a,b)
-      served Dijab_bb(j,j1,b,b1)
-      served Dijkl_aa(i2,i,i3,i1)
+      served Dijab_aa_m(i,i1,a,a1)
+      served Dijab_ab_m(i,j,a,b)
+      served Dijab_bb_m(j,j1,b,b1)
+      served Dijkl_aa_m(i2,i,i3,i1)
       served Vijmn_aaaa(i,i2,i1,i3)
-      served Dijkl_bb(j,j2,j1,j3)
+      served Dijkl_bb_m(j,j2,j1,j3)
       served Vijmn_bbbb(j,j2,j1,j3)
-      served Dijkl_ab(i,j,i1,j1)
+      served Dijkl_ab_m(i,j,i1,j1)
       served Vijmn_abab(i,j,i1,j1)
 
+      distributed t1a_1(a,i)
+      distributed t1b_1(b,j)
+
+      distributed l1a_1(i,a)
+      distributed l1b_1(j,b)
+
+      served T2aa_1(a,i,a1,i1)
+      served T2bb_1(b,j,b1,j1)
+      served T2ab_1(a,i,b,j)
+      served L2aa_1(i,a,i1,a1)
+      served L2bb_1(j,b,j1,b1)
+      served L2ab_1(i,a,j,b)
+#
+      served Dijab_aa_p(i,i1,a,a1)
+      served Dijab_ab_p(i,j,a,b)
+      served Dijab_bb_p(j,j1,b,b1)
+
+      served Dijkl_aa_p(i2,i,i3,i1)
+      served Dijkl_bb_p(j,j2,j1,j3)
+      served Dijkl_ab_p(i,j,i1,j1)
+
+      served Dibja_aaaa_p(i,a,i1,a1)
+      served Dibja_abab_p(i,b,i1,b1)
+      served Dibja_baba_p(j,a,j1,a1)
+      served Dibja_bbbb_p(j,b,j1,b1)
+      served Dibja_baab_p(j,a,i,b)
+      served Dibja_abba_p(i,b,j,a)
+
+      served Dabci_aaaa_p(a,a2,a1,i)
+      served Dabci_abab_p(a,b,a1,j)
+      served Dabci_baba_p(b,a,b1,i)
+      served Dabci_bbbb_p(b,b2,b1,j)
+
+      served Dijka_aaaa_p(i,i2,i1,a)
+      served Dijka_abab_p(i,j,i1,b)
+      served Dijka_baba_p(j,i,j1,a)
+      served Dijka_bbbb_p(j,j2,j1,b)
+#
       served Vibja_aaaa(i,a,i1,a1)
-      served Dibja_aaaa(i,a,i1,a1)
+      served Dibja_aaaa_m(i,a,i1,a1)
       served Vibja_abab(i,b,i1,b1)
-      served Dibja_abab(i,b,i1,b1)
+      served Dibja_abab_m(i,b,i1,b1)
       served Vibja_baba(j,a,j1,a1)
-      served Dibja_baba(j,a,j1,a1)
+      served Dibja_baba_m(j,a,j1,a1)
       served Vibja_bbbb(j,b,j1,b1)
-      served Dibja_bbbb(j,b,j1,b1)
-      served Dibja_baab(j,a,i,b)
+      served Dibja_bbbb_m(j,b,j1,b1)
+      served Dibja_baab_m(j,a,i,b)
       served Vibja_baab(j,a,i,b)
-      served Dibja_abba(i,b,j,a)
+      served Dibja_abba_m(i,b,j,a)
       served Vibja_abba(i,b,j,a) 
 
-      served Dabci_aaaa(a,a2,a1,i)
-      served Dabci_abab(a,b,a1,j)
-      served Dabci_baba(b,a,b1,i)
-      served Dabci_bbbb(b,b2,b1,j)
-      served Dijka_aaaa(i,i2,i1,a)
-      served Dijka_abab(i,j,i1,b)
-      served Dijka_baba(j,i,j1,a)
-      served Dijka_bbbb(j,j2,j1,b)
+      served Dabci_aaaa_m(a,a2,a1,i)
+      served Dabci_abab_m(a,b,a1,j)
+      served Dabci_baba_m(b,a,b1,i)
+      served Dabci_bbbb_m(b,b2,b1,j)
+      served Dijka_aaaa_m(i,i2,i1,a)
+      served Dijka_abab_m(i,j,i1,b)
+      served Dijka_baba_m(j,i,j1,a)
+      served Dijka_bbbb_m(j,j2,j1,b)
       served Dxaai(mu,a,a1,i) 
       served Dxxai(mu,nu,a1,i) 
       served Dxxxi(mu,nu,sigma,i) 
@@ -964,7 +1002,7 @@
 #
             ENDDO a2 
 #            
-            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
+            PREPARE Dijab_aa_m(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
 #
       ENDPARDO a, a1, i, i1 
 #
@@ -1004,18 +1042,18 @@
 #
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai(a1,i1) 
             Tiiaa(i,i1,a,a1)        *= 0.375 
-            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
+            PREPARE Dijab_aa_m(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
 # 
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
             T1iiaa(i,i1,a1,a)       *= -1.0  
-            PREPARE Dijab_aa(i,i1,a1,a) += T1iiaa(i,i1,a1,a) 
+            PREPARE Dijab_aa_m(i,i1,a1,a) += T1iiaa(i,i1,a1,a) 
 # 
             T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1) 
             T1iiaa(i1,i,a,a1)       *= -1.0  
-            PREPARE Dijab_aa(i1,i,a,a1) += T1iiaa(i1,i,a,a1) 
+            PREPARE Dijab_aa_m(i1,i,a,a1) += T1iiaa(i1,i,a,a1) 
 # 
             T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1) 
-            PREPARE Dijab_aa(i1,i,a1,a) += T1iiaa(i1,i,a1,a) 
+            PREPARE Dijab_aa_m(i1,i,a1,a) += T1iiaa(i1,i,a1,a) 
 #
       ENDPARDO a, a1, i, i1  
 #
@@ -1076,18 +1114,18 @@
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
 #
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
-                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+                  PREPARE Dijab_aa_m(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 #
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
-                  PREPARE Dijab_aa(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+                  PREPARE Dijab_aa_m(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 #
                   T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i1,i,a,a1)       *= -1.0
-                  PREPARE Dijab_aa(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+                  PREPARE Dijab_aa_m(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 #
                   T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
-                  PREPARE Dijab_aa(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+                  PREPARE Dijab_aa_m(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 #
                ENDDO a
 #
@@ -1135,18 +1173,18 @@
                Taiai(a1,i1,a,i)         = Ljbai(j,b,a1,i1)*T2old_ab(a,i,b,j)
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
-               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               PREPARE Dijab_aa_m(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 # 
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
                T1iiaa(i,i1,a1,a)       *= -1.0  
-               PREPARE Dijab_aa(i,i1,a1,a) += T1iiaa(i,i1,a1,a) 
+               PREPARE Dijab_aa_m(i,i1,a1,a) += T1iiaa(i,i1,a1,a) 
 # 
                T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1) 
                T1iiaa(i1,i,a,a1)       *= -1.0  
-               PREPARE Dijab_aa(i1,i,a,a1) += T1iiaa(i1,i,a,a1) 
+               PREPARE Dijab_aa_m(i1,i,a,a1) += T1iiaa(i1,i,a,a1) 
 # 
                T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1) 
-               PREPARE Dijab_aa(i1,i,a1,a) += T1iiaa(i1,i,a1,a) 
+               PREPARE Dijab_aa_m(i1,i,a1,a) += T1iiaa(i1,i,a1,a) 
 #
             ENDDO a 
             ENDDO i 
@@ -1160,9 +1198,9 @@
 #
 #     PARDO a, a1, i, i1 
 #
-#           GET Dijab_aa(i,i1,a,a1) 
-#           Tiiaa(i,i1,a,a1) = 4.0*Dijab_aa(i,i1,a,a1)
-#           PUT Dijab_aa(i,i1,a,a1) = Tiiaa(i,i1,a,a1) 
+#           GET Dijab_aa_m(i,i1,a,a1) 
+#           Tiiaa(i,i1,a,a1) = 4.0*Dijab_aa_m(i,i1,a,a1)
+#           PUT Dijab_aa_m(i,i1,a,a1) = Tiiaa(i,i1,a,a1) 
 #
 #     ENDPARDO a, a1, i, i1 
 #     execute sip_barrier 
@@ -1176,9 +1214,9 @@
 #
             DO a1 
 #
-               REQUEST Dijab_aa(i,i1,a,a1) a1  
+               REQUEST Dijab_aa_m(i,i1,a,a1) a1  
 #
-               T1iiax(i,i1,a,sigma) = Dijab_aa(i,i1,a,a1)*ca(sigma,a1) 
+               T1iiax(i,i1,a,sigma) = Dijab_aa_m(i,i1,a,a1)*ca(sigma,a1) 
                Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)  
 #
             ENDDO a1  
@@ -1309,7 +1347,7 @@
 #
             ENDDO b1 
 #            
-            PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b) 
+            PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b) 
 #
       ENDPARDO a, b, i, j 
 #
@@ -1353,7 +1391,7 @@
 #
                   Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj(b,j) 
                   Tijab(i,j,a,b) *= 0.375  
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b) 
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b) 
 # 
                ENDDO j 
 # 
@@ -1403,7 +1441,7 @@
 #
                   Tijab(i,j,a,b)  = t1b_old(b,j)^Lai(a,i) 
                   Tijab(i,j,a,b) *= 0.375  
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b) 
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b) 
 # 
                ENDDO i 
 # 
@@ -1465,7 +1503,7 @@
                   Tiabj(i,a,b,j)         = Tiaia(i,a,i1,a1)*Liabj(i1,a1,b,j)
                   Tijab(i,j,a,b)         = Tiabj(i,a,b,j)
                   Tijab(i,j,a,b)        *= -0.0625
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b)
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b)
 # 
                ENDDO a 
 #
@@ -1512,7 +1550,7 @@
                Taibj(a,i,b,j)         = T2old_ab(a,i,b2,j2)*Tbjbj(b2,j2,b,j)
                Tijab(i,j,a,b)         = Taibj(a,i,b,j)
                Tijab(i,j,a,b)        *= 0.0625 #-0.125
-               PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b)
+               PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b)
 # 
             ENDDO a 
             ENDDO i 
@@ -1569,7 +1607,7 @@
                   Tijab(i,j,a,b)         = Tjbai(j,b,a,i)
 #
                   Tijab(i,j,a,b)        *= -0.0625 #-0.125
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b)
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b)
 # 
                ENDDO b 
 # 
@@ -1618,7 +1656,7 @@
                Taibj(a,i,b,j)      = Taiai(a,i,a2,i2)*T2old_ab(a2,i2,b,j)
                Tijab(i,j,a,b)      = Taibj(a,i,b,j)
                Tijab(i,j,a,b)     *= 0.0625 #-0.125
-               PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b)
+               PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b)
 # 
             ENDDO b 
             ENDDO j 
@@ -1662,7 +1700,7 @@
 #
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi(b,i1,b1,i) 
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b) 
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b) 
 # 
                ENDDO j 
 # 
@@ -1701,7 +1739,7 @@
 #
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj(a,j1,a1,j) 
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
-                  PREPARE Dijab_ab(i,j,a,b) += Tijab(i,j,a,b) 
+                  PREPARE Dijab_ab_m(i,j,a,b) += Tijab(i,j,a,b) 
 # 
                ENDDO i 
 # 
@@ -1716,9 +1754,9 @@
 #
 #     PARDO b, a, j, i 
 #
-#           GET Dijab_ab(i,j,a,b) 
-#           Tijab(i,j,a,b) = 4.0*Dijab_ab(i,j,a,b)
-#           PUT Dijab_ab(i,j,a,b) = Tijab(i,j,a,b) 
+#           GET Dijab_ab_m(i,j,a,b) 
+#           Tijab(i,j,a,b) = 4.0*Dijab_ab_m(i,j,a,b)
+#            PREPARE Dijab_ab_m(i,j,a,b) = Tijab(i,j,a,b) 
 #
 #     ENDPARDO b, a, j, i 
 #
@@ -1731,9 +1769,9 @@
 #
             DO b1  
 #
-               REQUEST Dijab_ab(i,j1,a,b1) b1  
+               REQUEST Dijab_ab_m(i,j1,a,b1) b1  
 #
-               T1ijax(i,j1,a,sigma) = Dijab_ab(i,j1,a,b1)*cb(sigma,b1) 
+               T1ijax(i,j1,a,sigma) = Dijab_ab_m(i,j1,a,b1)*cb(sigma,b1) 
                Tijax(i,j1,a,sigma) += T1ijax(i,j1,a,sigma)  
 #
             ENDDO b1  
@@ -1905,7 +1943,7 @@
 #
             ENDDO b2 
 #            
-            PREPARE Dijab_bb(j,j1,b,b1) += Tjjbb(j,j1,b,b1) 
+            PREPARE Dijab_bb_m(j,j1,b,b1) += Tjjbb(j,j1,b,b1) 
 #
       ENDPARDO b, b1, j, j1 
 #
@@ -1949,18 +1987,18 @@
 #
                   Tjjbb(j,j1,b,b1)         = t1b_old(b,j)^L1bj(b1,j1) 
                   Tjjbb(j,j1,b,b1)        *= 0.375 
-                  PREPARE Dijab_bb(j,j1,b,b1) += Tjjbb(j,j1,b,b1) 
+                  PREPARE Dijab_bb_m(j,j1,b,b1) += Tjjbb(j,j1,b,b1) 
 # 
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1) 
                   T1jjbb(j,j1,b1,b)       *= -1.0  
-                  PREPARE Dijab_bb(j,j1,b1,b) += T1jjbb(j,j1,b1,b) 
+                  PREPARE Dijab_bb_m(j,j1,b1,b) += T1jjbb(j,j1,b1,b) 
 # 
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1) 
                   T1jjbb(j1,j,b,b1)       *= -1.0  
-                  PREPARE Dijab_bb(j1,j,b,b1) += T1jjbb(j1,j,b,b1) 
+                  PREPARE Dijab_bb_m(j1,j,b,b1) += T1jjbb(j1,j,b,b1) 
 # 
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1) 
-                  PREPARE Dijab_bb(j1,j,b1,b) += T1jjbb(j1,j,b1,b) 
+                  PREPARE Dijab_bb_m(j1,j,b1,b) += T1jjbb(j1,j,b1,b) 
 #            
                ENDDO j1 
 #            
@@ -2023,18 +2061,18 @@
                   Tjjbb(j,j1,b,b1)         = Tjbbj(j,b,b1,j1)
 #
                   Tjjbb(j,j1,b,b1)        *= -0.0625
-                  PREPARE Dijab_bb(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
+                  PREPARE Dijab_bb_m(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 #
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j,j1,b1,b)       *= -1.0
-                  PREPARE Dijab_bb(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
+                  PREPARE Dijab_bb_m(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 #
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j1,j,b,b1)       *= -1.0
-                  PREPARE Dijab_bb(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
+                  PREPARE Dijab_bb_m(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 #
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1)
-                  PREPARE Dijab_bb(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
+                  PREPARE Dijab_bb_m(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 #
                ENDDO b 
 #
@@ -2087,18 +2125,18 @@
                Tjjbb(j,j1,b,b1)      = Tbjbj(b1,j1,b,j)
 #
                Tjjbb(j,j1,b,b1)     *= 0.0625
-               PREPARE Dijab_bb(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
+               PREPARE Dijab_bb_m(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 #
                T1jjbb(j,j1,b1,b)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j,j1,b1,b)    *= -1.0
-               PREPARE Dijab_bb(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
+               PREPARE Dijab_bb_m(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 #
                T1jjbb(j1,j,b,b1)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j1,j,b,b1)    *= -1.0
-               PREPARE Dijab_bb(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
+               PREPARE Dijab_bb_m(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 #
                T1jjbb(j1,j,b1,b)     = Tjjbb(j,j1,b,b1)
-               PREPARE Dijab_bb(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
+               PREPARE Dijab_bb_m(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 #
             ENDDO b
             ENDDO j
@@ -2112,9 +2150,9 @@
 #
 #     PARDO b, b1, j, j1 
 #
-#           GET Dijab_bb(j,j1,b,b1) 
-#           Tjjbb(j,j1,b,b1) = 4.0*Dijab_bb(j,j1,b,b1)
-#           PUT Dijab_bb(j,j1,b,b1) = Tjjbb(j,j1,b,b1) 
+#           GET Dijab_bb_m(j,j1,b,b1) 
+#           Tjjbb(j,j1,b,b1) = 4.0*Dijab_bb_m(j,j1,b,b1)
+#           PUT Dijab_bb_m(j,j1,b,b1) = Tjjbb(j,j1,b,b1) 
 #
 #     ENDPARDO b, b1, j, j1 
 #
@@ -2127,9 +2165,9 @@
 #
             DO b1 
 #
-               REQUEST Dijab_bb(j,j1,b,b1) b1  
+               REQUEST Dijab_bb_m(j,j1,b,b1) b1  
 #
-               T1jjbx(j,j1,b,sigma) = Dijab_bb(j,j1,b,b1)*cb(sigma,b1) 
+               T1jjbx(j,j1,b,sigma) = Dijab_bb_m(j,j1,b,b1)*cb(sigma,b1) 
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)  
 #
             ENDDO b1 
@@ -2223,8 +2261,8 @@
                Tiiii(i,i1,i2,i3)           = Tiiaa(i,i1,a,a1)*Taaii(a,a1,i2,i3)
                Tiiii(i,i1,i2,i3)          *= 0.25
                T1iiii(i2,i3,i,i1)          = Tiiii(i,i1,i2,i3)
-               PREPARE Dijkl_aa(i,i1,i2,i3)   += Tiiii(i,i1,i2,i3)
-               PREPARE Dijkl_aa(i2,i3,i,i1)   += T1iiii(i2,i3,i,i1)
+               PREPARE Dijkl_aa_m(i,i1,i2,i3)   += Tiiii(i,i1,i2,i3)
+               PREPARE Dijkl_aa_m(i2,i3,i,i1)   += T1iiii(i2,i3,i,i1)
                T1iiii(i2,i3,i,i1)         *= 2.0
                PREPARE Vijmn_aaaa(i2,i3,i,i1) += T1iiii(i2,i3,i,i1)
 #
@@ -2244,11 +2282,11 @@
 #
             DO i  
 #
-               REQUEST Dijkl_aa(i,i1,i2,i3) i3  
-               REQUEST Dijkl_aa(i,i1,i3,i2) i3  
+               REQUEST Dijkl_aa_m(i,i1,i2,i3) i3  
+               REQUEST Dijkl_aa_m(i,i1,i3,i2) i3  
 #
-               Tiiii(i,i1,i2,i3)   = Dijkl_aa(i,i1,i2,i3) 
-               T1iiii(i,i1,i2,i3)  = Dijkl_aa(i,i1,i3,i2)  
+               Tiiii(i,i1,i2,i3)   = Dijkl_aa_m(i,i1,i2,i3) 
+               T1iiii(i,i1,i2,i3)  = Dijkl_aa_m(i,i1,i3,i2)  
                Tiiii(i,i1,i2,i3)  -= T1iiii(i,i1,i2,i3) 
 #
                T1xiii(mu,i1,i2,i3) = Tiiii(i,i1,i2,i3)*ca(mu,i) 
@@ -2315,8 +2353,8 @@
 #
                Tjjjj(j,j1,j2,j3)          *= 0.25
                T1jjjj(j2,j3,j,j1)          = Tjjjj(j,j1,j2,j3)
-               PREPARE Dijkl_bb(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
-               PREPARE Dijkl_bb(j2,j3,j,j1)   += T1jjjj(j2,j3,j,j1)
+               PREPARE Dijkl_bb_m(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
+               PREPARE Dijkl_bb_m(j2,j3,j,j1)   += T1jjjj(j2,j3,j,j1)
                T1jjjj(j2,j3,j,j1)         *= 2.0
                PREPARE Vijmn_bbbb(j2,j3,j,j1) += T1jjjj(j2,j3,j,j1)
 #
@@ -2336,11 +2374,11 @@
 #
             DO j 
 #
-               REQUEST Dijkl_bb(j,j1,j2,j3) j3  
-               REQUEST Dijkl_bb(j,j1,j3,j2) j3  
+               REQUEST Dijkl_bb_m(j,j1,j2,j3) j3  
+               REQUEST Dijkl_bb_m(j,j1,j3,j2) j3  
 #
-               Tjjjj(j,j1,j2,j3)   = Dijkl_bb(j,j1,j2,j3)
-               T1jjjj(j,j1,j2,j3)  = Dijkl_bb(j,j1,j3,j2) 
+               Tjjjj(j,j1,j2,j3)   = Dijkl_bb_m(j,j1,j2,j3)
+               T1jjjj(j,j1,j2,j3)  = Dijkl_bb_m(j,j1,j3,j2) 
                Tjjjj(j,j1,j2,j3)  -= T1jjjj(j,j1,j2,j3)  
 #
                T1xjjj(mu,j1,j2,j3) = Tjjjj(j,j1,j2,j3)*cb(mu,j) 
@@ -2406,8 +2444,8 @@
 #
                Tijij(i,j,i1,j1)          *= 0.5
                T1ijij(i1,j1,i,j)          = Tijij(i,j,i1,j1)
-               PREPARE Dijkl_ab(i,j,i1,j1)   += Tijij(i,j,i1,j1)
-               PREPARE Dijkl_ab(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
+               PREPARE Dijkl_ab_m(i,j,i1,j1)   += Tijij(i,j,i1,j1)
+               PREPARE Dijkl_ab_m(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
                T1ijij(i1,j1,i,j)         *= 2.0
                PREPARE Vijmn_abab(i1,j1,i,j) += T1ijij(i1,j1,i,j)
 #
@@ -2427,9 +2465,9 @@
 #
             DO i 
 #
-               REQUEST Dijkl_ab(i,j,i1,j1) j1  
+               REQUEST Dijkl_ab_m(i,j,i1,j1) j1  
 #
-               T1xjij(mu,j,i1,j1) = Dijkl_ab(i,j,i1,j1)*ca(mu,i) 
+               T1xjij(mu,j,i1,j1) = Dijkl_ab_m(i,j,i1,j1)*ca(mu,i) 
                Txjij(mu,j,i1,j1) += T1xjij(mu,j,i1,j1)   
 #
             ENDDO i 
@@ -2562,8 +2600,8 @@
 #           Tiaia(i,a1,i1,a)  *= 4.0 
 #           TAiaia(i1,a,i,a1) *= 4.0 
 #
-            PREPARE Dibja_aaaa(i,a1,i1,a) += Tiaia(i,a1,i1,a)  
-            PREPARE Dibja_aaaa(i1,a,i,a1) += TAiaia(i1,a,i,a1)  
+            PREPARE Dibja_aaaa_m(i,a1,i1,a) += Tiaia(i,a1,i1,a)  
+            PREPARE Dibja_aaaa_m(i1,a,i,a1) += TAiaia(i1,a,i,a1)  
 #
       ENDPARDO a, a1, i, i1 
 #
@@ -2578,9 +2616,9 @@
 #
             DO a 
 #
-               REQUEST Dibja_aaaa(i,a1,i1,a) a  
+               REQUEST Dibja_aaaa_m(i,a1,i1,a) a  
 #
-               T1iaix(i,a1,i1,sigma)  = Dibja_aaaa(i,a1,i1,a)*ca(sigma,a) 
+               T1iaix(i,a1,i1,sigma)  = Dibja_aaaa_m(i,a1,i1,a)*ca(sigma,a) 
                Tiaix(i,a1,i1,sigma)  += T1iaix(i,a1,i1,sigma)   
 #
             ENDDO a 
@@ -2670,8 +2708,8 @@
 #           Tibib(i1,b1,i,b)  *= 4.0 
 #           TAibib(i,b,i1,b1) *= 4.0 
 #
-            PREPARE Dibja_abab(i1,b1,i,b) += Tibib(i1,b1,i,b) 
-            PREPARE Dibja_abab(i,b,i1,b1) += TAibib(i,b,i1,b1) 
+            PREPARE Dibja_abab_m(i1,b1,i,b) += Tibib(i1,b1,i,b) 
+            PREPARE Dibja_abab_m(i,b,i1,b1) += TAibib(i,b,i1,b1) 
 #
       ENDPARDO b1, b, i, i1 
 #
@@ -2686,9 +2724,9 @@
 #
             DO b 
 #
-               REQUEST Dibja_abab(i,b1,i1,b) b  
+               REQUEST Dibja_abab_m(i,b1,i1,b) b  
 #
-               T1ibix(i,b1,i1,sigma) = Dibja_abab(i,b1,i1,b)*cb(sigma,b) 
+               T1ibix(i,b1,i1,sigma) = Dibja_abab_m(i,b1,i1,b)*cb(sigma,b) 
                Tibix(i,b1,i1,sigma) += T1ibix(i,b1,i1,sigma)  
 #
             ENDDO b 
@@ -2777,8 +2815,8 @@
 #           Tjaja(j,a,j1,a1)  *= 4.0 
 #           TAjaja(j1,a1,j,a) *= 4.0 
 #
-            PREPARE Dibja_baba(j,a,j1,a1) += Tjaja(j,a,j1,a1) 
-            PREPARE Dibja_baba(j1,a1,j,a) += TAjaja(j1,a1,j,a)  
+            PREPARE Dibja_baba_m(j,a,j1,a1) += Tjaja(j,a,j1,a1) 
+            PREPARE Dibja_baba_m(j1,a1,j,a) += TAjaja(j1,a1,j,a)  
 #
       ENDPARDO a, a1, j1, j 
 #
@@ -2793,9 +2831,9 @@
 #
             DO a 
 #
-               REQUEST Dibja_baba(j,a1,j1,a) a  
+               REQUEST Dibja_baba_m(j,a1,j1,a) a  
 #
-               T1jajx(j,a1,j1,sigma) = Dibja_baba(j,a1,j1,a)*ca(sigma,a) 
+               T1jajx(j,a1,j1,sigma) = Dibja_baba_m(j,a1,j1,a)*ca(sigma,a) 
                Tjajx(j,a1,j1,sigma) += T1jajx(j,a1,j1,sigma)  
 #
             ENDDO a 
@@ -2916,8 +2954,8 @@
 #           Tjbjb(j,b1,j1,b)  *= 4.0 
 #           TAjbjb(j1,b,j,b1) *= 4.0 
 #
-            PREPARE Dibja_bbbb(j,b1,j1,b) += Tjbjb(j,b1,j1,b)
-            PREPARE Dibja_bbbb(j1,b,j,b1) += TAjbjb(j1,b,j,b1)
+            PREPARE Dibja_bbbb_m(j,b1,j1,b) += Tjbjb(j,b1,j1,b)
+            PREPARE Dibja_bbbb_m(j1,b,j,b1) += TAjbjb(j1,b,j,b1)
 #
       ENDPARDO b, b1, j, j1
 #
@@ -2932,9 +2970,9 @@
 #
             DO b 
 #
-               REQUEST Dibja_bbbb(j,b1,j1,b) b  
+               REQUEST Dibja_bbbb_m(j,b1,j1,b) b  
 #
-               T1jbjx(j,b1,j1,sigma) = Dibja_bbbb(j,b1,j1,b)*cb(sigma,b) 
+               T1jbjx(j,b1,j1,sigma) = Dibja_bbbb_m(j,b1,j1,b)*cb(sigma,b) 
                Tjbjx(j,b1,j1,sigma) += T1jbjx(j,b1,j1,sigma)  
 #
             ENDDO b 
@@ -3078,7 +3116,7 @@
 #
 #           Tiajb(i,a,j,b)          *= 4.0 
             Tibja(i,b,j,a)           = Tiajb(i,a,j,b) 
-            PREPARE Dibja_abba(i,b,j,a) += Tibja(i,b,j,a)  
+            PREPARE Dibja_abba_m(i,b,j,a) += Tibja(i,b,j,a)  
 #
       ENDPARDO i, a, b, j 
 #
@@ -3093,9 +3131,9 @@
 #
             DO a 
 #
-               REQUEST Dibja_abba(i,b1,j1,a) a  
+               REQUEST Dibja_abba_m(i,b1,j1,a) a  
 #
-               T1ibjx(i,b1,j1,sigma) = Dibja_abba(i,b1,j1,a)*ca(sigma,a) 
+               T1ibjx(i,b1,j1,sigma) = Dibja_abba_m(i,b1,j1,a)*ca(sigma,a) 
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)  
 #
             ENDDO a 
@@ -3231,7 +3269,7 @@
 #
 #           Tjbia(j,b,i,a)          *= 4.0 
             Tjaib(j,a,i,b)           = Tjbia(j,b,i,a) 
-            PREPARE Dibja_baab(j,a,i,b) += Tjaib(j,a,i,b) 
+            PREPARE Dibja_baab_m(j,a,i,b) += Tjaib(j,a,i,b) 
 #
       ENDPARDO j, b, a, i 
 #
@@ -3246,9 +3284,9 @@
 #
             DO b 
 #
-               REQUEST Dibja_baab(j,a1,i1,b) b  
+               REQUEST Dibja_baab_m(j,a1,i1,b) b  
 #
-               T1jaix(j,a1,i1,sigma) = Dibja_baab(j,a1,i1,b)*cb(sigma,b) 
+               T1jaix(j,a1,i1,sigma) = Dibja_baab_m(j,a1,i1,b)*cb(sigma,b) 
                Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)  
 #
             ENDDO b 
@@ -3475,7 +3513,7 @@
 #
 #           Taaai(a,a1,a2,i) *= 4.0 
 #
-#           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+            PREPARE Dabci_aaaa_m(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 # 
             DO mu 
 #
@@ -3647,7 +3685,7 @@
 #
 #           Tbbbj(b,b1,b2,j) *= 4.0 
 #
-#           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+            PREPARE Dabci_bbbb_m(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 # 
             DO mu 
 #
@@ -3827,7 +3865,7 @@
 #
 #           Tabaj(a,b,a1,j) *= 4.0 
 #
-#           PUT Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j) 
+            PREPARE Dabci_abab_m(a,b,a1,j) += Tabaj(a,b,a1,j) 
 # 
             DO mu 
 #
@@ -4007,7 +4045,7 @@
 #
 #           Tbabi(b1,a,b,i) *= 4.0 
 #
-#           PUT Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i) 
+            PREPARE Dabci_baba_m(b1,a,b,i) += Tbabi(b1,a,b,i) 
 # 
             DO mu 
 #
@@ -4214,7 +4252,7 @@
 #
 #           Tiiia(i,i1,i2,a) *= 4.0 
 #
-#           PUT Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
+           PREPARE Dijka_aaaa_m(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
 #
             DO sigma 
 #
@@ -4327,7 +4365,7 @@
 #
 #           Tijib(i,j,i1,b) *= 4.0 
 #
-#           PUT Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
+            PREPARE Dijka_abab_m(i,j,i1,b) += Tijib(i,j,i1,b) 
 #
             DO sigma 
 #
@@ -4438,7 +4476,7 @@
 #
 #           Tjija(j,i,j1,a) *= 4.0 
 #
-#           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
+           PREPARE Dijka_baba_m(j,i,j1,a) += Tjija(j,i,j1,a) 
 #
             DO sigma 
 #
@@ -4552,7 +4590,7 @@
 #
 #           Tjjjb(j,j1,j2,b) *= 4.0 
 #
-#           PUT Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+            PREPARE Dijka_bbbb_m(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #
             DO sigma 
 #
@@ -5004,7 +5042,7 @@
      ENDPARDO a, b, i, j 
      execute server_barrier 
 #
-# Now contract TAO_pq with LAO_pq to form the AOdensity 
+# Now contract TAO_mq with LAO_mq to form the AOdensity 
 # ----------------------------------------------------- 
 #
 #    PARDO mu, nu, lambda, sigma  
@@ -5667,8 +5705,8 @@
       esum = 0.0 
       PARDO i, i1, i2, i3 
 #
-            REQUEST Dijkl_aa(i,i1,i2,i3) i  
-            etemp = Dijkl_aa(i,i1,i2,i3)*Dijkl_aa(i,i1,i2,i3)
+            REQUEST Dijkl_aa_m(i,i1,i2,i3) i  
+            etemp = Dijkl_aa_m(i,i1,i2,i3)*Dijkl_aa_m(i,i1,i2,i3)
             esum += etemp
 #            
       ENDPARDO i, i1, i2, i3 
@@ -5677,8 +5715,8 @@
       esum = 0.0 
       PARDO j, j1, j2, j3 
 #
-            REQUEST Dijkl_bb(j,j1,j2,j3) j  
-            etemp = Dijkl_bb(j,j1,j2,j3)*Dijkl_bb(j,j1,j2,j3)
+            REQUEST Dijkl_bb_m(j,j1,j2,j3) j  
+            etemp = Dijkl_bb_m(j,j1,j2,j3)*Dijkl_bb_m(j,j1,j2,j3)
             esum += etemp
 #            
       ENDPARDO j, j1, j2, j3 
@@ -5687,8 +5725,8 @@
       esum = 0.0 
       PARDO i, i1, j, j1 
 #
-            REQUEST Dijkl_ab(i,j,i1,j1) i  
-            etemp = Dijkl_ab(i,j,i1,j1)*Dijkl_ab(i,j,i1,j1)
+            REQUEST Dijkl_ab_m(i,j,i1,j1) i  
+            etemp = Dijkl_ab_m(i,j,i1,j1)*Dijkl_ab_m(i,j,i1,j1)
             esum += etemp
 #            
       ENDPARDO i, i1, j, j1 
@@ -5701,8 +5739,8 @@
       esum = 0.0 
       PARDO a, a1, a2, i 
 #
-            REQUEST Dabci_aaaa(a,a1,a2,i) i  
-            etemp = Dabci_aaaa(a,a1,a2,i)*Dabci_aaaa(a,a1,a2,i)
+            REQUEST Dabci_aaaa_m(a,a1,a2,i) i  
+            etemp = Dabci_aaaa_m(a,a1,a2,i)*Dabci_aaaa_m(a,a1,a2,i)
             esum += etemp
 #
       ENDPARDO a, a1, a2, i 
@@ -5712,8 +5750,8 @@
       esum = 0.0 
       PARDO b, b1, b2, j 
 #
-            REQUEST Dabci_bbbb(b,b1,b2,j) j  
-            etemp = Dabci_bbbb(b,b1,b2,j)*Dabci_bbbb(b,b1,b2,j)
+            REQUEST Dabci_bbbb_m(b,b1,b2,j) j  
+            etemp = Dabci_bbbb_m(b,b1,b2,j)*Dabci_bbbb_m(b,b1,b2,j)
             esum += etemp
 #
       ENDPARDO b, b1, b2, j 
@@ -5723,8 +5761,8 @@
       esum = 0.0 
       PARDO a, a1, b, j 
 #
-            REQUEST Dabci_abab(a,b,a1,j) j  
-            etemp = Dabci_abab(a,b,a1,j)*Dabci_abab(a,b,a1,j)
+            REQUEST Dabci_abab_m(a,b,a1,j) j  
+            etemp = Dabci_abab_m(a,b,a1,j)*Dabci_abab_m(a,b,a1,j)
             esum += etemp
 #
       ENDPARDO a, a1, b, j 
@@ -5733,8 +5771,8 @@
       esum = 0.0 
       PARDO a, b1, b, i 
 #
-            REQUEST Dabci_baba(b,a,b1,i) i   
-            etemp = Dabci_baba(b,a,b1,i)*Dabci_baba(b,a,b1,i)
+            REQUEST Dabci_baba_m(b,a,b1,i) i   
+            etemp = Dabci_baba_m(b,a,b1,i)*Dabci_baba_m(b,a,b1,i)
             esum += etemp
 #
       ENDPARDO a, b1, b, i 
@@ -5747,8 +5785,8 @@
       esum = 0.0 
       PARDO i, i1, i2, a 
 #
-            REQUEST Dijka_aaaa(i,i1,i2,a) a  
-            etemp = Dijka_aaaa(i,i1,i2,a)*Dijka_aaaa(i,i1,i2,a)
+            REQUEST Dijka_aaaa_m(i,i1,i2,a) a  
+            etemp = Dijka_aaaa_m(i,i1,i2,a)*Dijka_aaaa_m(i,i1,i2,a)
             esum += etemp
 #            
       ENDPARDO i, i1, i2, a 
@@ -5758,8 +5796,8 @@
       esum = 0.0 
       PARDO j, j1, j2, b 
 #
-            REQUEST Dijka_bbbb(j,j1,j2,b) b  
-            etemp = Dijka_bbbb(j,j1,j2,b)*Dijka_bbbb(j,j1,j2,b)
+            REQUEST Dijka_bbbb_m(j,j1,j2,b) b  
+            etemp = Dijka_bbbb_m(j,j1,j2,b)*Dijka_bbbb_m(j,j1,j2,b)
             esum += etemp
 #            
       ENDPARDO j, j1, j2, b 
@@ -5769,8 +5807,8 @@
       esum = 0.0 
       PARDO i, i1, j, b 
 #
-            REQUEST Dijka_abab(i,j,i1,b) b  
-            etemp = Dijka_abab(i,j,i1,b)*Dijka_abab(i,j,i1,b)
+            REQUEST Dijka_abab_m(i,j,i1,b) b  
+            etemp = Dijka_abab_m(i,j,i1,b)*Dijka_abab_m(i,j,i1,b)
             esum += etemp
 #            
       ENDPARDO i, i1, j, b 
@@ -5779,8 +5817,8 @@
       esum = 0.0 
       PARDO i, j1, j, a 
 #
-            REQUEST Dijka_baba(j,i,j1,a) a  
-            etemp = Dijka_baba(j,i,j1,a)*Dijka_baba(j,i,j1,a)
+            REQUEST Dijka_baba_m(j,i,j1,a) a  
+            etemp = Dijka_baba_m(j,i,j1,a)*Dijka_baba_m(j,i,j1,a)
             esum += etemp
 #            
       ENDPARDO i, j1, j, a 
@@ -5793,8 +5831,8 @@
       esum = 0.0 
       PARDO i, i1, a, a1  
 #
-            REQUEST Dijab_aa(i,i1,a,a1) a  
-            etemp = Dijab_aa(i,i1,a,a1)*Dijab_aa(i,i1,a,a1)
+            REQUEST Dijab_aa_m(i,i1,a,a1) a  
+            etemp = Dijab_aa_m(i,i1,a,a1)*Dijab_aa_m(i,i1,a,a1)
             esum += etemp
 #            
       ENDPARDO i, i1, a,a1 
@@ -5804,8 +5842,8 @@
       esum = 0.0 
       PARDO j, j1, b, b1  
 #
-            REQUEST Dijab_bb(j,j1,b,b1) b  
-            etemp = Dijab_bb(j,j1,b,b1)*Dijab_bb(j,j1,b,b1)
+            REQUEST Dijab_bb_m(j,j1,b,b1) b  
+            etemp = Dijab_bb_m(j,j1,b,b1)*Dijab_bb_m(j,j1,b,b1)
             esum += etemp
 #            
       ENDPARDO j, j1, b,b1 
@@ -5815,8 +5853,8 @@
       esum = 0.0 
       PARDO i, j, a, b  
 #
-            REQUEST Dijab_ab(i,j,a,b) a  
-            etemp = Dijab_ab(i,j,a,b)*Dijab_ab(i,j,a,b)
+            REQUEST Dijab_ab_m(i,j,a,b) a  
+            etemp = Dijab_ab_m(i,j,a,b)*Dijab_ab_m(i,j,a,b)
             esum += etemp
 #            
       ENDPARDO i, j, a, b 
@@ -5829,8 +5867,8 @@
       esum = 0.0 
       PARDO i, i1, a, a1  
 #
-            REQUEST Dibja_aaaa(i,a,i1,a1) a  
-            etemp = Dibja_aaaa(i,a,i1,a1)*Dibja_aaaa(i,a,i1,a1)
+            REQUEST Dibja_aaaa_m(i,a,i1,a1) a  
+            etemp = Dibja_aaaa_m(i,a,i1,a1)*Dibja_aaaa_m(i,a,i1,a1)
             esum += etemp
 #            
       ENDPARDO i, i1, a, a1 
@@ -5839,8 +5877,8 @@
       esum = 0.0 
       PARDO j, j1, b, b1  
 #
-            REQUEST Dibja_bbbb(j,b,j1,b1) b  
-            etemp = Dibja_bbbb(j,b,j1,b1)*Dibja_bbbb(j,b,j1,b1)
+            REQUEST Dibja_bbbb_m(j,b,j1,b1) b  
+            etemp = Dibja_bbbb_m(j,b,j1,b1)*Dibja_bbbb_m(j,b,j1,b1)
             esum += etemp
 #            
       ENDPARDO j, j1, b, b1 
@@ -5849,8 +5887,8 @@
       esum = 0.0 
       PARDO i, i1, b, b1  
 #
-            REQUEST Dibja_abab(i,b,i1,b1) b  
-            etemp = Dibja_abab(i,b,i1,b1)*Dibja_abab(i,b,i1,b1)
+            REQUEST Dibja_abab_m(i,b,i1,b1) b  
+            etemp = Dibja_abab_m(i,b,i1,b1)*Dibja_abab_m(i,b,i1,b1)
             esum += etemp
 #            
       ENDPARDO i, i1, b, b1 
@@ -5859,8 +5897,8 @@
       esum = 0.0 
       PARDO j, j1, a, a1  
 #
-            REQUEST Dibja_baba(j,a,j1,a1) a  
-            etemp = Dibja_baba(j,a,j1,a1)*Dibja_baba(j,a,j1,a1)
+            REQUEST Dibja_baba_m(j,a,j1,a1) a  
+            etemp = Dibja_baba_m(j,a,j1,a1)*Dibja_baba_m(j,a,j1,a1)
             esum += etemp
 #            
       ENDPARDO j, j1, a, a1 
@@ -5869,8 +5907,8 @@
       esum = 0.0 
       PARDO i, j, a, b  
 #
-            REQUEST Dibja_abba(i,b,j,a) a  
-            etemp = Dibja_abba(i,b,j,a)*Dibja_abba(i,b,j,a)
+            REQUEST Dibja_abba_m(i,b,j,a) a  
+            etemp = Dibja_abba_m(i,b,j,a)*Dibja_abba_m(i,b,j,a)
             esum += etemp
 #            
       ENDPARDO i, j, a, b 
@@ -5879,8 +5917,8 @@
       esum = 0.0 
       PARDO i, j, a, b  
 #
-            REQUEST Dibja_baab(j,a,i,b) a  
-            etemp = Dibja_baab(j,a,i,b)*Dibja_baab(j,a,i,b)
+            REQUEST Dibja_baab_m(j,a,i,b) a  
+            etemp = Dibja_baab_m(j,a,i,b)*Dibja_baab_m(j,a,i,b)
             esum += etemp
 #            
       ENDPARDO i, j, a, b 
@@ -5945,14 +5983,14 @@
 #
 # Backtransform the 1-particle density matrix 
 # ------------------------------------------- 
-         CALL D1TRANS
-         execute sip_barrier 
+#         CALL D1TRANS
+#         execute sip_barrier 
 #
 # Finally contract with the integral derivatives to get the contribution 
 # to the gradient. 
 # ---------------------------------------------------------------------- 
 #
-         CALL PDCONT 
+#         CALL PDCONT 
 #
       ENDPROC DMAIN
 #     -------------
@@ -5964,10 +6002,45 @@
       CREATE t1b_old 
       CREATE l1a_old 
       CREATE l1b_old 
-      CREATE Doldai_a
-      CREATE Doldai_b
+
+      CREATE T1a_1
+      CREATE T1b_1
+
+      CREATE L1a_1
+      CREATE L1b_1
+
+#      CREATE Doldai_a
+#      CREATE Doldai_b
+#      execute list_to_blocks                VSpipi
+#      execute list_to_blocks                Vaaii
+#      execute list_to_blocks                Viaai
+#      execute list_to_blocks                VSaaai
+#      execute list_to_blocks                VSqjqj
+#      execute list_to_blocks                Vbbjj
+#      execute list_to_blocks                Vjbbj
+#      execute list_to_blocks                VSbbbj
+#      execute list_to_blocks                Vbbii
+#      execute list_to_blocks                Vjbii
+#      execute list_to_blocks                Vbbai
+#      execute list_to_blocks                Vpiqj
+#      execute list_to_blocks                Vaajj
+#      execute list_to_blocks                Viabj
+#      execute list_to_blocks                Vaabj
+
+      execute server_barrier
+
+      execute list_to_blocks t1a_1
+      execute list_to_blocks t1b_1
+      execute list_to_blocks T2aa_1
+      execute list_to_blocks T2ab_1
+      execute list_to_blocks T2bb_1
 #
-      execute sip_barrier 
+      execute list_to_blocks  l1a_1
+      execute list_to_blocks  l1b_1
+      execute list_to_blocks L2aa_1
+      execute list_to_blocks L2ab_1
+      execute list_to_blocks L2bb_1
+
       execute list_to_blocks t1a_old
       execute list_to_blocks t1b_old
       execute list_to_blocks T2old_aa
@@ -5979,17 +6052,92 @@
       execute list_to_blocks L2old_aa
       execute list_to_blocks L2old_ab
       execute list_to_blocks L2old_bb
-#
-      execute list_to_blocks Doldai_a
-      execute list_to_blocks Doldai_b
+
+      execute list_to_blocks  DIJKL_AA_P
+      execute list_to_blocks  DIJKL_BB_P
+      execute list_to_blocks  DIJKL_AB_P
+
+      execute list_to_blocks  DIBJA_AAAA_p
+      execute list_to_blocks  DIBJA_BBBB_p
+      execute list_to_blocks  DIBJA_BABA_p
+      execute list_to_blocks  DIBJA_ABAB_p
+      execute list_to_blocks  DIBJA_BAAB_p
+      execute list_to_blocks  DIBJA_ABBA_p
+
+      execute list_to_blocks  DIJAB_AA_p
+      execute list_to_blocks  DIJAB_BB_p
+      execute list_to_blocks  DIJAB_AB_p
+
+      execute list_to_blocks  DIJKA_AAAA_p
+      execute list_to_blocks  DIJKA_BBBB_p
+      execute list_to_blocks  DIJKA_BABA_p
+      execute list_to_blocks  DIJKA_ABAB_p
+
+      execute list_to_blocks  DABCI_AAAA_p
+      execute list_to_blocks  DABCI_BBBB_p
+      execute list_to_blocks  DABCI_ABAB_p
+
+#      execute list_to_blocks Doldai_a
+#      execute list_to_blocks Doldai_b
+
+      execute server_barrier 
       execute read_list_to_blocks
-      execute sip_barrier 
       execute server_barrier 
 #
       CALL DMAIN 
-      execute sip_barrier 
-      etemp = 14.0
-      execute print_rel_info etemp ca 
+
+      execute server_barrier 
+      execute blocks_to_list  DIJKL_AA_P
+      execute blocks_to_list  DIJKL_BB_P
+      execute blocks_to_list  DIJKL_AB_P
+
+      execute blocks_to_list  DIBJA_AAAA_p
+      execute blocks_to_list  DIBJA_BBBB_p
+      execute blocks_to_list  DIBJA_BABA_p
+      execute blocks_to_list  DIBJA_ABAB_p
+      execute blocks_to_list  DIBJA_BAAB_p
+      execute blocks_to_list  DIBJA_ABBA_p
+
+      execute blocks_to_list  DIJAB_AA_p
+      execute blocks_to_list  DIJAB_BB_p
+      execute blocks_to_list  DIJAB_AB_p
+
+      execute blocks_to_list  DIJKA_AAAA_p
+      execute blocks_to_list  DIJKA_BBBB_p
+      execute blocks_to_list  DIJKA_BABA_p
+      execute blocks_to_list  DIJKA_ABAB_p
+
+      execute blocks_to_list  DABCI_AAAA_p
+      execute blocks_to_list  DABCI_BBBB_p
+      execute blocks_to_list  DABCI_ABAB_p
+
+      execute blocks_to_list  DIJKL_AA_m
+      execute blocks_to_list  DIJKL_BB_m
+      execute blocks_to_list  DIJKL_AB_m
+
+      execute blocks_to_list  DIBJA_AAAA_m
+      execute blocks_to_list  DIBJA_BBBB_m
+      execute blocks_to_list  DIBJA_BABA_m
+      execute blocks_to_list  DIBJA_ABAB_m
+      execute blocks_to_list  DIBJA_BAAB_m
+      execute blocks_to_list  DIBJA_ABBA_m
+
+      execute blocks_to_list  DIJAB_AA_m
+      execute blocks_to_list  DIJAB_BB_m
+      execute blocks_to_list  DIJAB_AB_m
+
+      execute blocks_to_list  DIJKA_AAAA_m
+      execute blocks_to_list  DIJKA_BBBB_m
+      execute blocks_to_list  DIJKA_BABA_m
+      execute blocks_to_list  DIJKA_ABAB_m
+
+      execute blocks_to_list  DABCI_AAAA_m
+      execute blocks_to_list  DABCI_BBBB_m
+      execute blocks_to_list  DABCI_ABAB_m
+
+      execute server_barrier
+      execute write_blocks_to_list
+      execute server_barrier
 #
                     ENDSIAL TWO_GRAD_V2_CO   
 #

@@ -30,6 +30,7 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index   NPERT   = 1, 2
 #
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
@@ -489,6 +490,7 @@
       scalar Y_COMP
       scalar Z_COMP
       scalar FD_SCALE
+      scalar SCALE
 #
 # ---------------------------------------
 #
@@ -1127,8 +1129,8 @@
       PROC CREATLAMBDAOLD 
 #     ------------------- 
 #
-         CREATE l1a_old
-         CREATE l1b_old
+#         CREATE l1a_old
+#         CREATE l1b_old
 #
       ENDPROC CREATLAMBDAOLD  
 #     ----------------------  
@@ -1136,13 +1138,13 @@
       PROC CREATLAMBDANEW 
 #     ------------------- 
 #
-         CREATE l1a_new
-         CREATE l1b_new
-#
-         CREATE Gae_a 
-         CREATE Gae_b 
-         CREATE Gmi_a 
-         CREATE Gmi_b 
+#         CREATE l1a_new
+#         CREATE l1b_new
+
+#         CREATE Gae_a 
+#         CREATE Gae_b 
+#         CREATE Gmi_a 
+#         CREATE Gmi_b 
 #
       ENDPROC CREATLAMBDANEW  
 #     ---------------------- 
@@ -2305,9 +2307,9 @@
       PROC W1MINJ 
 #     ----------- 
 #
-           create W1minj_aa
-           create W1minj_ab
-           create W1minj_bb
+#           create W1minj_aa
+#           create W1minj_ab
+#           create W1minj_bb
            execute sip_barrier 
 #
            CALL W1minjAA 
@@ -9646,26 +9648,20 @@
          CREATE HBx
          execute sip_barrier
 
-         one = 1.0
-         two = 2.0
-
          PARDO mu, nu
 
               Txx(mu,nu) = 0.0
 
               IF X_COMP == 9.0
                  EXECUTE return_x Txx
-                 Txx(mu,nu) *= FD_SCALE
               ENDIF
 
               IF Y_COMP == 9.0
                  EXECUTE return_y Txx
-                 Txx(mu,nu) *= FD_SCALE
               ENDIF
 
               IF Z_COMP == 9.0
                  EXECUTE return_z Txx
-                 Txx(mu,nu) *= FD_SCALE
               ENDIF
 
 #debug_bgn
@@ -9678,6 +9674,7 @@
 #                execute symm_force_ij Txx
 #              endif
 #debug_end
+              TXX(mu,nu) *= FD_SCALE
               PUT  HBx(mu,nu) = Txx(mu,nu)
          ENDPARDO mu,nu
 
@@ -9788,7 +9785,7 @@
          ENDPARDO A, I
 
          PARDO B, J
-            Get t1b_1(b,j)
+            Get t1b_2(b,j)
             Tbj(b,j) = t1b_2(b,j)
             PUT T1b_old(b,j) = Tbj(b,j)
          ENDPARDO B, J
@@ -9906,6 +9903,7 @@
 # Create one-particle intermediate arrays 
 # --------------------------------------- 
       CALL CREAT1INTER  
+      execute sip_barrier
 #
 # Compute Tau and Taup arrays 
 # --------------------------- 
@@ -9915,20 +9913,28 @@
       X_COMP = 0.0
       Y_COMP = 0.0
       Z_COMP = 9.0
+      SCALE = 0.000001
 
-      DO KPTR1
+      DO NPERT
 
-      ICOUNT += ICOUNT
+      ICOUNT += 1.0
+      execute print_scalar ICOUNT
 
       IF ICOUNT == 1.0
+      execute print_scalar ICOUNT
          FD_SCALE = 50.0
+         FD_SCALE *= SCALE
+         Z_COMP = 9.0
          CALL GET_FDP
          CALL TRANS_2MO
       ENDIF
 
       IF ICOUNT == 2.0
+      execute print_scalar ICOUNT
          FD_SCALE = 50.0
+         FD_SCALE *= SCALE
          FD_SCALE *= -1.0
+         Z_COMP = 9.0
          CALL GET_FDP
          CALL TRANS_2MO
       ENDIF
@@ -9952,7 +9958,12 @@
       CALL F1AE 
       CALL F1MI  
       execute sip_barrier 
-#
+
+      create W1minj_aa
+      create W1minj_ab
+      create W1minj_bb
+      execute sip_barrier 
+
       CALL W1MINJ 
       CALL W2MEBJ   
       execute server_barrier 
@@ -9968,7 +9979,10 @@
 # Start Iterations 
 # ---------------- 
 #
-      CALL CREATLAMBDAOLD # creates one-particle lambda arrays 
+     CREATE l1a_old
+     CREATE l1b_old
+
+#      CALL CREATLAMBDAOLD # creates one-particle lambda arrays 
       execute sip_barrier 
 #
 # Create initial guess
@@ -10021,8 +10035,16 @@
       enddo kiter
 #
       DO kiter 
+
+         CREATE l1a_new
+         CREATE l1b_new
+
+         CREATE Gae_a
+         CREATE Gae_b
+         CREATE Gmi_a
+         CREATE Gmi_b
 #
-         CALL CREATLAMBDANEW # creates one-particle lambda arrays 
+#         CALL CREATLAMBDANEW # creates one-particle lambda arrays 
 #
 # Zero-out new amplitudes 
 # ----------------------- 
@@ -10122,15 +10144,25 @@
 # Clean up temporary arrays
 # -------------------------
 #
-         execute sip_barrier Gae_a
-         CALL CLEANLITER
-         execute sip_barrier Fme_a
+#         execute sip_barrier Gae_a0
+#         CALL CLEANLITER
+
+       execute sip_barrier 
+
+       DELETE l1a_new
+       DELETE l1b_new
+       DELETE   Gae_a
+       DELETE   Gae_b
+       DELETE   Gmi_a
+       DELETE   Gmi_b
 #
 #        Reset eold --> enew
 #        -------------------
 #
          eold = ecorrT
 #
+#         execute print_scalar ediff 
+
       ENDDO kiter
 #
       IF ICOUNT == 1.0
@@ -10141,7 +10173,31 @@
          CALL PUT_FDL_2
       ENDIF
 
-      ENDDO KPTR1
+      execute print_scalar icount 
+
+      delete W1minj_aa
+      delete W1minj_ab
+      delete W1minj_bb
+      DELETE l1a_old
+      DELETE l1b_old
+
+      DELETE   HBX
+      DELETE  HBa_ae_x
+      DELETE  HBa_me_x
+      DELETE  HBa_mi_x
+      DELETE  HBb_ae_x
+      DELETE  HBb_me_x
+      DELETE  HBb_mi_x
+
+      DELETE l1a_new
+      DELETE l1b_new
+      DELETE   Gae_a
+      DELETE   Gae_b
+      DELETE   Gmi_a
+      DELETE   Gmi_b
+
+
+      ENDDO NPERT
 #     -----------
 
       ENDPROC LMAIN 
@@ -10160,6 +10216,19 @@
 #
       create t1a_old 
       create t1b_old 
+      
+      CREATE T1A_1
+      cREATE T1B_1
+
+      CREATE T1A_2
+      CREATE T1B_2
+
+      CREATE L1A_1
+      cREATE L1B_1
+
+      CREATE L1A_2
+      CREATE L1B_2
+
       CALL READ_2EL 
 #
 #     COMPUTE LAMBDA AMPLITUDES
@@ -10171,24 +10240,26 @@
 # Write amplitudes to file
 # ------------------------
 #
-      CALL WRITE_2EL 
+#      CALL WRITE_2EL 
+
+      execute server_barrier
       execute blocks_to_list t1a_1
       execute blocks_to_list t1b_1
       execute blocks_to_list T2aa_1
       execute blocks_to_list T2ab_1
       execute blocks_to_list T2bb_1
 #
-      execute blocks_to_list t1a_2
-      execute blocks_to_list t1b_2
-      execute blocks_to_list T2aa_2
-      execute blocks_to_list T2ab_2
-      execute blocks_to_list T2bb_2
-#
       execute blocks_to_list l1a_1
       execute blocks_to_list l1b_1
       execute blocks_to_list L2aa_1
       execute blocks_to_list L2ab_1
       execute blocks_to_list L2bb_1
+
+      execute blocks_to_list t1a_2
+      execute blocks_to_list t1b_2
+      execute blocks_to_list T2aa_2
+      execute blocks_to_list T2ab_2
+      execute blocks_to_list T2bb_2
 
       execute blocks_to_list l1a_2
       execute blocks_to_list l1b_2

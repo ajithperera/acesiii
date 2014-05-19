@@ -865,6 +865,7 @@
        scalar Y_COMP
        scalar Z_COMP
        scalar ICOUNT
+       scalar IT_COUNT
 #____________________________________________________________________________
 # generate one-electron B-field integrals
 #
@@ -6287,7 +6288,6 @@
            T2bjbj(b,j,b1,j1) += T2old_bb_x(b,j,b1,j1)
 
 #           etemp = VSqjqj(b,j,b1,j1)*T2bjbj(b,j,b1,j1) 
-
            etemp = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
            etemp = 0.25*etemp 
            esumb += etemp 
@@ -6346,7 +6346,7 @@
                etemp = ecorrT
 #Prakash       etemp+= scfeneg
                tpinf(kiter,kptr1) = etemp
-               pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
+               pinf(kiter,kptr1)  = tpinf(Kiter,kptr1)
             endif
          ENDDO kptr1
 
@@ -9577,8 +9577,12 @@
 
 # Start CC iterations
 # ---------------- 
+       it_count = 0.0
        DO KITER 
  
+         it_count += 1.0
+         execute print_scalar it_count 
+
          CALL TAU_X  
  
          CALL T2NEW_ZERO
@@ -9659,6 +9663,10 @@
 #        Check on convergence 
 #        -------------------- 
 #
+#bgn_debug
+         execute print_scalar  ediff
+#end_debug
+
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
@@ -9667,7 +9675,7 @@
          ENDIF   
 #
          IF ecorrT > eold 
-            ediff = ecorrT - eold  
+            Ediff = ecorrT - eold  
             IF ediff < ecrit 
                exit # kiter 
             ENDIF
@@ -9679,6 +9687,10 @@
 
         ENDDO KITER 
         EXECUTE SERVER_BARRIER
+#
+        totenerg  = ecorrT  
+        execute print_scalar totenerg
+        execute print_rel_info seven pinf
 #
         DELETE HBa_ae_x
         DELETE HBa_me_x
@@ -9708,11 +9720,11 @@
       ENDDO NPERT 
 #...........................................................................
 
-      totenerg  = ecorrT  
-
+#      totenerg  = ecorrT  
+#
 #pv      totenerg += scfeneg  
-     execute print_scalar totenerg  
-     execute print_rel_info seven pinf
+#     execute print_scalar totenerg  
+#     execute print_rel_info seven pinf
 
 # Write amplitudes to file
 # ------------------------

@@ -1,0 +1,232 @@
+         SIAL FINITE_DIFF_2PD
+#        --------------------
+
+      aoindex mu     = 1, norb
+      aoindex nu     = 1, norb
+      aoindex lambda = 1, norb
+      aoindex sigma  = 1, norb
+#
+      moaindex i = baocc, eaocc
+      moaindex i1= baocc, eaocc
+      moaindex i2= baocc, eaocc
+      moaindex i3= baocc, eaocc
+#
+      moaindex a = bavirt, eavirt
+      moaindex a1= bavirt, eavirt
+      moaindex a2= bavirt, eavirt
+      moaindex a3= bavirt, eavirt
+#
+      mobindex j = bbocc, ebocc
+      mobindex j1= bbocc, ebocc
+      mobindex j2= bbocc, ebocc
+      mobindex j3= bbocc, ebocc
+#
+      mobindex b = bbvirt, ebvirt
+      mobindex b1= bbvirt, ebvirt
+      mobindex b2= bbvirt, ebvirt
+      mobindex b3= bbvirt, ebvirt
+#
+      moaindex p = baocc, eavirt
+      moaindex p1= baocc, eavirt
+      moaindex p2= baocc, eavirt
+      moaindex p3= baocc, eavirt
+#
+      mobindex q = bbocc, ebvirt
+      mobindex q1= bbocc, ebvirt
+      mobindex q2= bbocc, ebvirt
+      mobindex q3= bbocc, ebvirt
+
+      served Dijab_aa_p(i,i1,a,a1)
+      served Dijab_ab_p(i,j,a,b)
+      served Dijab_bb_p(j,j1,b,b1)
+
+      served Dijkl_aa_p(i2,i,i3,i1)
+      served Dijkl_bb_p(j,j2,j1,j3)
+      served Dijkl_ab_p(i,j,i1,j1)
+
+      served Dibja_aaaa_p(i,a,i1,a1)
+      served Dibja_abab_p(i,b,i1,b1)
+      served Dibja_baba_p(j,a,j1,a1)
+      served Dibja_bbbb_p(j,b,j1,b1)
+      served Dibja_baab_p(j,a,i,b)
+      served Dibja_abba_p(i,b,j,a)
+
+      served Dabci_aaaa_p(a,a2,a1,i)
+      served Dabci_abab_p(a,b,a1,j)
+      served Dabci_baba_p(b,a,b1,i)
+      served Dabci_bbbb_p(b,b2,b1,j)
+
+      served Dijka_aaaa_p(i,i2,i1,a)
+      served Dijka_abab_p(i,j,i1,b)
+      served Dijka_baba_p(j,i,j1,a)
+      served Dijka_bbbb_p(j,j2,j1,b)
+#
+      served Dijab_aa_m(i,i1,a,a1)
+      served Dijab_ab_m(i,j,a,b)
+      served Dijab_bb_m(j,j1,b,b1)
+
+      served Dijkl_aa_m(i2,i,i3,i1)
+      served Dijkl_bb_m(j,j2,j1,j3)
+      served Dijkl_ab_m(i,j,i1,j1)
+
+      served Dibja_aaaa_m(i,a,i1,a1)
+      served Dibja_abab_m(i,b,i1,b1)
+      served Dibja_baba_m(j,a,j1,a1)
+      served Dibja_bbbb_m(j,b,j1,b1)
+      served Dibja_baab_m(j,a,i,b)
+      served Dibja_abba_m(i,b,j,a)
+
+      served Dabci_aaaa_m(a,a2,a1,i)
+      served Dabci_abab_m(a,b,a1,j)
+      served Dabci_baba_m(b,a,b1,i)
+      served Dabci_bbbb_m(b,b2,b1,j)
+
+      served Dijka_aaaa_m(i,i2,i1,a)
+      served Dijka_abab_m(i,j,i1,b)
+      served Dijka_baba_m(j,i,j1,a)
+      served Dijka_bbbb_m(j,j2,j1,b)
+
+      served Dijab_aa_xyz(i,i1,a,a1)
+      served Dijab_ab_xyz(i,j,a,b)
+      served Dijab_bb_xyz(j,j1,b,b1)
+
+      served Dijkl_aa_xyz(i2,i,i3,i1)
+      served Dijkl_bb_xyz(j,j2,j1,j3)
+      served Dijkl_ab_xyz(i,j,i1,j1)
+
+      served Dibja_aaaa_xyz(i,a,i1,a1)
+      served Dibja_abab_xyz(i,b,i1,b1)
+      served Dibja_baba_xyz(j,a,j1,a1)
+      served Dibja_bbbb_xyz(j,b,j1,b1)
+      served Dibja_baab_xyz(j,a,i,b)
+      served Dibja_abba_xyz(i,b,j,a)
+
+      served Dabci_aaaa_xyz(a,a2,a1,i)
+      served Dabci_abab_xyz(a,b,a1,j)
+      served Dabci_baba_xyz(b,a,b1,i)
+      served Dabci_bbbb_xyz(b,b2,b1,j)
+
+      served Dijka_aaaa_xyz(i,i2,i1,a)
+      served Dijka_abab_xyz(i,j,i1,b)
+      served Dijka_baba_xyz(j,i,j1,a)
+      served Dijka_bbbb_xyz(j,j2,j1,b)
+#    
+      temp Tijkl_am(i,i1,i2,i3)
+      temp Tijkl_ap(i,i1,i2,i3)
+      temp Tijkl_afd(i,i1,i2,i3)
+#
+
+      scalar fd_width
+      scalar inv_fd_width
+      scalar sum
+      scalar tmp
+      scalar sumaa
+
+      PROC READ_FD_2D
+#     ---------------
+      execute server_barrier
+      execute list_to_blocks  DIJKL_AA_P
+      execute list_to_blocks  DIJKL_BB_P
+      execute list_to_blocks  DIJKL_AB_P
+
+      execute list_to_blocks  DIBJA_AAAA_p
+      execute list_to_blocks  DIBJA_BBBB_p
+      execute list_to_blocks  DIBJA_BABA_p
+      execute list_to_blocks  DIBJA_ABAB_p
+      execute list_to_blocks  DIBJA_BAAB_p
+      execute list_to_blocks  DIBJA_ABBA_p
+
+      execute list_to_blocks  DIJAB_AA_p
+      execute list_to_blocks  DIJAB_BB_p
+      execute list_to_blocks  DIJAB_AB_p
+
+      execute list_to_blocks  DIJKA_AAAA_p
+      execute list_to_blocks  DIJKA_BBBB_p
+      execute list_to_blocks  DIJKA_BABA_p
+      execute list_to_blocks  DIJKA_ABAB_p
+
+      execute list_to_blocks  DABCI_AAAA_p
+      execute list_to_blocks  DABCI_BBBB_p
+      execute list_to_blocks  DABCI_ABAB_p
+
+      execute list_to_blocks  DIJKL_AA_m
+      execute list_to_blocks  DIJKL_BB_m
+      execute list_to_blocks  DIJKL_AB_m
+
+      execute list_to_blocks  DIBJA_AAAA_m
+      execute list_to_blocks  DIBJA_BBBB_m
+      execute list_to_blocks  DIBJA_BABA_m
+      execute list_to_blocks  DIBJA_ABAB_m
+      execute list_to_blocks  DIBJA_BAAB_m
+      execute list_to_blocks  DIBJA_ABBA_m
+
+      execute list_to_blocks  DIJAB_AA_m
+      execute list_to_blocks  DIJAB_BB_m
+      execute list_to_blocks  DIJAB_AB_m
+
+      execute list_to_blocks  DIJKA_AAAA_m
+      execute list_to_blocks  DIJKA_BBBB_m
+      execute list_to_blocks  DIJKA_BABA_m
+      execute list_to_blocks  DIJKA_ABAB_m
+
+      execute list_to_blocks  DABCI_AAAA_m
+      execute list_to_blocks  DABCI_BBBB_m
+      execute list_to_blocks  DABCI_ABAB_m
+
+      execute read_list_to_blocks
+      execute server_barrier
+
+      ENDPROC READ_FD_2D
+#     ------------------
+
+    PROC FD_DIJKL_AA
+#   ---------------
+
+    FD_WIDTH = 100.0
+    INV_FD_WIDTH = 1.0/FD_WIDTH
+
+    PARDO  I, I1, I2, I3 
+           REQUEST DIJKL_AA_M(I, I1, I2, I3) I3
+           REQUEST DIJKL_AA_P(I, I1, I2, I3) I3
+
+	   Tijkl_am(I, I1, I2, I3) = DIJKL_AA_M(I, I1, I2, I3)
+           Tijkl_ap(I, I1, I2, I3) = DIJKL_AA_P(I, I1, I2, I3)
+
+           Tijkl_afd(I, I1, I2, I3) =Tijkl_ap(I, I1, I2, I3)
+           Tijkl_afd(I, I1, I2, I3) -=Tijkl_am(I, I1, I2, I3)
+           
+           Tijkl_afd(I, I1, I2, I3) *= INV_FD_WIDTH
+           
+           PREPARE DIJKL_AA_XYZ(I, I1, I2, I3) = Tijkl_afd(I, I1, I2, I3)
+    ENDPARDO  I, I1, I2, I3
+
+    EXECUTE SERVER_BARRIER 
+   
+    sum   = 0.0
+    sumaa = 0.0
+    PARDO  I, I1, I2, I3 
+           REQUEST DIJKL_AA_XYZ(I, I1, I2, I3) I3
+           tmp  = DIJKL_AA_XYZ(I, I1, I2, I3) * DIJKL_AA_XYZ(I, I1, I2, I3)
+           sum  += tmp
+    ENDPARDO I, I1, I2, I3
+
+    EXECUTE SERVER_BARRIER 
+    COLLECTIVE sumaa += sum
+    EXECUTE SIP_BARRIER 
+    EXECUTE PRINT_SCALAR sumaa
+
+    ENDPROC FD_DIJKL_AA
+#   ------------------
+
+#   The main program
+#   -------------------------------------------
+
+     CALL READ_FD_2D
+
+     CALL FD_DIJKL_AA
+
+#   End of the main program
+#   --------------------------------------------
+
+         ENDSIAL  FINITE_DIFF_2PD
+#        -----------------------

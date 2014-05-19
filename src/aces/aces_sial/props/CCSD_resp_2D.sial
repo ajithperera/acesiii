@@ -5,10 +5,12 @@
 #--------------------------------------------------------------- 
 
 # Declare indeces
-#      Index NPERT = 1, 3
+      Index NPERT = 1, 3
 #bgn_debug
-      Index NPERT = 1, 1
+#      Index NPERT = 1, 1
 #end_debug
+      INDEX XYZ = 1, 3
+      INDEX XYZ1 = 1, 3
 
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
@@ -391,6 +393,10 @@
       distributed Djj_x(j,j1)
       distributed Dbb_x(b1,b)
 
+      Served TAO_2SOI_X(mu, nu, lambda, sigma)
+      Served TAO_2SOI_Y(mu, nu, lambda, sigma)
+      Served TAO_2SOI_Z(mu, nu, lambda, sigma)
+
       Served AO_2SOI_X(mu, nu, lambda, sigma)
       Served AO_2SOI_Y(mu, nu, lambda, sigma)
       Served AO_2SOI_Z(mu, nu, lambda, sigma)
@@ -594,6 +600,8 @@
      local Lxxaj(mu,nu,a1,j) 
      local Lxxbj(mu,nu,b2,j) 
      local Lxxbi(mu,nu,b,i) 
+#
+     Static G_TENSOR_2E_SOI(XYZ, XYZ1)
 #
 #    ------------------------------------------------------------------------
 #
@@ -871,6 +879,7 @@
 # Define scalar quantities 
 # ------------------------ 
 #
+      scalar one
       scalar etemp 
       scalar esum 
       scalar etmp
@@ -887,6 +896,8 @@
       scalar sumaa
       scalar sumbb
       scalar sumab 
+      scalar rank
+      scalar ipol
 
       Scalar property
       Scalar beta_is_minus
@@ -894,6 +905,22 @@
       Scalar X_COMP
       Scalar Y_COMP
       Scalar Z_COMP
+#
+      Scalar D2SO_PX
+      Scalar D2SO_PY
+      Scalar D2SO_PZ
+
+      Scalar D2SO_XX
+      Scalar D2SO_XY
+      Scalar D2SO_XZ
+
+      Scalar D2SO_YX
+      Scalar D2SO_YY
+      Scalar D2SO_YZ
+
+      Scalar D2SO_ZX
+      Scalar D2SO_ZY
+      Scalar D2SO_ZZ
 # 
       PROC CREATE1ARRAY 
 #     -----------------
@@ -2804,7 +2831,9 @@
       ENDPARDO a, a1, i, i1
       execute sip_barrier
       execute server_barrier
-
+      DELETE L1ai
+      DELETE L1ai_x
+#.
 # Sixth-term in Eq. 33 
 
 # 1/8P_(ij)P_(ab){(l1_x(e,m)*t1(m,a) + l1(e,m)*t1_x(m,a) + l2_x(ef,mn)t2(mi,ae)
@@ -4812,8 +4841,28 @@
             ENDDO i2
       ENDPARDO a, a1, i, i1
       execute server_barrier
+#bgn_debug
+#       execute get_my_rank rank
+#       one = 1.0
+#       if rank == 0.0
+#          do i
+#          do i1
+#          do i2 
+#          do i3
+#             REQUEST Dijkl_aa_x(i,i1,i2,i3) i3
+#             REQUEST Dijkl_aa_x(i2,i3,i,i1) i1
+#             execute dump_amp Dijkl_aa_x(i,i1,i2,i3)
+#             execute print_scalar one
+#             execute dump_amp Dijkl_aa_x(i2,i3,i,i1) 
+#          enddo i3
+#          enddo i2
+#          enddo i1
+#          enddo i
+#       endif
+#end_debug
+
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA> 
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA> 
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
 # Perform backtransformation to AO representation 
@@ -4895,7 +4944,7 @@
       ENDPARDO a, b, i, j
       execute server_barrier
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 #  DABAB = 1/2 DABAB - DABAB
 #
 # Perform backtransformation to AO representation 
@@ -6065,8 +6114,28 @@
             PREPARE Dibja_aaaa_x(i1,a,i,a1) += TAiaia(i1,a,i,a1)
       ENDPARDO a, a1, i, i1
       execute server_barrier
+
+#bgn_debug
+       execute get_my_rank rank
+       one = 1.0
+       if rank == 0.0
+          do a
+          do a1
+          do i
+          do i1
+             REQUEST Dibja_aaaa_x(i,a1,i1,a) a
+             REQUEST Dibja_aaaa_x(i1,a,i,a1) a1
+             execute dump_amp Dibja_aaaa_x(i,a1,i1,a)
+             execute print_scalar one
+             execute dump_amp Dibja_aaaa_x(i1,a,i,a1)
+          enddo i1
+          enddo i
+          enddo a1
+          enddo a
+       endif
+#end_debug
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+# Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 # DAAAA = 1/2 DAAAA + DAAAA
 # Backtransform to AO representation 
 #
@@ -6243,7 +6312,7 @@
       execute server_barrier
 
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+# Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 # DABAB = 1/2 DABAB - DABAB
 # Backtransform to AO representation 
 # Needs attention: Ajith Perera
@@ -6450,7 +6519,7 @@
 #------------------------------------------------------------------------
 # Backtransform to AO representation 
 #                                                                ++
-# Two particle contribution to G-tensor: O(pq,rs)*<|S_z(1)+S_z(2)pqsr|>
+# Two particle contribution to G-tensor: O(pq,rs)*<|S_z(1)+2S_z(2)pqsr|>
 # DBBBB = 1/2 DBBBB + DBBBB
 
         PARDO sigma, b1, j, j1
@@ -6636,7 +6705,7 @@
 # Backtransform to AO representation 
 #.........................................................................
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+# Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
 # DABAB = -1/2 DBABA + DBABA
 # Backtransform to AO representation
 
@@ -6928,7 +6997,7 @@
 
 # Backtransform to AO representation 
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<A(1)B|S_z(1)+S_z(2)pqsr|AB>
+# Two particle contribution to G-tensor: O(pq,rs)*<A(1)B|S_z(1)+2S_z(2)pqsr|AB>
 # DABAB = -1/2 DABAB + DABAB
 # Here particle-1 is B and particle-2 is A
 
@@ -6939,7 +7008,7 @@
                
                Tjaib(j,a1,i1,b) = Dibja_baab_x(j,a1,i1,b)
                  
-               Tjaib(j,a1,i1,b) *= -0.5
+               Tjaib(j,a1,i1,b) *= 0.5
                 
                T1jaix(j,a1,i1,sigma) = Tjaib(j,a1,i1,b)*cb(sigma,b)
                Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)
@@ -7165,11 +7234,11 @@
                REQUEST Dibja_abba_x(i,b1,j1,a) a
                Tibja(i,b1,j1,a) = Dibja_abba_x(i,b1,j1,a)
 #                                                                  ++
-# Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+# Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 # DABAB = +1/2 DABAB - DABAB
 # Here particle-1 is A and particle-2 is B
  
-               Tibja(i,b1,j1,a) = 0.5
+               Tibja(i,b1,j1,a) = -0.5
 
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a)
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)
@@ -7374,7 +7443,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Taaai(a,a1,a2,i) *= 4.0 
-            PREPARE Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+#            PREPARE Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 #end_debug
 
             DO mu 
@@ -7484,7 +7553,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tbbbj(b,b1,b2,j) *= 4.0 
-           PREPARE Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+#           PREPARE Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
 
             DO mu 
@@ -7612,7 +7681,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tabaj(a,b,a1,j) *= 4.0
-           PREPARE Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j)
+#           PREPARE Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 
             DO mu 
@@ -7749,7 +7818,7 @@
 #bgn_debug
 #           Tbabi(b1,a,b,i) *= 4.0
 #
-           PREPARE Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i)
+#           PREPARE Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
 
             DO mu 
@@ -8087,10 +8156,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Taaai(a,a1,a2,i) *= 4.0 
-           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
             dO mu
@@ -8253,10 +8322,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tbbbj(b,b1,b2,j) *= 4.0 
-           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+#           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DBBBB = -1/2 DBBBB - DBBBB
 #
             DO mu
@@ -8444,15 +8513,15 @@
 #
 #bgn_debug
 #           Tbabi(b1,a,b,i) *= 4.0
-           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
+#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
-#  DBABA = 1/2 DBABA - DBABA
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
+#  DBABA = -1/2 DBABA + DBABA
 #
             DO mu
   
-               Tbabi(b1,a,b,i) *=-0.5
+               Tbabi(b1,a,b,i) *=0.5
 
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1)
                PREPARE Dxabi_x(mu,a,b,i) += Txabi(mu,a,b,i)
@@ -8651,7 +8720,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tabaj(a,b,a1,j) *= 4.0
-           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
+#           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
@@ -8762,7 +8831,7 @@
 #           Taaai(a,a1,a2,i) *= 4.0
 #           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i)
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
             DO mu
@@ -8847,7 +8916,7 @@
 #           Tbbbj(b,b1,b2,j) *= 4.0
 #           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j)
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+S_z(2)pqsr|BB>
+#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+2S_z(2)pqsr|BB>
 #  DBBBB = -1/2 DBBBB - DBBBB
 #
             DO mu
@@ -8925,7 +8994,7 @@
             
 # Multiply by 4 to match aces
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 #  DABAB = 1/2 DABAB - DABAB
 #
             DO mu
@@ -9014,7 +9083,7 @@
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
             ENDDO j
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
 #  DBABA = -1/2 DBABA + DBABA
 #
             DO mu
@@ -9173,8 +9242,7 @@
 #bgn_debug
 #
 #           Tiiia(i,i1,i2,a) *= 4.0
-
-            PREPARE Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+#            PREPARE Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
 
             DO sigma 
@@ -9271,7 +9339,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tijib(i,j,i1,b) *= 4.0 
-            PREPARE Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
+#            PREPARE Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
 #end_debug
 
             DO sigma 
@@ -9365,7 +9433,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-            PREPARE Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
+#            PREPARE Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 
             DO sigma 
@@ -9461,7 +9529,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-            PREPARE Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+#            PREPARE Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
             DO sigma 
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b) 
@@ -9665,10 +9733,10 @@
 # ---------------------------
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
-           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
             DO sigma
@@ -9694,6 +9762,23 @@
             PREPARE Diixx_aaaa_x(i,i1,lambda,sigma) += Tiixx(i,i1,lambda,sigma)
       ENDPARDO i, i1, lambda, sigma
       execute server_barrier
+
+#bgn_debug
+#       execute get_my_rank rank
+#       one = 1.0
+#       if rank == 0.0
+#          do i
+#          do i1
+#          do i2 
+#          do a
+#             REQUEST Dijka_aaaa_x(i,i1,i2,a) a
+#             execute dump_amp Dijka_aaaa_x(i,i1,i2,a)
+#          enddo a
+#          enddo i2
+#          enddo i1
+#          enddo i
+#       endif
+#end_debug
 
       ENDPROC DIJKAAAAA_X
 #     -------------------
@@ -9802,10 +9887,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+S_z(2)pqsr|BB>
+#  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+2S_z(2)pqsr|BB>
 #  -1/2 BBBBB - BBBB
 #
             DO sigma
@@ -9963,10 +10048,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tijib(i,j,i1,b) *= 4.0 
-           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+S_z(2)pqsr|AB>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 #  DABAB = 1/2 DABAB - DABAB
 #
             DO sigma
@@ -10137,10 +10222,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+#           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
 #  DABAB = -1/2 DABAB + DABAB
 
             DO sigma
@@ -10215,7 +10300,7 @@
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a)
             ENDDO a1
 #                                                                   ++
-#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
+#  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
             DO sigma
@@ -10363,10 +10448,6 @@
 
              ENDDO b
 
-# Multiply by 4 to match aces
-#           Tjija(j,i,j1,a) *= 4.0
-#           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a)
-#                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+S_z(2)pqsr|BA>
 #  DBABA = -1/2 DBABA + DBABA
 #
@@ -11988,16 +12069,15 @@
 
      PARDO mu, nu, lambda, sigma
             
-           IF X_COMP == 9.0
-               EXECUTE COMPUTE_2SOI_XBATCH AO_2SOI_X(mu, nu, lambda, sigma)
-           ENDIF 
-           IF Y_COMP == 9.0
-               EXECUTE COMPUTE_2SOI_YBATCH AO_2SOI_Y(mu, nu, lambda, sigma)
-           ENDIF 
+               EXECUTE COMPUTE_2SOI_XBATCH TAO_2SOI_X(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2SOI_YBATCH TAO_2SOI_Y(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2SOI_ZBATCH TAO_2SOI_Z(mu, nu, lambda, sigma)
 
-           IF Z_COMP == 9.0
-               EXECUTE COMPUTE_2SOI_ZBATCH AO_2SOI_Z(mu, nu, lambda, sigma)
-           ENDIF 
+               PREPARE AO_2SOI_X(mu, nu, lambda, sigma) = TAO_2SOI_X(mu, nu, lambda, sigma)
+
+               PREPARE AO_2SOI_Y(mu, nu, lambda, sigma) = TAO_2SOI_Y(mu, nu, lambda, sigma)
+
+               PREPARE AO_2SOI_Z(mu, nu, lambda, sigma) = TAO_2SOI_Z(mu, nu, lambda, sigma)
 
      ENDPARDO mu, nu, lambda, sigma
 
@@ -12006,6 +12086,164 @@
      ENDPROC GET_2P_SPIN_ORBIT
 #    -------------------------
 
+     PROC CCSD_2DRESPN_X
+#    -------------------
+       
+      D2SO_PX = 0.0
+      D2SO_PY = 0.0
+      D2SO_PZ = 0.0
+
+      PARDO mu, nu, lambda, sigma
+            REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
+
+            REQUEST Dxxxx_aaaa_x(mu,nu,lambda,sigma) sigma
+            REQUEST Dxxxx_bbbb_x(mu,nu,lambda,sigma) sigma 
+            REQUEST Dxxxx_abab_x(mu,nu,lambda,sigma) sigma 
+
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      EXECUTE SERVER_BARRIER 
+  
+      COLLECTIVE D2SO_XX += D2SO_PX
+      COLLECTIVE D2SO_XY += D2SO_PY
+      COLLECTIVE D2SO_XZ += D2SO_PZ
+
+#bgn_debug
+     execute print_scalar D2SO_XX
+     execute print_scalar D2SO_XY
+     execute print_scalar D2SO_XZ
+#end_debug
+
+     ENDPROC CCSD_2DRESPN_X
+#    -------------------
+
+     PROC CCSD_2DRESPN_Y
+#    -------------------
+
+      D2SO_PX = 0.0
+      D2SO_PY = 0.0
+      D2SO_PZ = 0.0
+
+      PARDO mu, nu, lambda, sigma
+            REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma 
+            REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma 
+
+            REQUEST Dxxxx_aaaa_x(mu,nu,lambda,sigma) sigma 
+            REQUEST Dxxxx_bbbb_x(mu,nu,lambda,sigma) sigma
+            REQUEST Dxxxx_abab_x(mu,nu,lambda,sigma) sigma
+
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      EXECUTE SERVER_BARRIER
+
+      COLLECTIVE D2SO_YX += D2SO_PX
+      COLLECTIVE D2SO_YY += D2SO_PY
+      COLLECTIVE D2SO_YZ += D2SO_PZ
+
+#bgn_debug
+     execute print_scalar D2SO_YX
+     execute print_scalar D2SO_YY
+     execute print_scalar D2SO_YZ
+#end_debug
+
+     ENDPROC CCSD_2DRESPN_Y
+#    -------------------
+
+     PROC CCSD_2DRESPN_Z
+#    -------------------
+
+      D2SO_PX = 0.0
+      D2SO_PY = 0.0
+      D2SO_PZ = 0.0
+
+      PARDO mu, nu, lambda, sigma
+            REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma 
+            REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
+
+            REQUEST Dxxxx_aaaa_x(mu,nu,lambda,sigma) sigma
+            REQUEST Dxxxx_bbbb_x(mu,nu,lambda,sigma) sigma 
+            REQUEST Dxxxx_abab_x(mu,nu,lambda,sigma) sigma
+
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PX +=tmp
+
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PY +=tmp
+
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+            D2SO_PZ +=tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      EXECUTE SERVER_BARRIER
+
+      COLLECTIVE D2SO_ZX += D2SO_PX
+      COLLECTIVE D2SO_ZY += D2SO_PY
+      COLLECTIVE D2SO_ZZ += D2SO_PZ
+
+#bgn_debug
+     execute print_scalar D2SO_ZX
+     execute print_scalar D2SO_ZY
+     execute print_scalar D2SO_ZZ
+#end_debug
+
+     ENDPROC CCSD_2DRESPN_Z
+#    ----------------------
 #bgn_debug
 
      PROC PICK_TL
@@ -12111,6 +12349,20 @@
       ENDPARDO A, B, I, J,
 
       EXECUTE SERVER_BARRIER
+
+#bgn_debug
+       execute get_my_rank rank
+       if rank == 0.0
+          do i 
+          do a
+            GET T1a_old_x(A,I)
+            GET L1a_old_x(I,A) 
+             execute dump_amp T1a_old_x(A,I)
+             execute dump_amp L1a_old_x(I,A) 
+          enddo a
+          enddo i
+       endif 
+#end_debug
 
       ENDPROC PICK_PERT_T_X
 #     ---------------------
@@ -12239,24 +12491,23 @@
          CALL DPQRSTODXXXX                                                   
          CALL DIBJA                               
 #bgn_debug
-         CALL S2DIBJA
+#         CALL S2DIBJA
 #end_debug
          CALL DIJKL                                          
 #bgn_debug
-         CALL S2DIJKL
+#         CALL S2DIJKL
 #end_debug
          CALL DIJAB
 #bgn_debug
-         CALL S2DIJAB
+#         CALL S2DIJAB
 #end_debug
          CALL DIJKA                                                 
 #bgn_debug
-         CALL S2DIJKA
+#         CALL S2DIJKA
 #end_debug
-
          CALL DABCI                                               
 #bgn_debug
-         CALL S2ABCI
+#         CALL S2ABCI
 #end_debug
          execute sip_barrier 
          execute server_barrier 
@@ -12269,12 +12520,37 @@
 
 # Loop over perturbation statrs here.
 
-         property = 10.0
+         property = 20.0
 
-         if property == 10.0
-            call get_2P_Spin_orbit
+         if property == 20.0
+            CALL GET_2P_SPIN_ORBIT 
+            EXECUTE SERVER_BARRIER
          endif
 
+#bgn_debug
+      suma=0.0
+      sumb=0.0
+     
+      PARDO mu, nu, lambda, sigma
+            REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma  
+ 
+            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*AO_2SOI_X(mu, nu, lambda, sigma)
+            suma +=tmp
+
+            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*AO_2SOI_Y(mu, nu, lambda, sigma)
+            suma +=tmp
+
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*AO_2SOI_Z(mu, nu, lambda, sigma)
+            suma +=tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      EXECUTE SERVER_BARRIER 
+      COLLECTIVE sumaa +=suma
+      execute print_scalar sumaa
+#end_debug
+    
          NCOUNT = 0.0
 
           DO NPERT 
@@ -12302,8 +12578,8 @@
 
              IF NCOUNT == 1.0
 #bgn_debug
-               CALL PICK_TL
-#                CALL PICK_PERT_T_X
+#               CALL PICK_TL
+                CALL PICK_PERT_T_X
 #end_debug
              ENDIF
 
@@ -12376,13 +12652,13 @@
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-             CALL S2DIBJA_X 
+#             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-             CALL S2DIJKA_X 
+#             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
@@ -12391,7 +12667,7 @@
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-             CALL S2DIJAB_X
+#             CALL S2DIJAB_X
 #end_debug
 
 #             CALL DABIJ_X   #6th term (if necessary)
@@ -12401,7 +12677,7 @@
 
              CALL DCIAB_X   #8th term
 #bgn_debug
-             CALL S2ABCI_X
+#             CALL S2ABCI_X
 #end_debug
 
 #checked; there are questions about factor; No assumptions
@@ -12410,11 +12686,69 @@
 
              CALL  PDCONT_x
 
+             IF NCOUNT == 1.0 
+                CALL CCSD_2DRESPN_X
+             ENDIF 
+             IF NCOUNT == 2.0 
+                CALL CCSD_2DRESPN_Y
+             ENDIF
+             IF NCOUNT == 2.0 
+                CALL CCSD_2DRESPN_Z
+             ENDIF 
+
           ENDDO NPERT 
 
           execute server_barrier
 
           call verify_x
+
+          IF PROPERTY == 20.0
+
+          DO XYZ 
+             DO XYZ1
+                IF XYZ == 1
+                   IF XYZ1 == 1
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
+                   ENDIF 
+                   IF XYZ1 == 2
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XY
+                   ENDIF 
+                   IF XYZ1 == 3
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
+                   ENDIF 
+                ENDIF 
+
+                IF XYZ == 2
+                   IF XYZ1 == 1
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YX
+                   ENDIF 
+                   IF XYZ1 == 2
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YY
+                   ENDIF 
+                   IF XYZ1 == 3
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YZ
+                   ENDIF 
+                ENDIF 
+
+                IF XYZ == 3
+                   IF XYZ1 == 1
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZX
+                   ENDIF 
+                   IF XYZ1 == 2
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZY
+                   ENDIF 
+                   IF XYZ1 == 3
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZZ
+                   ENDIF 
+                ENDIF 
+             ENDDO XYZ1
+          ENDDO XYZ
+
+          IPOL = 716.0
+          EXECUTE PRINT_REL_INFO IPOL G_TENSOR_2E_SOI
+
+          ENDIF
+
 
       ENDPROC DMAIN
 

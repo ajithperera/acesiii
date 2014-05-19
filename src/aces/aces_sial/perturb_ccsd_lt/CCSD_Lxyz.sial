@@ -11798,7 +11798,16 @@
               IF Z_COMP == 9.0
                  EXECUTE return_z Txx
               ENDIF
-
+#debug_bgn
+#              If mu > nu
+#                 execute print_scalar one
+#                 Txx(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Txx
+#              endif
+#debug_end
               PUT  HBx(mu,nu) += Txx(mu,nu)
          ENDPARDO mu,nu
 

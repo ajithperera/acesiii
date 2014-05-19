@@ -3802,19 +3802,19 @@
             endif
 
            if property == 10.0
-              ipol = 711
+              ipol = 711.0
               execute print_rel_info ipol pol 
-              ipol = 712
+              ipol = 712.0
               execute print_rel_info ipol pol
 
            endif 
 
 	   if property == 20.0
-	      ipol = 713
+	      ipol = 713.0
 	      execute print_rel_info ipol g_tensor_MC
-              ipol = 714 
+              ipol = 714.0
               execute print_rel_info ipol g_tensor_1E_GC
-	      ipol = 715
+	      ipol = 715.0
 	      execute print_rel_info ipol g_tensor_1E_BL
 	   endif 
 #

@@ -34,6 +34,7 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index   NPERT   = 1, 2
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -749,6 +750,7 @@
        scalar Y_COMP
        scalar Z_COMP
        scalar FD_SCALE 
+       scalar SCALE 
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -1196,6 +1198,25 @@
       PROC FAEB
 #     ----------
 #
+      PARDO b,b1
+           get HBb_ae_x(b,b1)
+           tbb(b,b1) = HBb_ae_x(b,b1)
+           put Fae_b(b,b1) += tbb(b,b1)
+      ENDPARDO b, b1
+
+      PARDO b, b1
+           Tbb(b,b1)=0.0
+           DO j
+             get t1b_old(b,j)
+             get HBb_me_x(j,b1)
+             tbj(b,j) = t1b_old(b,j)
+             T1bb(b,b1)  = tbj(b,j) * HBb_me_x(j,b1)
+             Tbb(b,b1)  +=T1bb(b,b1)
+             Tbb(b,b1) *= -0.5
+           ENDDO j
+             put Fae_b(b,b1) +=Tbb(b,b1)
+      ENDPARDO b,b1
+
       PARDO b, b2, j
 #
                allocate LWbjbj(b2,j,b,*) 
@@ -1515,6 +1536,23 @@
       PROC FMIB
 #     ----------
 #
+       PARDO j1,j
+            get HBb_mi_x(j1,j)
+            tjj(j1,j)          = HBb_mi_x(j1,j)
+            put Fmi_b(j1,j) += Tjj(j1,j)
+      ENDPARDO j1,j
+      PARDO j1,j
+           Tjj(j1,j) = 0.0
+           DO b
+             get t1b_old(b,j)
+             get HBb_me_x(j1,b)
+             T1jj(j1,j) = HBb_me_x(j1,b)*t1b_old(b,j)
+             Tjj(j1,j) += T1jj(j1,j)
+           ENDDO b
+           Tjj(j1,j)*= 0.5
+           put Fmi_b(j1,j) +=Tjj(j1,j)
+      ENDPARDO j1,j
+
       PARDO j1, j, b, j2
 #
             REQUEST VSqjqj(b,j2,j,j1) j1  
@@ -8114,7 +8152,7 @@
 #    -------------
 
      PROC get_FD_P
-#    ------------
+#    -------------
 
          CREATE HBx
          execute sip_barrier
@@ -8134,6 +8172,9 @@
               IF Z_COMP == 9.0
                  EXECUTE return_z Txx
               ENDIF
+
+              Txx(mu,nu) *= FD_SCALE
+
               PUT  HBx(mu,nu) = Txx(mu,nu)
          ENDPARDO mu,nu
 
@@ -8368,20 +8409,34 @@
       X_COMP = 0.0
       Y_COMP = 0.0
       Z_COMP = 0.0
+      
+      SCALE = 0.000001
+      CREATE T1A_1
+      CREATE T1B_1
 
-      DO KPTR1 
-         
+      CREATE T1A_2
+      CREATE T1B_2
+      execute sip_barrier
+
+      DO NPERT
+
          ICOUNT += 1.0
+
+         execute print_scalar icount
 
          IF ICOUNT == 1.0
             FD_SCALE = 50.0
+            FD_SCALE *= SCALE
+            Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO
          ENDIF 
 
          IF ICOUNT == 2.0
             FD_SCALE  = 50.0
-            FD_SCALE += -1.0
+            FD_SCALE *= SCALE
+            FD_SCALE *= -1.0
+            Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO
          ENDIF 
@@ -8520,14 +8575,23 @@
       ENDIF 
 
       IF ICOUNT == 2.0
-         CALL PUT_FD_T1
+         CALL PUT_FD_T2
       ENDIF 
 
-      ENDDO KPTR1
+      DELETE HBa_ae_x
+      DELETE HBa_me_x
+      DELETE HBa_mi_x
+      DELETE HBb_ae_x
+      DELETE HBb_me_x
+      DELETE HBb_mi_x
+
+      DELETE HBX
+
+      ENDDO NPERT
 #
       totenerg  = ecorrT  
       totenerg += scfeneg  
-     #execute print_scalar totenerg  
+      execute print_scalar totenerg  
       execute print_rel_info seven pinf
 #
 # Write amplitudes to file
