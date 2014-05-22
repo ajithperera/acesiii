@@ -9699,6 +9699,8 @@
        CREATE HBb_mi_x
        execute sip_barrier
 
+# Alpha 
+
        PARDO mu,nu
             get HBx(mu,nu)
             do i
@@ -9732,6 +9734,39 @@
             enddo a
         ENDPARDO mu,nu
 
+# Beta
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do j1
+                   Tjj(j,j1) = Tjx(j,nu)*CB(nu,j1)
+                   PUT HBb_mi_x(j,j1) += Tjj(j,j1)
+                enddo j1
+            enddo j
+         ENDPARDO mu,nu
+#..................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do b
+                   Tjb(j,b)  = Tjx(j,nu)*CB(nu,b)
+                   PUT HBb_me_x(j,b) += Tjb(j,b)
+                enddo b
+             enddo j
+         ENDPARDO mu,nu
+#.....................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+             do b
+                Txb(mu,b) = HBx(mu,nu)*CB(nu,b)
+               do b1
+                   Tbb(b1,b)  = Txb(mu,b)*CB(mu,b1)
+                   PUT HBb_ae_x(b1,b) += Tbb(b1,b)
+                enddo b1
+             enddo b
+         ENDPARDO mu,nu
         execute sip_barrier
 
       ENDPROC TRANS_2MO

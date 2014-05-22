@@ -78,11 +78,18 @@
       distributed t1a_new(a,i) 
       distributed t1b_old(b,j) 
       distributed t1b_new(b,j) 
+#
+      distributed Fae_a(a,a1) 
+      distributed Fae_b(b,b1) 
+      distributed Fme_a(i,a) 
+      distributed Fme_b(j,b) 
+      distributed Fmi_a(i,i1) 
+      distributed Fmi_b(j,j1) 
 
-      distributed t1a_1(a,i) 
+      distributed t1a_1(a,i)
       distributed t1b_1(b,j)
 
-      distributed t1a_2(a,i) 
+      distributed t1a_2(a,i)
       distributed t1b_2(b,j)
 
       distributed HBx(mu,nu)
@@ -92,19 +99,11 @@
       distributed HBb_me_x(j,b1)
       distributed HBb_mi_x(j,j1)
       distributed HBa_mi_x(i,i1)
-
       temp tix(i,mu)
       temp tjx(j,mu)
       temp  Txa(mu,a)
       temp  Txb(mu,b)
       temp Txx(mu,nu)
-#
-      distributed Fae_a(a,a1) 
-      distributed Fae_b(b,b1) 
-      distributed Fme_a(i,a) 
-      distributed Fme_b(j,b) 
-      distributed Fmi_a(i,i1) 
-      distributed Fmi_b(j,j1) 
 #
 #
 # Arrays used in transformation for AO2 algorithm
@@ -376,7 +375,7 @@
       served T2old_aa(a,i,a1,i1)
       served T2old_bb(b,j,b1,j1)
       served T2old_ab(a,i,b,j)
-#
+
       served T2aa_1(a,i,a1,i1)
       served T2bb_1(b,j,b1,j1)
       served T2ab_1(a,i,b,j)
@@ -749,8 +748,13 @@
        scalar X_COMP
        scalar Y_COMP
        scalar Z_COMP
-       scalar FD_SCALE 
-       scalar SCALE 
+       scalar FD_SCALE
+       scalar SCALE
+       scalar sum
+       scalar tmp
+       scalar enhfa
+       scalar enhfb
+
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -1071,7 +1075,7 @@
 #
       PARDO a,a1
            get HBa_ae_x(a,a1)
-           taa(a,a1)           = HBa_ae_x(a,a1)
+           taa(a,a1)         = HBa_ae_x(a,a1)
            put Fae_a(a,a1)  += Taa(a,a1)
       ENDPARDO a, a1
 
@@ -1080,7 +1084,7 @@
            DO i
              get t1a_old(a,i)
              get HBa_me_x(i,a1)
-             tai(a,i) = t1a_old(a,i)
+             tai(a,i)   = t1a_old(a,i)
              T1aa(a,a1) = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
              Taa(a,a1) *= -0.5
@@ -1200,7 +1204,7 @@
 #
       PARDO b,b1
            get HBb_ae_x(b,b1)
-           tbb(b,b1) = HBb_ae_x(b,b1)
+           tbb(b,b1)        = HBb_ae_x(b,b1)
            put Fae_b(b,b1) += tbb(b,b1)
       ENDPARDO b, b1
 
@@ -1209,10 +1213,10 @@
            DO j
              get t1b_old(b,j)
              get HBb_me_x(j,b1)
-             tbj(b,j) = t1b_old(b,j)
+             tbj(b,j)    = t1b_old(b,j)
              T1bb(b,b1)  = tbj(b,j) * HBb_me_x(j,b1)
              Tbb(b,b1)  +=T1bb(b,b1)
-             Tbb(b,b1) *= -0.5
+             Tbb(b,b1)  *= -0.5
            ENDDO j
              put Fae_b(b,b1) +=Tbb(b,b1)
       ENDPARDO b,b1
@@ -1340,7 +1344,7 @@
 #
       PARDO i,a
           get HBa_me_x(i,a)
-          Tia(i,a) =  HBa_me_x(i,a)
+          Tia(i,a)        =  HBa_me_x(i,a)
           put Fme_a(i,a) +=Tia(i,a)
       ENDPARDO i,a
 
@@ -1388,7 +1392,7 @@
 #
       PARDO j,b
           get HBb_me_x(j,b)
-          Tjb(j,b) = HBb_me_x(j,b)
+          Tjb(j,b)        = HBb_me_x(j,b)
           put Fme_b(j,b) +=Tjb(j,b)
       ENDPARDO j,b
 
@@ -1447,7 +1451,7 @@
 #
       PARDO i1,i
             get HBa_mi_x(i1,i)
-            Tii(i1,i)          = HBa_mi_x(i1,i)
+            Tii(i1,i)        = HBa_mi_x(i1,i)
             put Fmi_a(i1,i) += Tii(i1,i)
       ENDPARDO i1,i
 
@@ -1459,7 +1463,7 @@
              T1ii(i1,i) = HBa_me_x(i1,a)*t1a_old(a,i)
              Tii(i1,i) += T1ii(i1,i)
            ENDDO a
-           Tii(i1,i)*= 0.5
+           Tii(i1,i)       *= 0.5
            put Fmi_a(i1,i) +=Tii(i1,i)
       ENDPARDO i1,i
 
@@ -1538,7 +1542,7 @@
 #
        PARDO j1,j
             get HBb_mi_x(j1,j)
-            tjj(j1,j)          = HBb_mi_x(j1,j)
+            tjj(j1,j)        = HBb_mi_x(j1,j)
             put Fmi_b(j1,j) += Tjj(j1,j)
       ENDPARDO j1,j
       PARDO j1,j
@@ -1549,7 +1553,7 @@
              T1jj(j1,j) = HBb_me_x(j1,b)*t1b_old(b,j)
              Tjj(j1,j) += T1jj(j1,j)
            ENDDO b
-           Tjj(j1,j)*= 0.5
+           Tjj(j1,j)       *= 0.5
            put Fmi_b(j1,j) +=Tjj(j1,j)
       ENDPARDO j1,j
 
@@ -1821,6 +1825,25 @@
             deallocate L1iibj(*,i1,b,j) 
 #
       ENDPARDO b, j, i1  
+
+      PARDO a, i
+           get HBa_me_x(i,a)
+           tai(a,i)            = HBa_me_x(i,a)
+           PUT t1a_new(a,i) += tai(a,i)
+      ENDPARDO a, i
+#
+#bgn_debug
+#      sum = 0.0
+#      do a
+#      do i
+#         get  t1a_new(a,i)
+#         tmp =  t1a_new(a,i) *  t1a_new(a,i)
+#         sum += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum
+#end_debug
+
 #
       ENDPROC T1ANEW 
 #     --------------
@@ -2017,6 +2040,25 @@
             deallocate Ljjai(a,i,*,j1)  
 #
       ENDPARDO a, i, j1  
+
+      PARDO b, j
+           get HBb_me_x(j,b)
+           tbj(b,j)            = HBb_me_x(j,b)
+           PUT t1b_new(b,j) += tbj(b,j)
+      ENDPARDO b, j
+
+#bgn_debug
+#      sum= 0.0
+#      do b
+#      do j
+#         get  t1b_new(b,j)
+#         tmp = t1b_new(b,j) * t1b_new(b,j)
+#         sum += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum
+#end_debug
+
 #
       ENDPROC T1BNEW 
 #     --------------
@@ -5073,12 +5115,34 @@
 #
      ENDPARDO a, b, i, j 
 
+     enhfa = 0.0
+     PARDO a, i
+           GET t1a_old(a,i)
+           GET HBa_me_x(i,a)
+           etemp = t1a_old(a,i) * HBa_me_x(i,a)
+           enhfa +=  etemp
+     ENDPARDO a, i
+
+     enhfb = 0.0
+     PARDO b, j 
+           GET t1b_old(b,j)
+           GET HBb_me_x(j,b)
+           etemp = t1b_old(b,j) * HBb_me_x(j,b)
+           enhfb +=  etemp
+     ENDPARDO b, j 
+
      execute sip_barrier 
 
      collective ecorraa += esuma
     #execute print_scalar ecorraa 
 #
+     collective ecorraa += enhfa
+    #execute print_scalar ecorraa 
+
      collective ecorrbb += esumb 
+    #execute print_scalar ecorrbb 
+
+     collective ecorrbb += enhfb
     #execute print_scalar ecorrbb 
 #
      collective ecorrab += esumab
@@ -8150,7 +8214,6 @@
 #
      ENDPROC MOVE4
 #    -------------
-
      PROC get_FD_P
 #    -------------
 
@@ -8179,6 +8242,19 @@
          ENDPARDO mu,nu
 
      execute sip_barrier
+#bgn_debug
+     sum = 0.0
+     do mu
+     do nu
+        get hbx(mu,nu)
+#        execute dump_amp Hbx(mu,nu)
+        tmp = hbx(mu,nu)*hbx(mu,nu)
+        sum += tmp
+     enddo nu
+     enddo mu
+     execute print_scalar fd_scale
+     execute print_scalar sum
+#end_debug
 
      ENDPROC get_FD_P
 #    ----------------
@@ -8192,7 +8268,7 @@
        CREATE HBb_me_x
        CREATE HBb_mi_x
        execute sip_barrier
-
+# ALPHA
        PARDO mu,nu
             get HBx(mu,nu)
             do i
@@ -8225,9 +8301,43 @@
                enddo a1
             enddo a
         ENDPARDO mu,nu
-     ENDPROC TRANS_2MO
-#    --------------
+# BETA
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do j1
+                   Tjj(j,j1) = Tjx(j,nu)*CB(nu,j1)
+                   PUT HBb_mi_x(j,j1) += Tjj(j,j1)
+                enddo j1
+            enddo j
+         ENDPARDO mu,nu
+#..................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do b
+                   Tjb(j,b)  = Tjx(j,nu)*CB(nu,b)
+                   PUT HBb_me_x(j,b) += Tjb(j,b)
+                enddo b
+             enddo j
+         ENDPARDO mu,nu
+#.....................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+             do b
+                Txb(mu,b) = HBx(mu,nu)*CB(nu,b)
+               do b1
+                   Tbb(b1,b)  = Txb(mu,b)*CB(mu,b1)
+                   PUT HBb_ae_x(b1,b) += Tbb(b1,b)
+                enddo b1
+             enddo b
+         ENDPARDO mu,nu
+         execute sip_barrier
 
+     ENDPROC TRANS_2MO
+#    -----------------
      PROC PUT_FD_T1
 #    --------------
 
@@ -8265,7 +8375,6 @@
 
      ENDPROC PUT_FD_T1
 #    -----------------
-
      PROC PUT_FD_T2
 #    --------------
 
@@ -8303,7 +8412,15 @@
 
      ENDPROC PUT_FD_T2
 #    -----------------
-# -------------------------------------------------
+
+
+
+
+
+#
+# ---------------------------------------------------------------------------------
+#
+# ---------------------------------------------------------------------------------
 # 
 # BEGIN MAIN PROGRAM 
 # ------------------ 
@@ -8355,13 +8472,13 @@
 #
 # Get initial second-order guess 
 # ------------------------------ 
-      CALL IGUESS_UHF
-      EXECUTE SIP_BARRIER  
-      EXECUTE SERVER_BARRIER  
+#      CALL IGUESS_UHF
+#      EXECUTE SIP_BARRIER  
+#      EXECUTE SERVER_BARRIER  
 #
 # Calculate the second-order energy 
 # --------------------------------- 
-      CALL ENERGY_NEW 
+#      CALL ENERGY_NEW 
 
       do kiter
       do kptr1
@@ -8409,7 +8526,7 @@
       X_COMP = 0.0
       Y_COMP = 0.0
       Z_COMP = 0.0
-      
+
       SCALE = 0.000001
       CREATE T1A_1
       CREATE T1B_1
@@ -8430,7 +8547,7 @@
             Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO
-         ENDIF 
+         ENDIF
 
          IF ICOUNT == 2.0
             FD_SCALE  = 50.0
@@ -8439,7 +8556,16 @@
             Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO
-         ENDIF 
+         ENDIF
+# Get initial second-order guess
+# ------------------------------
+      CALL IGUESS_UHF
+      EXECUTE SIP_BARRIER
+      EXECUTE SERVER_BARRIER
+#
+# Calculate the second-order energy
+# ---------------------------------
+      CALL ENERGY_NEW
 
       DO KITER 
 #
@@ -8569,14 +8695,19 @@
          eold = ecorrT 
 #
       ENDDO KITER 
-  
+#
+      totenerg  = ecorrT  
+      totenerg += scfeneg  
+      execute print_scalar totenerg  
+      execute print_rel_info seven pinf
+
       IF ICOUNT == 1.0
          CALL PUT_FD_T1
-      ENDIF 
+      ENDIF
 
       IF ICOUNT == 2.0
          CALL PUT_FD_T2
-      ENDIF 
+      ENDIF
 
       DELETE HBa_ae_x
       DELETE HBa_me_x
@@ -8589,10 +8720,11 @@
 
       ENDDO NPERT
 #
-      totenerg  = ecorrT  
-      totenerg += scfeneg  
-      execute print_scalar totenerg  
-      execute print_rel_info seven pinf
+#      totenerg  = ecorrT
+#      totenerg += scfeneg
+#      execute print_scalar totenerg
+#      execute print_rel_info seven pinf
+#
 #
 # Write amplitudes to file
 # ------------------------
@@ -8654,10 +8786,7 @@
       ENDDO j
       ENDDO b
 #
-
-#
       CALL WRITE_2EL   
-#
       execute sip_barrier
       execute blocks_to_list                t1a_1
       execute blocks_to_list                t1b_1
@@ -8672,7 +8801,6 @@
       execute blocks_to_list                T2bb_2
       execute write_blocks_to_list
       execute sip_barrier
-#
                            ENDSIAL CCSD_UHF_SV1    
 #
 # EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 
