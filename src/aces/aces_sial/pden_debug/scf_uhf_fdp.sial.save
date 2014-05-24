@@ -104,13 +104,14 @@
       distributed Dhfa_old(mu,nu) 
       distributed Dhfb_old(mu,nu) 
 #
-      distributed Fpq_a(mu,nu) 
+      distributed Fpq_a(mu,nu)
       distributed Fpq_b(mu,nu) 
       distributed FTpq_a(mu,nu) 
       distributed FTpq_b(mu,nu) 
       distributed CBT_a(mu,p) 
       distributed CBT_b(mu,q) 
       distributed Hbx(mu,nu)
+      static Tbx(mu,nu)
 
       static dflags11(iiter1,jjter1)
       static dflags12(iiter1,jjter2)
@@ -199,7 +200,6 @@
 #
 # Scalars used in DIIS procedure 
 # ------------------------------ 
-       scalar dens_check 
 #
        scalar b11
        scalar b12
@@ -413,9 +413,9 @@
       scalar two
       scalar three
       scalar four
-      scalar pcount 
       scalar ncount1 
       scalar rank 
+      scalar FD_SCALE
 #
 # Parameters needed for DIIS 
 
@@ -427,7 +427,6 @@
       scalar worder  
       scalar n1 
       scalar n2 
-      scalar FD_SCALE
 
       distributed Fa(mu,nu,kdiis) 
       distributed Fb(mu,nu,kdiis) 
@@ -1360,29 +1359,37 @@
 #      ENDDO nu   
 #      ENDDO mu    
 #
-       execute sip_barrier
-#
-
        execute get_my_rank rank 
        if rank == 0.0 
        DO mu    
        DO nu   
-#
-             GET HBX(mu, nu)
 
-             Txx(mu,nu)        = 0.0  
-             t1xx(mu,nu)       = 0.0
-             execute return_h1 txx 
+          GET HBX(mu, nu)
 #
+             Txx(mu,nu)        = 0.0  
+             execute return_h1 txx 
+
              t1xx(mu,nu) = HBx(mu,nu)
              txx(mu,nu) += t1xx(mu,nu)
 #
+             TBX(mu,nu) = txx(mu,nu) 
+
              PUT Fpq_a(mu,nu) += Txx(mu,nu) 
              PUT Fpq_b(mu,nu) += Txx(mu,nu) 
 #
        ENDDO nu   
        ENDDO mu    
        endif 
+
+#bgn_debug
+      if rank == 0.0 
+      do mu
+      do nu
+         execute dump_amp Tbx(mu,nu)
+      enddo nu
+      enddo mu
+      endif 
+#end_debug
 
        ENDPROC FOCK_MATRIX_FAST   
 #      ------------------------ 
@@ -1401,6 +1408,7 @@
 #
        energy = 0.0
        esum = 0.0 
+
        execute get_my_rank rank 
        if rank == 0.0 
        DO mu  
@@ -1413,21 +1421,21 @@
              GET HBx(mu,nu)
 #
              Txx(mu,nu)   = 0.0  
-             T1xx(mu,nu)  = 0.0
+             T1xx(mu,nu)   = 0.0
              execute return_h1 txx 
-#
+             
              T1xx(mu,nu)  =HBx(mu,nu)
              T1xx(mu,nu)  += Txx(mu,nu) 
              T1xx(mu,nu) += Fpq_a(mu,nu) 
 #
              etemp        = T1xx(mu,nu)*DHFa(mu,nu)  
              esum        += etemp 
-#
+
              T1xx(mu,nu)   = 0.0
              T1xx(mu,nu)  =HBx(mu,nu)
-             T1xx(mu,nu)  = Txx(mu,nu) 
+             T1xx(mu,nu)  += Txx(mu,nu) 
              T1xx(mu,nu) += Fpq_b(mu,nu) 
-
+#
              etemp        = T1xx(mu,nu)*DHFb(mu,nu)  
              esum        += etemp 
 #
@@ -1441,7 +1449,7 @@
        collective energy += esum 
        energy += scfeneg 
 #
-       execute print_scalar energy 
+      #execute print_scalar energy 
 #
        ENDPROC HF_ENERGY   
 #      ----------------- 
@@ -1450,10 +1458,8 @@
 #
        PROC OVER_HALF 
 #      -------------- 
-#
 #      Diagonalize the overlap matrix, invert and take the square
 #      root of the diagonal elements. 
-#      -------------------------------------------------------------- 
 #
        execute eig_sr_inv oed_ovl x1   
 #
@@ -3093,22 +3099,19 @@
 #     Define a few constants 
 #     ---------------------- 
 #
-      execute load_balance_off 
       ecrit  = scf_conv # Energy tolerance  
-#     damp   = 0.0 
+      damp   = 0.0 
       etemp  = 1.0 
       etemp += damp  
       damp1  = 1.0/etemp         # 1/(1+damp)  
       execute print_scalar damp 
       execute print_scalar damp1
-
       zero = 0.0 
       mone = -1.0 
       one = 1.0 
       two = 2.0 
       three = 3.0 
       four = 4.0 
-      pcount = 0.0 
       diis_count = 0.0  
       diis_start = 2.0 
       diis_end = 150.0 
@@ -3125,13 +3128,9 @@
          diis_order += 1.0
       ENDDO korder
 
-      if diis_order > 9.0  
-         diis_order = 9.0
-      endif
-
       execute print_scalar diis_start
       execute print_scalar diis_order
-#
+
 #
 #     Create the one-particle arrays needed for the computation. 
 #     ---------------------------------------------------------- 
@@ -3168,9 +3167,23 @@
 #     ------------------------------------------- 
 #
       CREATE Qxx 
-      CREATE IDhfa 
-      CREATE IDhfb 
       execute sip_barrier 
+#
+#     Construct the initial guess of the Fock matrix.
+#     -----------------------------------------------
+#    
+      execute print_scalar damp1
+      execute list_to_blocks Fpq_a  
+      execute list_to_blocks Fpq_b  
+      execute read_list_to_blocks
+      execute print_scalar damp1
+      execute sip_barrier
+
+#     Construct the array S**(-1/2) 
+#     ----------------------------- 
+#
+      CALL OVER_HALF 
+      #execute sip_barrier
 #
 #     Perform initial (aa|bb) integral computation to set Schwartz paramaters 
 #     ----------------------------------------------------------------------- 
@@ -3189,124 +3202,12 @@
       ENDDO nu
       ENDDO mu 
 #
-#     Construct the initial guess of the Fock matrix.
-#     -----------------------------------------------
-#    
-      execute print_scalar damp1
-      execute list_to_blocks IDhfa   
-      execute list_to_blocks IDhfb  
-      execute read_list_to_blocks
-      execute print_scalar damp1
-      execute sip_barrier
-
-      PARDO mu, nu 
-            GET IDhfa(mu,nu)  
-            GET IDhfb(mu,nu)  
-            txx(mu,nu) = IDhfa(mu,nu) 
-            txx(mu,nu)+= IDhfb(mu,nu) 
-            txx(mu,nu)*= 0.5  
-            PUT Dhfa(mu,nu) = txx(mu,nu)
-            PUT Dhfb(mu,nu) = txx(mu,nu)
-      ENDPARDO mu, nu 
-      execute sip_barrier
-#
-# Check for an existing density 
-# ----------------------------- 
-
-#     Put static predefined arrays into scope 
-
-      DO mu
-      DO nu
-         txx(mu,nu) = 0.0
-         Fockrohf_a(mu,nu) = txx(mu,nu)
-         Fockrohf_b(mu,nu) = txx(mu,nu)
-         txx(mu,nu) = oed_ovl(mu,nu)  
-      ENDDO nu
-      ENDDO mu
-      DO mu 
-      DO p 
-         ca(mu,p) = 0.0 
-      ENDDO p 
-      ENDDO mu 
-      DO mu 
-      DO q 
-         cb(mu,q) = 0.0 
-      ENDDO q 
-      ENDDO mu 
-
-      dens_check = -1.0
-      execute scf_atom dens_check 
-      execute print_scalar dens_check 
-      if dens_check == 1.0
-         execute get_my_rank rank 
-         if rank == 0.0 
-
-         DO mu
-         DO nu
-            txx(mu,nu)      = Fockrohf_a(mu,nu)
-            PUT Dhfa(mu,nu) = txx(mu,nu)
-            txx(mu,nu)      = Fockrohf_b(mu,nu)
-            PUT Dhfb(mu,nu) = txx(mu,nu)
-         ENDDO nu
-         ENDDO mu
-
-         endif 
-
-         damp = 0.0 
-         damp1 = 1.0 
-
-      endif
-      execute load_balance_on 
-      execute sip_barrier
-
-#     Construct the array S**(-1/2) 
-#     ----------------------------- 
-#
-      CALL OVER_HALF 
-      execute sip_barrier
-      DO mu
-      DO nu
-         GET              DHFa(mu,nu)
-         GET              DHFb(mu,nu)
-         oed_ovl(mu,nu) = DHFa(mu,nu) # 13
-         oed_kin(mu,nu) = DHFb(mu,nu) # 12
-      ENDDO nu
-      ENDDO mu
-
-      DO iiter1
-      DO jjter2
-         execute set_flags2 dflags12(iiter1,jjter2)
-     ENDDO jjter2
-     ENDDO iiter1
-
-     CREATE HBx
-      execute sip_barrier
-      FD_SCALE = 0.00005
-      FD_SCALE *= -1.0
-
-      PARDO mu, nu
-
-            Txx(mu,nu) = 0.0
-            EXECUTE return_z Txx
-
-            Txx(mu,nu) *= FD_SCALE
-
-            PUT  HBx(mu,nu) = Txx(mu,nu)
-      ENDPARDO mu,nu
-
-      execute sip_barrier
-
-     CALL FOCK_MATRIX_FAST
-
-#
 #     Construct S^(-1/2) F S^(-1/2) 
 #     ----------------------------- 
 #
       CREATE FTpq_a  
       CREATE FTpq_b  
       execute sip_barrier 
-      delete IDhfa   
-      delete IDhfb  
       CALL FOCK_TRANSPOSE 
       execute sip_barrier 
 #
@@ -3334,6 +3235,60 @@
 #     ---------------------- 
 #
       CALL HFIDENS
+      execute sip_barrier
+#
+# Check for an existing density 
+# ----------------------------- 
+
+      DO mu
+      DO nu
+         txx(mu,nu) = 0.0
+         Fockrohf_a(mu,nu) = txx(mu,nu)
+         Fockrohf_b(mu,nu) = txx(mu,nu)
+      ENDDO nu
+      ENDDO mu
+
+      etemp = -1.0
+      execute scf_atom etemp
+      if etemp == 1.0
+
+         DO mu
+         DO nu
+            txx(mu,nu)      = Fockrohf_a(mu,nu)
+            PUT Dhfa(mu,nu) = txx(mu,nu)
+            txx(mu,nu)      = Fockrohf_b(mu,nu)
+            PUT Dhfb(mu,nu) = txx(mu,nu)
+         ENDDO nu
+         ENDDO mu
+
+      endif
+
+      CREATE HBx
+      execute sip_barrier
+      FD_SCALE = 0.00005
+      FD_SCALE *= 1.0
+
+      PARDO mu, nu
+
+            Txx(mu,nu) = 0.0
+            EXECUTE return_z Txx
+
+            Txx(mu,nu) *= FD_SCALE
+
+            PUT  HBx(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu,nu
+
+      execute sip_barrier
+#bgn_debug
+     
+      if rank == 0.0
+        do mu
+        do nu
+        execute dump_amp HBx(mu,nu)
+        enddo nu
+        enddo mu
+       endif
+#end_debug
 #
 #     Damp the HF density 
 #     ------------------- 
@@ -3364,13 +3319,12 @@
       DELETE Fpq_b  
       DELETE CBT_a 
       DELETE CBT_b 
-#
+
 # Start iterations 
 # ---------------- 
 #
       DO kiter 
          diis_count += 1.0 
-         pcount     += 1.0 
 #
 #        Create 1-particle arrays 
 #        ------------------------ 
@@ -3593,25 +3547,6 @@
          if kiter >= scf_iter
             one = -1.0
             execute print_rel_info one pinf
-         endif
-
-         if pcount > 10.0
-            execute get_my_rank rank
-            if rank == 0.0
-               DO mu
-               DO p
-                  txp(mu,p) = ca(mu,p)
-               ENDDO p
-               ENDDO mu
-            execute print_rel_info zero ca
-               DO mu
-               DO q
-                  txq(mu,q) = cb(mu,q)
-               ENDDO q
-               ENDDO mu
-            execute print_rel_info mone cb
-               pcount = 0.0
-            endif 
          endif
 #
       ENDDO kiter 

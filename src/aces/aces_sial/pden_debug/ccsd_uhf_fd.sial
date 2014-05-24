@@ -1,4 +1,4 @@
-#  Copyright (c) 2003-2010 University of Florida
+#  Copyright (c) 2003-2010 University of Florida 
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -530,6 +530,8 @@
       scalar ecorrbb
       scalar ecorrab
       scalar ecorrT
+      scalar ecorrnha
+      scalar ecorrnhb
       scalar enew 
       scalar eold 
       scalar ecrit 
@@ -754,6 +756,7 @@
        scalar tmp
        scalar enhfa
        scalar enhfb
+       scalar rank
 
 #
 #    ------------------------------------------------------------------------ 
@@ -855,20 +858,35 @@
 #
      ENDPARDO a, b, i, j 
 #
-     PARDO a, i
+#     PARDO a, i
 #
-           tai(a,i) = 0.0
+#           tai(a,i) = 0.0
+#           PUT t1a_old(a,i) = tai(a,i)
+#           PUT D0ai(a,i) = tai(a,i)
+#
+#     ENDPARDO a, i
+#
+#     PARDO b, j
+#
+#           tbj(b,j) = 0.0
+#           PUT t1b_old(b,j) = tbj(b,j)
+#           PUT D0bj(b,j) = tbj(b,j)
+#
+#     ENDPARDO b, j
+
+    PARDO a, i
+           get HBa_me_x(i,a)
+           tai(a,i) = HBa_me_x(i,a)
+           execute energy_denominator tai
            PUT t1a_old(a,i) = tai(a,i)
            PUT D0ai(a,i) = tai(a,i)
-#
      ENDPARDO a, i
-#
      PARDO b, j
-#
-           tbj(b,j) = 0.0
+           get HBb_me_x(j,b)
+           tbj(b,j) = HBb_me_x(j,b)
+           execute energy_denominator tbj
            PUT t1b_old(b,j) = tbj(b,j)
            PUT D0bj(b,j) = tbj(b,j)
-#
      ENDPARDO b, j
 #
 #    ------------------------------------------------------------------------ 
@@ -1191,6 +1209,22 @@
             ENDDO a
 #
       ENDPARDO a1, i, a2, i1
+
+#bgn_debug
+#     execute sip_barrier
+#     sum=0.0
+#     if rank == 0.0
+#     do a
+#     do a1
+#        get Fae_a(a,a1)
+#        tmp = Fae_a(a,a1)*Fae_a(a,a1)
+#        sum += tmp
+#     enddo a1
+#     enddo a
+#     endif
+#     execute print_scalar sum 
+#end_debug
+  
 #
       ENDPROC FAEA
 #     -------------
@@ -1376,9 +1410,24 @@
             ENDDO b 
             ENDDO j 
 #
-            PUT Fme_a(i,a) = Tme_a(i,a) 
+            PUT Fme_a(i,a) += Tme_a(i,a) 
 #
       ENDPARDO i, a 
+
+#bgn_debug
+#     execute sip_barrier
+#     sum=0.0
+#     if rank == 0.0
+#     do i
+#     do a1
+#        get Fme_a(i,a1)
+#        tmp = Fme_a(i,a1)*Fme_a(i,a1)
+#        sum += tmp
+#     enddo a1
+#     enddo i
+#     endif
+#     execute print_scalar sum
+#end_debug
 # 
       ENDPROC FMEA
 #     -------------
@@ -1424,7 +1473,7 @@
             ENDDO a 
             ENDDO i 
 #
-            PUT Fme_b(j,b) = Tme_b(j,b) 
+            PUT Fme_b(j,b) += Tme_b(j,b) 
 #
       ENDPARDO j, b 
 # 
@@ -1529,10 +1578,25 @@
             ENDDO a 
 #
       ENDPARDO i1, i, b, j  
+
+#bgn_debug
+#     execute sip_barrier
+#     sum=0.0
+#     if rank == 0.0
+#     do i
+#     do i1
+#        get Fmi_a(i1,i)
+#        tmp =  Fmi_a(i1,i)* Fmi_a(i1,i)
+#        sum += tmp
+#     enddo i1
+#     enddo i
+#     endif
+#     execute print_scalar sum
+#end_debug
+
 #
       ENDPROC FMIA
 #     -------------
-#
 #    ------------------------------------------------------------------------ 
 #
 #    ------------------------------------------------------------------------ 
@@ -1833,6 +1897,7 @@
       ENDPARDO a, i
 #
 #bgn_debug
+#      if rank == 0.0
 #      sum = 0.0
 #      do a
 #      do i
@@ -1841,6 +1906,7 @@
 #         sum += tmp
 #      enddo i
 #      enddo a
+#      endif 
 #      execute print_scalar sum
 #end_debug
 
@@ -2048,7 +2114,9 @@
       ENDPARDO b, j
 
 #bgn_debug
+#      execute sip_barrier
 #      sum= 0.0
+#      if rank == 0.0
 #      do b
 #      do j
 #         get  t1b_new(b,j)
@@ -2057,6 +2125,7 @@
 #      enddo j
 #      enddo b
 #      execute print_scalar sum
+#      endif 
 #end_debug
 
 #
@@ -2478,7 +2547,7 @@
             deallocate Laaai(a,*,a1,i) 
 #
       ENDPARDO a, i, a1 
-#
+
       ENDPROC T2NEWAA    
 #     ---------------
 #
@@ -5047,6 +5116,70 @@
 # 
 #    ------------------------------------------------------------------------ 
 #
+#bgn_debug
+#     execute get_my_rank rank
+#     if rank == 0.0
+#     esum = 0.0
+#     do i
+#     do a
+#        get t1a_old(a,i)
+#        tmp = t1a_old(a,i)*t1a_old(a,i)
+#        esum += tmp
+#     enddo a
+#     enddo i
+#     endif 
+#     execute print_scalar esum
+#end_debug
+#bgn_debug
+#      sum=0
+#      if rank == 0.0
+#      do i
+#      do i1
+#      do a
+#      do a1
+#         REQUEST T2old_aa(a,i,a1,i1) i1
+#         tmp  = T2old_aa(a,i,a1,i1)* T2old_aa(a,i,a1,i1)
+#         sum += tmp
+#      enddo a1
+#      enddo a
+#      enddo i1
+#      enddo i
+#      sum *= 0.25
+#      execute print_scalar sum
+#      endif
+#      sum=0
+#      if rank == 0.0
+#      do j
+#      do j1
+#      do b
+#      do b1
+#         REQUEST T2old_bb(b,j,b1,j1) j1
+#         tmp  = T2old_bb(b,j,b1,j1)* T2old_bb(b,j,b1,j1)
+#         sum += tmp
+#      enddo b1
+#      enddo b
+#      enddo j1
+#      enddo j
+#      sum *= 0.25
+#      execute print_scalar sum
+#      endif
+#      sum = 0.0
+#      if rank == 0.0
+#      do i
+#      do j
+#      do a
+#      do b
+#         REQUEST T2old_ab(a,i,b,j) j
+#         tmp  = T2old_ab(a,i,b,j) * T2old_ab(a,i,b,j)
+#         sum += tmp
+#      enddo b
+#      enddo a
+#      enddo j
+#      enddo i
+#      execute print_scalar sum
+#      endif
+#end_debug
+
      esuma   = 0.0 
      ecorraa = 0.0 
      PARDO a, a1, i, i1 
@@ -5115,7 +5248,8 @@
 #
      ENDPARDO a, b, i, j 
 
-     enhfa = 0.0
+     enhfa    = 0.0
+     ecorrnha = 0.0
      PARDO a, i
            GET t1a_old(a,i)
            GET HBa_me_x(i,a)
@@ -5123,7 +5257,8 @@
            enhfa +=  etemp
      ENDPARDO a, i
 
-     enhfb = 0.0
+     enhfb    = 0.0
+     ecorrnhb = 0.0
      PARDO b, j 
            GET t1b_old(b,j)
            GET HBb_me_x(j,b)
@@ -5134,22 +5269,25 @@
      execute sip_barrier 
 
      collective ecorraa += esuma
-    #execute print_scalar ecorraa 
+#     execute print_scalar ecorraa 
 #
-     collective ecorraa += enhfa
-    #execute print_scalar ecorraa 
+     collective ecorrnha += enhfa
+#    execute print_scalar ecorrnha
 
      collective ecorrbb += esumb 
-    #execute print_scalar ecorrbb 
+#    execute print_scalar ecorrbb 
 
-     collective ecorrbb += enhfb
-    #execute print_scalar ecorrbb 
+     collective ecorrnhb += enhfb
+#    execute print_scalar ecorrnhb
 #
      collective ecorrab += esumab
-    #execute print_scalar ecorrab 
+#    execute print_scalar ecorrab 
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab 
+     ecorrT += ecorrnha
+     ecorrT += ecorrnhb
+
     #execute print_scalar ecorrT  
 
      if kiter > 0
@@ -5424,6 +5562,20 @@
 #
       ENDPARDO b, j 
       execute sip_barrier 
+#bgn_debug
+#      if rank == 0.0
+#      sum = 0.0
+#      do a
+#      do i
+#         get  t1a_old(a,i)
+#         tmp =  t1a_old(a,i) *  t1a_old(a,i)
+#         sum += tmp
+#      enddo i
+#      enddo a
+#      endif
+#      execute print_scalar sum
+#end_debug
+
 #
       ENDPROC UPDATET1 
 #     ----------------  
@@ -8243,17 +8395,20 @@
 
      execute sip_barrier
 #bgn_debug
-     sum = 0.0
-     do mu
-     do nu
-        get hbx(mu,nu)
+#     execute  get_my_rank rank
+#     if rank == 0.0
+#      sum = 0.0
+#     do mu
+#     do nu
+#        get hbx(mu,nu)
 #        execute dump_amp Hbx(mu,nu)
-        tmp = hbx(mu,nu)*hbx(mu,nu)
-        sum += tmp
-     enddo nu
-     enddo mu
-     execute print_scalar fd_scale
-     execute print_scalar sum
+#        tmp = hbx(mu,nu)*hbx(mu,nu)
+#        sum += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar fd_scale
+#     execute print_scalar sum
+#     endif 
 #end_debug
 
      ENDPROC get_FD_P
@@ -8267,6 +8422,43 @@
        CREATE HBb_ae_x
        CREATE HBb_me_x
        CREATE HBb_mi_x
+       execute sip_barrier
+       PARDO i, i1
+             GET HBa_mi_x(i,i1)
+             Tii(i,i1) = 0.0
+             PUT  HBa_mi_x(i,i1) = Tii(i,i1)
+       ENDPARDO i, i1
+
+       PARDO a, a1
+             GET HBa_ae_x(a,a1)
+             Taa(a,a1) = 0.0
+             PUT  HBa_ae_x(a,a1)  = Taa(a,a1)
+       ENDPARDO a, a1
+
+       PARDO a, i
+             GET HBa_me_x(i,a)
+             Tia(i,a) = 0.0
+             PUT  HBa_me_x(i,a)  = Tia(i,a)
+       ENDPARDO a, i
+
+       PARDO j, j1
+             GET HBb_mi_x(j,j1)
+             Tjj(j,j1) = 0.0
+             PUT  HBb_mi_x(j,j1) = Tjj(j,j1)
+       ENDPARDO j, j1
+
+       PARDO b, b1
+             GET HBb_ae_x(b,b1)
+             Tbb(b,b1) = 0.0
+             PUT  HBb_ae_x(b,b1)  = Tbb(b,b1)
+       ENDPARDO b, b1
+
+       PARDO b, j
+             GET HBb_me_x(j,b)
+             Tjb(j,b) = 0.0
+             PUT  HBb_me_x(j,b)  = Tjb(j,b)
+       ENDPARDO b, j
+
        execute sip_barrier
 # ALPHA
        PARDO mu,nu
@@ -8335,6 +8527,18 @@
              enddo b
          ENDPARDO mu,nu
          execute sip_barrier
+
+#bgn_debug
+#     if rank == 0.0
+#     sum = 0.0
+#     do i
+#     do i1
+#        get HBa_mi_x(i,i1)
+#        execute dump_amp HBa_mi_x(i,i1)  
+#     enddo i1
+#     enddo i
+#     endif
+#end_debug
 
      ENDPROC TRANS_2MO
 #    -----------------
@@ -8542,7 +8746,7 @@
          execute print_scalar icount
 
          IF ICOUNT == 1.0
-            FD_SCALE = 50.0
+            FD_SCALE = 100.0
             FD_SCALE *= SCALE
             Z_COMP = 9.0
             CALL GET_FD_P
@@ -8550,9 +8754,9 @@
          ENDIF
 
          IF ICOUNT == 2.0
-            FD_SCALE  = 50.0
+            FD_SCALE  = 100.0
             FD_SCALE *= SCALE
-            FD_SCALE *= -1.0
+            FD_SCALE *= 1.0
             Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO
@@ -8628,6 +8832,41 @@
 #
          EXECUTE SIP_BARRIER   
          EXECUTE SERVER_BARRIER   
+#bgn_debug
+#      sum=0
+#      execute server_barrier
+#      if rank == 0.0
+#      do i
+#      do i1
+#      do a
+#      do a1
+#         REQUEST T2old_aa(a,i,a1,i1) i1
+#         tmp  = T2old_aa(a,i,a1,i1)* T2old_aa(a,i,a1,i1)
+#         sum += tmp
+#      enddo a1
+#      enddo a
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#      endif
+#      sum = 0.0
+#      if rank == 0.0
+#      do i
+#      do j
+#      do a
+#      do b
+#         REQUEST T2old_ab(a,i,b,j) j
+#         tmp  = T2old_ab(a,i,b,j) * T2old_ab(a,i,b,j)
+#         sum += tmp
+#      enddo b
+#      enddo a
+#      enddo j
+#      enddo i
+#      execute print_scalar sum
+#      endif 
+#end_debug
+
+
          CALL ENERGY_NEW 
          EXECUTE SIP_BARRIER  
          EXECUTE SERVER_BARRIER   

@@ -899,6 +899,9 @@
        scalar c8 
        scalar c9 
        scalar c10  
+       scalar tmp
+       scalar sum
+       scalar rank
 #
 #
 #    ------------------------------------------------------------------------
@@ -1097,35 +1100,43 @@
          CREATE F1mi_a
          CREATE F1mi_b
 #
-         CREATE D0ia
-         CREATE D1ia
-         CREATE D2ia
-         CREATE D3ia
-         CREATE D4ia
-         CREATE D5ia
-#
-         CREATE D0jb
-         CREATE D1jb
-         CREATE D2jb
-         CREATE D3jb
-         CREATE D4jb
-         CREATE D5jb
-#
-         CREATE e1ia
-         CREATE e2ia
-         CREATE e3ia
-         CREATE e4ia
-         CREATE e5ia
-#
-         CREATE e1jb
-         CREATE e2jb
-         CREATE e3jb
-         CREATE e4jb
-         CREATE e5jb
-#
       ENDPROC CREAT1INTER 
+
 #     ------------------- 
-#
+
+     PROC DELETE_1DS 
+#    ----------------
+
+      delete W1minj_aa
+      delete W1minj_ab
+      delete W1minj_bb
+      DELETE l1a_old
+      DELETE l1b_old
+
+      DELETE  HBX
+      DELETE  HBa_ae_x
+      DELETE  HBa_me_x
+      DELETE  HBa_mi_x
+      DELETE  HBb_ae_x
+      DELETE  HBb_me_x
+      DELETE  HBb_mi_x
+
+      DELETE FME_A
+      DELETE FME_B
+      DELETE F1AE_A
+      DELETE F1AE_B
+      DELETE F1MI_A
+      DELETE F1MI_B
+
+      DELETE l1a_new
+      DELETE l1b_new
+      DELETE Gae_a
+      DELETE Gae_b
+      DELETE Gmi_a
+      DELETE Gmi_b
+
+     ENDPROC DELETE_1DS 
+#    ------------------
       PROC CREATLAMBDAOLD 
 #     ------------------- 
 #
@@ -3293,6 +3304,13 @@
 #
       PROC W1IMENAA 
 #     ------------- 
+
+      PARDO i, i1, a, i2
+             Tiiai(i,i1,a,i2) = 0.0
+             TSiiai(i,i2,a,i1) = 0.0
+             PREPARE W1imen_aa(i,i1,a,i2) = Tiiai(i,i1,a,i2)
+             PREPARE W1imen_aa(i,i2,a,i1) = TSiiai(i,i2,a,i1)
+      ENDPARDO i, i1, a, i2
 #
       PARDO i, i1, a, i2 
 #
@@ -3319,7 +3337,7 @@
 #
                T1iiai(i,i1,a,i2)  = T2old_aa(a,i1,a1,i2)*Fme_a(i,a1) 
                Tiiai(i,i1,a,i2)  -= T1iiai(i,i1,a,i2) 
-#
+
                T1iiai(i,i1,a,i2)  = W2mebj_aa(i,a1,a,i2)*t1a_old(a1,i1)  
                T2iiai(i,i2,a,i1)  = T1iiai(i,i1,a,i2)  
 #
@@ -3359,10 +3377,10 @@
 #
                T1iiai(i,i1,a,i2)  = Vpiqj(i1,i,b,j)*T2old_ab(a,i2,b,j) 
                Tiiai(i,i1,a,i2)  += T1iiai(i,i1,a,i2) 
-#
+
                T2iiai(i,i2,a,i1)  = T1iiai(i,i1,a,i2) 
                TSiiai(i,i2,a,i1) -= T2iiai(i,i2,a,i1) 
-#
+
             ENDDO j 
             ENDDO b 
 #
@@ -3370,6 +3388,38 @@
             PREPARE W1imen_aa(i,i2,a,i1) += TSiiai(i,i2,a,i1) 
 #
       ENDPARDO i, i1, a, i2 
+
+#bgn_debug
+#      execute server_barrier
+#      sum = 0.0  
+#      if rank == 0.0
+#      do i  
+#      do i1
+#      do i2
+#      do a1
+#         request  W1imen_aa(i,i1,a1,i2) i2
+#         tmp = W1imen_aa(i,i1,a1,i2) * W1imen_aa(i,i1,a1,i2)
+#         sum += tmp
+#      enddo a1
+#      enddo i2
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#      sum=0.0
+#      do i
+#      do i1
+#      do i2
+#      do a
+#         request  VSpipi(i,i1,a,i2) i2
+#         tmp =  VSpipi(i,i1,a,i2) *  VSpipi(i,i1,a,i2)
+#         sum += tmp
+#      enddo a
+#      enddo i2
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#      endif 
+#end_debug
 #
       ENDPROC W1IMENAA 
 #     ---------------- 
@@ -3467,6 +3517,11 @@
       PROC W1IMENBA 
 #     ------------- 
 #
+      PARDO j, j1, a, i
+            Tjjai(j,j1,a,i) = 0.0
+            W1imen_ba(j,j1,a,i) = Tjjai(j,j1,a,i)
+      ENDPARDO  j, j1, a, i
+
       PARDO j, j1, a, i 
 #
             REQUEST Vpiqj(a,i,j,j1) j1  
@@ -3556,6 +3611,13 @@
 #
       PROC W1IMENBB 
 #     ------------- 
+
+      PARDO j, j1, b, j2 
+            Tjjbj(j,j1,b,j2)  = 0.0
+            TSjjbj(j,j2,b,j1) = 0.0
+            PREPARE W1imen_bb(j,j1,b,j2) = Tjjbj(j,j1,b,j2)
+            PREPARE W1imen_bb(j,j2,b,j1) = TSjjbj(j,j2,b,j1)
+      ENDPARDO j, j1, b, j2
 #
       PARDO j, j1, b, j2 
 #
@@ -4392,7 +4454,7 @@
             PUT l1a_new(i,a) += Tia(i,a)
 #
       ENDPARDO a, i, b, b1 
-#
+
       PARDO i1, a1, i2  
 #
             allocate Liaia(i1,*,i2,a1) 
@@ -5788,7 +5850,7 @@
            esumab += etemp
 #
      ENDPARDO a, b, i, j
-#
+
      execute sip_barrier 
      execute server_barrier 
 
@@ -5803,7 +5865,7 @@
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab
-    #execute print_scalar ecorrT 
+     execute print_scalar ecorrT 
 
      if kiter > 0
             ncount1 = 0.0
@@ -9937,8 +9999,8 @@
 #
 # Create one-particle intermediate arrays 
 # --------------------------------------- 
-      CALL CREAT1INTER  
-      execute sip_barrier
+#      CALL CREAT1INTER  
+#      execute sip_barrier
 #
 # Compute Tau and Taup arrays 
 # --------------------------- 
@@ -9955,9 +10017,13 @@
       ICOUNT += 1.0
       execute print_scalar ICOUNT
 
+# Create one-particle intermediate arrays 
+# --------------------------------------- 
+      CALL CREAT1INTER  
+      execute sip_barrier
+
       IF ICOUNT == 1.0
-      execute print_scalar ICOUNT
-         FD_SCALE = 50.0
+         FD_SCALE = 00.0
          FD_SCALE *= SCALE
          Z_COMP = 9.0
          CALL GET_FDP
@@ -9965,10 +10031,9 @@
       ENDIF
 
       IF ICOUNT == 2.0
-      execute print_scalar ICOUNT
-         FD_SCALE = 50.0
+         FD_SCALE = 00.0
          FD_SCALE *= SCALE
-         FD_SCALE *= -1.0
+         FD_SCALE *= 1.0
          Z_COMP = 9.0
          CALL GET_FDP
          CALL TRANS_2MO
@@ -9993,6 +10058,47 @@
       CALL F1AE 
       CALL F1MI  
       execute sip_barrier 
+#bgn_debug
+      execute get_my_rank rank
+      if rank == 0.0
+      sum=0.0
+      do i
+      do a
+         get Fme_a(i,a)
+         tmp =  Fme_a(i,a)*Fme_a(i,a)
+         sum += tmp
+      enddo a
+      enddo i
+      execute print_scalar sum
+      sum=0.0
+      do i
+      do i1 
+         get F1mi_a(i,i1)
+         tmp =  F1mi_a(i,i1) * F1mi_a(i,i1)
+         sum += tmp
+      enddo i1
+      enddo i
+      execute print_scalar sum
+      sum=0.0
+      do a
+      do a1
+         get F1ae_a(a,a1)
+         tmp =   F1ae_a(a,a1) * F1ae_a(a,a1)
+         sum += tmp
+      enddo a1
+      enddo a
+      execute print_scalar sum
+      sum=0.0
+      do i
+      do a
+         get t1a_old(a,i)
+         tmp =  t1a_old(a,i) * t1a_old(a,i) 
+         sum += tmp
+      enddo a
+      enddo i
+      execute print_scalar sum
+      endif 
+#end_debug
 
       create W1minj_aa
       create W1minj_ab
@@ -10003,6 +10109,36 @@
       CALL W2MEBJ   
       execute server_barrier 
       execute sip_barrier 
+#bgn_debug
+     if rank == 0.0
+     sum=0.0
+     do i
+     do i1
+     do i2
+     do i3
+        get W1minj_aa(i2,i,i3,i1)
+        tmp = W1minj_aa(i2,i,i3,i1) * W1minj_aa(i2,i,i3,i1)
+        sum += tmp
+     enddo i3
+     enddo i2
+     enddo i1
+     enddo i
+     execute print_scalar sum 
+     sum =0.0
+     do i
+     do i1
+     do a 
+     do a1
+         request W2mebj_aa(i1,a1,a,i) i
+         tmp = W2mebj_aa(i1,a1,a,i) * W2mebj_aa(i1,a1,a,i)
+         sum += tmp
+     enddo a1
+     enddo a
+     enddo i1
+     enddo i
+     execute print_scalar sum 
+    endif 
+#enddo 
 #
       CALL W1IMEN 
       CALL W1MEBJ_S  
@@ -10094,7 +10230,29 @@
          CALL GAE 
          CALL GMI 
          execute sip_barrier 
-#
+
+#bgn_debug
+      sum=0.0
+      if rank == 0.0
+         do a
+         do a1
+            get Gae_a(a,a1)
+            tmp = Gae_a(a,a1) * Gae_a(a,a1)
+            sum += tmp
+         enddo a1
+         enddo a
+         execute print_scalar sum
+         sum = 0.0
+         do i
+         do i1
+            get Gmi_a(i,i1)
+            tmp = Gmi_a(i,i1) * Gmi_a(i,i1)
+            sum += tmp
+         enddo i1
+         enddo i
+         execute print_scalar sum
+      endif 
+#end_debug
 # Compute New L1 and L2 arrays 
 # ---------------------------- 
 #
@@ -10108,6 +10266,69 @@
          CALL W1MEBJ  
          execute sip_barrier 
          execute server_barrier 
+#bgn_debug
+      if rank == 0.0
+      sum=0.0
+      do i
+      do a
+         get l1a_old(i,a)
+         tmp =  l1a_old(i,a) * l1a_old(i,a)
+         sum += tmp
+      enddo a
+      enddo i
+      execute print_scalar sum
+#      sum = 0.0
+#      do i
+#      do i1
+#      do a
+#      do a1
+#         request L2old_aa(i,a,i1,a1) a
+#         tmp = L2old_aa(i,a,i1,a1) * L2old_aa(i,a,i1,a1)
+#         sum += tmp
+#      enddo a1
+#      enddo a
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#      sum = 0.0
+#      do i
+#      do j
+#      do a
+#      do b
+#         request  L2old_ab(i,a,j,b) b
+#         tmp = L2old_ab(i,a,j,b) * L2old_ab(i,a,j,b)
+#         sum += tmp
+#      enddo b
+#      enddo a
+#      enddo j
+#      enddo i
+#      execute print_scalar sum
+
+      sum = 0.0
+      do i
+      do i1
+      do i2
+      do a1
+         request  W1imen_aa(i,i1,a1,i2) i2
+         tmp = W1imen_aa(i,i1,a1,i2) * W1imen_aa(i,i1,a1,i2)
+         sum += tmp
+      enddo a1
+      enddo i2
+      enddo i1
+      enddo i
+      execute print_scalar sum
+
+      sum = 0.0
+      do i
+      do a
+         get  l1a_new(i,a)
+         tmp = l1a_new(i,a) * l1a_new(i,a)
+         sum += tmp
+      enddo a
+      enddo i
+      execute print_scalar sum
+      endif 
+#end_debug
 #
 # Update arrays 
 # ------------- 
@@ -10199,6 +10420,7 @@
 #         execute print_scalar ediff 
 
       ENDDO kiter
+      EXECUTE SERVER_BARRIER
 #
       IF ICOUNT == 1.0
          CALL PUT_FDL_1
@@ -10208,29 +10430,7 @@
          CALL PUT_FDL_2
       ENDIF
 
-      execute print_scalar icount 
-
-      delete W1minj_aa
-      delete W1minj_ab
-      delete W1minj_bb
-      DELETE l1a_old
-      DELETE l1b_old
-
-      DELETE   HBX
-      DELETE  HBa_ae_x
-      DELETE  HBa_me_x
-      DELETE  HBa_mi_x
-      DELETE  HBb_ae_x
-      DELETE  HBb_me_x
-      DELETE  HBb_mi_x
-
-      DELETE l1a_new
-      DELETE l1b_new
-      DELETE   Gae_a
-      DELETE   Gae_b
-      DELETE   Gmi_a
-      DELETE   Gmi_b
-
+      CALL DELETE_1DS
 
       ENDDO NPERT
 #     -----------
@@ -10264,6 +10464,32 @@
       CREATE L1A_2
       CREATE L1B_2
 
+      CREATE D0ia
+      CREATE D1ia
+      CREATE D2ia
+      CREATE D3ia
+      CREATE D4ia
+      CREATE D5ia
+#
+      CREATE D0jb
+      CREATE D1jb
+      CREATE D2jb
+      CREATE D3jb
+      CREATE D4jb
+      CREATE D5jb
+#
+      CREATE e1ia
+      CREATE e2ia
+      CREATE e3ia
+      CREATE e4ia
+      CREATE e5ia
+#
+      CREATE e1jb
+      CREATE e2jb
+      CREATE e3jb
+      CREATE e4jb
+      CREATE e5jb
+#
       CALL READ_2EL 
 #
 #     COMPUTE LAMBDA AMPLITUDES
