@@ -5865,7 +5865,7 @@
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab
-     execute print_scalar ecorrT 
+#     execute print_scalar ecorrT 
 
      if kiter > 0
             ncount1 = 0.0
@@ -10023,7 +10023,7 @@
       execute sip_barrier
 
       IF ICOUNT == 1.0
-         FD_SCALE = 00.0
+         FD_SCALE = 100.0
          FD_SCALE *= SCALE
          Z_COMP = 9.0
          CALL GET_FDP
@@ -10031,9 +10031,9 @@
       ENDIF
 
       IF ICOUNT == 2.0
-         FD_SCALE = 00.0
+         FD_SCALE = 100.0
          FD_SCALE *= SCALE
-         FD_SCALE *= 1.0
+         FD_SCALE *= -1.0
          Z_COMP = 9.0
          CALL GET_FDP
          CALL TRANS_2MO
@@ -10059,45 +10059,45 @@
       CALL F1MI  
       execute sip_barrier 
 #bgn_debug
-      execute get_my_rank rank
-      if rank == 0.0
-      sum=0.0
-      do i
-      do a
-         get Fme_a(i,a)
-         tmp =  Fme_a(i,a)*Fme_a(i,a)
-         sum += tmp
-      enddo a
-      enddo i
-      execute print_scalar sum
-      sum=0.0
-      do i
-      do i1 
-         get F1mi_a(i,i1)
-         tmp =  F1mi_a(i,i1) * F1mi_a(i,i1)
-         sum += tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum
-      sum=0.0
-      do a
-      do a1
-         get F1ae_a(a,a1)
-         tmp =   F1ae_a(a,a1) * F1ae_a(a,a1)
-         sum += tmp
-      enddo a1
-      enddo a
-      execute print_scalar sum
-      sum=0.0
-      do i
-      do a
-         get t1a_old(a,i)
-         tmp =  t1a_old(a,i) * t1a_old(a,i) 
-         sum += tmp
-      enddo a
-      enddo i
-      execute print_scalar sum
-      endif 
+#      execute get_my_rank rank
+#      if rank == 0.0
+#      sum=0.0
+#      do i
+#      do a
+#         get Fme_a(i,a)
+#         tmp =  Fme_a(i,a)*Fme_a(i,a)
+#         sum += tmp
+#      enddo a
+#      enddo i
+#      execute print_scalar sum
+#      sum=0.0
+#      do i
+#      do i1 
+#         get F1mi_a(i,i1)
+#         tmp =  F1mi_a(i,i1) * F1mi_a(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#      sum=0.0
+#      do a
+#      do a1
+#         get F1ae_a(a,a1)
+#         tmp =   F1ae_a(a,a1) * F1ae_a(a,a1)
+#         sum += tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar sum
+#      sum=0.0
+#      do i
+#      do a
+#         get t1a_old(a,i)
+#         tmp =  t1a_old(a,i) * t1a_old(a,i) 
+#         sum += tmp
+#      enddo a
+#      enddo i
+#      execute print_scalar sum
+#      endif 
 #end_debug
 
       create W1minj_aa
@@ -10110,34 +10110,34 @@
       execute server_barrier 
       execute sip_barrier 
 #bgn_debug
-     if rank == 0.0
-     sum=0.0
-     do i
-     do i1
-     do i2
-     do i3
-        get W1minj_aa(i2,i,i3,i1)
-        tmp = W1minj_aa(i2,i,i3,i1) * W1minj_aa(i2,i,i3,i1)
-        sum += tmp
-     enddo i3
-     enddo i2
-     enddo i1
-     enddo i
-     execute print_scalar sum 
-     sum =0.0
-     do i
-     do i1
-     do a 
-     do a1
-         request W2mebj_aa(i1,a1,a,i) i
-         tmp = W2mebj_aa(i1,a1,a,i) * W2mebj_aa(i1,a1,a,i)
-         sum += tmp
-     enddo a1
-     enddo a
-     enddo i1
-     enddo i
-     execute print_scalar sum 
-    endif 
+#     if rank == 0.0
+#     sum=0.0
+#     do i
+#     do i1
+#     do i2
+#     do i3
+#        get W1minj_aa(i2,i,i3,i1)
+#        tmp = W1minj_aa(i2,i,i3,i1) * W1minj_aa(i2,i,i3,i1)
+#        sum += tmp
+#     enddo i3
+#     enddo i2
+#     enddo i1
+#     enddo i
+#     execute print_scalar sum 
+#     sum =0.0
+#     do i
+#     do i1
+#     do a 
+#     do a1
+#         request W2mebj_aa(i1,a1,a,i) i
+#         tmp = W2mebj_aa(i1,a1,a,i) * W2mebj_aa(i1,a1,a,i)
+#         sum += tmp
+#     enddo a1
+#     enddo a
+#     enddo i1
+#     enddo i
+#     execute print_scalar sum 
+#    endif 
 #enddo 
 #
       CALL W1IMEN 
@@ -10232,26 +10232,26 @@
          execute sip_barrier 
 
 #bgn_debug
-      sum=0.0
-      if rank == 0.0
-         do a
-         do a1
-            get Gae_a(a,a1)
-            tmp = Gae_a(a,a1) * Gae_a(a,a1)
-            sum += tmp
-         enddo a1
-         enddo a
-         execute print_scalar sum
-         sum = 0.0
-         do i
-         do i1
-            get Gmi_a(i,i1)
-            tmp = Gmi_a(i,i1) * Gmi_a(i,i1)
-            sum += tmp
-         enddo i1
-         enddo i
-         execute print_scalar sum
-      endif 
+#      sum=0.0
+#      if rank == 0.0
+#         do a
+#         do a1
+#            get Gae_a(a,a1)
+#            tmp = Gae_a(a,a1) * Gae_a(a,a1)
+#            sum += tmp
+#         enddo a1
+#         enddo a
+#         execute print_scalar sum
+#         sum = 0.0
+#         do i
+#         do i1
+#            get Gmi_a(i,i1)
+#            tmp = Gmi_a(i,i1) * Gmi_a(i,i1)
+#            sum += tmp
+#         enddo i1
+#         enddo i
+#         execute print_scalar sum
+#      endif 
 #end_debug
 # Compute New L1 and L2 arrays 
 # ---------------------------- 
@@ -10267,16 +10267,16 @@
          execute sip_barrier 
          execute server_barrier 
 #bgn_debug
-      if rank == 0.0
-      sum=0.0
-      do i
-      do a
-         get l1a_old(i,a)
-         tmp =  l1a_old(i,a) * l1a_old(i,a)
-         sum += tmp
-      enddo a
-      enddo i
-      execute print_scalar sum
+#      if rank == 0.0
+#      sum=0.0
+#      do i
+#      do a
+#         get l1a_old(i,a)
+#         tmp =  l1a_old(i,a) * l1a_old(i,a)
+#         sum += tmp
+#      enddo a
+#      enddo i
+#      execute print_scalar sum
 #      sum = 0.0
 #      do i
 #      do i1
@@ -10303,31 +10303,31 @@
 #      enddo j
 #      enddo i
 #      execute print_scalar sum
-
-      sum = 0.0
-      do i
-      do i1
-      do i2
-      do a1
-         request  W1imen_aa(i,i1,a1,i2) i2
-         tmp = W1imen_aa(i,i1,a1,i2) * W1imen_aa(i,i1,a1,i2)
-         sum += tmp
-      enddo a1
-      enddo i2
-      enddo i1
-      enddo i
-      execute print_scalar sum
-
-      sum = 0.0
-      do i
-      do a
-         get  l1a_new(i,a)
-         tmp = l1a_new(i,a) * l1a_new(i,a)
-         sum += tmp
-      enddo a
-      enddo i
-      execute print_scalar sum
-      endif 
+#
+#      sum = 0.0
+#      do i
+#      do i1
+#      do i2
+#      do a1
+#         request  W1imen_aa(i,i1,a1,i2) i2
+#         tmp = W1imen_aa(i,i1,a1,i2) * W1imen_aa(i,i1,a1,i2)
+#         sum += tmp
+#      enddo a1
+#      enddo i2
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#
+#      sum = 0.0
+#      do i
+#      do a
+#         get  l1a_new(i,a)
+#         tmp = l1a_new(i,a) * l1a_new(i,a)
+#         sum += tmp
+#      enddo a
+#      enddo i
+#      execute print_scalar sum
+#      endif 
 #end_debug
 #
 # Update arrays 
@@ -10420,6 +10420,9 @@
 #         execute print_scalar ediff 
 
       ENDDO kiter
+
+      execute print_scalar ecorrT
+
       EXECUTE SERVER_BARRIER
 #
       IF ICOUNT == 1.0

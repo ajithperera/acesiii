@@ -6116,23 +6116,23 @@
       execute server_barrier
 
 #bgn_debug
-       execute get_my_rank rank
-       one = 1.0
-       if rank == 0.0
-          do a
-          do a1
-          do i
-          do i1
-             REQUEST Dibja_aaaa_x(i,a1,i1,a) a
-             REQUEST Dibja_aaaa_x(i1,a,i,a1) a1
-             execute dump_amp Dibja_aaaa_x(i,a1,i1,a)
-             execute print_scalar one
-             execute dump_amp Dibja_aaaa_x(i1,a,i,a1)
-          enddo i1
-          enddo i
-          enddo a1
-          enddo a
-       endif
+#       execute get_my_rank rank
+#       one = 1.0
+#       if rank == 0.0
+#          do a
+#          do a1
+#          do i
+#          do i1
+#             REQUEST Dibja_aaaa_x(i,a1,i1,a) a
+#             REQUEST Dibja_aaaa_x(i1,a,i,a1) a1
+#             execute dump_amp Dibja_aaaa_x(i,a1,i1,a)
+#             execute print_scalar one
+#             execute dump_amp Dibja_aaaa_x(i1,a,i,a1)
+#          enddo i1
+#          enddo i
+#          enddo a1
+#          enddo a
+#       endif
 #end_debug
 #                                                                  ++
 # Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -11474,7 +11474,7 @@
       execute server_barrier 
       collective esum +=etmp
 #bgn_debug
-      esum *= 0.25
+      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -11487,7 +11487,7 @@
 #            
       ENDPARDO j, j1, j2, j3 
 #bgn_debug
-      esum *= 0.25
+      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -11500,7 +11500,7 @@
 #            
       ENDPARDO i, i1, j, j1 
 #bgn_debug
-      esum *= 0.25
+      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -12351,17 +12351,17 @@
       EXECUTE SERVER_BARRIER
 
 #bgn_debug
-       execute get_my_rank rank
-       if rank == 0.0
-          do i 
-          do a
-            GET T1a_old_x(A,I)
-            GET L1a_old_x(I,A) 
-             execute dump_amp T1a_old_x(A,I)
-             execute dump_amp L1a_old_x(I,A) 
-          enddo a
-          enddo i
-       endif 
+#       execute get_my_rank rank
+#       if rank == 0.0
+#          do i 
+#          do a
+#            GET T1a_old_x(A,I)
+#            GET L1a_old_x(I,A) 
+#             execute dump_amp T1a_old_x(A,I)
+#             execute dump_amp L1a_old_x(I,A) 
+#          enddo a
+#          enddo i
+#       endif 
 #end_debug
 
       ENDPROC PICK_PERT_T_X
@@ -12495,7 +12495,7 @@
 #end_debug
          CALL DIJKL                                          
 #bgn_debug
-#         CALL S2DIJKL
+         CALL S2DIJKL
 #end_debug
          CALL DIJAB
 #bgn_debug

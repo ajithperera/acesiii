@@ -111,16 +111,98 @@
       served Dijka_baba_xyz(j,i,j1,a)
       served Dijka_bbbb_xyz(j,j2,j1,b)
 #    
-      temp Tijkl_am(i,i1,i2,i3)
-      temp Tijkl_ap(i,i1,i2,i3)
-      temp Tijkl_afd(i,i1,i2,i3)
-#
+      temp Tijklaa_am(i,i1,i2,i3)
+      temp Tijklaa_ap(i,i1,i2,i3)
+      temp Tijklaa_afd(i,i1,i2,i3)
 
+      temp Tijklbb_am(j,j2,j1,j3)
+      temp Tijklbb_ap(j,j2,j1,j3)
+      temp Tijklbb_afd(j,j2,j1,j3)
+
+      temp Tijklab_am(i,j,i1,j1)
+      temp Tijklab_ap(i,j,i1,j1)
+      temp Tijklab_afd(i,j,i1,j1)
+
+      temp Tabciaa_am(a,a1,a2,i)
+      temp Tabciaa_ap(a,a1,a2,i)
+      temp Tabciaa_afd(a,a1,a2,i)
+
+      temp Tabcibb_am(b,b1,b2,j)
+      temp Tabcibb_ap(b,b1,b2,j)
+      temp Tabcibb_afd(b,b1,b2,j)
+
+      temp Tabciab_am(a,b,a1,j)
+      temp Tabciab_ap(a,b,a1,j)
+      temp Tabciab_afd(a,b,a1,j)
+
+      temp Tabciba_am(b,a,b1,i)
+      temp Tabciba_ap(b,a,b1,i)
+      temp Tabciba_afd(b,a,b1,i)
+
+      temp Tijkaaa_am(i,i1,i2,a)
+      temp Tijkaaa_ap(i,i1,i2,a)
+      temp Tijkaaa_afd(i,i1,i2,a)
+
+      temp Tijkabb_am(j,j1,j2,b)
+      temp Tijkabb_ap(j,j1,j2,b)
+      temp Tijkabb_afd(j,j1,j2,b)
+
+      temp Tijkaab_am(i,j,i1,b)
+      temp Tijkaab_ap(i,j,i1,b)
+      temp Tijkaab_afd(i,j,i1,b)
+
+      temp Tijkaba_am(j,i,j1,a)
+      temp Tijkaba_ap(j,i,j1,a)
+      temp Tijkaba_afd(j,i,j1,a)
+
+      temp Tijabaa_am(i,i1,a,a1)
+      temp Tijabaa_ap(i,i1,a,a1)
+      temp Tijabaa_afd(i,i1,a,a1)
+
+      temp Tijabbb_am(j,j1,b,b1)
+      temp Tijabbb_ap(j,j1,b,b1)
+      temp Tijabbb_afd(j,j1,b,b1)
+
+      temp Tijabab_am(i,j,a,b)
+      temp Tijabab_ap(i,j,a,b)
+      temp Tijabab_afd(i,j,a,b)
+
+      temp Tibja_aaaa_am(i,a,i1,a1)
+      temp Tibja_aaaa_ap(i,a,i1,a1)
+      temp Tibja_aaaa_afd(i,a,i1,a1)
+
+      temp Tibja_bbbb_am(j,b,j1,b1)
+      temp Tibja_bbbb_ap(j,b,j1,b1)
+      temp Tibja_bbbb_afd(j,b,j1,b1)
+
+      temp Tibja_abab_am(i,b,i1,b1)
+      temp Tibja_abab_ap(i,b,i1,b1)
+      temp Tibja_abab_afd(i,b,i1,b1)
+
+      temp Tibja_baba_am(j,a,j1,a1)
+      temp Tibja_baba_ap(j,a,j1,a1)
+      temp Tibja_baba_afd(j,a,j1,a1)
+
+      temp Tibja_baab_am(j,a,i,b)
+      temp Tibja_baab_ap(j,a,i,b)
+      temp Tibja_baab_afd(j,a,i,b)
+
+      temp Tibja_abba_am(i,b,j,a)
+      temp Tibja_abba_ap(i,b,j,a)
+      temp Tibja_abba_afd(i,b,j,a)
+#
       scalar fd_width
       scalar inv_fd_width
       scalar sum
       scalar tmp
       scalar sumaa
+      scalar sumbb
+      scalar sumab
+      scalar sumba
+      scalar sumbaa
+      scalar sumabb
+
+      scalar scale 
 
       PROC READ_FD_2D
 #     ---------------
@@ -182,22 +264,19 @@
     PROC FD_DIJKL_AA
 #   ---------------
 
-    FD_WIDTH = 100.0
-    INV_FD_WIDTH = 1.0/FD_WIDTH
-
     PARDO  I, I1, I2, I3 
            REQUEST DIJKL_AA_M(I, I1, I2, I3) I3
            REQUEST DIJKL_AA_P(I, I1, I2, I3) I3
 
-	   Tijkl_am(I, I1, I2, I3) = DIJKL_AA_M(I, I1, I2, I3)
-           Tijkl_ap(I, I1, I2, I3) = DIJKL_AA_P(I, I1, I2, I3)
+	   Tijklaa_am(I, I1, I2, I3) = DIJKL_AA_M(I, I1, I2, I3)
+           Tijklaa_ap(I, I1, I2, I3) = DIJKL_AA_P(I, I1, I2, I3)
 
-           Tijkl_afd(I, I1, I2, I3) =Tijkl_ap(I, I1, I2, I3)
-           Tijkl_afd(I, I1, I2, I3) -=Tijkl_am(I, I1, I2, I3)
+           Tijklaa_afd(I, I1, I2, I3) =  Tijklaa_ap(I, I1, I2, I3)
+           Tijklaa_afd(I, I1, I2, I3) -= Tijklaa_am(I, I1, I2, I3)
            
-           Tijkl_afd(I, I1, I2, I3) *= INV_FD_WIDTH
+           Tijklaa_afd(I, I1, I2, I3) *= INV_FD_WIDTH
            
-           PREPARE DIJKL_AA_XYZ(I, I1, I2, I3) = Tijkl_afd(I, I1, I2, I3)
+           PREPARE DIJKL_AA_XYZ(I, I1, I2, I3) = Tijklaa_afd(I, I1, I2, I3)
     ENDPARDO  I, I1, I2, I3
 
     EXECUTE SERVER_BARRIER 
@@ -218,13 +297,727 @@
     ENDPROC FD_DIJKL_AA
 #   ------------------
 
+    PROC FD_DIJKL_BB
+#   ---------------
+
+    PARDO  J, J1, J2, J3
+           REQUEST DIJKL_BB_M(J, J1, J2, J3) J3
+           REQUEST DIJKL_BB_P(J, J1, J2, J3) J3
+
+           Tijklbb_am(J, J1, J2, J3) = DIJKL_BB_M(J, J1, J2, J3)
+           Tijklbb_ap(J, J1, J2, J3) = DIJKL_BB_P(J, J1, J2, J3)
+
+           Tijklbb_afd(J, J1, J2, J3) =  Tijklbb_ap(J, J1, J2, J3)
+           Tijklbb_afd(J, J1, J2, J3) -= Tijklbb_am(J, J1, J2, J3)
+
+           Tijklbb_afd(J, J1, J2, J3) *= INV_FD_WIDTH
+
+           PREPARE DIJKL_BB_XYZ(J, J1, J2, J3) = Tijklbb_afd(J, J1, J2, J3)
+    ENDPARDO  J, J1, J2, J3
+
+    EXECUTE SERVER_BARRIER
+  
+    sum   = 0.0
+    sumbb = 0.0
+    PARDO  J, J1, J2, J3
+           REQUEST DIJKL_BB_XYZ(J, J1, J2, J3) J3
+           tmp  = DIJKL_BB_XYZ(J, J1, J2, J3) * DIJKL_BB_XYZ(J, J1, J2, J3)
+           sum  += tmp
+    ENDPARDO J, J1, J2, J3
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbb
+
+    ENDPROC FD_DIJKL_BB
+#   -------------------
+
+    PROC FD_DIJKL_AB
+#   ----------------
+
+    PARDO  I, I1, J, J1
+           REQUEST DIJKL_AB_M(I, J, I1, J1) J1
+           REQUEST DIJKL_AB_P(I, J, I1, J1) J1
+
+           Tijklab_am(I, J, I1, J1) = DIJKL_AB_M(I, J, I1, J1)
+           Tijklab_ap(I, J, I1, J1) = DIJKL_AB_P(I, J, I1, J1)
+
+           Tijklab_afd(I, J, I1, J1) =  Tijklab_ap(I, J, I1, J1)
+           Tijklab_afd(I, J, I1, J1) -= Tijklab_am(I, J, I1, J1)
+
+           Tijklab_afd(I, J, I1, J1) *= INV_FD_WIDTH
+
+           PREPARE DIJKL_AB_XYZ(I, J, I1, J1) = Tijklab_afd(I, J, I1, J1)
+    ENDPARDO  I, I1, J, J1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumab = 0.0
+    PARDO  I, I1, J, J1
+           REQUEST DIJKL_AB_XYZ(I, J, I1, J1) J1
+           tmp  = DIJKL_AB_XYZ(I, J, I1, J1) * DIJKL_AB_XYZ(I, J, I1, J1)
+           sum  += tmp
+    ENDPARDO I, I1, J, J1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumab += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumab
+
+    ENDPROC FD_DIJKL_AB
+#   -------------------
+
+    PROC FD_DABCI_AA
+#   ----------------
+
+    PARDO A, A1, A2, I
+           REQUEST DABCI_AAAA_M(A, A1, A2, I) I
+           REQUEST DABCI_AAAA_P(A, A1, A2, I) I
+
+           Tabciaa_am(A, A1, A2, I) = DABCI_AAAA_M(A, A1, A2, I)
+           Tabciaa_ap(A, A1, A2, I) = DABCI_AAAA_P(A, A1, A2, I)
+
+           Tabciaa_afd(A, A1, A2, I) =  Tabciaa_am(A, A1, A2, I)
+           Tabciaa_afd(A, A1, A2, I) -= Tabciaa_ap(A, A1, A2, I)
+
+           Tabciaa_afd(A, A1, A2, I) *= INV_FD_WIDTH
+
+           PREPARE DABCI_AAAA_XYZ(A, A1, A2, I) = Tabciaa_afd(A, A1, A2, I)
+    ENDPARDO  A, A1, A2, I
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumaa = 0.0
+    PARDO  A, A, A2, I
+           REQUEST DABCI_AAAA_XYZ(A, A1, A2, I) I
+           tmp  = DABCI_AAAA_XYZ(A, A1, A2, I) * DABCI_AAAA_XYZ(A, A1, A2, I)
+           sum  += tmp
+    ENDPARDO A, A, A2, I
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumaa += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumaa
+
+    ENDPROC FD_DABCI_AA
+#   -------------------
+
+    PROC FD_DABCI_BB
+#   ----------------
+
+    PARDO B, B1, B2, J
+           REQUEST DABCI_BBBB_M(B, B1, B2, J) J
+           REQUEST DABCI_BBBB_P(B, B1, B2, J) J
+
+           Tabcibb_am(B, B1, B2, J) = DABCI_BBBB_M(B, B1, B2, J)
+           Tabcibb_ap(B, B1, B2, J) = DABCI_BBBB_P(B, B1, B2, J)
+
+           Tabcibb_afd(B, B1, B2, J) =  Tabcibb_am(B, B1, B2, J)
+           Tabcibb_afd(B, B1, B2, J) -= Tabcibb_ap(B, B1, B2, J)
+
+           Tabcibb_afd(B, B1, B2, J) *= INV_FD_WIDTH
+
+           PREPARE DABCI_BBBB_XYZ(B, B1, B2, J) = Tabcibb_afd(B, B1, B2, J)
+    ENDPARDO  B, B1, B2, J
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumbb = 0.0
+    PARDO  B, B1, B2, J
+           REQUEST DABCI_BBBB_XYZ(B, B1, B2, J) J
+           tmp  = DABCI_BBBB_XYZ(B, B1, B2, J) * DABCI_BBBB_XYZ(B, B1, B2, J)
+           sum  += tmp
+    ENDPARDO B, B1, B2, J
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbb
+
+    ENDPROC FD_DABCI_BB
+#   -------------------
+
+    PROC FD_DABCI_AB
+#   ----------------
+
+    PARDO A, B, A1, J
+           REQUEST DABCI_ABAB_M(A, B, A1, J) J
+           REQUEST DABCI_ABAB_P(A, B, A1, J) J
+
+           Tabciab_am(A, B, A1, J) = DABCI_ABAB_M(A, B, A1, J)
+           Tabciab_ap(A, B, A1, J) = DABCI_ABAB_P(A, B, A1, J)
+
+           Tabciab_afd(A, B, A1, J) =  Tabciab_am(A, B, A1, J)
+           Tabciab_afd(A, B, A1, J) -= Tabciab_ap(A, B, A1, J)
+
+           Tabciab_afd(A, B, A1, J) *= INV_FD_WIDTH
+
+           PREPARE DABCI_ABAB_XYZ(A, B, A1, J) = Tabciab_afd(A, B, A1, J)
+    ENDPARDO  A, B, A1, J
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumab = 0.0
+    PARDO  A, B, A1, J
+           REQUEST DABCI_ABAB_XYZ(A, B, A1, J) J
+           tmp  = DABCI_ABAB_XYZ(A, B, A1, J) * DABCI_ABAB_XYZ(A, B, A1, J)
+           sum  += tmp
+    ENDPARDO A, B, A1, J
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumab += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumab
+
+    ENDPROC FD_DABCI_AB
+#   -------------------
+
+    PROC FD_DABCI_BA
+#   ----------------
+
+    PARDO B, A, B1, I
+           REQUEST DABCI_BABA_M(B, A, B1, I) I
+           REQUEST DABCI_BABA_P(B, A, B1, I) I
+
+           Tabciba_am(B, A, B1, I) = DABCI_BABA_M(B, A, B1, I)
+           Tabciba_ap(B, A, B1, I) = DABCI_BABA_P(B, A, B1, I)
+
+           Tabciba_afd(B, A, B1, I) =  Tabciba_am(B, A, B1, I)
+           Tabciba_afd(B, A, B1, I) -= Tabciba_ap(B, A, B1, I)
+
+           Tabciba_afd(B, A, B1, I) *= INV_FD_WIDTH
+
+           PREPARE DABCI_BABA_XYZ(B, A, B1, I) = Tabciba_afd(B, A, B1, I)
+    ENDPARDO  B, A, B1, I
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumba = 0.0
+    PARDO  B, A, B1, I
+           REQUEST DABCI_BABA_XYZ(B, A, B1, I) I
+           tmp  = DABCI_BABA_XYZ(B, A, B1, I) * DABCI_BABA_XYZ(B, A, B1, I)
+           sum  += tmp
+    ENDPARDO B, A, B1, I
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumba += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumba
+
+    ENDPROC FD_DABCI_BA
+#   -------------------
+
+   PROC FD_DIJKA_AA
+#   ----------------
+
+    PARDO I, I1, I2, A
+           REQUEST DIJKA_AAAA_M(I, I1, I2, A) A
+           REQUEST DIJKA_AAAA_P(I, I1, I2, A) A
+
+           Tijkaaa_am(I, I1, I2, A) = DIJKA_AAAA_M(I, I1, I2, A)
+           Tijkaaa_ap(I, I1, I2, A) = DIJKA_AAAA_P(I, I1, I2, A)
+
+           Tijkaaa_afd(I, I1, I2, A) =  Tijkaaa_am(I, I1, I2, A)
+           Tijkaaa_afd(I, I1, I2, A) -= Tijkaaa_ap(I, I1, I2, A)
+
+           Tijkaaa_afd(I, I1, I2, A) *= INV_FD_WIDTH
+
+           PREPARE DIJKA_AAAA_XYZ(I, I1, I2, A) = Tijkaaa_afd(I, I1, I2, A)
+    ENDPARDO  I, I1, I2, A
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumaa = 0.0
+    PARDO  I, I1, I2, A
+           REQUEST DIJKA_AAAA_XYZ(I, I1, I2, A) A
+           tmp  = DIJKA_AAAA_XYZ(I, I1, I2, A) * DIJKA_AAAA_XYZ(I, I1, I2, A)
+           sum  += tmp
+    ENDPARDO I, I1, I2, A
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumaa += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumaa
+
+    ENDPROC FD_DIJKA_AA
+#   -------------------
+
+    PROC FD_DIJKA_BB
+#   ----------------
+
+    PARDO J, J1, J2, B
+           REQUEST DIJKA_BBBB_M(J, J1, J2, B) B
+           REQUEST DIJKA_BBBB_P(J, J1, J2, B) B
+
+           Tijkabb_am(J, J1, J2, B) = DIJKA_BBBB_M(J, J1, J2, B)
+           Tijkabb_ap(J, J1, J2, B) = DIJKA_BBBB_P(J, J1, J2, B)
+
+           Tijkabb_afd(J, J1, J2, B) =  Tijkabb_am(J, J1, J2, B)
+           Tijkabb_afd(J, J1, J2, B) -= Tijkabb_ap(J, J1, J2, B)
+
+           Tijkabb_afd(J, J1, J2, B) *= INV_FD_WIDTH
+
+           PREPARE DIJKA_BBBB_XYZ(J, J1, J2, B) = Tijkabb_afd(J, J1, J2, B)
+    ENDPARDO  J, J1, J2, B
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumbb = 0.0
+    PARDO  J, J1, J2, B
+           REQUEST DIJKA_BBBB_XYZ(J, J1, J2, B) B
+           tmp  = DIJKA_BBBB_XYZ(J, J1, J2, B) * DIJKA_BBBB_XYZ(J, J1, J2, B)
+           sum  += tmp
+    ENDPARDO J, J1, J2, B
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbb
+
+    ENDPROC FD_DIJKA_BB
+#   -------------------
+
+    PROC FD_DIJKA_AB
+#   ----------------
+
+    PARDO I, J, I1, B
+           REQUEST DIJKA_ABAB_M(I, J, I1, B) B
+           REQUEST DIJKA_ABAB_P(I, J, I1, B) B
+
+           Tijkaab_am(I, J, I1, B) = DIJKA_ABAB_M(I, J, I1, B)
+           Tijkaab_ap(I, J, I1, B) = DIJKA_ABAB_P(I, J, I1, B)
+
+           Tijkaab_afd(I, J, I1, B) =  Tijkaab_am(I, J, I1, B)
+           Tijkaab_afd(I, J, I1, B) -= Tijkaab_ap(I, J, I1, B)
+
+           Tijkaab_afd(I, J, I1, B) *= INV_FD_WIDTH
+
+           PREPARE DIJKA_ABAB_XYZ(I, J, I1, B) = Tijkaab_afd(I, J, I1, B)
+    ENDPARDO  I, J, I1, B
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumab = 0.0
+    PARDO  I, J, I1, B
+           REQUEST DIJKA_ABAB_XYZ(I, J, I1, B) B
+           tmp  = DIJKA_ABAB_XYZ(I, J, I1, B) * DIJKA_ABAB_XYZ(I, J, I1, B)
+           sum  += tmp
+    ENDPARDO I, J, I1, B
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumab += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumab
+
+    ENDPROC FD_DIJKA_AB
+#   -------------------
+
+    PROC FD_DIJKA_BA
+#   ----------------
+
+    PARDO J, I, J1, A
+           REQUEST DIJKA_BABA_M(J, I, J1, A) A
+           REQUEST DIJKA_BABA_P(J, I, J1, A) A
+
+           Tijkaba_am(J, I, J1, A) = DIJKA_BABA_M(J, I, J1, A)
+           Tijkaba_ap(J, I, J1, A) = DIJKA_BABA_P(J, I, J1, A)
+
+           Tijkaba_afd(J, I, J1, A) =  Tijkaba_am(J, I, J1, A)
+           Tijkaba_afd(J, I, J1, A) -= Tijkaba_ap(J, I, J1, A)
+
+           Tijkaba_afd(J, I, J1, A) *= INV_FD_WIDTH
+
+           PREPARE DIJKA_BABA_XYZ(J, I, J1, A) = Tijkaba_afd(J, I, J1, A)
+    ENDPARDO J, I, J1, A
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumba = 0.0
+    PARDO  J, I, J1, A
+           REQUEST DIJKA_BABA_XYZ(J, I, J1, A) A
+           tmp  = DIJKA_BABA_XYZ(J, I, J1, A) * DIJKA_BABA_XYZ(J, I, J1, A)
+           sum  += tmp
+    ENDPARDO J, I, J1, A
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumba += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumba
+
+    ENDPROC FD_DIJKA_BA
+#   -------------------
+
+    PROC FD_DIJAB_AA
+#   ----------------
+
+    PARDO I, I1, A, A1
+           REQUEST DIJAB_AA_M(I, I1, A, A1) A1
+           REQUEST DIJAB_AA_P(I, I1, A, A1) A1
+
+           Tijabaa_am(I, I1, A, A1) = DIJAB_AA_M(I, I1, A, A1)
+           Tijabaa_ap(I, I1, A, A1) = DIJAB_AA_P(I, I1, A, A1)
+
+           Tijabaa_afd(I, I1, A, A1) =  Tijabaa_am(I, I1, A, A1)
+           Tijabaa_afd(I, I1, A, A1) -= Tijabaa_ap(I, I1, A, A1)
+
+           Tijabaa_afd(I, I1, A, A1) *= INV_FD_WIDTH
+
+           PREPARE DIJAB_AA_XYZ(I, I1, A, A1) = Tijabaa_afd(I, I1, A, A1)
+    ENDPARDO  I, I1, A, A1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumaa = 0.0
+    PARDO  I, I1, A, A1
+           REQUEST DIJAB_AA_XYZ(I, I1, A, A1) A1
+           tmp  = DIJAB_AA_XYZ(I, I1, A, A1) * DIJAB_AA_XYZ(I, I1, A, A1)
+           sum  += tmp
+    ENDPARDO I, I1, A, A1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumaa += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumaa
+
+    ENDPROC FD_DIJAB_AA
+#   -------------------
+
+    PROC FD_DIJAB_BB
+#   ----------------
+
+    PARDO J, J1, B, B1
+           REQUEST DIJAB_BB_M(J, J1, B, B1) B1
+           REQUEST DIJAB_BB_P(J, J1, B, B1) B1
+
+           Tijabbb_am(J, J1, B, B1) = DIJAB_BB_M(J, J1, B, B1)
+           Tijabbb_ap(J, J1, B, B1) = DIJAB_BB_P(J, J1, B, B1)
+
+           Tijabbb_afd(J, J1, B, B1) =  Tijabbb_am(J, J1, B, B1)
+           Tijabbb_afd(J, J1, B, B1) -= Tijabbb_ap(J, J1, B, B1)
+
+           Tijabbb_afd(J, J1, B, B1) *= INV_FD_WIDTH
+
+           PREPARE DIJAB_BB_XYZ(J, J1, B, B1) = Tijabbb_afd(J, J1, B, B1)
+    ENDPARDO  J, J1, B, B1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumbb = 0.0
+    PARDO  J, J1, B, B1
+           REQUEST DIJAB_BB_XYZ(J, J1, B, B1) B1
+           tmp  = DIJAB_BB_XYZ(J, J1, B, B1) * DIJAB_BB_XYZ(J, J1, B, B1)
+           sum  += tmp
+    ENDPARDO J, J1, B, B1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbb
+
+    ENDPROC FD_DIJAB_BB
+#   -------------------
+
+    PROC FD_DIJAB_AB
+#   ----------------
+
+    PARDO I, J, A, B
+           REQUEST DIJAB_AB_M(I, J, A, B) B
+           REQUEST DIJAB_AB_P(I, J, A, B) B
+
+           Tijabab_am(I, J, A, B) = DIJAB_AB_M(I, J, A, B)
+           Tijabab_ap(I, J, A, B) = DIJAB_AB_P(I, J, A, B)
+
+           Tijabab_afd(I, J, A, B) =  Tijabab_am(I, J, A, B)
+           Tijabab_afd(I, J, A, B) -= Tijabab_ap(I, J, A, B)
+
+           Tijabab_afd(I, J, A, B) *= INV_FD_WIDTH
+
+           PREPARE DIJAB_AB_XYZ(I, J, A, B) = Tijabab_afd(I, J, A, B)
+    ENDPARDO  I, J, A, B
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumab = 0.0
+    PARDO  I, J, A, B
+           REQUEST DIJAB_AB_XYZ(I, J, A, B) B
+           tmp  = DIJAB_AB_XYZ(I, J, A, B) * DIJAB_AB_XYZ(I, J, A, B)
+           sum  += tmp
+    ENDPARDO I, J, A, B
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumab += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumab
+
+    ENDPROC FD_DIJAB_AB
+#   -------------------
+
+    PROC FD_DIBJA_AAAA
+#   ------------------
+
+    PARDO I, A, I1, A1
+           REQUEST DIBJA_AAAA_M(I, A, I1, A1) A1
+           REQUEST DIBJA_AAAA_P(I, A, I1, A1) A1
+
+           Tibja_aaaa_am(I, A, I1, A1) = DIBJA_AAAA_M(I, A, I1, A1)
+           Tibja_aaaa_ap(I, A, I1, A1) = DIBJA_AAAA_P(I, A, I1, A1)
+
+           Tibja_aaaa_afd(I, A, I1, A1) =  Tibja_aaaa_am(I, A, I1, A1)
+           Tibja_aaaa_afd(I, A, I1, A1) -= Tibja_aaaa_ap(I, A, I1, A1)
+
+           Tibja_aaaa_afd(I, A, I1, A1) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_AAAA_XYZ(I, A, I1, A1) = Tibja_aaaa_afd(I, A, I1, A1)
+    ENDPARDO I, A, I1, A1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumaa = 0.0
+    PARDO  I, A, I1, A1
+           REQUEST DIBJA_AAAA_XYZ(I, A, I1, A1) A1
+           tmp  = DIBJA_AAAA_XYZ(I, A, I1, A1) * DIBJA_AAAA_XYZ(I, A, I1, A1)
+           sum  += tmp
+    ENDPARDO I, A, I1, A1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumaa += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumaa
+
+    ENDPROC FD_DIBJA_AAAA
+#   ---------------------
+
+    PROC FD_DIBJA_BBBB
+#   ------------------
+
+    PARDO J, B, J1, B1
+           REQUEST DIBJA_BBBB_M(J, B, J1, B1) B1
+           REQUEST DIBJA_BBBB_P(J, B, J1, B1) B1
+
+           Tibja_bbbb_am(J, B, J1, B1) = DIBJA_BBBB_M(J, B, J1, B1)
+           Tibja_bbbb_ap(J, B, J1, B1) = DIBJA_BBBB_P(J, B, J1, B1)
+
+           Tibja_bbbb_afd(J, B, J1, B1) =  Tibja_bbbb_am(J, B, J1, B1)
+           Tibja_bbbb_afd(J, B, J1, B1) -= Tibja_bbbb_ap(J, B, J1, B1)
+
+           Tibja_bbbb_afd(J, B, J1, B1) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_BBBB_XYZ(J, B, J1, B1) = Tibja_bbbb_afd(J, B, J1, B1)
+    ENDPARDO J, B, J1, B1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumbb = 0.0
+    PARDO  J, B, J1, B1
+           REQUEST DIBJA_BBBB_XYZ(J, B, J1, B1) B1
+           tmp  = DIBJA_BBBB_XYZ(J, B, J1, B1) * DIBJA_BBBB_XYZ(J, B, J1, B1)
+           sum  += tmp
+    ENDPARDO J, B, J1, B1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbb
+
+    ENDPROC FD_DIBJA_BBBB
+#   ---------------------
+
+    PROC FD_DIBJA_ABAB
+#   ------------------
+
+    PARDO I, B, I1, B1
+           REQUEST DIBJA_ABAB_M(I, B, I1, B1) B1
+           REQUEST DIBJA_ABAB_P(I, B, I1, B1) B1
+
+           Tibja_abab_am(I, B, I1, B1) = DIBJA_ABAB_M(I, B, I1, B1)
+           Tibja_abab_ap(I, B, I1, B1) = DIBJA_ABAB_P(I, B, I1, B1)
+
+           Tibja_abab_afd(I, B, I1, B1) =  Tibja_abab_am(I, B, I1, B1)
+           Tibja_abab_afd(I, B, I1, B1) -= Tibja_abab_ap(I, B, I1, B1)
+
+           Tibja_abab_afd(I, B, I1, B1) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_ABAB_XYZ(I, B, I1, B1) = Tibja_abab_afd(I, B, I1, B1)
+    ENDPARDO I, B, I1, B1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumab = 0.0
+    PARDO  I, B, I1, B1
+           REQUEST DIBJA_ABAB_XYZ(I, B, I1, B1) B1
+           tmp  = DIBJA_ABAB_XYZ(I, B, I1, B1) * DIBJA_ABAB_XYZ(I, B, I1, B1)
+           sum  += tmp
+    ENDPARDO I, B, I1, B1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumab += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumab
+
+    ENDPROC FD_DIBJA_ABAB
+#   ---------------------
+
+    PROC FD_DIBJA_BABA
+#   ------------------
+
+    PARDO J, A, J1, A1
+           REQUEST DIBJA_BABA_M(J, A, J1, A1) A1
+           REQUEST DIBJA_BABA_P(J, A, J1, A1) A1
+
+           Tibja_baba_am(J, A, J1, A1) = DIBJA_BABA_M(J, A, J1, A1)
+           Tibja_baba_ap(J, A, J1, A1) = DIBJA_BABA_P(J, A, J1, A1)
+
+           Tibja_baba_afd(J, A, J1, A1) =  Tibja_baba_am(J, A, J1, A1)
+           Tibja_baba_afd(J, A, J1, A1) -= Tibja_baba_ap(J, A, J1, A1)
+
+           Tibja_baba_afd(J, A, J1, A1) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_BABA_XYZ(J, A, J1, A1) = Tibja_baba_afd(J, A, J1, A1)
+    ENDPARDO J, A, J1, A1
+
+    EXECUTE SERVER_BARRIER
+
+    sum   = 0.0
+    sumba = 0.0
+    PARDO  J, A, J1, A1
+           REQUEST DIBJA_BABA_XYZ(J, A, J1, A1) A1
+           tmp  = DIBJA_BABA_XYZ(J, A, J1, A1) * DIBJA_BABA_XYZ(J, A, J1, A1)
+           sum  += tmp
+    ENDPARDO J, A, J1, A1
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumba += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumba
+
+    ENDPROC FD_DIBJA_BABA
+#   ---------------------
+
+    PROC FD_DIBJA_BAAB
+#   ------------------
+
+    PARDO J, A, I, B
+           REQUEST DIBJA_BAAB_M(J, A, I, B) B
+           REQUEST DIBJA_BAAB_P(J, A, I, B) B
+
+           Tibja_baab_am(J, A, I, B) = DIBJA_BAAB_M(J, A, I, B)
+           Tibja_baab_ap(J, A, I, B) = DIBJA_BAAB_P(J, A, I, B)
+
+           Tibja_baab_afd(J, A, I, B) =  Tibja_baab_am(J, A, I, B)
+           Tibja_baab_afd(J, A, I, B) -= Tibja_baab_ap(J, A, I, B)
+
+           Tibja_baab_afd(J, A, I, B) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_BAAB_XYZ(J, A, I, B) = Tibja_baab_afd(J, A, I, B)
+    ENDPARDO J, A, I, B
+
+    EXECUTE SERVER_BARRIER
+
+    sum    = 0.0
+    sumbaa = 0.0
+    PARDO  J, A, I, B
+           REQUEST DIBJA_BAAB_XYZ(J, A, I, B) B
+           tmp  = DIBJA_BAAB_XYZ(J, A, I, B) * DIBJA_BAAB_XYZ(J, A, I, B)
+           sum  += tmp
+    ENDPARDO J, A, I, B
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumbaa += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumbaa
+
+    ENDPROC FD_DIBJA_BAAB
+#   ---------------------
+
+    PROC FD_DIBJA_ABBA
+#   ------------------
+
+    PARDO I, B, J, A
+           REQUEST DIBJA_ABBA_M(I, B, J, A) A
+           REQUEST DIBJA_ABBA_P(I, B, J, A) A
+
+           Tibja_abba_am(I, B, J, A) = DIBJA_ABBA_M(I, B, J, A)
+           Tibja_abba_ap(I, B, J, A) = DIBJA_ABBA_P(I, B, J, A)
+
+           Tibja_abba_afd(I, B, J, A) =  Tibja_abba_am(I, B, J, A)
+           Tibja_abba_afd(I, B, J, A) -= Tibja_abba_ap(I, B, J, A)
+
+           Tibja_abba_afd(I, B, J, A) *= INV_FD_WIDTH
+
+           PREPARE DIBJA_ABBA_XYZ(I, B, J, A) = Tibja_abba_afd(I, B, J, A)
+    ENDPARDO I, B, J, A
+
+    EXECUTE SERVER_BARRIER
+
+    sum    = 0.0
+    sumabb = 0.0
+    PARDO  I, B, J, A
+           REQUEST DIBJA_ABBA_XYZ(I, B, J, A) A
+           tmp  = DIBJA_ABBA_XYZ(I, B, J, A) * DIBJA_ABBA_XYZ(I, B, J, A)
+           sum  += tmp
+    ENDPARDO I, B, J, A
+
+    EXECUTE SERVER_BARRIER
+    COLLECTIVE sumabb += sum
+    EXECUTE SIP_BARRIER
+    EXECUTE PRINT_SCALAR sumabb
+
+    ENDPROC FD_DIBJA_ABBA
+#   ---------------------
+
 #   The main program
 #   -------------------------------------------
+
+     FD_WIDTH     = 200.0
+     INV_FD_WIDTH = 1.0/FD_WIDTH
+     SCALE        = 1000000.0
+     INV_FD_WIDTH *= SCALE
+     execute print_scalar INV_FD_WIDTH
 
      CALL READ_FD_2D
 
      CALL FD_DIJKL_AA
+     CALL FD_DIJKL_BB
+     CALL FD_DIJKL_AB
 
+     CALL FD_DABCI_AA
+     CALL FD_DABCI_BB
+     CALL FD_DABCI_AB
+     CALL FD_DABCI_BA
+
+     CALL FD_DIJKA_AA
+     CALL FD_DIJKA_BB
+     CALL FD_DIJKA_AB
+     CALL FD_DIJKA_BA
+
+     CALL FD_DIJAB_AA
+     CALL FD_DIJAB_BB
+     CALL FD_DIJAB_AB
+
+     CALL FD_DIBJA_AAAA
+     CALL FD_DIBJA_BBBB
+     CALL FD_DIBJA_ABAB
+     CALL FD_DIBJA_BABA
+     CALL FD_DIBJA_BAAB
+     CALL FD_DIBJA_ABBA
+
+     
 #   End of the main program
 #   --------------------------------------------
 

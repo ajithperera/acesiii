@@ -8756,7 +8756,7 @@
          IF ICOUNT == 2.0
             FD_SCALE  = 100.0
             FD_SCALE *= SCALE
-            FD_SCALE *= 1.0
+            FD_SCALE *= -1.0
             Z_COMP = 9.0
             CALL GET_FD_P
             CALL TRANS_2MO

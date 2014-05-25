@@ -5952,6 +5952,10 @@
 # Form DIJKL 
 # ---------- 
          CALL DIJKL # gamma3 # BTRAN OK  
+#bgn_debug
+         CALL S2DIJKL
+#end_debug
+
 #
 # Form DIJAB  
 # ---------- 
