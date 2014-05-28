@@ -852,7 +852,6 @@
      
        scalar sum0
        scalar tmp
-
        scalar property
        scalar beta_is_minus
        scalar sum 
@@ -866,6 +865,11 @@
        scalar Z_COMP
        scalar ICOUNT
        scalar IT_COUNT
+       scalar do_pols
+       scalar do_aten
+       scalar do_gten
+       scalar do_dten
+  
 #____________________________________________________________________________
 # generate one-electron B-field integrals
 #
@@ -9522,6 +9526,14 @@
        CALL FME
        EXECUTE SIP_BARRIER
  
+# Set the property type based on the input key-word
+
+       do_pols = polarizability
+       do_aten = a_tensor 
+       do_gten = g_tensor
+       do_dten = d_tensor 
+
+#       if do_aten == 1
        property = 10.0
        beta_is_minus = 0.0
 

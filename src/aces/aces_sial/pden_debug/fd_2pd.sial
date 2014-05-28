@@ -230,6 +230,7 @@
       execute list_to_blocks  DABCI_AAAA_p
       execute list_to_blocks  DABCI_BBBB_p
       execute list_to_blocks  DABCI_ABAB_p
+      execute list_to_blocks  DABCI_BABA_p
 
       execute list_to_blocks  DIJKL_AA_m
       execute list_to_blocks  DIJKL_BB_m
@@ -254,6 +255,7 @@
       execute list_to_blocks  DABCI_AAAA_m
       execute list_to_blocks  DABCI_BBBB_m
       execute list_to_blocks  DABCI_ABAB_m
+      execute list_to_blocks  DABCI_BABA_m
 
       execute read_list_to_blocks
       execute server_barrier
@@ -379,8 +381,8 @@
            Tabciaa_am(A, A1, A2, I) = DABCI_AAAA_M(A, A1, A2, I)
            Tabciaa_ap(A, A1, A2, I) = DABCI_AAAA_P(A, A1, A2, I)
 
-           Tabciaa_afd(A, A1, A2, I) =  Tabciaa_am(A, A1, A2, I)
-           Tabciaa_afd(A, A1, A2, I) -= Tabciaa_ap(A, A1, A2, I)
+           Tabciaa_afd(A, A1, A2, I) =  Tabciaa_ap(A, A1, A2, I)
+           Tabciaa_afd(A, A1, A2, I) -= Tabciaa_am(A, A1, A2, I)
 
            Tabciaa_afd(A, A1, A2, I) *= INV_FD_WIDTH
 
@@ -391,11 +393,12 @@
 
     sum   = 0.0
     sumaa = 0.0
-    PARDO  A, A, A2, I
+    PARDO  A, A1, A2, I
            REQUEST DABCI_AAAA_XYZ(A, A1, A2, I) I
+#           execute dump_amp DABCI_AAAA_XYZ 
            tmp  = DABCI_AAAA_XYZ(A, A1, A2, I) * DABCI_AAAA_XYZ(A, A1, A2, I)
            sum  += tmp
-    ENDPARDO A, A, A2, I
+    ENDPARDO A, A1, A2, I
 
     EXECUTE SERVER_BARRIER
     COLLECTIVE sumaa += sum
@@ -415,8 +418,8 @@
            Tabcibb_am(B, B1, B2, J) = DABCI_BBBB_M(B, B1, B2, J)
            Tabcibb_ap(B, B1, B2, J) = DABCI_BBBB_P(B, B1, B2, J)
 
-           Tabcibb_afd(B, B1, B2, J) =  Tabcibb_am(B, B1, B2, J)
-           Tabcibb_afd(B, B1, B2, J) -= Tabcibb_ap(B, B1, B2, J)
+           Tabcibb_afd(B, B1, B2, J) =  Tabcibb_ap(B, B1, B2, J)
+           Tabcibb_afd(B, B1, B2, J) -= Tabcibb_am(B, B1, B2, J)
 
            Tabcibb_afd(B, B1, B2, J) *= INV_FD_WIDTH
 
@@ -451,8 +454,9 @@
            Tabciab_am(A, B, A1, J) = DABCI_ABAB_M(A, B, A1, J)
            Tabciab_ap(A, B, A1, J) = DABCI_ABAB_P(A, B, A1, J)
 
-           Tabciab_afd(A, B, A1, J) =  Tabciab_am(A, B, A1, J)
-           Tabciab_afd(A, B, A1, J) -= Tabciab_ap(A, B, A1, J)
+           Tabciab_afd(A, B, A1, J) =  Tabciab_ap(A, B, A1, J)
+           Tabciab_afd(A, B, A1, J) -= Tabciab_am(A, B, A1, J)
+
 
            Tabciab_afd(A, B, A1, J) *= INV_FD_WIDTH
 
@@ -487,8 +491,8 @@
            Tabciba_am(B, A, B1, I) = DABCI_BABA_M(B, A, B1, I)
            Tabciba_ap(B, A, B1, I) = DABCI_BABA_P(B, A, B1, I)
 
-           Tabciba_afd(B, A, B1, I) =  Tabciba_am(B, A, B1, I)
-           Tabciba_afd(B, A, B1, I) -= Tabciba_ap(B, A, B1, I)
+           Tabciba_afd(B, A, B1, I) =  Tabciba_ap(B, A, B1, I)
+           Tabciba_afd(B, A, B1, I) -= Tabciba_am(B, A, B1, I)
 
            Tabciba_afd(B, A, B1, I) *= INV_FD_WIDTH
 

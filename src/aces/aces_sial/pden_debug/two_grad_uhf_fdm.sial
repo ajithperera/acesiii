@@ -154,10 +154,12 @@
       served Dabci_abab_m(a,b,a1,j)
       served Dabci_baba_m(b,a,b1,i)
       served Dabci_bbbb_m(b,b2,b1,j)
+
       served Dijka_aaaa_m(i,i2,i1,a)
       served Dijka_abab_m(i,j,i1,b)
       served Dijka_baba_m(j,i,j1,a)
       served Dijka_bbbb_m(j,j2,j1,b)
+
       served Dxaai(mu,a,a1,i) 
       served Dxxai(mu,nu,a1,i) 
       served Dxxxi(mu,nu,sigma,i) 
@@ -5740,11 +5742,12 @@
       PARDO a, a1, a2, i 
 #
             REQUEST Dabci_aaaa_m(a,a1,a2,i) i  
+            execute dump_amp Dabci_aaaa_m
             etemp = Dabci_aaaa_m(a,a1,a2,i)*Dabci_aaaa_m(a,a1,a2,i)
             esum += etemp
 #
       ENDPARDO a, a1, a2, i 
-      esum *= 0.5 # to match aces 
+#      esum *= 0.5 # to match aces 
       execute print_scalar esum 
 #
       esum = 0.0 
@@ -5755,7 +5758,7 @@
             esum += etemp
 #
       ENDPARDO b, b1, b2, j 
-      esum *= 0.5 # to match aces 
+#      esum *= 0.5 # to match aces 
       execute print_scalar esum 
 #
       esum = 0.0 
@@ -5981,6 +5984,7 @@
 # Form DABCI 
 # ---------- 
          CALL DABCI # gamma5 # BTRAN OK  
+         CALL S2ABCI
          execute sip_barrier 
          execute server_barrier 
 #
@@ -6079,6 +6083,7 @@
       execute list_to_blocks  DABCI_AAAA_p
       execute list_to_blocks  DABCI_BBBB_p
       execute list_to_blocks  DABCI_ABAB_p
+      execute list_to_blocks  DABCI_BABA_p
 
 #      execute list_to_blocks Doldai_a
 #      execute list_to_blocks Doldai_b
@@ -6113,6 +6118,7 @@
       execute blocks_to_list  DABCI_AAAA_p
       execute blocks_to_list  DABCI_BBBB_p
       execute blocks_to_list  DABCI_ABAB_p
+      execute blocks_to_list  DABCI_BABA_p
 
       execute blocks_to_list  DIJKL_AA_m
       execute blocks_to_list  DIJKL_BB_m
@@ -6137,6 +6143,7 @@
       execute blocks_to_list  DABCI_AAAA_m
       execute blocks_to_list  DABCI_BBBB_m
       execute blocks_to_list  DABCI_ABAB_m
+      execute blocks_to_list  DABCI_BABA_m
 
       execute server_barrier
       execute write_blocks_to_list

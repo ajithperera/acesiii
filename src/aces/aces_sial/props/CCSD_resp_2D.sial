@@ -2512,6 +2512,11 @@
 #
       PROC DIJABAA_X
 #     --------------
+      PARDO i1,i,a1,a
+            T1iiaa(i1,i,a1,a) = 0.0
+            PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
+      ENDPARDO i1,i,a1,a
+
 # Dim(i,m) = Gmi_a(i,m) + l1a_old(m,e)*t1a_old(e,i)  
 # Dea(e,a) = Gae_a(e,a) - l1a_old(m,e)*t1a_old(a,m) 
 # Dii_x 
@@ -3148,6 +3153,10 @@
 #
       PROC DIJABAB_X
 #     --------------
+      PARDO i,j,a,b 
+            Tijab(i,j,a,b) = 0.0
+            PREPARE Dijab_ab_x(i,j,a,b) = Tijab(i,j,a,b)
+      ENDPARDO i,j,a,b 
 
 # Terms 1-5 in Eq. 33 
       PARDO a, b, i, j
@@ -3971,6 +3980,11 @@
 #-----------------------------------------------------------------
       PROC DIJABBB_X
 #     --------------
+      PARDO j1,j,b1,b 
+         T1jjbb(j1,j,b1,b) = 0.0
+         PREPARE Dijab_bb_x(j1,j,b1,b) = T1jjbb(j1,j,b1,b)
+      ENDPARDO j1,j,b1,b
+
 # Djj 
       PARDO j, j1
             GET Gmi_b_x(j,j1)
@@ -4796,6 +4810,12 @@
 #---------------------------------------------------------------------
       PROC DIJKLAAAA_X
 #     -----------------
+
+      PARDO i, i1, i2, i3
+            Tiiii(i,i1,i2,i3) = 0.0
+            PREPARE Dijkl_aa_x(i,i1,i2,i3) = Tiiii(i,i1,i2,i3)
+      ENDPARDO i, i1, i2, i3 
+            
       PARDO a, a1, i, i1
             REQUEST L2old_aa(i,a,i1,a1) a1
             REQUEST L2old_aa_x(i,a,i1,a1) a1
@@ -4904,6 +4924,11 @@
 #-------------------------------------------------------------------
       PROC DIJKLABAB_X
 #     ----------------
+      PARDO i, j, i1, j1
+            Tijij(i,j,i1,j1) = 0.0
+            PREPARE Dijkl_ab_x(i,j,i1,j1) =  Tijij(i,j,i1,j1)
+      ENDPARDO i, j, i1, j1
+
       PARDO a, b,i, j
 
             REQUEST L2old_ab_x(i,a,j,b) b
@@ -4980,6 +5005,11 @@
 #-------------------------------------------------------------------
       PROC DIJKLBBBB_X
 #     ----------------
+      PARDO j, j1, j2, j3
+            Tjjjj(j,j1,j2,j3) = 0.0
+            PREPARE Dijkl_bb_x(j,j1,j2,j3) = Tjjjj(j,j1,j2,j3)
+      ENDPARDO j, j1, j2, j3
+   
       PARDO b, b1, j, j1
             REQUEST L2old_bb(j,b,j1,b1) b1
             Tjjbb(j,j1,b,b1) = L2old_bb(j,b,j1,b1)
@@ -5938,6 +5968,12 @@
 #
       PROC DIBJAAAAA_X
 #     ----------------
+
+      PARDO a, a1, i, i1
+            Tiaia(i,a1,i1,a)  = 0.0
+            PREPARE Dibja_aaaa_x(i,a1,i1,a) = Tiaia(i,a1,i1,a)
+      ENDPARDO a, a1, i, i1
+
       PARDO a, a1, i, i1
             Tiaia(i,a1,i1,a)  = 0.0
             TAiaia(i1,a,i,a1) = 0.0
@@ -6229,6 +6265,11 @@
 #     ----------------
       PARDO b1, b, i, i1
             Tibib(i1,b1,i,b)  = 0.0
+            PREPARE Dibja_abab_x(i1,b1,i,b) = Tibib(i1,b1,i,b) 
+      ENDPARDO b1, b, i, i1
+
+      PARDO b1, b, i, i1
+            Tibib(i1,b1,i,b)  = 0.0
             TAibib(i,b,i1,b1) = 0.0
             DO j
                GET t1b_old(b1,j)
@@ -6379,6 +6420,11 @@
 #-------------------------------------------------------------------------                         
       PROC DIBJABBBB_X
 #     ----------------
+      PARDO b, b1, j, j1
+            Tjbjb(j,b1,j1,b)  = 0.0
+            PREPARE Dibja_bbbb_x(j,b1,j1,b) = Tjbjb(j,b1,j1,b) 
+      ENDPARDO b, b1, j, j1
+
       PARDO b, b1, j, j1
             Tjbjb(j,b1,j1,b)  = 0.0
             TAjbjb(j1,b,j,b1) = 0.0
@@ -6611,6 +6657,11 @@
 #     ----------------
       PARDO a, a1, j1, j
             Tjaja(j,a,j1,a1) = 0.0
+            PREPARE Dibja_baba_x(j,a,j1,a1) = Tjaja(j,a,j1,a1)
+      ENDPARDO a, a1, j1, j
+
+      PARDO a, a1, j1, j
+            Tjaja(j,a,j1,a1) = 0.0
             TAjaja(j1,a1,j,a) = 0.0
             DO i
                GET t1a_old(a,i)
@@ -6777,6 +6828,11 @@
 #--------------------------------------------------------------------------
      PROC DIBJABAAB_X
 #    ----------------
+      PARDO j, a, i, b
+            Tjaib(j,a,i,b) = 0.0
+            PREPARE Dibja_baab_x(j,a,i,b) = Tjaib(j,a,i,b)
+      ENDPARDO j, a, i, b
+
       PARDO j, b, a, i
             Tjbia(j,b,i,a) = 0.0
 
@@ -7063,6 +7119,11 @@
 #---------------------------------------------------------------------------
       PROC DIBJAABBA_X
 #     -----------------
+      PARDO i, b, j, a
+            Tibja(i,b,j,a)  = 0.0
+            PREPARE Dibja_abba_x(i,b,j,a) = Tibja(i,b,j,a)
+      ENDPARDO i, b, j, a
+
       PARDO i, a, b, j
             Tiajb(i,a,j,b) = 0.0
             GET l1b_old(j,b)
@@ -7983,6 +8044,11 @@
       PROC DCIABAAAA_X
 #     ----------------
       PARDO a, a1, a2, i
+            Taaai(a,a1,a2,i) = 0.0 
+            PREPARE Dabci_aaaa_x(a,a1,a2,i) = Taaai(a,a1,a2,i)
+      ENDPARDO a, a1, a2, i
+
+      PARDO a, a1, a2, i
             Taaai(a,a1,a2,i) = 0.0
 
             GET Gae_a(a2,a)
@@ -8156,7 +8222,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Taaai(a,a1,a2,i) *= 4.0 
-#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -8216,6 +8282,12 @@
 #    ---------------------
       PROC DCIABBBBB_X
 #     -----------------
+
+      PARDO b, b1, b2, j
+            Tbbbj(b,b1,b2,j) = 0.0
+            PREPARE Dabci_bbbb_x(b,b1,b2,j) = Tbbbj(b,b1,b2,j)
+      ENDPARDO b, b1, b2, j
+  
       PARDO b, b1, b2, j
             Tbbbj(b,b1,b2,j) = 0.0 
 
@@ -8322,7 +8394,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tbbbj(b,b1,b2,j) *= 4.0 
-#           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -8381,6 +8453,12 @@
 #    -------------------
       PROC DCIABBABA_X
 #     ----------------
+
+      PARDO b1, b, a, i
+            Tbabi(b1,a,b,i) = 0.0
+            PREPARE Dabci_baba_x(b1,a,b,i) = Tbabi(b1,a,b,i)
+      ENDPARDO b1, b, a, i
+
       PARDO b1, b, a, i
             Tbabi(b1,a,b,i) = 0.0
             GET Gae_b(b1,b)
@@ -8513,7 +8591,7 @@
 #
 #bgn_debug
 #           Tbabi(b1,a,b,i) *= 4.0
-#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
+           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -8588,6 +8666,11 @@
 #     -----------------
       PARDO a, a1, b, j
             Tabaj(a,b,a1,j) = 0.0
+            PREPARE Dabci_abab_x(a,b,a1,j) = Tabaj(a,b,a1,j)
+      ENDPARDO a, a1, b, j
+
+      PARDO a, a1, b, j
+            Tabaj(a,b,a1,j) = 0.0
 
             GET Gae_a(a,a1)
             GET t1b_old(b,j)
@@ -8628,14 +8711,14 @@
                T1abaj(a,b,a1,j)  = Tau_ab(a,i,b,j)*l1a_old_x(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=0.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Tau_ab_x(a,i,b,j)*l1a_old(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=0.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -8644,14 +8727,14 @@
                T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=0.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=0.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 #end_debug
@@ -8720,7 +8803,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tabaj(a,b,a1,j) *= 4.0
-#           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
+           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
@@ -9579,6 +9662,11 @@
       PROC DIJKAAAAA_X
       PARDO i, i1, i2, a
             Tiiia(i,i1,i2,a) = 0.0
+            Dijka_aaaa_x(i,i1,i2,a) = Tiiia(i,i1,i2,a)
+      ENDPARDO i, i1, i2, a
+
+      PARDO i, i1, i2, a
+            Tiiia(i,i1,i2,a) = 0.0
             GET Gmi_a(i,i2)
             GET t1a_old(a,i1)
             GET Gmi_a(i1,i2)
@@ -9733,7 +9821,7 @@
 # ---------------------------
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
-#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -9785,6 +9873,11 @@
 #____________________________________________________________________________    
       PROC DIJKABBBB_X
 #     ----------------
+      PARDO j, j1, j2, b
+            Tjjjb(j,j1,j2,b) = 0.0
+            Dijka_bbbb_x(j,j1,j2,b) = Tjjjb(j,j1,j2,b)
+      ENDPARDO j, j1, j2, b
+
       PARDO j, j1, j2, b
             Tjjjb(j,j1,j2,b) = 0.0
             GET Gmi_b(j,j2)
@@ -9887,7 +9980,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+2S_z(2)pqsr|BB>
@@ -9921,6 +10014,11 @@
 #................................................................................
       PROC DIJKAABAB_X
 #     ----------------
+      PARDO i, j, i1, b
+            Tijib(i,j,i1,b) = 0.0
+            PREPARE Dijka_abab_x(i,j,i1,b) = Tijib(i,j,i1,b)
+      ENDPARDO i, j, i1, b
+     
       PARDO i, j, i1, b
             Tijib(i,j,i1,b) = 0.0
             GET Gmi_a(i,i1)
@@ -10048,7 +10146,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tijib(i,j,i1,b) *= 4.0 
-#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
@@ -10096,6 +10194,11 @@
 #.................................................................................
       PROC DIJKABABA_X
 #     ----------------
+      PARDO j, i, j1, a
+            Tjija(j,i,j1,a) = 0.0
+            PREPARE Dijka_baba_x(j,i,j1,a) = Tjija(j,i,j1,a)
+      ENDPARDO j, i, j1, a
+
       PARDO j, i, j1, a
             Tjija(j,i,j1,a) = 0.0
             GET Gmi_b(j,j1)
@@ -10222,7 +10325,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-#           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
@@ -10281,7 +10384,6 @@
 
       PROC DAKIJAAAA_X
 #     ----------------
-
       PARDO i, i1, i2, a
 
 #-/4 [l2(ae,ij)*t1i_x(k,e) + L2_x(ae,ij)*t(k,e)]
@@ -11599,7 +11701,7 @@
             esum += etemp
 #
       ENDPARDO a, a1, a2, i
-      esum *= 0.5 # to match aces
+#      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
@@ -11613,7 +11715,7 @@
             esum += etemp
 #
       ENDPARDO b, b1, b2, j
-      esum *= 0.5 # to match aces
+#      esum *= 0.5 # to match aces
       execute print_scalar esum
 #
       esum = 0.0
@@ -11701,7 +11803,7 @@
             esum += etemp
 #     
       ENDPARDO i, i1, i2, a
-      esum *= 0.5 # to match aces
+#      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
@@ -11715,7 +11817,7 @@
             esum += etemp
 #     
       ENDPARDO j, j1, j2, b
-      esum *= 0.5 # to match aces
+#      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
@@ -11795,7 +11897,7 @@
             esum += etemp
 #
       ENDPARDO i, i1, a,a1
-      esum *= 0.25 # to match aces
+#      esum *= 0.25 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
@@ -11809,7 +11911,7 @@
             esum += etemp
 #
       ENDPARDO j, j1, b,b1
-      esum *= 0.25 # to match aces
+#      esum *= 0.25 # to match aces
       execute print_scalar esum
 #
       esum = 0.0
@@ -11821,7 +11923,7 @@
 #
       ENDPARDO i, j, a, b
 #bgn_debug
-     esum *= 0.0625
+     esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -12652,13 +12754,13 @@
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-#             CALL S2DIBJA_X 
+             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-#             CALL S2DIJKA_X 
+             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
@@ -12667,7 +12769,7 @@
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-#             CALL S2DIJAB_X
+             CALL S2DIJAB_X
 #end_debug
 
 #             CALL DABIJ_X   #6th term (if necessary)
@@ -12677,7 +12779,7 @@
 
              CALL DCIAB_X   #8th term
 #bgn_debug
-#             CALL S2ABCI_X
+             CALL S2ABCI_X
 #end_debug
 
 #checked; there are questions about factor; No assumptions
