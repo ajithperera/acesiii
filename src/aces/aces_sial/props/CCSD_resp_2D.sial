@@ -85,11 +85,7 @@
       served Dijab_bb_x(j,j1,b,b1)
       served Dijkl_bb_x(j,j2,j1,j3)
       served Dijkl_ab_x(i,j,i1,j1)
-
-     served Dijkl_aa_x(i2,i,i3,i1)
-
- 
-
+      served Dijkl_aa_x(i2,i,i3,i1)
       served Vibja_aaaa(i,a,i1,a1)
       served Dibja_aaaa(i,a,i1,a1)
       served Vibja_abab(i,b,i1,b1)
@@ -578,22 +574,21 @@
      local Lbb_x(b,b1)
      local Lbb_xx(b,b1)
 
-
      local Lai(a,i) 
      distributed L1ai(a1,i) 
      local Lbj(b,j) 
 
-      local Lbj_x(b,j)
-      local Lbj_xx(b,j)
-
+     local Lbj_x(b,j)
+     local Lbj_xx1(b,j)
+     local Lbj_xx2(b,j)
 
      local L1bj(b1,j) 
-
      local L1bj_x(b1,j)
      local L1bj_xx(b1,j)
 
      local Lai_x(a,i)
-     local Lai_xx(a,i)
+     local Lai_xx1(a,i)
+     local Lai_xx2(a,i)
 
 
      local Lxxai(mu,nu,a2,i) 
@@ -1204,6 +1199,11 @@
 #     -----------
       PARDO a, a1
             Taa(a,a1) = 0.0
+            Gae_a_x(a,a1) = Taa(a,a1)
+      ENDPARDO a, a1
+
+      PARDO a, a1
+            Taa(a,a1) = 0.0
 
             DO i1
             DO i
@@ -1297,6 +1297,11 @@
 #     -----------
       PARDO b, b1
             Tbb(b,b1) = 0.0
+            Gae_b_x(b,b1) = Tbb(b,b1) 
+      ENDPARDO b, b1
+
+      PARDO b, b1
+            Tbb(b,b1) = 0.0
             DO j
             DO j1
             DO b2
@@ -1371,6 +1376,11 @@
 #----------------------------------------------------------------
       PROC GMIA_x
 #     -----------
+      PARDO i, i1
+            Tii(i1,i) = 0.0
+            Gmi_a_x(i1,i) = Tii(i1,i)
+      ENDPARDO i, i1
+ 
       PARDO a, a1, i, i1
             DO i2
                REQUEST T2old_aa(a,i1,a1,i2) i2
@@ -1427,6 +1437,11 @@
 #---------------------------------------------------------------------
       PROC GMIB_x
 #     -----------
+      PARDO j, j1
+            Tjj(j1,j) = 0.0
+            Gmi_b_x(j1,j) = Tjj(j1,j)
+      ENDPARDO j, j1
+
       PARDO b, b1, j, j1
             DO j2
                REQUEST T2old_bb(b,j1,b1,j2) j2
@@ -3152,11 +3167,18 @@
       ENDPROC DIJABAA_X
 #
       PROC DIJABAB_X
-#     --------------
+#     ---------------
       PARDO i,j,a,b 
             Tijab(i,j,a,b) = 0.0
             PREPARE Dijab_ab_x(i,j,a,b) = Tijab(i,j,a,b)
       ENDPARDO i,j,a,b 
+
+#bgn_debug
+#      pardo b1, b
+#            get  Dbb_x(b1,b) 
+#            execute dump_amp Dbb_x(b1,b)
+#      endpardo b1, b
+#end_debug
 
 # Terms 1-5 in Eq. 33 
       PARDO a, b, i, j
@@ -3164,7 +3186,6 @@
             REQUEST L2old_ab_x(i,a,j,b) j
 
             Tijab(i,j,a,b)  = Tau_ab_x(a,i,b,j)
-
 #bgn_debug
 # Move to DABIJ_X
             T1ijab(i,j,a,b) = L2old_ab_x(i,a,j,b)
@@ -3316,7 +3337,8 @@
             ENDDO j
             allocate Lbj(b,*)
             allocate Lbj_x(b,*)
-            allocate Lbj_xx(b,*)
+            allocate Lbj_xx1(b,*)
+            allocate Lbj_xx2(b,*)
             DO b1
             DO j
                GET t1b_old(b1,j)
@@ -3325,10 +3347,13 @@
                  
                Tbj(b,j)  = Lbb(b,b1)*t1b_old(b1,j)
                Lbj(b,j) += Tbj(b,j)
+ 
+               Tbj(b,j)  = Lbb_xx(b,b1)*t1b_old(b1,j)
+               Lbj_xx2(b,j) += Tbj(b,j)
 
                GET t1b_old_x(b1,j)
                Tbj(b,j)    = Lbb(b,b1)*t1b_old_x(b1,j)
-               Lbj_xx(b,j) += Tbj(b,j)
+               Lbj_xx1(b,j) += Tbj(b,j)
             ENDDO j
             ENDDO b1
             deallocate Lbb(b,*)
@@ -3352,7 +3377,14 @@
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
-                  Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_xx(b,j)
+                  Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_xx1(b,j)
+                  Tijab(i,j,a,b) *= 0.375
+#bgn_debug
+                  Tijab(i,j,a,b) *= 1.0
+#end_debug
+                  PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
+
+                  Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_xx2(b,j)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
                   Tijab(i,j,a,b) *= 1.0
@@ -3363,7 +3395,8 @@
             ENDDO i
             deallocate Lbj(b,*)
             deallocate Lbj_x(b,*)
-            deallocate Lbj_xx(b,*)
+            deallocate Lbj_xx1(b,*)
+            deallocate Lbj_xx2(b,*)
       ENDPARDO a, b
 
       PARDO a, b
@@ -3388,7 +3421,8 @@
             ENDDO i
             allocate Lai(a,*)
             allocate Lai_x(a,*)
-            allocate Lai_xx(a,*)
+            allocate Lai_xx1(a,*)
+            allocate Lai_xx2(a,*)
             DO a1
             DO i
                GET t1a_old(a1,i)
@@ -3400,7 +3434,10 @@
                Lai_x(a,i) += Tai(a,i)
 
                Tai(a,i)    = Laa_x(a,a1)*t1a_old(a1,i)
-               Lai_xx(a,i) += Tai(a,i)
+               Lai_xx1(a,i) += Tai(a,i)
+
+               Tai(a,i)    = Laa_xx(a,a1)*t1a_old(a1,i)
+               Lai_xx2(a,i) += Tai(a,i)
 
             ENDDO i
             ENDDO a1
@@ -3418,7 +3455,7 @@
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
-                  Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_xx(a,i)
+                  Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_xx1(a,i)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
                   Tijab(i,j,a,b) *= 1.0
@@ -3432,9 +3469,19 @@
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
+                  Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_xx2(a,i)
+                  Tijab(i,j,a,b) *= 0.375
+#bgn_debug
+                  Tijab(i,j,a,b) *= 1.0
+#end_debug
+                  PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
+
                ENDDO i
             ENDDO j
             deallocate Lai(a,*)
+            deallocate Lai_x(a,*)
+            deallocate Lai_xx1(a,*)
+            deallocate Lai_xx2(a,*)
       ENDPARDO a, b
 
 # Sixth-term in Eq. 33 
@@ -3557,7 +3604,7 @@
             Ljbbj_x(j2,b2,b,j)  = l1b_old(j2,b2)^t1b_old_x(b,j)
             Ljbbj_x1(j2,b2,b,j) = l1b_old_x(j2,b2)^t1b_old(b,j)
             Ljbbj_x(j2,b2,b,j) += Ljbbj_x1(j2,b2,b,j)
-            Ljbbj(j2,b2,b,j) *= 2.0
+            Ljbbj_x(j2,b2,b,j) *= 2.0
 
             DO j1
             DO b1  
@@ -3635,8 +3682,6 @@
             Ljbai_x1(j1,b1,a,i)  = l1b_old_x(j1,b1)^t1a_old(a,i)
             Ljbai_x(j1,b1,a,i)  += Ljbai_x1(j1,b1,a,i)
             Ljbai_x(j1,b1,a,i) *= 2.0
-
-####            Ljbai_x(j1,b1,a,i) *= 2.0 This is a bug!!
 
             DO i1 
             DO a1  
@@ -3850,7 +3895,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi_x(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+                  Tijab(i,j,a,b) *= 0.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3866,7 +3911,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+                  Tijab(i,j,a,b) *= 0.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO j
@@ -3917,7 +3962,7 @@
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj_x(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+                  Tijab(i,j,a,b) *= 0.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3929,12 +3974,12 @@
                   Taibj(a1,i,b,j1) *= 1.0
 #                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
 #end_debug
-#                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
+                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
 
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj_x(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+                  Tijab(i,j,a,b) *= 0.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO i
@@ -3976,7 +4021,7 @@
 
 # Done backtransformation 
       ENDPROC DIJABAB_X
-#     -----------------
+#     --------------------
 #-----------------------------------------------------------------
       PROC DIJABBB_X
 #     --------------
@@ -4023,6 +4068,12 @@
             PUT Dbb_x(b1,b) += Tbb(b1,b)
       ENDPARDO b1, b, j
       execute sip_barrier 
+#bgn_debug
+#      pardo b1, b
+#            get  Dbb_x(b1,b) 
+#            execute dump_amp Dbb_x(b1,b)
+#      endpardo b1, b
+#end_debug
 
 # Done one-particle intermediates 
 # Terms 1-5 in Eq. 33 
@@ -4814,6 +4865,7 @@
       PARDO i, i1, i2, i3
             Tiiii(i,i1,i2,i3) = 0.0
             PREPARE Dijkl_aa_x(i,i1,i2,i3) = Tiiii(i,i1,i2,i3)
+            PREPARE Vijmn_aaaa_x(i2,i3,i,i1) = Tiiii(i,i1,i2,i3)
       ENDPARDO i, i1, i2, i3 
             
       PARDO a, a1, i, i1
@@ -4927,6 +4979,7 @@
       PARDO i, j, i1, j1
             Tijij(i,j,i1,j1) = 0.0
             PREPARE Dijkl_ab_x(i,j,i1,j1) =  Tijij(i,j,i1,j1)
+            PREPARE Vijmn_abab_x(i1,j1,i,j) = Tijij(i,j,i1,j1)
       ENDPARDO i, j, i1, j1
 
       PARDO a, b,i, j
@@ -5008,6 +5061,7 @@
       PARDO j, j1, j2, j3
             Tjjjj(j,j1,j2,j3) = 0.0
             PREPARE Dijkl_bb_x(j,j1,j2,j3) = Tjjjj(j,j1,j2,j3)
+            PREPARE Vijmn_bbbb_x(j2,j3,j,j1) =  Tjjjj(j,j1,j2,j3) 
       ENDPARDO j, j1, j2, j3
    
       PARDO b, b1, j, j1
@@ -5972,6 +6026,7 @@
       PARDO a, a1, i, i1
             Tiaia(i,a1,i1,a)  = 0.0
             PREPARE Dibja_aaaa_x(i,a1,i1,a) = Tiaia(i,a1,i1,a)
+            PREPARE Vibja_aaaa_x(i,a1,i1,a) = Tiaia(i,a1,i1,a)
       ENDPARDO a, a1, i, i1
 
       PARDO a, a1, i, i1
@@ -6266,6 +6321,7 @@
       PARDO b1, b, i, i1
             Tibib(i1,b1,i,b)  = 0.0
             PREPARE Dibja_abab_x(i1,b1,i,b) = Tibib(i1,b1,i,b) 
+            PREPARE Vibja_abab_x(i,b,i1,b1) = Tibib(i1,b1,i,b)
       ENDPARDO b1, b, i, i1
 
       PARDO b1, b, i, i1
@@ -6423,6 +6479,7 @@
       PARDO b, b1, j, j1
             Tjbjb(j,b1,j1,b)  = 0.0
             PREPARE Dibja_bbbb_x(j,b1,j1,b) = Tjbjb(j,b1,j1,b) 
+            PREPARE Vibja_bbbb_x(j,b1,j1,b) = Tjbjb(j,b1,j1,b)
       ENDPARDO b, b1, j, j1
 
       PARDO b, b1, j, j1
@@ -6658,6 +6715,7 @@
       PARDO a, a1, j1, j
             Tjaja(j,a,j1,a1) = 0.0
             PREPARE Dibja_baba_x(j,a,j1,a1) = Tjaja(j,a,j1,a1)
+            PREPARE Vibja_baba_x(j1,a1,j,a) = Tjaja(j,a,j1,a1)
       ENDPARDO a, a1, j1, j
 
       PARDO a, a1, j1, j
@@ -6831,6 +6889,7 @@
       PARDO j, a, i, b
             Tjaib(j,a,i,b) = 0.0
             PREPARE Dibja_baab_x(j,a,i,b) = Tjaib(j,a,i,b)
+            PREPARE Vibja_baab_x(j,a,i,b) = Tjaib(j,a,i,b)
       ENDPARDO j, a, i, b
 
       PARDO j, b, a, i
@@ -7122,6 +7181,7 @@
       PARDO i, b, j, a
             Tibja(i,b,j,a)  = 0.0
             PREPARE Dibja_abba_x(i,b,j,a) = Tibja(i,b,j,a)
+            PREPARE Vibja_abba_x(i,b,j,a) = Tibja(i,b,j,a)
       ENDPARDO i, b, j, a
 
       PARDO i, a, b, j
@@ -10084,7 +10144,7 @@
                T1ijib(i,j,i1,b) *=1.0
 #end_debug
                Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
-#end)debug
+#end_debug
 
                T1ijib(i,j,i1,b) = Vibja_baab(j,a,i1,b)*t1a_old_x(a,i)
                T1ijib(i,j,i1,b)*= -0.25
@@ -11918,6 +11978,7 @@
       PARDO i, j, a, b
 #
             REQUEST Dijab_ab_x(i,j,a,b) a
+            execute dump_amp  Dijab_ab_x
             etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
             esum += etemp
 #
@@ -12735,6 +12796,12 @@
        execute print_scalar sumbb
 #end_debug
 
+             CREATE Gmi_a_x
+             CREATE Gmi_b_x
+             CREATE Gae_a_x
+             CREATE Gae_b_x
+             execute sip_barrier
+                      
              CALL TAU_X
              CALL GAE_x
              CALL GMI_x
@@ -12797,6 +12864,11 @@
              IF NCOUNT == 2.0 
                 CALL CCSD_2DRESPN_Z
              ENDIF 
+
+             DELETE Gmi_a_x
+             DELETE Gmi_b_x
+             DELETE Gae_a_x
+             DELETE Gae_b_x
 
           ENDDO NPERT 
 
@@ -12862,10 +12934,10 @@
       CREATE Gae_a
       CREATE Gae_b
 
-      CREATE Gmi_a_x
-      CREATE Gmi_b_x
-      CREATE Gae_a_x
-      CREATE Gae_b_x
+#      CREATE Gmi_a_x
+#      CREATE Gmi_b_x
+#      CREATE Gae_a_x
+#      CREATE Gae_b_x
 
       CREATE Dij_b
       CREATE Dab_a

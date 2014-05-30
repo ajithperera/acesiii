@@ -527,8 +527,8 @@
            Tijkaaa_am(I, I1, I2, A) = DIJKA_AAAA_M(I, I1, I2, A)
            Tijkaaa_ap(I, I1, I2, A) = DIJKA_AAAA_P(I, I1, I2, A)
 
-           Tijkaaa_afd(I, I1, I2, A) =  Tijkaaa_am(I, I1, I2, A)
-           Tijkaaa_afd(I, I1, I2, A) -= Tijkaaa_ap(I, I1, I2, A)
+           Tijkaaa_afd(I, I1, I2, A) =  Tijkaaa_ap(I, I1, I2, A)
+           Tijkaaa_afd(I, I1, I2, A) -= Tijkaaa_am(I, I1, I2, A)
 
            Tijkaaa_afd(I, I1, I2, A) *= INV_FD_WIDTH
 
@@ -563,8 +563,8 @@
            Tijkabb_am(J, J1, J2, B) = DIJKA_BBBB_M(J, J1, J2, B)
            Tijkabb_ap(J, J1, J2, B) = DIJKA_BBBB_P(J, J1, J2, B)
 
-           Tijkabb_afd(J, J1, J2, B) =  Tijkabb_am(J, J1, J2, B)
-           Tijkabb_afd(J, J1, J2, B) -= Tijkabb_ap(J, J1, J2, B)
+           Tijkabb_afd(J, J1, J2, B) =  Tijkabb_ap(J, J1, J2, B)
+           Tijkabb_afd(J, J1, J2, B) -= Tijkabb_am(J, J1, J2, B)
 
            Tijkabb_afd(J, J1, J2, B) *= INV_FD_WIDTH
 
@@ -599,8 +599,8 @@
            Tijkaab_am(I, J, I1, B) = DIJKA_ABAB_M(I, J, I1, B)
            Tijkaab_ap(I, J, I1, B) = DIJKA_ABAB_P(I, J, I1, B)
 
-           Tijkaab_afd(I, J, I1, B) =  Tijkaab_am(I, J, I1, B)
-           Tijkaab_afd(I, J, I1, B) -= Tijkaab_ap(I, J, I1, B)
+           Tijkaab_afd(I, J, I1, B) =  Tijkaab_ap(I, J, I1, B)
+           Tijkaab_afd(I, J, I1, B) -= Tijkaab_am(I, J, I1, B)
 
            Tijkaab_afd(I, J, I1, B) *= INV_FD_WIDTH
 
@@ -635,8 +635,8 @@
            Tijkaba_am(J, I, J1, A) = DIJKA_BABA_M(J, I, J1, A)
            Tijkaba_ap(J, I, J1, A) = DIJKA_BABA_P(J, I, J1, A)
 
-           Tijkaba_afd(J, I, J1, A) =  Tijkaba_am(J, I, J1, A)
-           Tijkaba_afd(J, I, J1, A) -= Tijkaba_ap(J, I, J1, A)
+           Tijkaba_afd(J, I, J1, A) =  Tijkaba_ap(J, I, J1, A)
+           Tijkaba_afd(J, I, J1, A) -= Tijkaba_am(J, I, J1, A)
 
            Tijkaba_afd(J, I, J1, A) *= INV_FD_WIDTH
 
@@ -671,8 +671,8 @@
            Tijabaa_am(I, I1, A, A1) = DIJAB_AA_M(I, I1, A, A1)
            Tijabaa_ap(I, I1, A, A1) = DIJAB_AA_P(I, I1, A, A1)
 
-           Tijabaa_afd(I, I1, A, A1) =  Tijabaa_am(I, I1, A, A1)
-           Tijabaa_afd(I, I1, A, A1) -= Tijabaa_ap(I, I1, A, A1)
+           Tijabaa_afd(I, I1, A, A1) =  Tijabaa_ap(I, I1, A, A1)
+           Tijabaa_afd(I, I1, A, A1) -= Tijabaa_am(I, I1, A, A1)
 
            Tijabaa_afd(I, I1, A, A1) *= INV_FD_WIDTH
 
@@ -707,8 +707,8 @@
            Tijabbb_am(J, J1, B, B1) = DIJAB_BB_M(J, J1, B, B1)
            Tijabbb_ap(J, J1, B, B1) = DIJAB_BB_P(J, J1, B, B1)
 
-           Tijabbb_afd(J, J1, B, B1) =  Tijabbb_am(J, J1, B, B1)
-           Tijabbb_afd(J, J1, B, B1) -= Tijabbb_ap(J, J1, B, B1)
+           Tijabbb_afd(J, J1, B, B1) =  Tijabbb_ap(J, J1, B, B1)
+           Tijabbb_afd(J, J1, B, B1) -= Tijabbb_am(J, J1, B, B1)
 
            Tijabbb_afd(J, J1, B, B1) *= INV_FD_WIDTH
 
@@ -743,8 +743,8 @@
            Tijabab_am(I, J, A, B) = DIJAB_AB_M(I, J, A, B)
            Tijabab_ap(I, J, A, B) = DIJAB_AB_P(I, J, A, B)
 
-           Tijabab_afd(I, J, A, B) =  Tijabab_am(I, J, A, B)
-           Tijabab_afd(I, J, A, B) -= Tijabab_ap(I, J, A, B)
+           Tijabab_afd(I, J, A, B) =  Tijabab_ap(I, J, A, B)
+           Tijabab_afd(I, J, A, B) -= Tijabab_am(I, J, A, B)
 
            Tijabab_afd(I, J, A, B) *= INV_FD_WIDTH
 
@@ -757,6 +757,7 @@
     sumab = 0.0
     PARDO  I, J, A, B
            REQUEST DIJAB_AB_XYZ(I, J, A, B) B
+           execute dump_amp DIJAB_AB_XYZ(I, J, A, B)
            tmp  = DIJAB_AB_XYZ(I, J, A, B) * DIJAB_AB_XYZ(I, J, A, B)
            sum  += tmp
     ENDPARDO I, J, A, B
@@ -779,8 +780,8 @@
            Tibja_aaaa_am(I, A, I1, A1) = DIBJA_AAAA_M(I, A, I1, A1)
            Tibja_aaaa_ap(I, A, I1, A1) = DIBJA_AAAA_P(I, A, I1, A1)
 
-           Tibja_aaaa_afd(I, A, I1, A1) =  Tibja_aaaa_am(I, A, I1, A1)
-           Tibja_aaaa_afd(I, A, I1, A1) -= Tibja_aaaa_ap(I, A, I1, A1)
+           Tibja_aaaa_afd(I, A, I1, A1) =  Tibja_aaaa_ap(I, A, I1, A1)
+           Tibja_aaaa_afd(I, A, I1, A1) -= Tibja_aaaa_am(I, A, I1, A1)
 
            Tibja_aaaa_afd(I, A, I1, A1) *= INV_FD_WIDTH
 
@@ -815,8 +816,8 @@
            Tibja_bbbb_am(J, B, J1, B1) = DIBJA_BBBB_M(J, B, J1, B1)
            Tibja_bbbb_ap(J, B, J1, B1) = DIBJA_BBBB_P(J, B, J1, B1)
 
-           Tibja_bbbb_afd(J, B, J1, B1) =  Tibja_bbbb_am(J, B, J1, B1)
-           Tibja_bbbb_afd(J, B, J1, B1) -= Tibja_bbbb_ap(J, B, J1, B1)
+           Tibja_bbbb_afd(J, B, J1, B1) =  Tibja_bbbb_ap(J, B, J1, B1)
+           Tibja_bbbb_afd(J, B, J1, B1) -= Tibja_bbbb_am(J, B, J1, B1)
 
            Tibja_bbbb_afd(J, B, J1, B1) *= INV_FD_WIDTH
 
@@ -851,8 +852,8 @@
            Tibja_abab_am(I, B, I1, B1) = DIBJA_ABAB_M(I, B, I1, B1)
            Tibja_abab_ap(I, B, I1, B1) = DIBJA_ABAB_P(I, B, I1, B1)
 
-           Tibja_abab_afd(I, B, I1, B1) =  Tibja_abab_am(I, B, I1, B1)
-           Tibja_abab_afd(I, B, I1, B1) -= Tibja_abab_ap(I, B, I1, B1)
+           Tibja_abab_afd(I, B, I1, B1) =  Tibja_abab_ap(I, B, I1, B1)
+           Tibja_abab_afd(I, B, I1, B1) -= Tibja_abab_am(I, B, I1, B1)
 
            Tibja_abab_afd(I, B, I1, B1) *= INV_FD_WIDTH
 
@@ -887,8 +888,8 @@
            Tibja_baba_am(J, A, J1, A1) = DIBJA_BABA_M(J, A, J1, A1)
            Tibja_baba_ap(J, A, J1, A1) = DIBJA_BABA_P(J, A, J1, A1)
 
-           Tibja_baba_afd(J, A, J1, A1) =  Tibja_baba_am(J, A, J1, A1)
-           Tibja_baba_afd(J, A, J1, A1) -= Tibja_baba_ap(J, A, J1, A1)
+           Tibja_baba_afd(J, A, J1, A1) =  Tibja_baba_ap(J, A, J1, A1)
+           Tibja_baba_afd(J, A, J1, A1) -= Tibja_baba_am(J, A, J1, A1)
 
            Tibja_baba_afd(J, A, J1, A1) *= INV_FD_WIDTH
 
@@ -923,8 +924,8 @@
            Tibja_baab_am(J, A, I, B) = DIBJA_BAAB_M(J, A, I, B)
            Tibja_baab_ap(J, A, I, B) = DIBJA_BAAB_P(J, A, I, B)
 
-           Tibja_baab_afd(J, A, I, B) =  Tibja_baab_am(J, A, I, B)
-           Tibja_baab_afd(J, A, I, B) -= Tibja_baab_ap(J, A, I, B)
+           Tibja_baab_afd(J, A, I, B) =  Tibja_baab_ap(J, A, I, B)
+           Tibja_baab_afd(J, A, I, B) -= Tibja_baab_am(J, A, I, B)
 
            Tibja_baab_afd(J, A, I, B) *= INV_FD_WIDTH
 
@@ -959,8 +960,8 @@
            Tibja_abba_am(I, B, J, A) = DIBJA_ABBA_M(I, B, J, A)
            Tibja_abba_ap(I, B, J, A) = DIBJA_ABBA_P(I, B, J, A)
 
-           Tibja_abba_afd(I, B, J, A) =  Tibja_abba_am(I, B, J, A)
-           Tibja_abba_afd(I, B, J, A) -= Tibja_abba_ap(I, B, J, A)
+           Tibja_abba_afd(I, B, J, A) =  Tibja_abba_ap(I, B, J, A)
+           Tibja_abba_afd(I, B, J, A) -= Tibja_abba_am(I, B, J, A)
 
            Tibja_abba_afd(I, B, J, A) *= INV_FD_WIDTH
 
