@@ -1720,7 +1720,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi(b,i1,b1,i) 
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_p(i,j,a,b) += Tijab(i,j,a,b) 
 # 
@@ -1762,7 +1762,7 @@
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj(a,j1,a1,j) 
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_p(i,j,a,b) += Tijab(i,j,a,b) 
 # 

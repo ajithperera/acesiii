@@ -3850,6 +3850,8 @@
             ENDDO j
       ENDPARDO i2, a2, a, i
 
+#------------------------------------------------------------------
+
       PARDO b, b1, i1, i
             Tbibi(b,i,b1,i1) = 0.0
             Tbibi_x(b,i,b1,i1) = 0.0
@@ -3867,9 +3869,14 @@
                Tbibi(b,i,b1,i1) += T1bibi(b,i,b1,i1)
 
                Tbiaj(b,i,a,j)    = T2old_ab_x(a,i,b,j)
-               Tajbi(a,j,b1,i1)  = L2old_ab_x(i1,a,j,b1)
                T1bibi(b,i,b1,i1) = Tbiaj(b,i,a,j)*Tajbi(a,j,b1,i1)
                Tbibi_x(b,i,b1,i1) += T1bibi(b,i,b1,i1)
+
+               Tajbi(a,j,b1,i1)  = L2old_ab_x(i1,a,j,b1)
+               Tbiaj(b,i,a,j)    = T2old_ab(a,i,b,j)
+               T1bibi(b,i,b1,i1) = Tajbi(a,j,b1,i1)*Tbiaj(b,i,a,j)
+               Tbibi_x(b,i,b1,i1) += T1bibi(b,i,b1,i1)
+
             ENDDO a
             ENDDO j
             Lbibi(b,i1,b1,i)   = Tbibi(b,i,b1,i1)
@@ -3895,7 +3902,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi_x(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3911,7 +3918,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO j
@@ -3962,7 +3969,7 @@
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj_x(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3972,14 +3979,14 @@
                   Taibj(a1,i,b,j1)      *= 2.0
 #bgn_debug
                   Taibj(a1,i,b,j1) *= 1.0
-#                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
+#                  Taibj(a1,i,b,j1)      += T2old_ab_x(a1,i,b,j1)
 #end_debug
-                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
+                  Taibj(a1,i,b,j1)      += T2old_ab_x(a1,i,b,j1)
 
-                  Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj_x(a,j1,a1,j)
+                  Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 0.0
+                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO i
