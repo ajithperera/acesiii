@@ -2182,6 +2182,13 @@
       PROC D1TRANS
 #     Transform Dai_aa
 #     ----------------
+#bgn_debug
+      PARDO a, i
+            GET Doldai_a(a,i)
+            execute dump_amp Doldai_a(a,i)
+      ENDPARDO a, i
+#end_debug
+
       PARDO a, i
             GET Doldai_a(a,i)
             DO mu

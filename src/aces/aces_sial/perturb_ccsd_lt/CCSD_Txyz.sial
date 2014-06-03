@@ -9541,13 +9541,13 @@
        execute print_scalar do_dten
 #end_debug
 
-      if do_pols == 1.0
+      if do_pols == one
          property = 10.0
          beta_is_minus = 0.0
       endif 
       execute sip_barrier 
 
-      if do_gten == 1.0
+      if do_gten == one
          property = 20.0
          beta_is_minus = 0.0
 #bgn_debug
@@ -9560,7 +9560,7 @@
 
       execute print_scalar property
 
-       property = 20.0
+       property = 10.0
        beta_is_minus = 0.0
 
        ICOUNT = 0.0

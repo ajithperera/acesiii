@@ -644,7 +644,6 @@
       execute load_balance_off
       EXECUTE  SERVER_BARRIER
       ENDPROC DAI
- 
 
       PROC D1TRANS
 #     Transform Dai_aa
@@ -657,7 +656,12 @@
                   Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                   PUT DpqA(mu,nu) += Ixx(mu,nu) #PV
-                  PUT DpqA(nu,mu) += I1xx(nu,mu) #PV
+                  IF ASYM == 1.0
+                     I1xx(nu,mu) *= -1.0
+                     PUT DpqA(nu,mu) += I1xx(nu,mu) #PV
+                  ELSE
+                     PUT DpqA(nu,mu) += I1xx(nu,mu) #PV
+                  ENDIF
                ENDDO nu
             ENDDO mu
       ENDPARDO a, i
@@ -672,7 +676,12 @@
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
                   I1xx(nu,mu)     = Ixx(mu,nu)
                   PUT DpqB(mu,nu) += Ixx(mu,nu)  #PV
-                  PUT DpqB(nu,mu) += I1xx(nu,mu) #PV
+                  IF ASYM == 1.0
+                     I1xx(nu,mu) *= -1.0
+                     PUT DpqB(nu,mu) += I1xx(nu,mu) #PV
+                  ELSE 
+                     PUT DpqB(nu,mu) += I1xx(nu,mu) #PV
+                  ENDIF
                ENDDO nu
             ENDDO mu
       ENDPARDO b, j
@@ -755,21 +764,28 @@
             get HBz(mu,nu)
 
             Dccsd(mu,nu)  = DpqA(mu,nu)
-            Dccsd(mu,nu) -= DpqB(mu,nu)
 
-            Dscf(mu,nu)   = DHF_aa(mu,nu)
-            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            IF SPIN_DEN == 1.0
+               DpqB(mu,nu) *= -1.0
+               Dccsd(mu,nu) += DpqB(mu,nu)
+            ELSE
+               Dccsd(mu,nu) += DpqB(mu,nu)
+            ENDIF
+
+#            Dscf(mu,nu)   = DHF_aa(mu,nu)
+#            Dscf(mu,nu)  -= DHF_bb(mu,nu)
 
             Tpq(mu,nu)  = Dccsd(mu,nu)
-            Tpq(mu,nu) += Dscf(mu,nu)
+
+#            Tpq(mu,nu) += Dscf(mu,nu)
  
             Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
             Xsum += Xtmp
 
-            Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
+            Xtmp = Tpq(mu,nu) *  HBy(mu,nu)
             Ysum += Xtmp
 
-            Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
+            Xtmp = Tpq(mu,nu) *  HBz(mu,nu)
             Zsum += Xtmp
 
          ENDPARDO mu, nu
@@ -806,21 +822,28 @@
             GET DHF_bb(mu,nu)
 
             Dccsd(mu,nu)  = DpqA(mu,nu)
-            Dccsd(mu,nu) -= DpqB(mu,nu)
 
-            Dscf(mu,nu)   = DHF_aa(mu,nu)
-            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            IF SPIN_DEN == 1.0
+               DpqB(mu,nu) *= -1.0
+               Dccsd(mu,nu) += DpqB(mu,nu)
+            ELSE
+               Dccsd(mu,nu) += DpqB(mu,nu)
+            ENDIF
+
+#            Dscf(mu,nu)   = DHF_aa(mu,nu)
+#            Dscf(mu,nu)  -= DHF_bb(mu,nu)
 
             Tpq(mu,nu)  = Dccsd(mu,nu)
-            Tpq(mu,nu) += Dscf(mu,nu)
+
+#            Tpq(mu,nu) += Dscf(mu,nu)
 
             Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
             Xsum += Xtmp
 
-            Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
+            Xtmp = Tpq(mu,nu) *  HBy(mu,nu)
             Ysum += Xtmp
 
-            Xtmp = Tpq(mu,nu) *  HBx(mu,nu)
+            Xtmp = Tpq(mu,nu) *  HBz(mu,nu)
             Zsum += Xtmp
 
          ENDPARDO mu, nu
@@ -934,7 +957,7 @@
             REQUEST T2ab_m(A,I,B,J) J
             REQUEST L2ab_m(i,a,j,b) b
             Taibj(A,I,B,J) = T2ab_m(A,I,B,J)
-
+            Tiajb(i,a,j,b) = L2ab_p(i,a,j,b)
             PREPARE T2old_ab(A,I,B,J) = Taibj(A,I,B,J)
             PREPARE L2old_ab(i,a,j,b) = Tiajb(i,a,j,b)
       ENDPARDO A, B, I, J,
@@ -1044,6 +1067,7 @@
 #PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 #    
       PROC DMAIN
+
          FD_WIDTH     = 200.0
          INV_FD_WIDTH = 1.0/FD_WIDTH
          SCALE        = 1000000.0
@@ -1112,6 +1136,26 @@
                IF NCOUNT == 2.0
                   CALL PROPS_FDM
                ENDIF 
+
+
+               DELETE Dij_a(i,i1)
+               DELETE Dij_b(j,j1)
+               DELETE Dab_a(a,a1)
+               DELETE Dab_b(b,b1)
+               DELETE Doldai_a(a,i)
+               DELETE Doldai_b(b,j)
+
+               DELETE DpqA
+               DELETE DpqB
+               DELETE Dccsd
+               DELETE Dscf
+
+               DELETE T2L2_VV_A
+               DELETE T2L2_VV_B
+               DELETE T1L1_OO_A
+               DELETE T1L1_OO_B
+               DELETE T2L2_OO_A
+               DELETE T2L2_OO_B
                
             ENDDO NPERT 
 
@@ -1121,12 +1165,12 @@
          FD_XX -= XXM
          FD_XX *= inv_fd_width
 
-         FD_YY = XXP 
-         FD_YY -= XXM
+         FD_YY = YYP 
+         FD_YY -= YYM
          FD_YY *= inv_fd_width
 
-         FD_ZZ = XXP 
-         FD_ZZ -= XXM
+         FD_ZZ = ZZP 
+         FD_ZZ -= ZZM
          FD_ZZ *= inv_fd_width
 
          execute print_scalar FD_XX
@@ -1138,7 +1182,7 @@
 # Read two-electron transformed integrals 
 # --------------------------------------- 
 #
-      CALL READ_2EL
+#      CALL READ_2EL
 # Read converged T and Lambda amplitudes 
 # -------------------------------------- 
 #
@@ -1146,14 +1190,22 @@
       CREATE t1b_old
       CREATE l1a_old
       CREATE l1b_old
+      CREATE T1A_P
+      CREATE T1B_P
+      CREATE T1A_M
+      CREATE T1B_M
+      CREATE L1A_P
+      CREATE L1B_P
+      CREATE L1A_M
+      CREATE L1B_M
 
-      execute sip_barrier
+      execute server_barrier
 
       execute list_to_blocks t1a_p
       execute list_to_blocks t1b_p
       execute list_to_blocks T2aa_p
       execute list_to_blocks T2ab_p
-      execute list_to_blocks T2ab_p
+      execute list_to_blocks T2bb_p
 
       execute list_to_blocks  l1a_p
       execute list_to_blocks  l1b_p
@@ -1165,17 +1217,16 @@
       execute list_to_blocks t1b_m
       execute list_to_blocks T2aa_m
       execute list_to_blocks T2ab_m
-      execute list_to_blocks T2ab_m
+      execute list_to_blocks T2bb_m
 
       execute list_to_blocks  l1a_m
       execute list_to_blocks  l1b_m
       execute list_to_blocks L2aa_m
       execute list_to_blocks L2ab_m
       execute list_to_blocks L2bb_m
-
+       
+      execute server_barrier
       execute read_list_to_blocks
-
-      execute sip_barrier
       execute server_barrier
 
       CALL DMAIN

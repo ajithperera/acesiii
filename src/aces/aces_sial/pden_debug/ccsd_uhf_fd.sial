@@ -407,6 +407,7 @@
       scalar five
       scalar six
       scalar seven
+      scalar property 
 #
 # Arrays needed for AOLADDER contribution
 # ---------------------------------------
@@ -8366,8 +8367,8 @@
 #
      ENDPROC MOVE4
 #    -------------
-     PROC get_FD_P
-#    -------------
+     PROC get_FD_P_DIPOLE
+#    --------------------
 
          CREATE HBx
          execute sip_barrier
@@ -8388,7 +8389,7 @@
                  EXECUTE return_z Txx
               ENDIF
 
-              Txx(mu,nu) *= FD_SCALE
+              TXX(mu,nu) *= FD_SCALE
 
               PUT  HBx(mu,nu) = Txx(mu,nu)
          ENDPARDO mu,nu
@@ -8411,8 +8412,82 @@
 #     endif 
 #end_debug
 
-     ENDPROC get_FD_P
-#    ----------------
+     ENDPROC get_FD_P_DIPOLE
+#    -----------------------
+
+     PROC get_FD_P_ANGMOM
+#    --------------------
+
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+             Txx(mu,nu) = 0.0
+
+             IF X_COMP == 9.0
+                EXECUTE compute_angmom_xbatch Txx(mu,nu)
+             ENDIF
+
+             IF Y_COMP == 9.0
+                EXECUTE compute_angmom_ybatch Txx(mu,nu)
+             ENDIF
+
+             IF Z_COMP == 9.0
+                EXECUTE compute_angmom_zbatch Txx(mu,nu)
+             ENDIF
+
+             TXX(mu,nu) *= FD_SCALE
+
+             PUT  HBx(mu,nu) = Txx(mu,nu)
+         ENDPARDO mu,nu
+         execute sip_barrier
+#bgn_debug
+#     execute  get_my_rank rank
+#     if rank == 0.0
+#      sum = 0.0
+#     do mu
+#     do nu
+#        get hbx(mu,nu)
+#        execute dump_amp Hbx(mu,nu)
+#        tmp = hbx(mu,nu)*hbx(mu,nu)
+#        sum += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar fd_scale
+#     execute print_scalar sum
+#     endif
+#end_debug
+
+     ENDPROC get_FD_P_ANGMOM
+#    -----------------------
+
+      PROC GET_HBXYZ_Spin_orbit
+#     -------------------------
+           CREATE HBX
+           execute sip_barrier
+
+           PARDO mu, nu
+              IF X_COMP == 9.0
+                 EXECUTE compute_1soi_xbatch Txx(mu,nu)
+              ENDIF
+              IF Y_COMP == 9.0
+                 EXECUTE compute_1soi_ybatch Txx(mu,nu)
+              ENDIF
+              IF Z_COMP == 9.0
+                 EXECUTE compute_1soi_zbatch Txx(mu,nu)
+              ENDIF
+
+             TXX(mu,nu) *= FD_SCALE
+
+             PUT  HBx(mu,nu) = Txx(mu,nu)
+              
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Spin_orbit
+#      --------------------------
+
 
      PROC TRANS_2MO
 #    --------------
@@ -8529,15 +8604,17 @@
          execute sip_barrier
 
 #bgn_debug
-#     if rank == 0.0
-#     sum = 0.0
-#     do i
-#     do i1
-#        get HBa_mi_x(i,i1)
-#        execute dump_amp HBa_mi_x(i,i1)  
-#     enddo i1
-#     enddo i
-#     endif
+     if rank == 0.0
+     sum = 0.0
+     do i
+     do a
+        get HBa_me_x(i,a)
+        tmp = HBa_me_x(i,a) * HBa_me_x(i,a)
+        sum += tmp
+     enddo a
+     enddo i
+     execute print_scalar sum
+     endif
 #end_debug
 
      ENDPROC TRANS_2MO
@@ -8616,12 +8693,6 @@
 
      ENDPROC PUT_FD_T2
 #    -----------------
-
-
-
-
-
-#
 # ---------------------------------------------------------------------------------
 #
 # ---------------------------------------------------------------------------------
@@ -8635,6 +8706,8 @@
       five  = 5.0
       six   = 6.0
       seven = 7.0
+
+      property = 20.0
 #
 # Read transformed integrals from lists 
 # ------------------------------------- 
@@ -8749,7 +8822,13 @@
             FD_SCALE = 100.0
             FD_SCALE *= SCALE
             Z_COMP = 9.0
-            CALL GET_FD_P
+            IF PROPERTY == 10.0
+               CALL GET_FD_P_DIPOLE
+            ENDIF 
+            IF PROPERTY == 20.0
+               CALL GET_FD_P_ANGMOM
+            ENDIF
+
             CALL TRANS_2MO
          ENDIF
 
@@ -8758,7 +8837,12 @@
             FD_SCALE *= SCALE
             FD_SCALE *= -1.0
             Z_COMP = 9.0
-            CALL GET_FD_P
+            IF PROPERTY == 10.0
+               CALL GET_FD_P_DIPOLE
+            ENDIF 
+            IF PROPERTY == 20.0
+               CALL GET_FD_P_ANGMOM
+            ENDIF
             CALL TRANS_2MO
          ENDIF
 # Get initial second-order guess

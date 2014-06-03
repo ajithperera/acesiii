@@ -99,6 +99,9 @@
       Scalar SUMAA
       Scalar SUMBB
       Scalar SUMAB
+      Scalar sump
+      Scalar summ
+      Scalar rank
 
       Scalar FD_WIDTH 
       Scalar INV_FD_WIDTH 
@@ -135,14 +138,31 @@
       execute list_to_blocks                T2_ab_m
       execute list_to_blocks                T2_bb_m
 
-      execute write_blocks_to_list
-      execute sip_barrier
+      execute read_list_to_blocks
+      execute server_barrier
 
       ENDPROC READ_FD_T12
 #     --------------------
 
       PROC FD_T1AB
 #     ------------
+#bgn_debug
+      execute get_my_rank rank
+      if rank == 0.0
+      do i
+      do a
+         get T1A_M(A, I)
+         get T1A_P(A, I)
+         tmp = T1A_P(A, I) * T1A_P(A, I)
+         sump += tmp
+         tmp = T1A_M(A, I) * T1A_M(A, I)
+         summ += tmp
+      enddo a
+      enddo i
+      EXECUTE PRINT_SCALAR sump
+      EXECUTE PRINT_SCALAR summ
+      endif
+#end_debug
 
       PARDO A, I
             GET T1A_M(A, I)
@@ -243,6 +263,7 @@
       EXECUTE SERVER_BARRIER
       COLLECTIVE sumaa += sum
       EXECUTE SIP_BARRIER 
+      sumaa *= 0.25
       EXECUTE PRINT_SCALAR sumaa
 
       ENDPROC FD_T2AAAA
@@ -263,7 +284,7 @@
 
             TIJAB_BB_FD(B, J, B1, J1) *= INV_FD_WIDTH
 
-            PREPARE TIJAB_BB_XYZ(B, J, B1, J1) =  TIJAB_BB_XYZ(B, J, B1, J1)
+            PREPARE TIJAB_BB_XYZ(B, J, B1, J1) =  TIJAB_BB_FD(B, J, B1, J1)
       ENDPARDO B, J, B1, J1
         
       EXECUTE SERVER_BARRIER
@@ -279,6 +300,7 @@
 
       EXECUTE SERVER_BARRIER
       COLLECTIVE sumbb += sum
+      sumbb *= 0.25
       EXECUTE SIP_BARRIER 
       EXECUTE PRINT_SCALAR sumbb
 
@@ -300,7 +322,7 @@
 
             TIJAB_AB_FD(A, I, B1, J1) *= INV_FD_WIDTH
 
-            PREPARE TIJAB_AB_XYZ(A, I, B1, J1) =  TIJAB_AB_XYZ(A, I, B1, J1)
+            PREPARE TIJAB_AB_XYZ(A, I, B1, J1) =  TIJAB_AB_FD(A, I, B1, J1)
       ENDPARDO A, I, B1, J1
 
       EXECUTE SERVER_BARRIER
@@ -329,6 +351,15 @@
       SCALE        = 1000000.0
       INV_FD_WIDTH *= SCALE
       execute print_scalar INV_FD_WIDTH
+   
+      CREATE T1A_P
+      CREATE T1B_P
+
+      CREATE T1A_M
+      CREATE T1B_M
+
+      CREATE T1A_XYZ
+      CREATE T1B_XYZ
 
       CALL READ_FD_T12
   

@@ -902,6 +902,7 @@
        scalar tmp
        scalar sum
        scalar rank
+       scalar property
 #
 #
 #    ------------------------------------------------------------------------
@@ -9704,8 +9705,8 @@
      ENDPROC MOVE4
 #    -------------
 
-       PROC get_FDP
-#      ------------
+       PROC get_FD_P_DIPOLE
+#      -------------------
 
          CREATE HBx
          execute sip_barrier
@@ -9748,8 +9749,54 @@
 #       endpardo mu,nu
 #debug_end
 
-       ENDPROC GET_FDP
-#      ---------------
+       ENDPROC GET_FD_P_DIPOLE
+#      -----------------------
+
+       PROC get_FD_P_ANGMOM
+#      --------------------
+
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+             Txx(mu,nu) = 0.0
+
+             IF X_COMP == 9.0
+                EXECUTE compute_angmom_xbatch Txx(mu,nu)
+             ENDIF
+
+             IF Y_COMP == 9.0
+                EXECUTE compute_angmom_ybatch Txx(mu,nu)
+             ENDIF
+
+             IF Z_COMP == 9.0
+                EXECUTE compute_angmom_zbatch Txx(mu,nu)
+             ENDIF
+
+             Txx(mu,nu) *= FD_SCALE
+
+             PUT  HBx(mu,nu) = Txx(mu,nu)
+         ENDPARDO mu,nu
+         execute sip_barrier
+#bgn_debug
+#     execute  get_my_rank rank
+#     if rank == 0.0
+#      sum = 0.0
+#     do mu
+#     do nu
+#        get hbx(mu,nu)
+#        execute dump_amp Hbx(mu,nu)
+#        tmp = hbx(mu,nu)*hbx(mu,nu)
+#        sum += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar fd_scale
+#     execute print_scalar sum
+#     endif
+#end_debug
+
+     ENDPROC get_FD_P_ANGMOM
+#    -----------------------
 
        PROC TRANS_2MO
 #      --------------
@@ -9996,6 +10043,8 @@
       eight = 8.0
       nine = 9.0 
       ten = 10.0
+ 
+      property = 20.0
 #
 # Create one-particle intermediate arrays 
 # --------------------------------------- 
@@ -10026,7 +10075,14 @@
          FD_SCALE = 100.0
          FD_SCALE *= SCALE
          Z_COMP = 9.0
-         CALL GET_FDP
+
+         IF PROPERTY == 10.0
+            CALL GET_FD_P_DIPOLE
+         ENDIF
+         IF PROPERTY == 20.0
+            CALL GET_FD_P_ANGMOM
+         ENDIF
+
          CALL TRANS_2MO
       ENDIF
 
@@ -10035,7 +10091,14 @@
          FD_SCALE *= SCALE
          FD_SCALE *= -1.0
          Z_COMP = 9.0
-         CALL GET_FDP
+
+         IF PROPERTY == 10.0
+            CALL GET_FD_P_DIPOLE
+         ENDIF
+         IF PROPERTY == 20.0
+            CALL GET_FD_P_ANGMOM
+         ENDIF
+
          CALL TRANS_2MO
       ENDIF
 
