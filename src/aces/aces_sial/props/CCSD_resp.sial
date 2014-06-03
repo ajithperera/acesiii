@@ -335,6 +335,10 @@
       SCALAR  PROPERTY
       SCALAR  ASYM
       SCALAR  SPIN_DEN
+      scalar do_pols
+      scalar do_aten
+      scalar do_gten
+      scalar do_dten
 #
       Scalar suma
       Scalar sumb
@@ -2463,6 +2467,8 @@
       execute print_scalar GC1zy_tmp
       execute print_scalar GC1zz_tmp
 
+# The symmerty of the tensor is assured; xy=yx;xz=zx,yz=zy
+
       GC1xx  = GC1xy_tmp
       GC1xx += GC1xy_tmp
       GC1xx += GC1yy_tmp
@@ -2483,6 +2489,33 @@
       GC1zz += GC1yz_tmp
       GC1zz += GC1yz_tmp
       GC1zz += GC1yy_tmp
+   
+      GC1xy  = GC1xx_tmp 
+      GC1xy += GC1yy_tmp 
+      GC1xy += GC1zz_tmp 
+      GC1xy += GC1yz_tmp 
+      GC1xy += GC1zy_tmp 
+      GC1xy += GC1zx_tmp 
+      GC1xy += GC1xz_tmp 
+      GC1xy += GC1yx_tmp 
+     
+      GC1xz  = GC1xx_tmp
+      GC1xz += GC1yy_tmp
+      GC1xz += GC1zz_tmp
+      GC1xz += GC1zy_tmp
+      GC1xz += GC1yz_tmp
+      GC1xz += GC1xy_tmp
+      GC1xz += GC1yx_tmp
+      GC1zx += GC1xz_tmp
+ 
+      GC1yz  = GC1xx_tmp
+      GC1yz += GC1yy_tmp
+      GC1yz += GC1zz_tmp
+      GC1yz += GC1zx_tmp
+      GC1yz += GC1xz_tmp
+      GC1yz += GC1xy_tmp
+      GC1yz += GC1yx_tmp
+      GC1yz += GC1zy_tmp
 
       execute print_scalar GC1xx
       execute print_scalar GC1xy
@@ -3553,13 +3586,31 @@
             execute sip_barrier
             execute server_barrier
             
-# eventually set based on a input key-word. 
 
-            property = 10.0
+#            do_pols = polarizability
+#            do_aten = a_tensor
+#            do_gten = g_tensor
+#            do_dten = d_tensor
+  
+#            if do_pols == 1.0
+#               property = 10.0
+#            endif
+
+#            if do_gten == 1.0
+#               property = 20.0
+#bgn_debug
+#               property = 30.0
+#end_debug
+#            endif
+#
+#            if do_aten == 1.0
+#               property = 40
+#            endif
 #
 # Two variables that control the formation of antisymmetric or
 # symmetric density or total or spin density.
 # 
+            property = 20.0
 
             ASYM     = 0.0
             SPIN_DEN = 0.0
@@ -3577,13 +3628,13 @@
                call get_HBXYZ_spin_orbit
 
             endif 
-
+#bgn_debug
             if property == 30.0
                ASYM     = 1.0
                SPIN_DEN = 0.0
                call get_HBXYZ_Angmom
-             
             endif
+#end_debug
 
             call ENERGY_X 
             call ENERGY_Y
@@ -3644,14 +3695,14 @@
 # 
 # Mass correction term.
           
-#          property = 20.0
           if property == 20.0
+#          if property == 30.0
 
              CALL CCSD_MASSCR 
 
 # 1-el gauge correction
      
-          CALL CCSD_1E_GAUGECR
+             CALL CCSD_1E_GAUGECR
 
           endif 
     
@@ -3713,6 +3764,7 @@
             endif 
 
             if property == 20.0
+#            if property == 30.0
 
             do xyz
                if xyz == 1
@@ -3809,7 +3861,8 @@
 
            endif 
 
-	   if property == 20.0
+          if property == 20.0
+#           if property == 30.0
 	      ipol = 713.0
 	      execute print_rel_info ipol g_tensor_MC
               ipol = 714.0

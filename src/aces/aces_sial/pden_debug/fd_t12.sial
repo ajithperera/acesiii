@@ -1,0 +1,345 @@
+         SIAL FINITE_DIFF_T12
+#        --------------------
+
+      aoindex mu     = 1, norb
+      aoindex nu     = 1, norb
+      aoindex lambda = 1, norb
+      aoindex sigma  = 1, norb
+#
+      moaindex i = baocc, eaocc
+      moaindex i1= baocc, eaocc
+      moaindex i2= baocc, eaocc
+      moaindex i3= baocc, eaocc
+#
+      moaindex a = bavirt, eavirt
+      moaindex a1= bavirt, eavirt
+      moaindex a2= bavirt, eavirt
+      moaindex a3= bavirt, eavirt
+#
+      mobindex j = bbocc, ebocc
+      mobindex j1= bbocc, ebocc
+      mobindex j2= bbocc, ebocc
+      mobindex j3= bbocc, ebocc
+#
+      mobindex b = bbvirt, ebvirt
+      mobindex b1= bbvirt, ebvirt
+      mobindex b2= bbvirt, ebvirt
+      mobindex b3= bbvirt, ebvirt
+#
+      moaindex p = baocc, eavirt
+      moaindex p1= baocc, eavirt
+      moaindex p2= baocc, eavirt
+      moaindex p3= baocc, eavirt
+#
+      mobindex q = bbocc, ebvirt
+      mobindex q1= bbocc, ebvirt
+      mobindex q2= bbocc, ebvirt
+      mobindex q3= bbocc, ebvirt
+
+      distributed t1a_p(a,i)
+      distributed t1b_p(b,j)
+      distributed t1a_m(a,i)
+      distributed t1b_m(b,j)
+
+      served T2_aa_p(a,i,a1,i1)
+      served T2_bb_p(b,j,b1,j1)
+      served T2_ab_p(a,i,b,j)
+
+      served T2_aa_m(a,i,a1,i1)
+      served T2_bb_m(b,j,b1,j1)
+      served T2_ab_m(a,i,b,j)
+
+      served VSpipi(p1,i,p,i1)
+      served Viaai(i,a1,a,i1)
+      served Vaaii(a,a1,i,i1)
+      served VSaaai(a2,a,a1,i)
+      served Vpiqj(p,i,q,j)
+      served Vaajj(a,a1,j,j1)
+      served Viabj(i,a,b,j)
+      served Vaabj(a,a1,b,j)
+      served Vjbii(j,b,i,i1)
+      served Vbbii(b,b1,i,i1)
+      served Vbbai(b,b1,a,i)
+      served VSqjqj(q1,j,q,j1)
+      served Vjbbj(j,b1,b,j1)
+      served Vbbjj(b,b1,j,j1)
+      served VSbbbj(b2,b,b1,j)
+#
+      TEMP TAI_M(a,i)
+      TEMP TAI_P(a,i)
+      TEMP TAI_FD(a,i)
+
+      TEMP TBJ_M(b,j)
+      TEMP TBJ_P(b,j)
+      TEMP TBJ_FD(b,j)
+
+      TEMP TIJAB_AA_P(a, i, a1, i1)
+      TEMP TIJAB_AA_M(a, i, a1, i1)
+      TEMP TIJAB_AA_FD(a, i, a1, i1)
+
+      TEMP TIJAB_BB_P(b, j, b1, j1)
+      TEMP TIJAB_BB_M(b, j, b1, j1)
+      TEMP TIJAB_BB_FD(b, j, b1, j1)
+
+      TEMP TIJAB_AB_P(a, i, b1, j1)
+      TEMP TIJAB_AB_M(a, i, b1, j1)
+      TEMP TIJAB_AB_FD(a, i, b1, j1)
+
+      Distributed T1A_XYZ(A, I)
+      Distributed T1B_XYZ(B, J)
+
+      Served TIJAB_AA_XYZ(a, i, a1, i1)
+      Served TIJAB_BB_XYZ(b, j, b1, j1)
+      Served TIJAB_AB_XYZ(a, i, b1, j1)
+
+      Scalar SUM 
+      Scalar TMP
+      Scalar SUMA
+      Scalar SUMB
+      Scalar SUMAA
+      Scalar SUMBB
+      Scalar SUMAB
+
+      Scalar FD_WIDTH 
+      Scalar INV_FD_WIDTH 
+      Scalar SCALE
+
+      PROC READ_FD_T12
+#     -----------------
+      execute server_barrier
+      execute list_to_blocks                VSpipi
+      execute list_to_blocks                Vaaii
+      execute list_to_blocks                Viaai
+      execute list_to_blocks                VSaaai
+      execute list_to_blocks                VSqjqj
+      execute list_to_blocks                Vbbjj
+      execute list_to_blocks                Vjbbj
+      execute list_to_blocks                VSbbbj
+      execute list_to_blocks                Vbbii
+      execute list_to_blocks                Vjbii
+      execute list_to_blocks                Vbbai
+      execute list_to_blocks                Vpiqj
+      execute list_to_blocks                Vaajj
+      execute list_to_blocks                Viabj
+      execute list_to_blocks                Vaabj
+
+      execute list_to_blocks                t1a_p
+      execute list_to_blocks                t1b_p
+      execute list_to_blocks                T2_aa_p
+      execute list_to_blocks                T2_ab_p
+      execute list_to_blocks                T2_bb_p
+
+      execute list_to_blocks                t1a_m
+      execute list_to_blocks                t1b_m
+      execute list_to_blocks                T2_aa_m
+      execute list_to_blocks                T2_ab_m
+      execute list_to_blocks                T2_bb_m
+
+      execute write_blocks_to_list
+      execute sip_barrier
+
+      ENDPROC READ_FD_T12
+#     --------------------
+
+      PROC FD_T1AB
+#     ------------
+
+      PARDO A, I
+            GET T1A_M(A, I)
+            GET T1A_P(A, I)
+            
+            TAI_M(A, I) = T1A_M(A, I)
+            TAI_P(A, I) = T1A_P(A, I)
+            
+            TAI_FD(A, I) = T1A_P(A, I)
+            TAI_FD(A, I) -= T1A_M(A, I)
+
+            TAI_FD(A, I) *= INV_FD_WIDTH
+            
+            PUT T1A_XYZ(A, I) = TAI_FD(A, I)
+
+      ENDPARDO A, I
+
+      EXECUTE SIP_BARRIER
+      
+      sum  = 0.0
+      suma = 0.0
+
+      PARDO A, I
+            GET T1A_XYZ(A, I)
+            tmp = T1A_XYZ(A, I) * T1A_XYZ(A, I)
+            sum += tmp
+      ENDPARDO A, I
+     
+      EXECUTE SIP_BARRIER
+      COLLECTIVE suma += sum
+      EXECUTE SIP_BARRIER
+      EXECUTE PRINT_SCALAR suma
+
+      PARDO B, J
+            GET T1B_M(B, J)
+            GET T1B_P(B, J)
+
+            TBJ_M(B, J) = T1B_M(B, J)
+            TBJ_P(B, J) = T1B_P(B, J)
+
+            TBJ_FD(B, J) = T1B_P(B, J)
+            TBJ_FD(B, J) -= T1B_M(B, J)
+
+            TBJ_FD(B, J) *= INV_FD_WIDTH
+
+            PUT T1B_XYZ(B, J) = TBJ_FD(B, J)
+
+      ENDPARDO B, J
+
+      EXECUTE SIP_BARRIER
+
+      sum  = 0.0
+      sumb = 0.0
+
+      PARDO B, J
+            GET T1B_XYZ(B, J)
+            tmp = T1B_XYZ(B, J) * T1B_XYZ(B, J)
+            sum += tmp
+      ENDPARDO B, J
+
+      EXECUTE SIP_BARRIER
+      COLLECTIVE sumb += sum
+      EXECUTE SIP_BARRIER
+      EXECUTE PRINT_SCALAR sumb
+
+      ENDPROC FD_T1AB
+#     ---------------
+
+      PROC FD_T2AAAA
+#     --------------
+      
+      PARDO A, I, A1, I1
+            REQUEST T2_AA_P(A, I, A1, I1) I1
+            REQUEST T2_AA_M(A, I, A1, I1) I1
+
+            TIJAB_AA_P(A, I, A1, I1) = T2_AA_P(A, I, A1, I1)
+            TIJAB_AA_M(A, I, A1, I1) = T2_AA_M(A, I, A1, I1)
+            
+            TIJAB_AA_FD(A, I, A1, I1)  = TIJAB_AA_P(A, I, A1, I1)
+            TIJAB_AA_FD(A, I, A1, I1) -= TIJAB_AA_M(A, I, A1, I1)
+
+            TIJAB_AA_FD(A, I, A1, I1) *= INV_FD_WIDTH
+           
+            PREPARE TIJAB_AA_XYZ(A, I, A1, I1) =  TIJAB_AA_FD(A, I, A1, I1)
+      ENDPARDO A, I, A1, I1
+      
+      EXECUTE SERVER_BARRIER
+            
+      sum   = 0.0
+      sumaa = 0.0
+
+      PARDO A, I, A1, I1
+            REQUEST TIJAB_AA_XYZ(A, I, A1, I1) I1
+            tmp  = TIJAB_AA_XYZ(A, I, A1, I1) * TIJAB_AA_XYZ(A, I, A1, I1)
+            sum += tmp
+      ENDPARDO A, I, A1, I1
+
+      EXECUTE SERVER_BARRIER
+      COLLECTIVE sumaa += sum
+      EXECUTE SIP_BARRIER 
+      EXECUTE PRINT_SCALAR sumaa
+
+      ENDPROC FD_T2AAAA
+#     ------------------
+
+      PROC FD_T2BBBB
+#     --------------
+
+      PARDO B, J, B1, J1
+            REQUEST T2_BB_P(B, J, B1, J1) J1
+            REQUEST T2_BB_M(B, J, B1, J1) J1
+
+            TIJAB_BB_P(B, J, B1, J1) = T2_BB_P(B, J, B1, J1) 
+            TIJAB_BB_M(B, J, B1, J1) = T2_BB_M(B, J, B1, J1)
+
+            TIJAB_BB_FD(B, J, B1, J1)  = TIJAB_BB_P(B, J, B1, J1)
+            TIJAB_BB_FD(B, J, B1, J1) -= TIJAB_BB_M(B, J, B1, J1)
+
+            TIJAB_BB_FD(B, J, B1, J1) *= INV_FD_WIDTH
+
+            PREPARE TIJAB_BB_XYZ(B, J, B1, J1) =  TIJAB_BB_XYZ(B, J, B1, J1)
+      ENDPARDO B, J, B1, J1
+        
+      EXECUTE SERVER_BARRIER
+
+      sum   = 0.0
+      sumaa = 0.0
+
+      PARDO B, J, B1, J1
+            REQUEST TIJAB_BB_XYZ(B, J, B1, J1) J1
+            tmp  = TIJAB_BB_XYZ(B, J, B1, J1) * TIJAB_BB_XYZ(B, J, B1, J1)
+            sum += tmp
+      ENDPARDO B, J, B1, J1
+
+      EXECUTE SERVER_BARRIER
+      COLLECTIVE sumbb += sum
+      EXECUTE SIP_BARRIER 
+      EXECUTE PRINT_SCALAR sumbb
+
+      ENDPROC FD_T2BBBB
+#     -----------------
+
+      PROC FD_T2ABAB
+#     --------------
+
+      PARDO A, I, B1, J1
+            REQUEST T2_AB_P(A, I, B1, J1) J1
+            REQUEST T2_AB_M(A, I, B1, J1) J1
+
+            TIJAB_AB_P(A, I, B1, J1) = T2_AB_P(A, I, B1, J1)
+            TIJAB_AB_M(A, I, B1, J1) = T2_AB_M(A, I, B1, J1)
+
+            TIJAB_AB_FD(A, I, B1, J1)  = TIJAB_AB_P(A, I, B1, J1)
+            TIJAB_AB_FD(A, I, B1, J1) -= TIJAB_AB_M(A, I, B1, J1)
+
+            TIJAB_AB_FD(A, I, B1, J1) *= INV_FD_WIDTH
+
+            PREPARE TIJAB_AB_XYZ(A, I, B1, J1) =  TIJAB_AB_XYZ(A, I, B1, J1)
+      ENDPARDO A, I, B1, J1
+
+      EXECUTE SERVER_BARRIER
+
+      sum   = 0.0
+      sumab = 0.0
+
+      PARDO A, I, B1, J1
+            REQUEST TIJAB_AB_XYZ(A, I, B1, J1) J1
+            tmp  = TIJAB_AB_XYZ(A, I, B1, J1) * TIJAB_AB_XYZ(A, I, B1, J1)
+            sum += tmp
+      ENDPARDO A, I, B1, J1
+
+      EXECUTE SERVER_BARRIER
+      COLLECTIVE sumab += sum
+      EXECUTE SIP_BARRIER
+      EXECUTE PRINT_SCALAR sumab
+      
+      ENDPROC FD_T2ABAB
+#     -----------------
+#-----------------------------------------------------
+#  Main program 
+
+      FD_WIDTH     = 200.0
+      INV_FD_WIDTH = 1.0/FD_WIDTH
+      SCALE        = 1000000.0
+      INV_FD_WIDTH *= SCALE
+      execute print_scalar INV_FD_WIDTH
+
+      CALL READ_FD_T12
+  
+      CALL FD_T1AB
+
+      CALL FD_T2AAAA
+
+      CALL FD_T2BBBB
+
+      CALL FD_T2ABAB
+#
+      ENDSIAL FINITE_DIFF_T12
+#      -----------------------
+

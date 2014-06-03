@@ -9403,6 +9403,14 @@
       five  = 5.0
       six   = 6.0
       seven = 7.0
+
+# Set the property type based on the input key-word
+
+      do_pols = polarizability
+      do_aten = a_tensor 
+      do_gten = g_tensor
+      do_dten = d_tensor 
+      execute sip_barrier 
  
       CREATE t1a_old 
       CREATE t1b_old 
@@ -9526,19 +9534,37 @@
        CALL FME
        EXECUTE SIP_BARRIER
  
-# Set the property type based on the input key-word
+#bgn_debug
+       execute print_scalar do_pols
+       execute print_scalar do_aten
+       execute print_scalar do_gten
+       execute print_scalar do_dten
+#end_debug
 
-       do_pols = polarizability
-       do_aten = a_tensor 
-       do_gten = g_tensor
-       do_dten = d_tensor 
+      if do_pols == 1.0
+         property = 10.0
+         beta_is_minus = 0.0
+      endif 
+      execute sip_barrier 
 
-#       if do_aten == 1
-       property = 10.0
+      if do_gten == 1.0
+         property = 20.0
+         beta_is_minus = 0.0
+#bgn_debug
+         property = 30.0
+         beta_is_minus = 100.0
+#end_debug
+      endif 
+
+      execute sip_barrier 
+
+      execute print_scalar property
+
+       property = 20.0
        beta_is_minus = 0.0
 
        ICOUNT = 0.0
-# 
+
        DO NPERT 
 
        X_COMP = 0.0
@@ -9571,10 +9597,10 @@
        endif
 
        if property == 30.0
-         beta_is_minus = 100.0
          call get_HBx_Spin_orbit            # I think is allright
        endif
 
+       execute print_scalar icount 
        call trans_2mo 
 
 # Get initial second-order guess

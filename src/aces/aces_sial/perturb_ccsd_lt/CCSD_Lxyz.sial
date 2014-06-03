@@ -995,8 +995,11 @@
        Scalar X_COMP
        Scalar Y_COMP
        Scalar Z_COMP
-#
-#
+
+       scalar do_pols 
+       scalar do_aten 
+       scalar do_gten 
+       scalar do_dten 
 #______________________________________________________________________________
      PROC READ_2EL
       execute server_barrier
@@ -12430,7 +12433,28 @@
 
 # Loop over perturbation statrs here.
 
-      property = 10.0
+# Set the property type based on the input key-word
+
+#       do_pols = polarizability
+#       do_aten = a_tensor
+#       do_gten = g_tensor
+#       do_dten = d_tensor
+
+#      if do_pols == 1.0
+#         property = 10.0
+#         beta_is_minus = 0.0
+#      endif
+
+#      if do_gten == 1.0
+#         property = 20.0
+#         beta_is_minus = 0.0
+#bgn_debug
+#         property = 30.0
+#         beta_is_minus = 100.0
+#end_debug
+#      endif
+
+      property = 20.0
       beta_is_minus = 0.0
 
       NCOUNT = 0.0

@@ -1,8 +1,271 @@
 rm -f make.out make.err
-../../../bin/sial props/CCSD_resp_2D.sial && cp props/CCSD_resp_2D.sio ../../../bin/sio
-input  file: props/CCSD_resp_2D.sial
-output file: props/CCSD_resp_2D.sio
-    No compilation errors
-Writing tables to props/CCSD_resp_2D.sio
+../../../bin/sial pden_debug/fd_t12.sial && cp pden_debug/fd_t12.sio ../../../bin/sio
+input  file: pden_debug/fd_t12.sial
+output file: pden_debug/fd_t12.sio
+ 
+line 82, error in array declaration.
 
-SIO (Super Instruction Object) file is saved to "props/CCSD_resp_2D.sio".
+line 82, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'i' ### unexpected char
+line 87, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'sereved' ### unexpected char
+line 88, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'sereved' ### unexpected char
+line 89, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'sereved' ### unexpected char
+line 91, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 92, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 93, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 94, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 95, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 96, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 98, @@@  unexpected char, ignored till end of line.
+Unexpected char: distributed
+   'distributed' $$$ unexpected char
+line 99, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'sereved' ### unexpected char
+line 101, @@@  unexpected char, ignored till end of line.
+Unexpected char: temp
+   'temp' $$$ unexpected char
+line 102, @@@  unexpected char, ignored till end of line.
+Unexpected char: temp
+   'temp' $$$ unexpected char
+line 103, @@@  unexpected char, ignored till end of line.
+Unexpected char: temp
+   'temp' $$$ unexpected char
+line 105, @@@  unexpected char, ignored till end of line.
+Unexpected char: distributed
+   'distributed' $$$ unexpected char
+line 107, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 108, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 109, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 110, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 111, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 112, @@@  unexpected char, ignored till end of line.
+Unexpected char: scalar
+   'scalar' $$$ unexpected char
+line 114, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 121, array name or scalar name not defined.
+
+line 122, array name or scalar name not defined.
+
+line 123, array name or scalar name not defined.
+
+line 124, array name or scalar name not defined.
+
+line 140, array name or scalar name not defined.
+
+line 148, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 151, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 164, array or scalar does not exist.
+
+line 172, array or scalar does not exist.
+
+line 173, array or scalar does not exist.
+
+line 177, array or scalar does not exist.
+
+line 178, array or scalar does not exist.
+
+line 182, array or scalar does not exist.
+
+line 184, array name or scalar name not defined.
+
+line 187, array or scalar does not exist.
+
+line 190, array or scalar does not exist.
+
+line 194, array or scalar does not exist.
+
+line 196, array or scalar does not exist.
+
+line 204, array or scalar does not exist.
+
+line 205, array or scalar does not exist.
+
+line 209, array or scalar does not exist.
+
+line 210, array or scalar does not exist.
+
+line 214, array or scalar does not exist.
+
+line 216, array name or scalar name not defined.
+
+line 218, @@@  unexpected char, ignored till end of line.
+Unexpected char: id
+   'endprod' ### unexpected char
+line 221, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 225, array or scalar does not exist.
+
+line 226, array or scalar does not exist.
+
+line 228, array or scalar does not exist.
+
+line 229, array or scalar does not exist.
+
+line 234, array or scalar does not exist.
+
+line 239, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 241, array or scalar does not exist.
+
+line 242, array or scalar does not exist.
+
+line 245, id is missing.
+
+line 246, array or scalar does not exist.
+
+line 247, array or scalar does not exist.
+
+line 250, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 251, array or scalar does not exist.
+
+line 253, array name or scalar name not defined.
+
+line 255, @@@  unexpected char, ignored till end of line.
+Unexpected char: endproc
+   'endproc' $$$ unexpected char
+line 258, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 262, array or scalar does not exist.
+
+line 263, array or scalar does not exist.
+
+line 265, array or scalar does not exist.
+
+line 266, array or scalar does not exist.
+
+line 271, array or scalar does not exist.
+
+line 276, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 278, array or scalar does not exist.
+
+line 279, array or scalar does not exist.
+
+line 282, id is missing.
+
+line 283, array or scalar does not exist.
+
+line 284, array or scalar does not exist.
+
+line 287, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 288, array or scalar does not exist.
+
+line 290, array name or scalar name not defined.
+
+line 292, @@@  unexpected char, ignored till end of line.
+Unexpected char: endproc
+   'endproc' $$$ unexpected char
+line 295, @@@  unexpected char, ignored till end of line.
+Unexpected char: proc
+   'proc' $$$ unexpected char
+line 299, array or scalar does not exist.
+
+line 300, array or scalar does not exist.
+Variable.getidtype(number) = 59
+Variable.getidtype(arrayindex[arrayid][i]) = 60
+
+line 302, !!! index types do not match.
+
+line 303, array or scalar does not exist.
+
+line 305, CheckArray: nindex doesn't match.
+
+line 306, CheckArray: nindex doesn't match.
+
+line 308, CheckArray: nindex doesn't match.
+
+line 310, CheckArray: nindex doesn't match.
+
+line 313, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 315, array or scalar does not exist.
+
+line 316, array or scalar does not exist.
+
+line 319, id is missing.
+
+line 320, array or scalar does not exist.
+
+line 320, @@@  unexpected char, ignored till end of line.
+Unexpected char: ,
+   ',' $$$ unexpected char
+line 321, array or scalar does not exist.
+
+line 324, subroutine not in table
+c_get_subroutine_handle returned 0.
+
+line 325, array or scalar does not exist.
+
+line 327, array name or scalar name not defined.
+
+line 329, @@@  unexpected char, ignored till end of line.
+Unexpected char: endproc
+   'endproc' $$$ unexpected char
+line 339, array or scalar does not exist.
+
+line 340, array or scalar does not exist.
+
+line 341, array or scalar does not exist.
+
+line 342, array or scalar does not exist.
+
+line 343, array name or scalar name not defined.
+
+line 345, call: index can not be found.
+
+line 347, call: index can not be found.
+
+line 349, call: index can not be found.
+
+line 351, call: index can not be found.
+
+line 353, call: index can not be found.
+===========================================================
+=           errors found.                                 =
+=           please correct it before go to the next step. =
+===========================================================

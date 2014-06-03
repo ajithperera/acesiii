@@ -11764,6 +11764,7 @@
       PARDO a, a1, a2, i
 #
             REQUEST Dabci_aaaa_x(a,a1,a2,i) i
+            execute dump_amp Dabci_aaaa_x(a,a1,a2,i)
             etemp = Dabci_aaaa_x(a,a1,a2,i)*Dabci_aaaa_x(a,a1,a2,i)
             esum += etemp
 #
@@ -11789,6 +11790,7 @@
       PARDO a, a1, b, j
 #
             REQUEST Dabci_abab_x(a,b,a1,j) j
+            execute dump_amp Dabci_abab_x(a,b,a1,j)
             etemp = Dabci_abab_x(a,b,a1,j)*Dabci_abab_x(a,b,a1,j)
             esum += etemp
 #
@@ -11985,7 +11987,6 @@
       PARDO i, j, a, b
 #
             REQUEST Dijab_ab_x(i,j,a,b) a
-            execute dump_amp  Dijab_ab_x
             etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
             esum += etemp
 #

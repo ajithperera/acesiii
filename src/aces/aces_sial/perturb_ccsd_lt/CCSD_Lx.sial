@@ -12603,14 +12603,14 @@
       nine = 9.0
       ten = 10.0
 
-       property = 10.0
+       property = 20.0
        beta_is_minus = 0.0
        if property == 10.0
-          call get_HBx_Dipole 
+#          call get_HBx_Dipole 
        endif 
 
        if property == 20.0
-#          call get_HBx_Angmom
+          call get_HBx_Angmom
        endif 
 
        if property == 30.0
