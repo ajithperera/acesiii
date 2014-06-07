@@ -4648,7 +4648,9 @@
 #     -------------
            CALL DABIJAA_X
            CALL DABIJBB_X
-           CALL DABIJAB_X
+           if property == 10.0
+              CALL DABIJAB_X
+           endif
 
       ENDPROC DABIJ_X
 #     ---------------
@@ -4684,8 +4686,10 @@
            execute sip_barrier
 
            CALL DIJABAA_X
-           CALL DIJABBB_X
-           CALL DIJABAB_X
+           CALL DIJABBB_X 
+           if property == 10.0
+              CALL DIJABAB_X
+           endif 
            execute sip_barrier
 
            DELETE Dii_x
@@ -5156,7 +5160,11 @@
 #--------------------------------------------------------------------
       PROC DIJKL_X
            CALL DIJKLAAAA_X
-           CALL DIJKLABAB_X
+
+           if property == 10.0
+              CALL DIJKLABAB_X
+           endif 
+
            CALL DIJKLBBBB_X
       ENDPROC DIJKL_X
 #---------------------------------------------------------------------
@@ -7423,11 +7431,13 @@
         CALL DIBJAAAAA_X
         CALL DIBJABBBB_X
 
-        CALL DIBJAABAB_X
-        CALL DIBJABABA_X
+        if property == 10.0
+           CALL DIBJAABAB_X
+           CALL DIBJABABA_X
 
-        CALL DIBJABAAB_X
-        CALL DIBJAABBA_X
+           CALL DIBJABAAB_X
+           CALL DIBJAABBA_X
+        endif 
       ENDPROC DIBJA_X
 #----------------------------------------------------
       PROC I2XX 
@@ -9306,8 +9316,11 @@
 
         CALL DABCIAAAA_X
         CALL DABCIBBBB_X
-        CALL DABCIABAB_X
-        CALL DABCIBABA_X
+
+        if property == 10.0
+           CALL DABCIABAB_X
+           CALL DABCIBABA_X
+        endif 
 
       ENDPROC DABCI_X
 #     ----------------
@@ -10443,8 +10456,12 @@
 #------------------------------------------------------------------
       PROC DIJKA_X
            CALL DIJKAAAAA_X
-           CALL DIJKAABAB_X
-           CALL DIJKABABA_X
+
+           if property == 10.0
+              CALL DIJKAABAB_X
+              CALL DIJKABABA_X
+           endif
+
            CALL DIJKABBBB_X
       ENDPROC DIJKA_X
 #-----------------------------------------------------------------
@@ -11540,13 +11557,13 @@
 #
 # <ab | Sz(1) + 2 S_z(2)| cd > gives additional 3/2, -3/2 and -1/2.
 #
-            Pxxxx_aa_x(mu,nu,lambda,sigma) *= 0.25         
-            Pxxxx_bb_x(mu,nu,lambda,sigma) *= 0.25
-            Pxxxx_ab_x(mu,nu,lambda,sigma) *= 0.25 
+            Pxxxx_aa_x(mu,nu,lambda,sigma) *=  1.50
+            Pxxxx_bb_x(mu,nu,lambda,sigma) *= -1.50
+            Pxxxx_ab_x(mu,nu,lambda,sigma) *= 0.50
 
-            PREPARE Dxxxx_aaaa_x(mu,nu,lambda,sigma) = Pxxxx_aa_x(mu,nu,lambda,sigma)
-            PREPARE Dxxxx_bbbb_x(mu,nu,lambda,sigma) = Pxxxx_bb_x(mu,nu,lambda,sigma)
-            PREPARE Dxxxx_abab_x(mu,nu,lambda,sigma) = Pxxxx_ab_x(mu,nu,lambda,sigma)
+            PREPARE Dxxxx_aaaa_x(mu,nu,lambda,sigma) += Pxxxx_aa_x(mu,nu,lambda,sigma)
+            PREPARE Dxxxx_bbbb_x(mu,nu,lambda,sigma) += Pxxxx_bb_x(mu,nu,lambda,sigma)
+            PREPARE Dxxxx_abab_x(mu,nu,lambda,sigma) += Pxxxx_ab_x(mu,nu,lambda,sigma)
        ENDPARDO mu, nu, lambda, sigma
        execute server_barrier
 #bgn_debug
@@ -11764,7 +11781,7 @@
       PARDO a, a1, a2, i
 #
             REQUEST Dabci_aaaa_x(a,a1,a2,i) i
-            execute dump_amp Dabci_aaaa_x(a,a1,a2,i)
+#            execute dump_amp Dabci_aaaa_x(a,a1,a2,i)
             etemp = Dabci_aaaa_x(a,a1,a2,i)*Dabci_aaaa_x(a,a1,a2,i)
             esum += etemp
 #
@@ -11790,7 +11807,7 @@
       PARDO a, a1, b, j
 #
             REQUEST Dabci_abab_x(a,b,a1,j) j
-            execute dump_amp Dabci_abab_x(a,b,a1,j)
+#            execute dump_amp Dabci_abab_x(a,b,a1,j)
             etemp = Dabci_abab_x(a,b,a1,j)*Dabci_abab_x(a,b,a1,j)
             esum += etemp
 #
@@ -12187,6 +12204,7 @@
          execute print_scalar ecorraa
      ENDPROC verify
 #-------------------------------------------------------------
+#bgn_debug
       PROC verify_x
 #     -------------
          esuma   = 0.0
@@ -12233,6 +12251,7 @@
           execute print_scalar ecorraa
 
      ENDPROC verify_x
+#enddbug
 #------------------------------------------------------
 
      PROC GET_2P_SPIN_ORBIT
@@ -12263,6 +12282,9 @@
       D2SO_PX = 0.0
       D2SO_PY = 0.0
       D2SO_PZ = 0.0
+      D2SO_XX = 0.0
+      D2SO_YX = 0.0
+      D2SO_ZX = 0.0
 
       PARDO mu, nu, lambda, sigma
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
@@ -12277,34 +12299,37 @@
             D2SO_PX +=tmp
             tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PX +=tmp
-            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PX +=tmp
+
+#            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PX +=tmp
 
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
-            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PY +=tmp
+#            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PY +=tmp
 
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
-            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PZ +=tmp
+#            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PZ +=tmp
 
       ENDPARDO mu, nu, lambda, sigma
       EXECUTE SERVER_BARRIER 
-  
+
       COLLECTIVE D2SO_XX += D2SO_PX
-      COLLECTIVE D2SO_XY += D2SO_PY
-      COLLECTIVE D2SO_XZ += D2SO_PZ
+      COLLECTIVE D2SO_YX += D2SO_PY
+      COLLECTIVE D2SO_ZX += D2SO_PZ
+
+      EXECUTE SERVER_BARRIER 
 
 #bgn_debug
      execute print_scalar D2SO_XX
-     execute print_scalar D2SO_XY
-     execute print_scalar D2SO_XZ
+     execute print_scalar D2SO_YX
+     execute print_scalar D2SO_ZX
 #end_debug
 
      ENDPROC CCSD_2DRESPN_X
@@ -12316,6 +12341,9 @@
       D2SO_PX = 0.0
       D2SO_PY = 0.0
       D2SO_PZ = 0.0
+      D2SO_XY = 0.0
+      D2SO_YY = 0.0
+      D2SO_ZY = 0.0
 
       PARDO mu, nu, lambda, sigma
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
@@ -12330,34 +12358,34 @@
             D2SO_PX +=tmp
             tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PX +=tmp
-            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PX +=tmp
+#            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PX +=tmp
 
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
-            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PY +=tmp
+#            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PY +=tmp
 
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
-            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PZ +=tmp
+#            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PZ +=tmp
 
       ENDPARDO mu, nu, lambda, sigma
       EXECUTE SERVER_BARRIER
 
-      COLLECTIVE D2SO_YX += D2SO_PX
+      COLLECTIVE D2SO_XY += D2SO_PX
       COLLECTIVE D2SO_YY += D2SO_PY
-      COLLECTIVE D2SO_YZ += D2SO_PZ
+      COLLECTIVE D2SO_ZY += D2SO_PZ
 
 #bgn_debug
-     execute print_scalar D2SO_YX
+     execute print_scalar D2SO_XY
      execute print_scalar D2SO_YY
-     execute print_scalar D2SO_YZ
+     execute print_scalar D2SO_ZY
 #end_debug
 
      ENDPROC CCSD_2DRESPN_Y
@@ -12369,6 +12397,9 @@
       D2SO_PX = 0.0
       D2SO_PY = 0.0
       D2SO_PZ = 0.0
+      D2SO_XZ = 0.0
+      D2SO_YZ = 0.0
+      D2SO_ZZ = 0.0
 
       PARDO mu, nu, lambda, sigma
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma 
@@ -12383,33 +12414,33 @@
             D2SO_PX +=tmp
             tmp = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PX +=tmp
-            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PX +=tmp
+#            tmp  = AO_2SOI_X(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PX +=tmp
 
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
             tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PY +=tmp
-            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PY +=tmp
+#            tmp  = AO_2SOI_Y(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PY +=tmp
 
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
             tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
             D2SO_PZ +=tmp
-            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-            D2SO_PZ +=tmp
+#            tmp  = AO_2SOI_Z(mu, nu, lambda, sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#            D2SO_PZ +=tmp
 
       ENDPARDO mu, nu, lambda, sigma
       EXECUTE SERVER_BARRIER
 
-      COLLECTIVE D2SO_ZX += D2SO_PX
-      COLLECTIVE D2SO_ZY += D2SO_PY
+      COLLECTIVE D2SO_XZ += D2SO_PX
+      COLLECTIVE D2SO_YZ += D2SO_PY
       COLLECTIVE D2SO_ZZ += D2SO_PZ
 
 #bgn_debug
-     execute print_scalar D2SO_ZX
-     execute print_scalar D2SO_ZY
+     execute print_scalar D2SO_XZ
+     execute print_scalar D2SO_YZ
      execute print_scalar D2SO_ZZ
 #end_debug
 
@@ -12691,9 +12722,9 @@
 
 # Loop over perturbation statrs here.
 
-         property = 20.0
+         property = 10.0
 
-         if property == 20.0
+         if property == 10.0
             CALL GET_2P_SPIN_ORBIT 
             EXECUTE SERVER_BARRIER
          endif
@@ -12869,7 +12900,7 @@
              IF NCOUNT == 2.0 
                 CALL CCSD_2DRESPN_Y
              ENDIF
-             IF NCOUNT == 2.0 
+             IF NCOUNT == 3.0 
                 CALL CCSD_2DRESPN_Z
              ENDIF 
 
@@ -12882,9 +12913,11 @@
 
           execute server_barrier
 
-          call verify_x
+#bgn_debug
+#          call verify_x
+#end_debug
 
-          IF PROPERTY == 20.0
+          IF PROPERTY == 10.0
 
           DO XYZ 
              DO XYZ1
@@ -12896,7 +12929,7 @@
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XY
                    ENDIF 
                    IF XYZ1 == 3
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
+                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XZ
                    ENDIF 
                 ENDIF 
 

@@ -2183,10 +2183,10 @@
 #     Transform Dai_aa
 #     ----------------
 #bgn_debug
-      PARDO a, i
-            GET Doldai_a(a,i)
-            execute dump_amp Doldai_a(a,i)
-      ENDPARDO a, i
+#      PARDO a, a1
+#            GET Dab_a(a,a1)
+#            execute dump_amp Dab_a(a,a1)
+#      ENDPARDO a, a1
 #end_debug
 
       PARDO a, i
@@ -2538,6 +2538,7 @@
       PROC D1TRANS_x
 #     ---------------
 #     Transform Dai_aa
+
       PARDO a, i
             GET Doldai_a_x(a,i)
             DO mu
@@ -2867,6 +2868,12 @@
       PROC D1TRANS_z
 #     --------------
 #     Transform Dai_aa
+#bgn_debug
+#      PARDO a, a1
+#            GET Dab_a_z(a,a1)
+#            execute dump_amp Dab_a_z(a,a1)
+#      ENDPARDO a, a1
+#end_debug
       PARDO a, i
             GET Doldai_a_z(a,i)
             DO mu
@@ -3417,6 +3424,131 @@
         execute print_scalar diff
         ENDPROC ENERGY_Z
 
+        PROC ASYM_AB_X
+#       --------------
+        PARDO A, A1
+              GET Dab_a_x(a,a1)
+              Taa(a,a1) = Dab_a_x(a,a1)
+              T1aa(a1,a) = Taa(a,a1)
+              T1aa(a1,a) *= -1.0
+              PUT Dab_a_x(a1,a) = T1aa(a1,a)
+        ENDPARDO A, A1
+
+        PARDO B, B1
+              GET Dab_b_x(b,b1)
+              Tbb(b,b1) = Dab_b_x(b,b1)
+              T1bb(b1,b) = Tbb(b,b1)
+              T1bb(b1,b) *= -1.0
+              PUT Dab_b_x(b1,b) = T1bb(b1,b)
+        ENDPARDO B, B1
+
+        ENDPROC ASYM_AB_X
+#       -----------------
+
+        PROC ASYM_AB_Y
+#       --------------
+        PARDO A, A1
+              GET Dab_a_y(a,a1)
+              Taa(a,a1) = Dab_a_y(a,a1)
+              T1aa(a1,a) = Taa(a,a1)
+              T1aa(a1,a) *= -1.0
+              PUT Dab_a_y(a1,a) = T1aa(a1,a)
+        ENDPARDO A, A1
+
+        PARDO B, B1
+              GET Dab_b_y(b,b1)
+              Tbb(b,b1) = Dab_b_y(b,b1)
+              T1bb(b1,b) = Tbb(b,b1)
+              T1bb(b1,b) *= -1.0
+              PUT Dab_b_y(b1,b) = T1bb(b1,b)
+        ENDPARDO B, B1
+
+        ENDPROC ASYM_AB_Y
+#       -----------------
+
+        PROC ASYM_AB_Z
+#       --------------
+        PARDO A, A1
+              GET Dab_a_z(a,a1)
+              Taa(a,a1) = Dab_a_z(a,a1)
+              T1aa(a1,a) = Taa(a,a1)
+              T1aa(a1,a) *= -1.0
+              PUT Dab_a_z(a1,a) = T1aa(a1,a)
+        ENDPARDO A, A1
+
+        PARDO B, B1
+              GET Dab_b_z(b,b1)
+              Tbb(b,b1) = Dab_b_z(b,b1)
+              T1bb(b1,b) = Tbb(b,b1)
+              T1bb(b1,b) *= -1.0
+              PUT Dab_b_z(b1,b) = T1bb(b1,b)
+        ENDPARDO B, B1
+
+        ENDPROC ASYM_AB_Z
+#       -----------------
+
+        PROC ASYM_IJ_X
+#       --------------
+        PARDO I, I1
+              GET Dij_a_x(i,i1)
+              Tii(i,i1) = Dij_a_x(i,i1)
+              T1ii(i1,i) = Tii(i,i1)
+              T1ii(i1,i) *= -1.0
+              PUT Dij_a_x(i1,i) = T1ii(i1,i)
+        ENDPARDO I, I1
+
+        PARDO J, J1
+              GET Dij_b_x(j,j1)
+              Tjj(j,j1) = Dij_b_x(j,j1)
+              T1jj(j1,j) = Tjj(j,j1)
+              T1jj(j1,j) *= -1.0
+              PUT Dij_b_x(j1,j) = T1jj(j1,j)
+        ENDPARDO J, J1
+
+        ENDPROC ASYM_IJ_X
+#       -----------------
+
+        PROC ASYM_IJ_Y
+#       --------------
+        PARDO I, I1
+              GET Dij_a_y(i,i1)
+              Tii(i,i1) = Dij_a_y(i,i1)
+              T1ii(i1,i) = Tii(i,i1)
+              T1ii(i1,i) *= -1.0
+              PUT Dij_a_y(i1,i) = T1ii(i1,i)
+        ENDPARDO I, I1
+
+        PARDO J, J1
+              GET Dij_b_y(j,j1)
+              Tjj(j,j1) = Dij_b_y(j,j1)
+              T1jj(j1,j) = Tjj(j,j1)
+              T1jj(j1,j) *= -1.0
+              PUT Dij_b_y(j1,j) = T1jj(j1,j)
+        ENDPARDO J, J1
+
+        ENDPROC ASYM_IJ_Y
+#       -----------------
+
+        PROC ASYM_IJ_Z
+#       --------------
+        PARDO I, I1
+              GET Dij_a_z(i,i1)
+              Tii(i,i1) = Dij_a_z(i,i1)
+              T1ii(i1,i) = Tii(i,i1)
+              T1ii(i1,i) *= -1.0
+              PUT Dij_a_z(i1,i) = T1ii(i1,i)
+        ENDPARDO I, I1
+
+        PARDO J, J1
+              GET Dij_b_z(j,j1)
+              Tjj(j,j1) = Dij_b_z(j,j1)
+              T1jj(j1,j) = Tjj(j,j1)
+              T1jj(j1,j) *= -1.0
+              PUT Dij_b_z(j1,j) = T1jj(j1,j)
+        ENDPARDO J, J1
+
+        ENDPROC ASYM_IJ_Z
+#       -----------------
 #............................................................
 
          PROC DMAIN
@@ -3584,6 +3716,15 @@
 
             execute sip_barrier
             execute server_barrier
+
+            if ASYM == 1.0
+               CALL ASYM_AB_X
+               CALL ASYM_AB_Y
+               CALL ASYM_AB_Z
+               CALL ASYM_IJ_X
+               CALL ASYM_IJ_Y
+               CALL ASYM_IJ_Z
+            endif
 
             call DAI
             call DAI_x

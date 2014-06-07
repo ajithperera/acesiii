@@ -9560,7 +9560,7 @@
 
       execute print_scalar property
 
-       property = 10.0
+       property = 20.0
        beta_is_minus = 0.0
 
        ICOUNT = 0.0

@@ -757,7 +757,7 @@
     sumab = 0.0
     PARDO  I, J, A, B
            REQUEST DIJAB_AB_XYZ(I, J, A, B) B
-           execute dump_amp DIJAB_AB_XYZ(I, J, A, B)
+#           execute dump_amp DIJAB_AB_XYZ(I, J, A, B)
            tmp  = DIJAB_AB_XYZ(I, J, A, B) * DIJAB_AB_XYZ(I, J, A, B)
            sum  += tmp
     ENDPARDO I, J, A, B
