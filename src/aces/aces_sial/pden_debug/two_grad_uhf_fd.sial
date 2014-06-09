@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                    SIAL TWO_GRAD_V2_CO   
+                    SIAL TWO_GRAD_UHF_FD
 #
 # This SIAL program computes the one and two particle density 
 # matrices. It is functional and debugged. This code backtransforms 
@@ -5313,6 +5313,7 @@
       PARDO mu, nu, lambda, sigma 
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
+
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
@@ -5550,10 +5551,10 @@
             Xsum += tmp
 
             tmp = T1xxxx(mu,lambda,nu,sigma)*AO_2SOI_Y(mu, nu, lambda, sigma)
-            Xsum += tmp
+            Ysum += tmp
 
             tmp = T1xxxx(mu,lambda,nu,sigma)*AO_2SOI_Z(mu, nu, lambda, sigma)
-            Xsum += tmp
+            Zsum += tmp
 #
       ENDPARDO mu, nu, lambda, sigma  
 
@@ -5813,10 +5814,10 @@
             Xsum += tmp
 
             tmp = T1xxxx(mu,lambda,nu,sigma)*AO_2SOI_Y(mu, nu, lambda, sigma)
-            Xsum += tmp
+            Ysum += tmp
 
             tmp = T1xxxx(mu,lambda,nu,sigma)*AO_2SOI_Z(mu, nu, lambda, sigma)
-            Xsum += tmp
+            Zsum += tmp
 
       ENDPARDO mu, nu, lambda, sigma  
 
@@ -6490,8 +6491,6 @@
              DELETE Dij_b(j,j1)
              DELETE Dab_a(a,a1)
              DELETE Dab_b(b,b1)
-             DELETE Doldai_a(a,i)
-             DELETE Doldai_b(b,j)
 
              DELETE DpqA
              DELETE DpqB
@@ -6502,6 +6501,8 @@
              DELETE Gmi_b
              DELETE Gae_a
              DELETE Gae_b
+
+         ENDDO NPERT
 #
       ENDPROC DMAIN
 #     -------------
@@ -6553,6 +6554,6 @@
       CALL DMAIN 
       execute sip_barrier 
 #
-                    ENDSIAL TWO_GRAD_V2_CO   
+                    ENDSIAL TWO_GRAD_UHF_FD
 #
 # ---------------------------------------------------------------------- 

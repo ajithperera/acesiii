@@ -4229,6 +4229,19 @@
 #
       PROC DIJKAAAAA 
 #     -------------- 
+#bgn_debug
+#        suma = 0.0
+        do i
+        do i1
+        get Gmi_a(i,i1)
+        execute dump_amp Gmi_a(i,i1)
+#        tmp = Gmi_a(i,i1) * Gmi_a(i,i1)
+#        suma += tmp
+        enddo i1
+        enddo i
+#        execute print_scalar suma
+#end_debug
+
 #
       PARDO i, i1, i2, a 
 #
@@ -4242,10 +4255,16 @@
 #
             T1iiia(i,i1,i2,a)  = Gmi_a(i,i2)^t1a_old(a,i1) 
             T1iiia(i,i1,i2,a) *= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *= 1.0
+#end_debug
             Tiiia(i,i1,i2,a)  += T1iiia(i,i1,i2,a) 
 #
             T1iiia(i,i1,i2,a)  = Gmi_a(i1,i2)^t1a_old(a,i) 
             T1iiia(i,i1,i2,a) *= 0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *= 1.0
+#end_debug
             Tiiia(i,i1,i2,a)  += T1iiia(i,i1,i2,a) 
 #
             DO a1 
@@ -4261,18 +4280,31 @@
 #
                T1iiia(i,i1,i2,a) = Tau_aa(a1,i,a,i1)*l1a_old(i2,a1) 
                T1iiia(i,i1,i2,a)*= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *= 1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = L2old_aa(i,a1,i1,a)*t1a_old(a1,i2) 
                T1iiia(i,i1,i2,a)*= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = Vibja_aaaa(i,a1,i2,a)*t1a_old(a1,i1) 
                T1iiia(i,i1,i2,a)*= 0.25  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = Vibja_aaaa(i1,a1,i2,a)*t1a_old(a1,i) 
+
                T1iiia(i,i1,i2,a)*= -0.25  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debu
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
             ENDDO a1 
@@ -4284,6 +4316,9 @@
 # 
                T1iiia(i,i1,i2,a) = Vijmn_aaaa(i,i1,i2,i3)*t1a_old(a,i3) 
                T1iiia(i,i1,i2,a)*= 0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *= 1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
             ENDDO i3 
@@ -5781,7 +5816,7 @@
       PARDO a, a1, a2, i 
 #
             REQUEST Dabci_aaaa_m(a,a1,a2,i) i  
-            execute dump_amp Dabci_aaaa_m
+#            execute dump_amp Dabci_aaaa_m
             etemp = Dabci_aaaa_m(a,a1,a2,i)*Dabci_aaaa_m(a,a1,a2,i)
             esum += etemp
 #

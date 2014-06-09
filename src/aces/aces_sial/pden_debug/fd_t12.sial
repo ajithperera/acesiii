@@ -176,7 +176,7 @@
 
             TAI_FD(A, I) *= INV_FD_WIDTH
             
-            PUT T1A_XYZ(A, I) = TAI_FD(A, I)
+            PUT T1A_XYZ(A, I) += TAI_FD(A, I)
 
       ENDPARDO A, I
 
@@ -187,6 +187,7 @@
 
       PARDO A, I
             GET T1A_XYZ(A, I)
+            execute dump_amp T1A_XYZ(A, I)
             tmp = T1A_XYZ(A, I) * T1A_XYZ(A, I)
             sum += tmp
       ENDPARDO A, I
@@ -208,7 +209,7 @@
 
             TBJ_FD(B, J) *= INV_FD_WIDTH
 
-            PUT T1B_XYZ(B, J) = TBJ_FD(B, J)
+            PUT T1B_XYZ(B, J) += TBJ_FD(B, J)
 
       ENDPARDO B, J
 
@@ -246,7 +247,7 @@
 
             TIJAB_AA_FD(A, I, A1, I1) *= INV_FD_WIDTH
            
-            PREPARE TIJAB_AA_XYZ(A, I, A1, I1) =  TIJAB_AA_FD(A, I, A1, I1)
+            PREPARE TIJAB_AA_XYZ(A, I, A1, I1) +=  TIJAB_AA_FD(A, I, A1, I1)
       ENDPARDO A, I, A1, I1
       
       EXECUTE SERVER_BARRIER
@@ -284,7 +285,7 @@
 
             TIJAB_BB_FD(B, J, B1, J1) *= INV_FD_WIDTH
 
-            PREPARE TIJAB_BB_XYZ(B, J, B1, J1) =  TIJAB_BB_FD(B, J, B1, J1)
+            PREPARE TIJAB_BB_XYZ(B, J, B1, J1) +=  TIJAB_BB_FD(B, J, B1, J1)
       ENDPARDO B, J, B1, J1
         
       EXECUTE SERVER_BARRIER
@@ -322,7 +323,7 @@
 
             TIJAB_AB_FD(A, I, B1, J1) *= INV_FD_WIDTH
 
-            PREPARE TIJAB_AB_XYZ(A, I, B1, J1) =  TIJAB_AB_FD(A, I, B1, J1)
+            PREPARE TIJAB_AB_XYZ(A, I, B1, J1) +=  TIJAB_AB_FD(A, I, B1, J1)
       ENDPARDO A, I, B1, J1
 
       EXECUTE SERVER_BARRIER
