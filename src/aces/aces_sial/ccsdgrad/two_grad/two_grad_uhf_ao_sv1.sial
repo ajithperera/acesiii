@@ -537,6 +537,8 @@
       scalar etemp 
       scalar esum 
       scalar eacbd 
+      scalar tmp
+      scalar sum
 #
 # PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP 
 # 
@@ -4150,6 +4152,16 @@
 #
       PROC DIJKAAAAA 
 #     -------------- 
+
+      do i
+      do i1
+         get Gmi_a(i,i1)
+         execute dump_amp  Gmi_a(i,i1)
+         tmp = Gmi_a(i,i1) *  Gmi_a(i,i1)
+         sum += tmp
+       enddo i1
+      enddo i
+      execute print_scalar  sum
 #
       PARDO i, i1, i2, a 
 #

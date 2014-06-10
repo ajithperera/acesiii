@@ -1,4 +1,4 @@
-#  Copyright (c) 2003-2010 University of Florida
+O
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -1223,8 +1223,12 @@
             DO a1 
 #
                REQUEST Dijab_aa(i,i1,a,a1) a1  
-#
-               T1iiax(i,i1,a,sigma) = Dijab_aa(i,i1,a,a1)*ca(sigma,a1) 
+               T1iiaa(i1,i,a1,a) = Dijab_aa(i,i1,a,a1)
+#bgn_debug
+#               T1iiaa(i1,i,a1,a) *= 1.5
+               T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+               T1iiax(i,i1,a,sigma) = T1iiaa(i1,i,a1,a)*ca(sigma,a1) 
                Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)  
 #
             ENDDO a1  
@@ -1778,8 +1782,12 @@
             DO b1  
 #
                REQUEST Dijab_ab(i,j1,a,b1) b1  
-#
-               T1ijax(i,j1,a,sigma) = Dijab_ab(i,j1,a,b1)*cb(sigma,b1) 
+               Tijab(i,j1,a,b1) = Dijab_ab(i,j1,a,b1)
+#bgn_debug
+#               Tijab(i,j1,a,b1) *= -0.5
+               Tijab(i,j1,a,b1) *= 0.0
+#end_debug
+               T1ijax(i,j1,a,sigma) = Tijab(i,j1,a,b1)*cb(sigma,b1) 
                Tijax(i,j1,a,sigma) += T1ijax(i,j1,a,sigma)  
 #
             ENDDO b1  
@@ -2174,8 +2182,12 @@
             DO b1 
 #
                REQUEST Dijab_bb(j,j1,b,b1) b1  
-#
-               T1jjbx(j,j1,b,sigma) = Dijab_bb(j,j1,b,b1)*cb(sigma,b1) 
+               T1jjbb(j1,j,b1,b) = Dijab_bb(j,j1,b,b1)
+#bgn_debug
+#               T1jjbb(j,j1,b,b1) *= -1.5
+               T1jjbb(j,j1,b,b1) *= -1.0
+#end_debug
+               T1jjbx(j,j1,b,sigma) = T1jjbb(j,j1,b,b1)*cb(sigma,b1) 
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)  
 #
             ENDDO b1 
@@ -2296,6 +2308,10 @@
                Tiiii(i,i1,i2,i3)   = Dijkl_aa(i,i1,i2,i3) 
                T1iiii(i,i1,i2,i3)  = Dijkl_aa(i,i1,i3,i2)  
                Tiiii(i,i1,i2,i3)  -= T1iiii(i,i1,i2,i3) 
+#bgn_debug
+#               Tiiii(i,i1,i2,i3) *= 1.5
+               Tiiii(i,i1,i2,i3) *= 1.0
+#end_debug
 #
                T1xiii(mu,i1,i2,i3) = Tiiii(i,i1,i2,i3)*ca(mu,i) 
                Txiii(mu,i1,i2,i3) += T1xiii(mu,i1,i2,i3)  
@@ -2314,6 +2330,7 @@
             DO i1  
 #
                REQUEST Dxiii(mu,i1,i2,i3) i3  
+
 #
                T1iixx(i2,i3,mu,nu)  = Dxiii(mu,i1,i2,i3)*ca(nu,i1) 
                Tiixx(i2,i3,mu,nu)  += T1iixx(i2,i3,mu,nu)  
@@ -2391,6 +2408,10 @@
 #
                T1xjjj(mu,j1,j2,j3) = Tjjjj(j,j1,j2,j3)*cb(mu,j) 
                Txjjj(mu,j1,j2,j3) += T1xjjj(mu,j1,j2,j3)  
+#bgn_debug
+#               Tjjjj(j,j1,j2,j3) *= -1.5
+               Tjjjj(j,j1,j2,j3) *=  -1.0
+#end_debug
 #
             ENDDO j 
 #
@@ -2474,8 +2495,12 @@
             DO i 
 #
                REQUEST Dijkl_ab(i,j,i1,j1) j1  
-#
-               T1xjij(mu,j,i1,j1) = Dijkl_ab(i,j,i1,j1)*ca(mu,i) 
+               Tijij(i,j,i1,j1) = Dijkl_ab(i,j,i1,j1)
+#bgn_debug
+               Tijij(i,j,i1,j1) *= -0.5
+               Tijij(i,j,i1,j1) *=  0.0
+#end_debug
+               T1xjij(mu,j,i1,j1) = Tijij(i,j,i1,j1)*ca(mu,i) 
                Txjij(mu,j,i1,j1) += T1xjij(mu,j,i1,j1)   
 #
             ENDDO i 
@@ -2625,8 +2650,12 @@
             DO a 
 #
                REQUEST Dibja_aaaa(i,a1,i1,a) a  
-#
-               T1iaix(i,a1,i1,sigma)  = Dibja_aaaa(i,a1,i1,a)*ca(sigma,a) 
+               Tiaia(i,a1,i1,a)  = Dibja_aaaa(i,a1,i1,a)
+#bgn_debug
+#               Tiaia(i,a1,i1,a) *= 1.5
+               Tiaia(i,a1,i1,a) *= 1.0
+#end_debug
+               T1iaix(i,a1,i1,sigma)  = Tiaia(i,a1,i1,a)*ca(sigma,a) 
                Tiaix(i,a1,i1,sigma)  += T1iaix(i,a1,i1,sigma)   
 #
             ENDDO a 
@@ -2733,8 +2762,12 @@
             DO b 
 #
                REQUEST Dibja_abab(i,b1,i1,b) b  
-#
-               T1ibix(i,b1,i1,sigma) = Dibja_abab(i,b1,i1,b)*cb(sigma,b) 
+              Tibib(i1,b1,i,b)  = Dibja_abab(i,b1,i1,b)
+#bgn_debug
+#               Tibib(i1,b1,i,b) *= -0.5
+               Tibib(i1,b1,i,b) *= 0.0
+#end_debug
+               T1ibix(i,b1,i1,sigma) = Tibib(i1,b1,i,b)*cb(sigma,b) 
                Tibix(i,b1,i1,sigma) += T1ibix(i,b1,i1,sigma)  
 #
             ENDDO b 
@@ -2840,8 +2873,12 @@
             DO a 
 #
                REQUEST Dibja_baba(j,a1,j1,a) a  
-#
-               T1jajx(j,a1,j1,sigma) = Dibja_baba(j,a1,j1,a)*ca(sigma,a) 
+               Tjaja(j,a,j1,a1) = Dibja_baba(j,a1,j1,a)
+#bgn_debug
+#               Tjaja(j,a,j1,a1) *= 0.5
+               Tjaja(j,a,j1,a1) *= 0.0
+#end_debug
+               T1jajx(j,a1,j1,sigma) = Tjaja(j,a,j1,a1)*ca(sigma,a) 
                Tjajx(j,a1,j1,sigma) += T1jajx(j,a1,j1,sigma)  
 #
             ENDDO a 
@@ -2979,7 +3016,11 @@
             DO b 
 #
                REQUEST Dibja_bbbb(j,b1,j1,b) b  
-#
+              Tjbjb(j,b1,j1,b) = Dibja_bbbb(j,b1,j1,b)
+#bgn_debug
+#               Tjbjb(j,b1,j1,b) *= -1.5
+               Tjbjb(j,b1,j1,b) *= -1.0
+#end_debug
                T1jbjx(j,b1,j1,sigma) = Dibja_bbbb(j,b1,j1,b)*cb(sigma,b) 
                Tjbjx(j,b1,j1,sigma) += T1jbjx(j,b1,j1,sigma)  
 #
@@ -3140,8 +3181,13 @@
             DO a 
 #
                REQUEST Dibja_abba(i,b1,j1,a) a  
-#
-               T1ibjx(i,b1,j1,sigma) = Dibja_abba(i,b1,j1,a)*ca(sigma,a) 
+
+               Tibja(i,b1,j1,a) = Dibja_abba(i,b1,j1,a)
+#bgn_debug
+#               Tibja(i,b1,j1,a) = -0.5
+               Tibja(i,b1,j1,a) = 0.0
+#end_debug
+               T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a) 
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)  
 #
             ENDDO a 
@@ -3158,7 +3204,6 @@
             DO b1 
 #
                REQUEST Dibjx(i,b1,j1,sigma) b1 
-#
                T1ixxj(i,nu,sigma,j1) = Dibjx(i,b1,j1,sigma)*cb(nu,b1)  
                Tixxj(i,nu,sigma,j1) += T1ixxj(i,nu,sigma,j1)  
 #
@@ -3293,8 +3338,12 @@
             DO b 
 #
                REQUEST Dibja_baab(j,a1,i1,b) b  
-#
-               T1jaix(j,a1,i1,sigma) = Dibja_baab(j,a1,i1,b)*cb(sigma,b) 
+               Tjaib(j,a1,i1,b) = Dibja_baab(j,a1,i1,b)
+#bgn_debug
+#               Tjaib(j,a1,i1,b) *= 0.5
+               Tjaib(j,a1,i1,b) *= 0.0
+#end_debug
+               T1jaix(j,a1,i1,sigma) =  Tjaib(j,a1,i1,b)*cb(sigma,b) 
                Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)  
 #
             ENDDO b 
@@ -3524,7 +3573,10 @@
 #           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 # 
             DO mu 
-#
+#bgn_debug
+#               Taaai(a,a1,a2,i) *= 1.5
+               Taaai(a,a1,a2,i) *= 1.0
+#end_debug
                Txaai(mu,a1,a2,i)      = Taaai(a,a1,a2,i)*ca(mu,a) 
                PREPARE Dxaai(mu,a1,a2,i) += Txaai(mu,a1,a2,i)  
 # 
@@ -3696,7 +3748,10 @@
 #           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 # 
             DO mu 
-#
+#bgn_debug
+#               Tbbbj(b,b1,b2,j) *= -1.5
+               Tbbbj(b,b1,b2,j) *= -1.0
+#end_debug
                Txbbj(mu,b1,b2,j)      = Tbbbj(b,b1,b2,j)*cb(mu,b) 
                PREPARE Dxbbj(mu,b1,b2,j) += Txbbj(mu,b1,b2,j)  
 # 
@@ -3713,7 +3768,6 @@
             REQUEST Dxbbj(mu,b1,b2,j) j  
 # 
             DO nu 
-#
                Txxbj(mu,nu,b2,j)      = Dxbbj(mu,b1,b2,j)*cb(nu,b1) 
                PREPARE Dxxbj(mu,nu,b2,j) += Txxbj(mu,nu,b2,j)  
 # 
@@ -3876,7 +3930,10 @@
 #           PUT Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j) 
 # 
             DO mu 
-#
+#bgn_debug
+#               Tabaj(a,b,a1,j) *= -0.5
+               Tabaj(a,b,a1,j) *= 0.0
+#end_debug
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a) 
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
 # 
@@ -4056,7 +4113,10 @@
 #           PUT Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i) 
 # 
             DO mu 
-#
+#bgn_debug
+#               Tbabi(b1,a,b,i) *=0.5
+               Tbabi(b1,a,b,i) *= 0.0
+#end_debug
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1) 
                PREPARE Dxabi(mu,a,b,i) += Txabi(mu,a,b,i)  
 # 
@@ -4073,7 +4133,6 @@
             REQUEST Dxabi(mu,a,b1,i) i  
 # 
             DO nu 
-#
                Txxbi(mu,nu,b1,i)      = Dxabi(mu,a,b1,i)*ca(nu,a) 
                PREPARE Dxxbi(mu,nu,b1,i) += Txxbi(mu,nu,b1,i)  
 # 
@@ -4264,6 +4323,10 @@
 #
             DO sigma 
 #
+#bgn_debug
+#               Tiiia(i,i1,i2,a)  *= 1.5
+               Tiiia(i,i1,i2,a)  *= 1.0
+#end_debug
                Tiiix(i,i1,i2,sigma)      = Tiiia(i,i1,i2,a)*ca(sigma,a) 
                PREPARE Diiix(i,i1,i2,sigma) += Tiiix(i,i1,i2,sigma) 
 #
@@ -4376,7 +4439,10 @@
 #           PUT Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
 #
             DO sigma 
-#
+#bgn_debug
+#               Tijib(i,j,i1,b) *= -0.5
+               Tijib(i,j,i1,b) *= 0.0
+#end_debug
                Tijix(i,j,i1,sigma)      = Tijib(i,j,i1,b)*cb(sigma,b) 
                PREPARE Dijix(i,j,i1,sigma) += Tijix(i,j,i1,sigma) 
 #
@@ -4487,7 +4553,10 @@
 #           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
 #
             DO sigma 
-#
+#bgn_debug
+#               Tjija(j,i,j1,a)  *= 0.5
+               Tjija(j,i,j1,a)  *= 0.0
+#end_debug
                Tjijx(j,i,j1,sigma)      = Tjija(j,i,j1,a)*ca(sigma,a) 
                PREPARE Djijx(j,i,j1,sigma) += Tjijx(j,i,j1,sigma) 
 #
@@ -4601,7 +4670,10 @@
 #           PUT Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #
             DO sigma 
-#
+#bgn_debug
+#               Tjjjb(j,j1,j2,b) *= -1.5
+               Tjjjb(j,j1,j2,b) *= -1.0
+#end_debug
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b) 
                PREPARE Djjjx(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma) 
 #
@@ -5310,6 +5382,13 @@
       PROC PDCONT_FDP
 #     ---------------
 #
+      XSUM = 0.0
+      YSUM = 0.0
+      ZSUM = 0.0
+      XXP  = 0.0
+      YYP  = 0.0
+      ZZP  = 0.0
+
       PARDO mu, nu, lambda, sigma 
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
@@ -5504,6 +5583,9 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO i1 
@@ -5520,6 +5602,9 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j1 
@@ -5537,6 +5622,9 @@
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
                T1xxxx(mu,nu,lambda,sigma) *= 4.0  
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j 
@@ -5573,6 +5661,13 @@
       PROC PDCONT_FDM
 #     ---------------
 #
+      XSUM = 0.0
+      YSUM = 0.0
+      ZSUM = 0.0
+      XXM  = 0.0
+      YYM  = 0.0
+      ZZM  = 0.0
+
       PARDO mu, nu, lambda, sigma 
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
@@ -5766,6 +5861,9 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO i1 
@@ -5782,6 +5880,9 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j1 
@@ -5799,6 +5900,9 @@
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
                T1xxxx(mu,nu,lambda,sigma) *= 4.0  
+#bgn_debug
+               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j 
@@ -6440,7 +6544,7 @@
 #
 # Form DIJAB  
 # ---------- 
-            CALL DIJAB # gamma1 # BTRAN OK  
+#            CALL DIJAB # gamma1 # BTRAN OK  
 #
 # Form DIJKA  
 # ---------- 
@@ -6448,7 +6552,7 @@
 #
 # Form DABCI 
 # ---------- 
-            CALL DABCI # gamma5 # BTRAN OK  
+#            CALL DABCI # gamma5 # BTRAN OK  
             execute sip_barrier 
             execute server_barrier 
 #
