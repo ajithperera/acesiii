@@ -957,7 +957,7 @@
             REQUEST T2ab_m(A,I,B,J) J
             REQUEST L2ab_m(i,a,j,b) b
             Taibj(A,I,B,J) = T2ab_m(A,I,B,J)
-            Tiajb(i,a,j,b) = L2ab_p(i,a,j,b)
+            Tiajb(i,a,j,b) = L2ab_m(i,a,j,b)
             PREPARE T2old_ab(A,I,B,J) = Taibj(A,I,B,J)
             PREPARE L2old_ab(i,a,j,b) = Tiajb(i,a,j,b)
       ENDPARDO A, B, I, J,

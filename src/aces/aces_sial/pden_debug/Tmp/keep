@@ -1,0 +1,62 @@
+   PARDO mu, nu, lambda, sigma
+
+          REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
+
+          DO i
+             T1xxxi(mu, nu, lambda, i) = AO_2SOI_Z(mu, nu, lambda, sigma)*Ca(sigma,i)
+             Txxxi(mu, nu, lambda, i) += T1xxxi(mu, nu, lambda, i)
+             PREPARE SOxxxi(mu, nu, lambda, i) = Txxxi(mu, nu, lambda, i)
+          ENDDO i
+    ENDPARDO mu, nu, lambda, sigma
+    EXECUTE SERVER_BARRIER
+    
+    PARDO mu, nu, lambda, i
+          REQUEST SOxxxi(mu, nu, lambda, i)  i
+
+          DO a
+             T1xxai(mu, nu, a, i) = SOxxxi(mu, nu, lambda, i)*Ca(lambda, a)
+             Txxai(mu, nu, a, i) += T1xxai(mu, nu, a, i)
+             PREPARE SOxxai(mu, nu, a, i) = Txxai(mu, nu, a, i)
+          ENDDO a
+    ENDPARDO mu, nu, lambda, i
+    EXECUTE SERVER_BARRIER
+
+    PARDO mu, nu, a, i
+          REQUEST SOxxai(mu, nu, a, i) i
+
+          DO a1
+             T1xaai(mu,a1, a, i) = SOxxai(mu, nu, a, i)*Ca(nu, a1)
+             Txaai(mu, a1, a, i) += T1xaai(mu, a1, a, i)
+             PREPARE SOxaai(mu, a1, a, i) = Txaai(mu,a1,a, i)
+          ENDDO a1
+    ENDPARDO mu, nu, a, i
+    EXECUTE SERVER_BARRIER
+
+    PARDO mu, a1, a, i
+          REQUEST SOxaai(mu, a1,a, i) i
+
+          DO a2
+             T1aaai(a2,a1, a, i) =  SOxaai(mu, a1,a, i)*Ca(mu, a2)
+             Taaai(a2, a1, a, i) += T1aaai(a2, a1, a, i)
+             PREPARE SMO(a2, a1, a, i) = Taaai(a2, a1, a, i)
+          ENDDO a2
+
+    ENDPARDO mu, a1, a, i
+    EXECUTE SERVER_BARRIER
+
+      sum   = 0.0
+      sumaa = 0.0
+      PARDO  A, A1, A2, I
+             REQUEST DABCI_AAAA_XYZ(A, A1, A2, I) I
+             REQUEST SMO(A, A1, A2, I) I
+#           execute dump_amp DABCI_AAAA_XYZ
+             tmp  = DABCI_AAAA_XYZ(A, A1, A2, I) * SMO(A, A1, A2, I)
+             sum  += tmp
+      ENDPARDO A, A1, A2, I
+
+      EXECUTE SERVER_BARRIER
+      COLLECTIVE sumaa += sum
+      EXECUTE SIP_BARRIER
+      EXECUTE PRINT_SCALAR sumaa
+
+
