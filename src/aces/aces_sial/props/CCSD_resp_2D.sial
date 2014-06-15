@@ -6305,7 +6305,7 @@
                Tiaia(i,a1,i1,a)  = Dibja_aaaa_x(i,a1,i1,a)
 #bgn_debug
 #               Tiaia(i,a1,i1,a) *= 1.5
-               Tiaia(i,a1,i1,a) *= 1.0
+               Tiaia(i,a1,i1,a) *= 0.0
 #end_debug
                T1iaix(i,a1,i1,sigma)  = Tiaia(i,a1,i1,a)*ca(sigma,a)
                Tiaix(i,a1,i1,sigma)  += T1iaix(i,a1,i1,sigma)  
@@ -6707,7 +6707,7 @@
                Tjbjb(j,b1,j1,b) = Dibja_bbbb_x(j,b1,j1,b)
 #bgn_debug
 #               Tjbjb(j,b1,j1,b) *= -1.5
-               Tjbjb(j,b1,j1,b) *= -1.0
+               Tjbjb(j,b1,j1,b) *= -1.0 
 #end_debug
 
                T1jbjx(j,b1,j1,sigma) = Tjbjb(j,b1,j1,b)*cb(sigma,b)
@@ -10193,7 +10193,7 @@
             DO sigma
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
-               Tjjjb(j,j1,j2,b) *= -1.0
+               Tjjjb(j,j1,j2,b) *= 0.0
 #end_debug
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b)
                PREPARE Djjjx_x(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma)
@@ -11326,6 +11326,29 @@
 # -----------------------------------------------------------------------------
      PROC DPQRSTODXXXX_X
 #    -------------------
+     PARDO lambda,i,sigma,i1 
+           ZZaa(lambda,i,sigma,i1) = 0.0
+           QQaa(i,lambda,i1,sigma) = 0.0
+           PREPARE TAO_aa_x(lambda,i,sigma,i1) = ZZaa(lambda,i,sigma,i1)
+           PREPARE LAO_aa_x(i,lambda,i1,sigma) = QQaa(i,lambda,i1,sigma)
+     ENDPARDO lambda,i,sigma,i1 
+
+     PARDO lambda,j,sigma,j1
+           ZZbb(lambda,j,sigma,j1) = 0.0
+           QQbb(j,lambda,j1,sigma) = 0.0
+           PREPARE TAO_bb_x(lambda,j,sigma,j1) =  ZZbb(lambda,j,sigma,j1)
+           PREPARE LAO_bb_x(j,lambda,j1,sigma) = QQbb(j,lambda,j1,sigma)
+     ENDPARDO lambda,j,sigma,j1
+
+     PARDO lambda,i,sigma,j
+           ZZab(lambda,i,sigma,j) = 0.0
+           QQab(i,lambda,j,sigma) = 0.0
+           PREPARE TAO_ab_x(lambda,i,sigma,j) = ZZab(lambda,i,sigma,j) 
+           PREPARE LAO_ab_x(i,lambda,j,sigma) = QQab(i,lambda,j,sigma)
+     ENDPARDO lambda,i,sigma,j
+
+     EXECUTE SERVER_BARRIER
+
      PARDO a, a1, i, i1
            REQUEST Tau_aa_x(a,i,a1,i1) a
            DO lambda
@@ -11829,32 +11852,31 @@
             ENDDO j
 
 # The above 5 block handle D(IBJA) blocks.
-#bgn_debug
-#
+
 #           Fully transform Dxxxi
 #           ---------------------
-#            DO i
-#
-#               REQUEST Dxxxi_x(mu,nu,lambda,i) i
-#
-#               T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x(mu,nu,lambda,i)*ca(sigma,i)
-#               T1xxxx(mu,nu,lambda,sigma) *= 8.0
-#               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-#
-#            ENDDO i
-#
+            DO i
+
+               REQUEST Dxxxi_x(mu,nu,lambda,i) i
+
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x(mu,nu,lambda,i)*ca(sigma,i)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            ENDDO i
+
 #           Fully transform Dxxxj
 #           ---------------------
-#            DO j
-#
-#               REQUEST Dxxxj_x(mu,nu,lambda,j) j
-#
-#               T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x(mu,nu,lambda,j)*cb(sigma,j)
-#               T1xxxx(mu,nu,lambda,sigma) *= 8.0
-#               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-#
-#            ENDDO j
-#end_debug
+            DO j
+
+               REQUEST Dxxxj_x(mu,nu,lambda,j) j
+
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x(mu,nu,lambda,j)*cb(sigma,j)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            ENDDO j
+
 # The above two blocks handle D(ABCI)
 
 # Bulit the D(ABCD) contribution
@@ -11946,7 +11968,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                T1xxxx(mu,nu,lambda,sigma) *= 4.0 
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -11961,7 +11983,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                T1xxxx(mu,nu,lambda,sigma) *= 4.0
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12169,32 +12191,30 @@
             ENDDO j
 
 # The above 5 block handle D(IBJA) blocks.
-#bgn_debug
-#
+
 #           Fully transform Dxxxi
 #           ---------------------
-#            DO i
-#
-#               REQUEST Dxxxi_x(mu,nu,lambda,i) i
-#
-#               T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x(mu,nu,lambda,i)*ca(sigma,i)
-#               T1xxxx(mu,nu,lambda,sigma) *= 8.0
-#               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-#
-#            ENDDO i
-#
+            DO i
+
+               REQUEST Dxxxi_x(mu,nu,lambda,i) i
+
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x(mu,nu,lambda,i)*ca(sigma,i)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            ENDDO i
+
 #           Fully transform Dxxxj
 #           ---------------------
-#            DO j
-#
-#               REQUEST Dxxxj_x(mu,nu,lambda,j) j
-#
-#               T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x(mu,nu,lambda,j)*cb(sigma,j)
-#               T1xxxx(mu,nu,lambda,sigma) *= 8.0
-#               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-#
-#            ENDDO j
-#end_debug
+            DO j
+
+               REQUEST Dxxxj_x(mu,nu,lambda,j) j
+
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x(mu,nu,lambda,j)*cb(sigma,j)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            ENDDO j
 
 # The above two blocks handle D(ABCI)
 
@@ -12286,7 +12306,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                T1xxxx(mu,nu,lambda,sigma) *= 4.0 
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12301,7 +12321,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                T1xxxx(mu,nu,lambda,sigma) *= 4.0
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12416,7 +12436,7 @@
 #
             ENDDO i
 #
-# The above 3 blocks handles D(IJKL) and D(IJAB) blocks.
+# The above 3 blocks handles D(IJKL), D(IJKA)  and D(IJAB) blocks.
 #
 #           Fully transform Dixix
 #           ---------------------
@@ -12510,7 +12530,8 @@
 
             ENDDO j
 
-            Txxxx(mu,nu,lambda,sigma) *= 0.0
+#            Txxxx(mu,nu,lambda,sigma) = 0.0
+
 # The above 5 block handle D(IBJA) blocks.
 #bgn_debug
 #
@@ -12537,11 +12558,12 @@
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
-#end_debug
+
 # The above two blocks handle D(ABCI)
 
 # Bulit the D(ABCD) contribution
 
+#bgn_debug
 #       ENDPARDO mu, nu, lambda, sigma
 #       EXECUTE SERVER_BARRIER 
 #
@@ -12558,7 +12580,6 @@
 #       COLLECTIVE D2SO_ZZ += D2SO_PZ
 #       EXECUTE SIP_BARRIER
 #
-#bgn_debug
 #     execute print_scalar D2SO_XZ
 #     execute print_scalar D2SO_YZ
 #     execute print_scalar D2SO_ZZ
@@ -12585,7 +12606,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= 1.5
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12601,7 +12622,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= 1.5
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12618,7 +12639,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= -1.5
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= -1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12632,7 +12653,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= -1.5
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= -1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12651,7 +12672,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= 4.0 
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12666,7 +12687,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
 #bgn_debug
 #               T1xxxx(mu,nu,lambda,sigma) *= 4.0
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12674,11 +12695,12 @@
       
             ENDIF
 
+            Pxxxx_X(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
 
 # The 1/4 factor is D(ab,cd) = D(cd,ab) (symmetrization is not done though)
 #
-            T1xxxx(mu,nu,lambda, sigma)  = Txxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda, sigma)  = PXXXX_x(mu,nu,lambda,sigma)
 #bgn_debug
 #            tmp = T1xxxx(mu,lambda,nu,sigma)* T1xxxx(mu,lambda,nu,sigma)
 #            D2AO_PP += tmp
@@ -13719,10 +13741,10 @@
                PREPARE Dxxai_x(mu,nu,a2,i) = Txxai(mu,nu,a2,i)
      ENDPARDO mu, nu, a2, i
      
-     PARDO mu,nu,lambda,j
-               Txxxj(mu,nu,lambda,j) = 0.0
-               PREPARE Dxxxj_x(mu,nu,lambda,j) = Txxxj(mu,nu,lambda,j)
-     ENDPARDO mu,nu,lambda,j
+     PARDO mu,nu,b2,j
+               Txxbj(mu,nu,b2,j) = 0.0
+               PREPARE Dxxbj_x(mu,nu,b2,j) = Txxbj(mu,nu,b2,j)
+     ENDPARDO mu,nu,b2,j
 
      EXECUTE SERVER_BARRIER 
 
@@ -13940,7 +13962,7 @@
 
              CALL DCIAB_X   #8th term
 #bgn_debug
-             CALL S2ABCI_X
+             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions

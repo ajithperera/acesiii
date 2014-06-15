@@ -195,6 +195,18 @@
       Served  Dabci_aaaa_p(a, a1, a2, i)
       Served  Dabci_aaaa_m(a, a1, a2, i)
       Served DABCI_AAAA_XYZ(A, A1, A2, I)
+
+      Served  Dijka_aaaa_p(i, i1, i2, a)
+      Served  Dijka_aaaa_m(i, i1, i2, a)
+      Served DIJKA_AAAA_XYZ(i, i1, i2, a)
+
+      Served TAO_ab_p(lambda,i,sigma,j)
+      Served TAO_ab_m(lambda,i,sigma,j)
+      Served TAO_ab_X(lambda,i,sigma,j)
+
+      Served LAO_ab_p(lambda,i,sigma,j)
+      Served LAO_ab_m(lambda,i,sigma,j)
+      Served LAO_ab_X(lambda,i,sigma,j)
 #
       served TAO_aa(mu,i,nu,i1)  
       served TAO_ab(mu,i,nu,j)  
@@ -267,6 +279,18 @@
       temp Tabciaa_am(a,a1,a2,i)
       temp Tabciaa_ap(a,a1,a2,i)
       temp Tabciaa_afd(a,a1,a2,i)
+
+      temp Tijkaaa_am(i,i1,i2,a)
+      temp Tijkaaa_ap(i,i1,i2,a)
+      temp Tijkaaa_afd(i,i1,i2,a)
+
+      temp TAO_ab_am(lambda,i,sigma,j)
+      temp TAO_ab_ap(lambda,i,sigma,j)
+      temp TAO_ab_afd(lambda,i,sigma,j)
+
+      temp LAO_ab_am(lambda,i,sigma,j)
+      temp LAO_ab_ap(lambda,i,sigma,j)
+      temp LAO_ab_afd(lambda,i,sigma,j)
 #
       temp Txbaj(mu,b,a1,j) 
       temp Txxaj(mu,nu,a1,j) 
@@ -606,8 +630,11 @@
       scalar FD_YY
       scalar FD_ZZ
       scalar sum
+      scalar suma
       scalar sumaa
       scalar DEBUGABCI
+      scalar DEBUGIJKA
+      scalar DEBUGABCD
  
       Scalar XAO
       Scalar XXAO
@@ -2326,6 +2353,15 @@
 #
       PROC DIJKLAAAA 
 #     -------------- 
+
+      PARDO i, i1, i2, i3
+            Tiiii(i,i1,i2,i3) = 0.0
+            PREPARE Dijkl_aa(i,i1,i2,i3) = Tiiii(i,i1,i2,i3)
+            PREPARE Vijmn_aaaa(i2,i3,i,i1) = Tiiii(i,i1,i2,i3)
+      ENDPARDO i, i1, i2, i3
+
+      EXECUTE SERVER_BARRIER
+
 #
       PARDO a, a1, i, i1  
 #
@@ -2357,12 +2393,12 @@
 # Perform backtransformation to AO representation 
 # ----------------------------------------------- 
 #
-      PARDO i, i1, i2, i3
-            Tiiii(i,i1,i2,i3) = 0.0
-            PREPARE Dijkl_aa(i,i1,i2,i3) = Tiiii(i,i1,i2,i3)
-            PREPARE Vijmn_aaaa(i2,i3,i,i1) = Tiiii(i,i1,i2,i3)
-      ENDPARDO i, i1, i2, i3 
-      EXECUTE SERVER_BARRIER 
+#      PARDO i, i1, i2, i3
+#            Tiiii(i,i1,i2,i3) = 0.0
+#            PREPARE Dijkl_aa(i,i1,i2,i3) = Tiiii(i,i1,i2,i3)
+#            PREPARE Vijmn_aaaa(i2,i3,i,i1) = Tiiii(i,i1,i2,i3)
+#      ENDPARDO i, i1, i2, i3  
+#      EXECUTE SERVER_BARRIER 
 
       PARDO mu, i1, i2, i3  
 #
@@ -2745,7 +2781,7 @@
                Tiaia(i,a1,i1,a)  = Dibja_aaaa(i,a1,i1,a)
 #bgn_debug
 #               Tiaia(i,a1,i1,a) *= 1.5
-               Tiaia(i,a1,i1,a) *= 1.0
+               Tiaia(i,a1,i1,a) *= 0.0
 #end_debug
                T1iaix(i,a1,i1,sigma)  = Tiaia(i,a1,i1,a)*ca(sigma,a) 
                Tiaix(i,a1,i1,sigma)  += T1iaix(i,a1,i1,sigma)   
@@ -3138,7 +3174,7 @@
 #               Tjbjb(j,b1,j1,b) *= -1.5
                Tjbjb(j,b1,j1,b) *= -1.0
 #end_debug
-               T1jbjx(j,b1,j1,sigma) = Dibja_bbbb(j,b1,j1,b)*cb(sigma,b) 
+               T1jbjx(j,b1,j1,sigma) = Tjbjb(j,b1,j1,b)*cb(sigma,b) 
                Tjbjx(j,b1,j1,sigma) += T1jbjx(j,b1,j1,sigma)  
 #
             ENDDO b 
@@ -4416,6 +4452,37 @@
       PROC DIJKAAAAA 
 #     -------------- 
 #
+#bgn_debug
+#        suma = 0.0
+#        do i
+#        do i1
+#        get Gmi_a(i,i1)
+#        execute dump_amp Gmi_a(i,i1)
+#        tmp = Gmi_a(i,i1) * Gmi_a(i,i1)
+#        suma += tmp
+#        enddo i1
+#        enddo i
+#        execute print_scalar suma
+
+         suma = 0.0
+         pardo  i,a1,i2,a
+             request Vibja_aaaa(i,a1,i2,a) a
+             tmp = Vibja_aaaa(i,a1,i2,a) * Vibja_aaaa(i,a1,i2,a)
+             suma += tmp
+         endpardo i,a1,i2,a 
+         execute print_scalar suma
+
+         suma = 0.0
+         pardo i,i1,i2,i3 
+             request Vijmn_aaaa(i,i1,i2,i3) i3
+             tmp = Vijmn_aaaa(i,i1,i2,i3) * Vijmn_aaaa(i,i1,i2,i3)
+             suma += tmp
+         endpardo i,i1,i2,i3
+        execute print_scalar suma
+
+#end_debug
+
+
       PARDO i, i1, i2, a 
 #
             Tiiia(i,i1,i2,a) = 0.0 
@@ -4428,10 +4495,17 @@
 #
             T1iiia(i,i1,i2,a)  = Gmi_a(i,i2)^t1a_old(a,i1) 
             T1iiia(i,i1,i2,a) *= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
+
             Tiiia(i,i1,i2,a)  += T1iiia(i,i1,i2,a) 
 #
             T1iiia(i,i1,i2,a)  = Gmi_a(i1,i2)^t1a_old(a,i) 
             T1iiia(i,i1,i2,a) *= 0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
             Tiiia(i,i1,i2,a)  += T1iiia(i,i1,i2,a) 
 #
             DO a1 
@@ -4447,18 +4521,30 @@
 #
                T1iiia(i,i1,i2,a) = Tau_aa(a1,i,a,i1)*l1a_old(i2,a1) 
                T1iiia(i,i1,i2,a)*= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = L2old_aa(i,a1,i1,a)*t1a_old(a1,i2) 
                T1iiia(i,i1,i2,a)*= -0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = Vibja_aaaa(i,a1,i2,a)*t1a_old(a1,i1) 
                T1iiia(i,i1,i2,a)*= 0.25  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
                T1iiia(i,i1,i2,a) = Vibja_aaaa(i1,a1,i2,a)*t1a_old(a1,i) 
                T1iiia(i,i1,i2,a)*= -0.25  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
             ENDDO a1 
@@ -4470,6 +4556,9 @@
 # 
                T1iiia(i,i1,i2,a) = Vijmn_aaaa(i,i1,i2,i3)*t1a_old(a,i3) 
                T1iiia(i,i1,i2,a)*= 0.125  
+#bgn_debug
+            T1iiia(i,i1,i2,a) *=1.0
+#end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
             ENDDO i3 
@@ -4480,7 +4569,14 @@
 #           Tiiia(i,i1,i2,a) *= 4.0 
 #
 #           PUT Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
-#
+
+            IF NCOUNT == 1.0
+               PREPARE DIJKA_AAAA_P(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+            ENDIF
+            IF NCOUNT == 2.0
+               PREPARE DIJKA_AAAA_M(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
+            ENDIF 
+
             DO sigma 
 #
 #bgn_debug
@@ -4513,9 +4609,23 @@
 #
             Tiixx(i,i1,lambda,sigma)         *= 8.0  
             PREPARE Diixx(i,i1,lambda,sigma) += Tiixx(i,i1,lambda,sigma) 
+
 #
       ENDPARDO i, i1, lambda, sigma   
       execute server_barrier
+
+#bgn_debug
+      PARDO i,i1,i2,a
+            IF NCOUNT == 1.0
+               REQUEST DIJKA_AAAA_P(i,i1,i2,a) a
+#               execute dump_amp DIJKA_AAAA_P(i,i1,i2,a)
+            ENDIF
+            IF NCOUNT == 2.0
+               REQUEST DIJKA_AAAA_M(i,i1,i2,a) a
+#               execute dump_amp DIJKA_AAAA_M(i,i1,i2,a)
+            ENDIF
+      ENDPARDO i,i1,i2,a
+#end_debug         
 #
 # Done Backtransformation 
 # ----------------------- 
@@ -4832,7 +4942,7 @@
             DO sigma 
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
-               Tjjjb(j,j1,j2,b) *= -1.0
+               Tjjjb(j,j1,j2,b) *= 0.0
 #end_debug
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b) 
                PREPARE Djjjx(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma) 
@@ -5146,6 +5256,29 @@
 #    Form Half back transformed cluster array AAAA spin case 
 #    -------------------------------------------------------
 #
+     PARDO lambda,i,sigma,i1
+           ZZaa(lambda,i,sigma,i1) = 0.0
+           QQaa(i,lambda,i1,sigma) = 0.0
+           PREPARE TAO_aa(lambda,i,sigma,i1) = ZZaa(lambda,i,sigma,i1)
+           PREPARE LAO_aa(i,lambda,i1,sigma) = QQaa(i,lambda,i1,sigma)
+     ENDPARDO lambda,i,sigma,i1
+
+     PARDO lambda,j,sigma,j1
+           ZZbb(lambda,j,sigma,j1) = 0.0
+           QQbb(j,lambda,j1,sigma) = 0.0
+           PREPARE TAO_bb(lambda,j,sigma,j1) =  ZZbb(lambda,j,sigma,j1)
+           PREPARE LAO_bb(j,lambda,j1,sigma) = QQbb(j,lambda,j1,sigma)
+     ENDPARDO lambda,j,sigma,j1
+
+     PARDO lambda,i,sigma,j
+           ZZab(lambda,i,sigma,j) = 0.0
+           QQab(i,lambda,j,sigma) = 0.0
+           PREPARE TAO_ab(lambda,i,sigma,j) = ZZab(lambda,i,sigma,j)
+           PREPARE LAO_ab(i,lambda,j,sigma) = QQab(i,lambda,j,sigma)
+     ENDPARDO lambda,i,sigma,j
+
+     EXECUTE SERVER_BARRIER
+
      PARDO a, a1, i, i1
 #
            REQUEST Tau_aa(a,i,a1,i1) a 
@@ -5252,7 +5385,13 @@
 #
                  ZZab(lambda,i,sigma,j)        = Zab(lambda,i,b,j)*cb(sigma,b)
                  PREPARE TAO_ab(lambda,i,sigma,j) += ZZab(lambda,i,sigma,j)
-#
+                 IF NCOUNT == 1.00
+                 PREPARE TAO_ab_p(lambda,i,sigma,j) = ZZab(lambda,i,sigma,j)
+                 ENDIF
+
+                 IF NCOUNT == 2.00
+                 PREPARE TAO_ab_m(lambda,i,sigma,j) = ZZab(lambda,i,sigma,j)
+                 ENDIF
               ENDDO sigma
 #
            ENDDO lambda
@@ -5274,6 +5413,12 @@
 #
                  QQab(i,lambda,j,sigma)        = Qab(i,lambda,j,b)*cb(sigma,b)
                  PREPARE LAO_ab(i,lambda,j,sigma) += QQab(i,lambda,j,sigma)
+                 IF NCOUNT == 1.00
+                 PREPARE LAO_ab_p(lambda,i,sigma,j) = QQab(i,lambda,j,sigma)
+                 ENDIF
+                 IF NCOUNT == 2.00
+                 PREPARE LAO_ab_m(lambda,i,sigma,j) = QQab(i,lambda,j,sigma)
+                 ENDIF
 #
               ENDDO sigma
 #
@@ -5707,9 +5852,8 @@
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO j 
-
- 
-            Txxxx(mu,nu,lambda,sigma) *= 0.0
+    
+#            Txxxx(mu,nu,lambda,sigma) = 0.0
 
 #           Fully transform Dxxxi 
 #           --------------------- 
@@ -5752,7 +5896,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -5771,7 +5915,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= -1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -5789,9 +5933,9 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
-               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -5999,7 +6143,7 @@
 
             ENDDO j 
 
-           Txxxx(mu,nu,lambda,sigma) *= 0.0
+#            Txxxx(mu,nu,lambda,sigma) = 0.0
 
 #           Fully transform Dxxxi 
 #           --------------------- 
@@ -6042,7 +6186,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -6061,7 +6205,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= -1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -6079,9 +6223,9 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
-               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
 #bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+#               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
+               T1xxxx(mu,nu,lambda,sigma) *= 1.0
 #end_debug
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
@@ -6743,21 +6887,21 @@
            PREPARE Dijix(i,j,i1,sigma) = Tijix(i,j,i1,sigma)
      ENDPARDO i, j, i1, sigma
 
-
+#AAAA,ABAB
      PARDO sigma, nu, i, i1
            Tixix(i,nu,i1,sigma) = 0.0
            Txiix(nu,i,i1,sigma) = 0.0
            PREPARE Dixix(i,nu,i1,sigma) = Tixix(i,nu,i1,sigma)
            PREPARE Dxiix(nu,i,i1,sigma) = Txiix(nu,i,i1,sigma)
      ENDPARDO sigma, nu, i, i1
-
+#BABA,BBBB
      PARDO sigma, nu, j, j1
             Txjjx(nu,j,j1,sigma) = 0.0
             Tjxjx(j,nu,j1,sigma) = 0.0
             PREPARE Djxjx(j,nu,j1,sigma) = Tjxjx(j,nu,j1,sigma)
             PREPARE Dxjjx(nu,j,j1,sigma) = Txjjx(nu,j,j1,sigma)
      ENDPARDO sigma, nu, j, j1
-
+#BAAB,ABBA
      PARDO sigma, nu, j, i1
             Tixxj(i1,sigma,nu,j) = 0.0
             PREPARE Dixxj(i1,sigma,nu,j) = Tixxj(i1,sigma,nu,j)
@@ -6768,10 +6912,10 @@
                PREPARE Dxxai(mu,nu,a2,i) = Txxai(mu,nu,a2,i)
      ENDPARDO mu, nu, a2, i
 
-     PARDO mu,nu,lambda,j
-               Txxxj(mu,nu,lambda,j) = 0.0
-               PREPARE Dxxxj(mu,nu,lambda,j) = Txxxj(mu,nu,lambda,j)
-     ENDPARDO mu,nu,lambda,j
+     PARDO mu,nu,b2,j
+               Txxbj(mu,nu,b2,j) = 0.0
+               PREPARE Dxxbj(mu,nu,b2,j) = Txxbj(mu,nu,b2,j)
+     ENDPARDO mu,nu,b2,j
 
      EXECUTE SERVER_BARRIER
 
@@ -6818,9 +6962,8 @@
 
          DO NPERT 
             NCOUNT += 1.0
-            IF NCOUNT == 2.0
+
             CALL ZERO_AOD_BLOCKS
-            ENDIF 
 
             IF NCOUNT == 1.0
 #               CALL ZERO_AMP
@@ -6866,11 +7009,11 @@
 #
 # Form DIJAB  
 # ---------- 
-#            CALL DIJAB # gamma1 # BTRAN OK  
+            CALL DIJAB # gamma1 # BTRAN OK  
 #
 # Form DIJKA  
 # ---------- 
-#            CALL DIJKA # gamma6 # BTRAN OK  
+            CALL DIJKA # gamma6 # BTRAN OK  
 #
 # Form DABCI 
 # ---------- 
@@ -6931,6 +7074,7 @@
       execute print_scalar FD_ZZ
 
       DEBUGABCI = 0.0
+      DEBUGIJKA = 1.0
 
       IF DEBUGABCI == 100.0
       
@@ -7033,6 +7177,111 @@
       EXECUTE PRINT_SCALAR sumaa
 
       ENDIF
+
+      DEBUGIJKA = 100.0
+
+      IF DEBUGIJKA == 1.0
+
+      PARDO I, I1, I2, A
+           REQUEST DIJKA_AAAA_M(I, I1, I2, A) A
+           REQUEST DIJKA_AAAA_P(I, I1, I2, A) A
+
+           Tijkaaa_am(I, I1, I2, A) = DIJKA_AAAA_M(I, I1, I2, A)
+           Tijkaaa_ap(I, I1, I2, A) = DIJKA_AAAA_P(I, I1, I2, A)
+
+           Tijkaaa_afd(I, I1, I2, A) =  Tijkaaa_ap(I, I1, I2, A)
+           Tijkaaa_afd(I, I1, I2, A) -= Tijkaaa_am(I, I1, I2, A)
+
+           Tijkaaa_afd(I, I1, I2, A) *= INV_FD_WIDTH
+
+           PREPARE DIJKA_AAAA_XYZ(I, I1, I2, A) += Tijkaaa_afd(I, I1, I2, A)
+     ENDPARDO  I, I1, I2, A
+  
+     EXECUTE SERVER_BARRIER
+
+     sum   = 0.0
+     sumaa = 0.0
+     PARDO  I, I1, I2, A
+            REQUEST DIJKA_AAAA_XYZ(I, I1, I2, A) A
+#           execute dump_amp  DIJKA_AAAA_XYZ(I, I1, I2, A)
+            tmp  = DIJKA_AAAA_XYZ(I, I1, I2, A) * DIJKA_AAAA_XYZ(I, I1, I2, A)
+            sum  += tmp
+     ENDPARDO I, I1, I2, A
+
+     EXECUTE SERVER_BARRIER
+     COLLECTIVE sumaa += sum
+     EXECUTE SIP_BARRIER
+     EXECUTE PRINT_SCALAR sumaa
+     ENDIF 
+
+     DEBUGABCD = 100.0
+
+      IF DEBUGABCD == 1.0
+
+          PARDO lambda,i,sigma,j
+
+           REQUEST TAO_ab_M(lambda,i,sigma,j) J
+           REQUEST TAO_ab_P(lambda,i,sigma,j) J
+
+           Tao_ab_am(lambda,i,sigma,j) = TAO_ab_M(lambda,i,sigma,j)
+           Tao_ab_ap(lambda,i,sigma,j) = TAO_ab_P(lambda,i,sigma,j)
+
+           Tao_ab_afd(lambda,i,sigma,j) =  Tao_ab_ap(lambda,i,sigma,j)
+           Tao_ab_afd(lambda,i,sigma,j) -= Tao_ab_am(lambda,i,sigma,j) 
+
+           Tao_ab_afd(lambda,i,sigma,j) *= INV_FD_WIDTH
+
+           PREPARE Tao_ab_x(lambda,i,sigma,j) += Tao_ab_afd(lambda,i,sigma,j)
+     ENDPARDO  lambda,i,sigma, j
+
+     EXECUTE SERVER_BARRIER
+
+     sum   = 0.0
+     sumaa = 0.0
+     PARDO  lambda,i,sigma,j
+            REQUEST Tao_ab_x(lambda,i,sigma,j) J
+#            execute Tao_ab_x(lambda,i,sigma,j) J
+            tmp  = Tao_ab_x(lambda,i,sigma,j) * Tao_ab_x(lambda,i,sigma,j) 
+            sum  += tmp
+     ENDPARDO lambda,i,sigma,j
+
+     EXECUTE SERVER_BARRIER
+     COLLECTIVE sumaa += sum
+     EXECUTE SIP_BARRIER
+     EXECUTE PRINT_SCALAR sumaa
+
+     PARDO lambda,i,sigma,j
+           REQUEST LAO_ab_M(lambda,i,sigma,j) J
+           REQUEST LAO_ab_P(lambda,i,sigma,j) J
+
+           Tao_ab_am(lambda,i,sigma,j) = LAO_ab_M(lambda,i,sigma,j)
+           Tao_ab_ap(lambda,i,sigma,j) = LAO_ab_P(lambda,i,sigma,j)
+
+           Tao_ab_afd(lambda,i,sigma,j) =  Tao_ab_ap(lambda,i,sigma,j)
+           Tao_ab_afd(lambda,i,sigma,j) -= Tao_ab_am(lambda,i,sigma,j)  
+
+           Tao_ab_afd(lambda,i,sigma,j) *= INV_FD_WIDTH
+
+           PREPARE Lao_ab_x(lambda,i,sigma,j) += Tao_ab_afd(lambda,i,sigma,j)
+     ENDPARDO  lambda,i,sigma, j
+
+     EXECUTE SERVER_BARRIER
+
+     sum   = 0.0
+     sumaa = 0.0
+     PARDO  lambda,i,sigma,j
+            REQUEST Lao_ab_x(lambda,i,sigma,j) J
+#            execute Lao_ab_x(lambda,i,sigma,j) J
+            tmp  = Lao_ab_x(lambda,i,sigma,j) * Lao_ab_x(lambda,i,sigma,j) 
+            sum  += tmp
+     ENDPARDO lambda,i,sigma,j
+
+     EXECUTE SERVER_BARRIER
+     COLLECTIVE sumaa += sum
+     EXECUTE SIP_BARRIER
+     EXECUTE PRINT_SCALAR sumaa
+
+     ENDIF 
 
       ENDPROC DMAIN
 #     -------------
