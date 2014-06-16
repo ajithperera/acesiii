@@ -1866,7 +1866,7 @@
                Tijab(i,j1,a,b1) = Dijab_ab(i,j1,a,b1)
 #bgn_debug
 #               Tijab(i,j1,a,b1) *= -0.5
-               Tijab(i,j1,a,b1) *= 0.0
+               Tijab(i,j1,a,b1) *= 1.0
 #end_debug
                T1ijax(i,j1,a,sigma) = Tijab(i,j1,a,b1)*cb(sigma,b1) 
                Tijax(i,j1,a,sigma) += T1ijax(i,j1,a,sigma)  
@@ -2273,7 +2273,7 @@
                T1jjbb(j1,j,b1,b) = Dijab_bb(j,j1,b,b1)
 #bgn_debug
 #               T1jjbb(j,j1,b,b1) *= -1.5
-               T1jjbb(j,j1,b,b1) *= 0.0
+               T1jjbb(j,j1,b,b1) *= -1.0
 #end_debug
                T1jjbx(j,j1,b,sigma) = T1jjbb(j,j1,b,b1)*cb(sigma,b1) 
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)  
@@ -2618,8 +2618,8 @@
                REQUEST Dijkl_ab(i,j,i1,j1) j1  
                Tijij(i,j,i1,j1) = Dijkl_ab(i,j,i1,j1)
 #bgn_debug
-               Tijij(i,j,i1,j1) *= -0.5
-               Tijij(i,j,i1,j1) *=  0.0
+#               Tijij(i,j,i1,j1) *= -0.5
+               Tijij(i,j,i1,j1) *=  1.0
 #end_debug
                T1xjij(mu,j,i1,j1) = Tijij(i,j,i1,j1)*ca(mu,i) 
                Txjij(mu,j,i1,j1) += T1xjij(mu,j,i1,j1)   
@@ -2781,7 +2781,7 @@
                Tiaia(i,a1,i1,a)  = Dibja_aaaa(i,a1,i1,a)
 #bgn_debug
 #               Tiaia(i,a1,i1,a) *= 1.5
-               Tiaia(i,a1,i1,a) *= 0.0
+               Tiaia(i,a1,i1,a) *= 1.0
 #end_debug
                T1iaix(i,a1,i1,sigma)  = Tiaia(i,a1,i1,a)*ca(sigma,a) 
                Tiaix(i,a1,i1,sigma)  += T1iaix(i,a1,i1,sigma)   
@@ -2901,7 +2901,7 @@
               Tibib(i1,b1,i,b)  = Dibja_abab(i,b1,i1,b)
 #bgn_debug
 #               Tibib(i1,b1,i,b) *= -0.5
-               Tibib(i1,b1,i,b) *= 0.0
+               Tibib(i1,b1,i,b) *= 1.0
 #end_debug
                T1ibix(i,b1,i1,sigma) = Tibib(i1,b1,i,b)*cb(sigma,b) 
                Tibix(i,b1,i1,sigma) += T1ibix(i,b1,i1,sigma)  
@@ -3021,7 +3021,7 @@
                Tjaja(j,a,j1,a1) = Dibja_baba(j,a1,j1,a)
 #bgn_debug
 #               Tjaja(j,a,j1,a1) *= 0.5
-               Tjaja(j,a,j1,a1) *= 0.0
+               Tjaja(j,a,j1,a1) *= 1.0
 #end_debug
                T1jajx(j,a1,j1,sigma) = Tjaja(j,a,j1,a1)*ca(sigma,a) 
                Tjajx(j,a1,j1,sigma) += T1jajx(j,a1,j1,sigma)  
@@ -3345,8 +3345,8 @@
 
                Tibja(i,b1,j1,a) = Dibja_abba(i,b1,j1,a)
 #bgn_debug
-#               Tibja(i,b1,j1,a) = -0.5
-               Tibja(i,b1,j1,a) = 0.0
+#               Tibja(i,b1,j1,a) *= -0.5
+               Tibja(i,b1,j1,a) *= 0.0
 #end_debug
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a) 
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)  
@@ -3771,7 +3771,7 @@
             DO mu 
 #bgn_debug
 #               Taaai(a,a1,a2,i) *= 1.5
-#               Taaai(a,a1,a2,i) *= 1.0
+               Taaai(a,a1,a2,i) *= 1.0
 #end_debug
                Txaai(mu,a1,a2,i)      = Taaai(a,a1,a2,i)*ca(mu,a) 
                PREPARE Dxaai(mu,a1,a2,i) += Txaai(mu,a1,a2,i)  
@@ -4128,7 +4128,7 @@
             DO mu 
 #bgn_debug
 #               Tabaj(a,b,a1,j) *= -0.5
-               Tabaj(a,b,a1,j) *= 0.0
+               Tabaj(a,b,a1,j) *=0.0
 #end_debug
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a) 
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
@@ -4711,7 +4711,7 @@
             DO sigma 
 #bgn_debug
 #               Tijib(i,j,i1,b) *= -0.5
-               Tijib(i,j,i1,b) *= 0.0
+               Tijib(i,j,i1,b) *= 1.0
 #end_debug
                Tijix(i,j,i1,sigma)      = Tijib(i,j,i1,b)*cb(sigma,b) 
                PREPARE Dijix(i,j,i1,sigma) += Tijix(i,j,i1,sigma) 
@@ -4825,7 +4825,7 @@
             DO sigma 
 #bgn_debug
 #               Tjija(j,i,j1,a)  *= 0.5
-               Tjija(j,i,j1,a)  *= 0.0
+               Tjija(j,i,j1,a)  *= 1.0
 #end_debug
                Tjijx(j,i,j1,sigma)      = Tjija(j,i,j1,a)*ca(sigma,a) 
                PREPARE Djijx(j,i,j1,sigma) += Tjijx(j,i,j1,sigma) 
@@ -4942,7 +4942,7 @@
             DO sigma 
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
-               Tjjjb(j,j1,j2,b) *= 0.0
+               Tjjjb(j,j1,j2,b) *= -1.0
 #end_debug
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b) 
                PREPARE Djjjx(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma) 
@@ -6822,7 +6822,7 @@
 #    -------------------------
      PROC  ZERO_AOD_BLOCKS
 #    ---------------------
-
+#IJKL,IJKA,IJAB
      PARDO mu, nu, i2, i3
            Tiixx(i2,i3,mu,nu) = 0.0
            PREPARE Diixx(i2,i3,mu,nu) = Tiixx(i2,i3,mu,nu)
@@ -6838,7 +6838,9 @@
             PREPARE Dijxx(i1,j1,mu,nu) = Tijxx(i1,j1,mu,nu)
      ENDPARDO i1, nu, j1, mu
 
-#AAAA
+#IJKL(end)
+
+#AAAA (ABCI)
      PARDO mu,a1,a2,i
            Txaai(mu,a1,a2,i) = 0.0
            PREPARE Dxaai(mu,a1,a2,i) = Txaai(mu,a1,a2,i)
@@ -6848,8 +6850,7 @@
            Txxai(mu,nu,a2,i) = 0.0
            PREPARE Dxxai(mu,nu,a2,i) = Txxai(mu,nu,a2,i)
      ENDPARDO mu,nu,a2,i
-#BBBB
-
+#BBBB 
      PARDO mu,b1,b2,j
             Txbbj(mu,b1,b2,j) = 0.0
             PREPARE Dxbbj(mu,b1,b2,j) = Txbbj(mu,b1,b2,j)
@@ -6860,7 +6861,6 @@
             PREPARE Dxxbj(mu,nu,b2,j) = Txxbj(mu,nu,b2,j)
      ENDPARDO mu,nu,b2,j
 #BABA
-
      PARDO mu,a,b,i
            Txabi(mu,a,b,i) = 0.0
            PREPARE Dxabi(mu,a,b,i) = Txabi(mu,a,b,i)
@@ -6871,7 +6871,19 @@
            PREPARE Dxxbi(mu,nu,b1,i) = Txxbi(mu,nu,b1,i)
      ENDPARDO mu,nu,b1,i
 #ABAB
+     PARDO mu,b,a1,j
+          Tabaj(a,b,a1,j) = 0.0
+          PREPARE Dxbaj(mu,b,a1,j) = Tabaj(a,b,a1,j) 
+     ENDPARDO mu,b,a1,j
 
+     PARDO mu,nu,a1,j
+          Txxaj(mu,nu,a1,j) = 0.0
+          PREPARE Dxxaj(mu,nu,a1,j) = Txxaj(mu,nu,a1,j)
+     ENDPARDO mu,nu,a1,j
+
+# ABCI(end)
+
+# IJKA
      PARDO i,i1,i2,sigma
            Tiiix(i,i1,i2,sigma) = 0.0
            PREPARE Diiix(i,i1,i2,sigma) = Tiiix(i,i1,i2,sigma)
@@ -6887,14 +6899,20 @@
            PREPARE Dijix(i,j,i1,sigma) = Tijix(i,j,i1,sigma)
      ENDPARDO i, j, i1, sigma
 
-#AAAA,ABAB
+     PARDO j,i,j1,sigma
+           Tjijx(j,i,j1,sigma) = 0.0 
+           PREPARE Djijx(j,i,j1,sigma) = Tjijx(j,i,j1,sigma)
+     ENDPARDO j,i,j1,sigma
+#IJKA(end)
+
+#(IBJA) AAAA,ABAB
      PARDO sigma, nu, i, i1
            Tixix(i,nu,i1,sigma) = 0.0
            Txiix(nu,i,i1,sigma) = 0.0
            PREPARE Dixix(i,nu,i1,sigma) = Tixix(i,nu,i1,sigma)
            PREPARE Dxiix(nu,i,i1,sigma) = Txiix(nu,i,i1,sigma)
      ENDPARDO sigma, nu, i, i1
-#BABA,BBBB
+#BBBB,BABA
      PARDO sigma, nu, j, j1
             Txjjx(nu,j,j1,sigma) = 0.0
             Tjxjx(j,nu,j1,sigma) = 0.0
@@ -6907,15 +6925,7 @@
             PREPARE Dixxj(i1,sigma,nu,j) = Tixxj(i1,sigma,nu,j)
      ENDPARDO sigma, nu, j, i1
 
-     PARDO mu, nu, a2, i
-               Txxai(mu,nu,a2,i) = 0.0
-               PREPARE Dxxai(mu,nu,a2,i) = Txxai(mu,nu,a2,i)
-     ENDPARDO mu, nu, a2, i
-
-     PARDO mu,nu,b2,j
-               Txxbj(mu,nu,b2,j) = 0.0
-               PREPARE Dxxbj(mu,nu,b2,j) = Txxbj(mu,nu,b2,j)
-     ENDPARDO mu,nu,b2,j
+#IBJA(end)
 
      EXECUTE SERVER_BARRIER
 
