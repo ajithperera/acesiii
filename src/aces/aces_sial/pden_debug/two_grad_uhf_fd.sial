@@ -2282,7 +2282,7 @@
                T1jjbb(j1,j,b1,b) = Dijab_bb(j,j1,b,b1)
 #bgn_debug
 #               T1jjbb(j,j1,b,b1) *= -1.5
-               T1jjbb(j,j1,b,b1) *= -1.0
+               T1jjbb(j,j1,b,b1) *= 1.0
 #end_debug
                T1jjbx(j,j1,b,sigma) = T1jjbb(j,j1,b,b1)*cb(sigma,b1) 
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)  
@@ -2532,7 +2532,7 @@
                Txjjj(mu,j1,j2,j3) += T1xjjj(mu,j1,j2,j3)  
 #bgn_debug
 #               Tjjjj(j,j1,j2,j3) *= -1.5
-               Tjjjj(j,j1,j2,j3) *=  -1.0
+               Tjjjj(j,j1,j2,j3) *=  1.0
 #end_debug
 #
             ENDDO j 
@@ -3181,7 +3181,7 @@
               Tjbjb(j,b1,j1,b) = Dibja_bbbb(j,b1,j1,b)
 #bgn_debug
 #               Tjbjb(j,b1,j1,b) *= -1.5
-               Tjbjb(j,b1,j1,b) *= -1.0
+               Tjbjb(j,b1,j1,b) *= 1.0
 #end_debug
                T1jbjx(j,b1,j1,sigma) = Tjbjb(j,b1,j1,b)*cb(sigma,b) 
                Tjbjx(j,b1,j1,sigma) += T1jbjx(j,b1,j1,sigma)  
@@ -3963,7 +3963,7 @@
             DO mu 
 #bgn_debug
 #               Tbbbj(b,b1,b2,j) *= -1.5
-               Tbbbj(b,b1,b2,j) *= -1.0
+               Tbbbj(b,b1,b2,j) *= 1.0
 #end_debug
                Txbbj(mu,b1,b2,j)      = Tbbbj(b,b1,b2,j)*cb(mu,b) 
                PREPARE Dxbbj(mu,b1,b2,j) += Txbbj(mu,b1,b2,j)  
@@ -4143,10 +4143,11 @@
 #           PUT Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j) 
 # 
             DO mu 
-#bgn_debug
-#               Tabaj(a,b,a1,j) *= -0.5
-               Tabaj(a,b,a1,j) *=1.0
-#end_debug
+
+               if property == 10.0
+                  Tabaj(a,b,a1,j) *= 0.0
+               endif
+
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a) 
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
 # 
@@ -4326,10 +4327,11 @@
 #           PUT Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i) 
 # 
             DO mu 
-#bgn_debug
-#               Tbabi(b1,a,b,i) *=0.5
-               Tbabi(b1,a,b,i) *= 1.0
-#end_debug
+
+               if property == 10.0
+                  Tbabi(b1,a,b,i) *= 0.0 
+               endif
+ 
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1) 
                PREPARE Dxabi(mu,a,b,i) += Txabi(mu,a,b,i)  
 # 
@@ -4959,7 +4961,7 @@
             DO sigma 
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
-               Tjjjb(j,j1,j2,b) *= -1.0
+               Tjjjb(j,j1,j2,b) *= 1.0
 #end_debug
                Tjjjx(j,j1,j2,sigma)      = Tjjjb(j,j1,j2,b)*cb(sigma,b) 
                PREPARE Djjjx(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma) 
@@ -5736,6 +5738,11 @@
                ENDDO i1   
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO i 
@@ -5755,6 +5762,11 @@
                ENDDO j1 
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO j 
@@ -5775,6 +5787,11 @@
                ENDDO j1  
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO i 
@@ -5794,6 +5811,11 @@
                ENDDO i1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO i 
@@ -5813,6 +5835,11 @@
                ENDDO j1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO j 
@@ -5832,6 +5859,11 @@
                ENDDO j1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO i 
@@ -5849,6 +5881,11 @@
                ENDDO i1   
 
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO i 
@@ -5866,6 +5903,11 @@
                ENDDO j1   
 
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO j 
@@ -5880,6 +5922,11 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi(mu,nu,lambda,i)*ca(sigma,i) 
                T1xxxx(mu,nu,lambda,sigma) *= 8.0  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO i 
@@ -5892,6 +5939,11 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj(mu,nu,lambda,j)*cb(sigma,j) 
                T1xxxx(mu,nu,lambda,sigma) *= 8.0  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO j 
@@ -5912,9 +5964,11 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-#bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO i1 
@@ -5931,9 +5985,11 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
-#bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= -1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j1 
@@ -5950,10 +6006,11 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
-#bgn_debug
-#               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
-               T1xxxx(mu,nu,lambda,sigma) *= 1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j 
@@ -6027,6 +6084,11 @@
                ENDDO i1   
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO i 
@@ -6046,6 +6108,11 @@
                ENDDO j1 
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO j 
@@ -6065,6 +6132,11 @@
                ENDDO j1  
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 #
             ENDDO i 
@@ -6084,6 +6156,11 @@
                ENDDO i1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO i 
@@ -6103,6 +6180,11 @@
                ENDDO j1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO j 
@@ -6122,6 +6204,11 @@
                ENDDO j1 
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 
             ENDDO i 
@@ -6139,6 +6226,11 @@
                ENDDO i1   
 
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO i 
@@ -6156,6 +6248,11 @@
                ENDDO j1   
 
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j) 
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO j 
@@ -6170,6 +6267,11 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi(mu,nu,lambda,i)*ca(sigma,i) 
                T1xxxx(mu,nu,lambda,sigma) *= 8.0  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO i 
@@ -6182,6 +6284,11 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj(mu,nu,lambda,j)*cb(sigma,j) 
                T1xxxx(mu,nu,lambda,sigma) *= 8.0  
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)  
 
             ENDDO j 
@@ -6202,9 +6309,11 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-#bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= 1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               endif
+
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO i1 
@@ -6221,9 +6330,11 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)  
-#bgn_debug
-               T1xxxx(mu,nu,lambda,sigma) *= -1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               endif
+
                PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j1 
@@ -6240,10 +6351,11 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
 #
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)  
-#bgn_debug
-#               T1xxxx(mu,nu,lambda,sigma) *= 4.0  
-               T1xxxx(mu,nu,lambda,sigma) *= 1.0
-#end_debug
+
+               If property == 10.0
+                  T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               endif
+
                PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma) 
 #
             ENDDO j 
@@ -6960,7 +7072,7 @@
          INV_FD_WIDTH *= SCALE
          execute print_scalar INV_FD_WIDTH
 
-         property = 20.0
+         property = 10.0
 
          ASYM     = 0.0
          SPIN_DEN = 0.0
@@ -6971,7 +7083,7 @@
             call get_HBXYZ_Dipole
           endif
 
-          if property == 20.0
+          if property == 10.0
              ASYM     = 1.0
              SPIN_DEN = 1.0
              call get_HBXYZ_spin_orbit 
