@@ -7205,7 +7205,7 @@
                Tjaib(j,a1,i1,b) = Dibja_baab_x(j,a1,i1,b)
 #bgn_debug                 
 #               Tjaib(j,a1,i1,b) *= 0.5
-               Tjaib(j,a1,i1,b) *= 0.0
+               Tjaib(j,a1,i1,b) *= 1.0
 #end_debug
                 
                T1jaix(j,a1,i1,sigma) = Tjaib(j,a1,i1,b)*cb(sigma,b)
@@ -7216,16 +7216,26 @@
       execute server_barrier
 
       PARDO sigma, nu, j, i1
-            Tjxix(j,nu,i1,sigma) = 0.0
+            Tixxj(i1,sigma,nu,j) = 0.0
+
             DO a1
                REQUEST Djaix_x(j,a1,i1,sigma) a1
-              T1ixxj(i1,sigma,nu,j) = Djaix(j,a1,i1,sigma)*ca(nu,a1)
-              Tixxj(i1,sigma,nu,j) += T1ixxj(i1,sigma,nu,j)
+               T1ixxj(i1,sigma,nu,j) = Djaix_x(j,a1,i1,sigma)*ca(nu,a1)
+               Tixxj(i1,sigma,nu,j) += T1ixxj(i1,sigma,nu,j)
             ENDDO a1
+
             Tixxj(i1,sigma,nu,j) *= 4.0
             PREPARE Dixxj_x(i1,sigma,nu,j) += Tixxj(i1,sigma,nu,j)
       ENDPARDO sigma, nu, j, i1
       execute server_barrier
+
+#bgn_debug
+#      PARDO sigma, nu, j, i1
+#               REQUEST Dixxj_x(i1,sigma,nu,j) j
+#               EXECUTE DUMP_AMP Dixxj_x(i1,sigma,nu,j)
+#      ENDPARDO sigma, nu, j, i1
+#end_debug
+
 
 #      PARDO mu, nu, lambda, sigma
 #            Txxxx_aa(mu,nu,lambda,sigma) = 0.0 
@@ -7447,7 +7457,7 @@
 
 #bgn_debug 
 #               Tibja(i,b1,j1,a) *= -0.5
-               Tibja(i,b1,j1,a) *= 0.0
+               Tibja(i,b1,j1,a) *= 1.0
 #end_debug
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a)
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)
@@ -7457,12 +7467,15 @@
       execute server_barrier
 
       PARDO sigma, nu, i, j1
+
             Tixxj(i,nu,sigma,j1) = 0.0
+
             DO b1
                REQUEST Dibjx_x(i,b1,j1,sigma) sigma 
-               T1ixxj(i,nu,sigma,j1) = Dibjx(i,b1,j1,sigma)*cb(nu,b1)
+               T1ixxj(i,nu,sigma,j1) = Dibjx_x(i,b1,j1,sigma)*cb(nu,b1)
                Tixxj(i,nu,sigma,j1) += T1ixxj(i,nu,sigma,j1)
             ENDDO b1
+
             Tixxj(i,nu,sigma,j1)         *= 4.0
             PREPARE Dixxj_x(i,nu,sigma,j1) += Tixxj(i,nu,sigma,j1)
       ENDPARDO sigma, nu, i, j1
@@ -8784,7 +8797,7 @@
             DO mu
 #bgn_debug  
 #               Tbabi(b1,a,b,i) *=0.5
-               Tbabi(b1,a,b,i) *= 0.0
+               Tbabi(b1,a,b,i) *= 1.0
 #end_debug
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1)
                PREPARE Dxabi_x(mu,a,b,i) += Txabi(mu,a,b,i)
@@ -8999,7 +9012,7 @@
             DO mu
 #bgn_debug
 #               Tabaj(a,b,a1,j) *= -0.5
-               Tabaj(a,b,a1,j) *= 0.0
+               Tabaj(a,b,a1,j) *= 1.0
 #end_debug
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a)
                PREPARE Dxbaj_x(mu,b,a1,j) += Txbaj(mu,b,a1,j)

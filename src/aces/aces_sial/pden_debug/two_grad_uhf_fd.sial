@@ -207,6 +207,10 @@
       Served LAO_ab_p(lambda,i,sigma,j)
       Served LAO_ab_m(lambda,i,sigma,j)
       Served LAO_ab_X(lambda,i,sigma,j)
+
+      Served  Dibja_baab_p(j,a1,i1,b)
+      Served  Dibja_baab_m(j,a1,i1,b)
+      Served DIBJA_BAAB_XYZ(j,a1,i1,b)
 #
       served TAO_aa(mu,i,nu,i1)  
       served TAO_ab(mu,i,nu,j)  
@@ -291,6 +295,10 @@
       temp LAO_ab_am(lambda,i,sigma,j)
       temp LAO_ab_ap(lambda,i,sigma,j)
       temp LAO_ab_afd(lambda,i,sigma,j)
+
+      temp Tibja_am(j,a1,i1,b)
+      temp Tibja_ap(j,a1,i1,b)
+      temp Tibja_afd(j,a1,i1,b)
 #
       temp Txbaj(mu,b,a1,j) 
       temp Txxaj(mu,nu,a1,j) 
@@ -635,6 +643,7 @@
       scalar DEBUGABCI
       scalar DEBUGIJKA
       scalar DEBUGABCD
+      scalar DEBUGIBJA
  
       Scalar XAO
       Scalar XXAO
@@ -3346,7 +3355,7 @@
                Tibja(i,b1,j1,a) = Dibja_abba(i,b1,j1,a)
 #bgn_debug
 #               Tibja(i,b1,j1,a) *= -0.5
-               Tibja(i,b1,j1,a) *= 0.0
+               Tibja(i,b1,j1,a) *= 1.0
 #end_debug
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a) 
                Tibjx(i,b1,j1,sigma) += T1ibjx(i,b1,j1,sigma)  
@@ -3507,10 +3516,18 @@
             DO b 
 #
                REQUEST Dibja_baab(j,a1,i1,b) b  
+
+               IF NCOUNT == 1.0
+                  PREPARE Dibja_baab_p(j,a1,i1,b) = Dibja_baab(j,a1,i1,b)
+               ENDIF
+               IF NCOUNT == 2.0
+                  PREPARE Dibja_baab_m(j,a1,i1,b) = Dibja_baab(j,a1,i1,b)
+               ENDIF
+
                Tjaib(j,a1,i1,b) = Dibja_baab(j,a1,i1,b)
 #bgn_debug
 #               Tjaib(j,a1,i1,b) *= 0.5
-               Tjaib(j,a1,i1,b) *= 0.0
+               Tjaib(j,a1,i1,b) *= 1.0
 #end_debug
                T1jaix(j,a1,i1,sigma) =  Tjaib(j,a1,i1,b)*cb(sigma,b) 
                Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)  
@@ -4128,7 +4145,7 @@
             DO mu 
 #bgn_debug
 #               Tabaj(a,b,a1,j) *= -0.5
-               Tabaj(a,b,a1,j) *=0.0
+               Tabaj(a,b,a1,j) *=1.0
 #end_debug
                Txbaj(mu,b,a1,j)      = Tabaj(a,b,a1,j)*ca(mu,a) 
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
@@ -4311,7 +4328,7 @@
             DO mu 
 #bgn_debug
 #               Tbabi(b1,a,b,i) *=0.5
-               Tbabi(b1,a,b,i) *= 0.0
+               Tbabi(b1,a,b,i) *= 1.0
 #end_debug
                Txabi(mu,a,b,i)      = Tbabi(b1,a,b,i)*cb(mu,b1) 
                PREPARE Dxabi(mu,a,b,i) += Txabi(mu,a,b,i)  
@@ -6871,9 +6888,9 @@
            PREPARE Dxxbi(mu,nu,b1,i) = Txxbi(mu,nu,b1,i)
      ENDPARDO mu,nu,b1,i
 #ABAB
-     PARDO mu,b,a1,j
-          Tabaj(a,b,a1,j) = 0.0
-          PREPARE Dxbaj(mu,b,a1,j) = Tabaj(a,b,a1,j) 
+     PARDO  mu,b,a1,j
+            Txbaj(mu,b,a1,j) = 0.0
+            PREPARE Dxbaj(mu,b,a1,j) = Txbaj(mu,b,a1,j)
      ENDPARDO mu,b,a1,j
 
      PARDO mu,nu,a1,j
@@ -7290,6 +7307,85 @@
      COLLECTIVE sumaa += sum
      EXECUTE SIP_BARRIER
      EXECUTE PRINT_SCALAR sumaa
+
+     ENDIF 
+
+     DEBUGIBJA= 100.0
+
+     IF DEBUGIBJA == 1.0
+
+          PARDO j,a1,i1,b
+
+           REQUEST Dibja_baab_p(j,a1,i1,b) b
+           REQUEST Dibja_baab_m(j,a1,i1,b) b
+
+           Tibja_am(j,a1,i1,b) = Dibja_baab_m(j,a1,i1,b)
+           Tibja_ap(j,a1,i1,b) = Dibja_baab_p(j,a1,i1,b)
+
+           Tibja_afd(j,a1,i1,b) =  Tibja_ap(j,a1,i1,b)
+           Tibja_afd(j,a1,i1,b) -= Tibja_am(j,a1,i1,b)
+
+           Tibja_afd(j,a1,i1,b) *= INV_FD_WIDTH
+
+           PREPARE Dibja_BAAB_xyz(j,a1,i1,b ) += Tibja_afd(j,a1,i1,b)
+     ENDPARDO  j,a1,i1,b
+
+     EXECUTE SERVER_BARRIER
+
+     sum   = 0.0
+     sumaa = 0.0
+     PARDO  j,a1,i1,b
+            REQUEST Dibja_BAAB_xyz(j,a1,i1,b) b
+            tmp  =  Dibja_BAAB_xyz(j,a1,i1,b) * Dibja_BAAB_xyz(j,a1,i1,b)
+            sum  += tmp
+     ENDPARDO  j,a1,i1,b
+
+     EXECUTE SERVER_BARRIER
+     COLLECTIVE sumaa += sum
+     EXECUTE SIP_BARRIER
+     EXECUTE PRINT_SCALAR sumaa
+
+     PARDO j,a1,i1,sigma
+        
+           Tjaix(j,a1,i1,sigma) = 0.0
+           DO b
+              REQUEST Dibja_BAAB_xyz(j,a1,i1,b) b
+#              execute dump_amp Dibja_BAAB_xyz(j,a1,i1,b)
+
+              Tjaib(j,a1,i1,b) = Dibja_BAAB_xyz(j,a1,i1,b) 
+              T1jaix(j,a1,i1,sigma) =  Tjaib(j,a1,i1,b)*cb(sigma,b)
+              Tjaix(j,a1,i1,sigma) += T1jaix(j,a1,i1,sigma)
+           ENDDO b
+#
+           PREPARE Djaix(j,a1,i1,sigma) = Tjaix(j,a1,i1,sigma)
+#
+      ENDPARDO j, a1, i1,sigma 
+      execute server_barrier
+#
+      PARDO sigma, nu, j, i1
+#
+            Tixxj(i1,sigma,nu,j) = 0.0
+#
+            DO a1
+#
+               REQUEST Djaix(j,a1,i1,sigma) a1
+               execute dump_amp Djaix(j,a1,i1,sigma)
+#
+               T1ixxj(i1,sigma,nu,j) = Djaix(j,a1,i1,sigma)*ca(nu,a1)
+               Tixxj(i1,sigma,nu,j) += T1ixxj(i1,sigma,nu,j)
+#
+            ENDDO a1
+#
+            Tixxj(i1,sigma,nu,j)         *= 4.0
+            PREPARE Dixxj(i1,sigma,nu,j) = Tixxj(i1,sigma,nu,j)
+#
+      ENDPARDO sigma, nu, j, i1
+      execute server_barrier
+
+      PARDO sigma, nu, j, i1
+               REQUEST Dixxj(i1,sigma,nu,j) j
+#               EXECUTE DUMP_AMP Dixxj(i1,sigma,nu,j)
+      ENDPARDO sigma, nu, j, i1
 
      ENDIF 
 
