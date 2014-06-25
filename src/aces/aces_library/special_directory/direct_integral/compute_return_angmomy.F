@@ -156,7 +156,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
          end if
 
       call add_integrals2(out_ly,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,1.0d0)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-1.0d0)
       endif 
 
       DER1X = 0
@@ -199,7 +199,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
          end if
 
       call add_integrals2(out_ly,da1,da2,db1,db2,
-     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,-1.0d0)
+     *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,1.0d0)
        endif ! nints
 
        end do !n

@@ -800,6 +800,10 @@
 # Variable introduced by Ajith Perera, 03/2014.
        scalar property
        scalar beta_is_minus
+       scalar do_pols
+       scalar do_aten
+       scalar do_gten
+       scalar do_dten
 
 #____________________________________________________________________________
 # generate one-electron B-field integrals
@@ -9112,8 +9116,26 @@
       six   = 6.0
       seven = 7.0
 
-      property = 20.0
-      beta_is_minus = 0.0
+# Set the property type based on the input key-word
+
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      if do_pols == one
+         property = 10.0
+         beta_is_minus = 0.0
+      endif
+
+      if do_gten == one
+         property = 20.0
+         beta_is_minus = 0.0
+#bgn_debug
+#         property = 30.0
+#         beta_is_minus = 100.0
+#end_debug
+      endif
 
       if property == 10.0
          call get_HBx_Dipole

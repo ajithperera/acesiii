@@ -219,7 +219,8 @@ c----------------------------------------------------------------------------
 c   Second-derivative integrals. Loop through all possible flag combinations.  
 c----------------------------------------------------------------------------
 C 
-
+         Write(6,*) "Check for the 2nd der ints flag:", calc_2der
+C
          if (.not. calc_2der) go to 2000
          do iflag = 1, 12
          do jflag = iflag, 12

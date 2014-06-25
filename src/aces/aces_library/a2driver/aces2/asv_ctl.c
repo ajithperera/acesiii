@@ -488,7 +488,11 @@ void asv_handle_proc(const f_int * index, const char * value)
                 "EOM_NLO",	/* 11 */
                 "GEERTSEN",	/* 12 */
                 "JSC_ALL",	/* 13 */
-                ""
+                "POLAR",        /* 14 */
+                "A-TEN",        /* 15 */
+                "G-TEN",        /* 16 */
+                "D-TEN",        /* 17 */
+                "",
             };
             asv_update_handle(index,value,handles);
             break;

@@ -5590,6 +5590,8 @@
             Pxxxx(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)  
 #
             T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma) 
+
+            execute dump_amp T1xxxx(mu,lambda,nu,sigma) 
 #
 #           INTEGRAL BLOCK 1 
 #           ---------------- 

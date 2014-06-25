@@ -403,6 +403,11 @@ c Note that above is not used in printing anything?
      *             1,n1,1,n2)
         endif
 
+       if (scalar_table(sind) .eq. 716) then
+          call print_gten_2bl_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+        endif
+
       endif
 c................... END_prakash......................................       
 
@@ -1697,7 +1702,7 @@ c          enddo
        endif
       endif
 97    format(17x," X                        Y                      Z")
-98    format(26x,"CCSD Polarizability Results")
+98    format(26x,"CCSD Polarizability Results (a.u.)")
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
@@ -1716,7 +1721,8 @@ c
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
       double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
-      double precision efinal, conv, Fac, Two
+      double precision efinal, conv, Fac, Two, Gfac, Refspin,
+     &                  Nunpaired 
       open(66,file='summary.out')
       ival = sval
       conv = 27.21138505
@@ -1725,13 +1731,20 @@ c Fine structure constant and parts per million
 
       FNS = 7.29735308D-03
       PPM = 1.0D+06
+      GFAC= 2.0023193044D0
       Two = 2.0D0
 c
 c External multiplication constant for Relativistic Mass correction 
-c c Note: At the moment this is for one unpaired electron (for
-C 2 unpaired electons, this get dvided by 2.
-  
-      Fac = -FNS*FNS*PPM*Two
+C  
+      Nunpaired = Nalpha_occupied - Nbeta_occupied
+
+      If (Nunpaired .EQ. 0) Then
+         Write(6, "(a)") "Invalid input: A closed shell EPR calculation"
+         Call abort_job()
+      Endif
+
+      Refspin   = Dble(Nunpaired) 
+      Fac = -FNS*FNS*PPM*Two/Refspin
 
        if (me .eq. 0)then
        if (ival .eq. 713) then
@@ -1759,7 +1772,7 @@ c          enddo
        endif
       endif
 97    format(17x," X                        Y                      Z")
-98    format(26x,"CCSD g-tensor: Relativistic Mass Correction")
+98    format(26x,"CCSD g-tensor: Relativistic Mass Correction (ppm)")
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
@@ -1777,7 +1790,8 @@ c
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
       double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
-      double precision efinal, conv, Fac
+      double precision efinal, conv, Fac, Gfac,  Refspin,
+     &                  Nunpaired
       open(66,file='summary.out')
       ival = sval
       conv = 27.21138505
@@ -1785,13 +1799,20 @@ c
 c Fine structure constant and parts per million
 
       FNS = 7.29735308D-03
+      GFAC= 2.0023193044D0
       PPM = 1.0D+06
 
 c External multiplication constant for 1-el gauge correction 
-c Note: At the moment this is for one unpaired electron (for
-C 2 unpaired electons, 1/2 becomes 1/4 
- 
-      Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
+
+      Nunpaired = Nalpha_occupied - Nbeta_occupied
+
+      If (Nunpaired .EQ. 0) Then
+         Write(6, "(a)") "Invalid input: A closed shell EPR calculation"
+         Call abort_job()
+      Endif 
+
+      Refspin   = Dble(Nunpaired)
+      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 714) then
@@ -1820,7 +1841,7 @@ c          enddo
       endif
 97    format(17x," X                        Y                      Z")
 98    format(26x,"CCSD g-tensor: 1el-Diamagnetic Spin-orbit ",
-     &       39x, "Gauge Correction")
+     &       58x, "Gauge Correction (ppm)")
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
@@ -1837,8 +1858,9 @@ c
       include 'int_gen_parms.h'
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
-      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
-      double precision efinal, conv, Fac
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM,
+     &                 Nunpaired
+      double precision efinal, conv, Fac, Gfac
       open(66,file='summary.out')
       ival = sval
       conv = 27.21138505
@@ -1846,6 +1868,7 @@ c
 c Fine structure constant and parts per million
 
        FNS = 7.29735308D-03
+       GFAC= 2.0023193044D0
        PPM = 1.0D+06
 c
 c External multiplication constant for paramagnetic spin-orbit 
@@ -1879,7 +1902,67 @@ c          enddo
        endif
       endif
 97    format(17x," X                        Y                      Z")
-98    format(26x,"CCSD g-tensor: 1el-Paramagnetc Spin-orbit")
+98    format(26x,"CCSD g-tensor: 1el-Paramagnetc Spin-orbit (ppm)")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+      Return
+      End
+c
+c---------------------------------------------------------------------
+c
+      subroutine print_gten_2bl_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac, Gfac
+      open(66,file='summary.out')
+      ival = sval
+      conv = 27.21138505
+
+c Fine structure constant and parts per million
+
+       FNS = 7.29735308D-03
+       GFAC= 2.0023193044D0
+       PPM = 1.0D+06
+c
+c External multiplication constant for paramagnetic spin-orbit
+c contribution.
+
+       Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
+
+       if (me .eq. 0)then
+       if (ival .eq. 716) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+          enddo
+       endif
+
+       if (ival .eq. 716) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (Fac*array1(1,i), i=b1, b2)
+               write(66,103)  (Fac*array1(2,i), i=b1, b2)
+               write(66,104)  (Fac*array1(3,i), i=b1, b2)
+               write(66,*)
+c          enddo
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD g-tensor: 2el-Paramagnetc Spin-orbit (ppm)")
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)

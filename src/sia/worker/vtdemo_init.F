@@ -24,6 +24,8 @@ C  in the file COPYRIGHT.
      *                       stabvalue,
      *
      *                       excite, eom_tol, eom_roots, ! Watson Added
+     *                       polarizability, a_tensor, g_tensor, 
+     *                       d_tensor, ! Ajith Perera
      *
      *                       io_company_id, niocompany, need_predef,
      *                       npre_defined, dryrun)
@@ -96,6 +98,7 @@ C  in the file COPYRIGHT.
       integer iscalar
       integer istabvalue
       integer iexcite, ieom_tol, ieom_roots ! Watson Added
+      integer ipolarizability, ia_tensor, ig_tensor, id_tensor ! Ajith Perera
       integer timertype
       integer index, val1, val2
       integer occ_index, index_type, ind, nindex
@@ -105,6 +108,7 @@ C  in the file COPYRIGHT.
       double precision scf_energy, totenerg, stabvalue
       double precision damp_init, cc_conv, scf_conv
       double precision excite, eom_tol, eom_roots ! Watson Added
+      double precision polarizability, a_tensor, g_tensor, d_tensor
 
       double precision xxx(2)
 #ifdef ALTIX
@@ -677,12 +681,29 @@ C
       scalar_table(iexcite) = excite
 C
 C Watson
-C
+C Ajith Perera, 05/2014  added
+
+      ipolarizability = array_table(c_scalar_index,23)
+      scalar_table(ipolarizability) = polarizability
+
+      ia_tensor       = array_table(c_scalar_index,24)
+      scalar_table(ia_tensor) = a_tensor 
+
+      ig_tensor       = array_table(c_scalar_index,25)
+      scalar_table(ig_tensor) = g_tensor 
+
+      id_tensor       = array_table(c_scalar_index,26)
+      scalar_table(id_tensor) = d_tensor 
+C 
       next = 0
       next_server = 0
       next_worker = 0
-      do i = 23, narray_table   ! 1st 19 arrays are pre-defined.
-         type = array_table(c_array_type,i) ! Watson changed from 20 to 22
+C 
+C Tom Watson, Changed to 22.
+C Ajith Perera, changed to 27, 05/2014. 
+C
+      do i = 27, narray_table   ! 1st 19 arrays are pre-defined.
+         type = array_table(c_array_type,i) 
          if (type .eq. static_array) then
 
 c---------------------------------------------------------------------------

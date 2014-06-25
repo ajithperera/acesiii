@@ -318,21 +318,20 @@ C
 #ifdef _DEBUG_LVL0
       Write(6,*) "The <munu |SOI_JY| lam sig> integral matrix"
       y=0.0d0
+      Write(6,*) Nbasis 
       do a = 1, Nbasis
 CSSS      Write(6,*)
       do b = 1, Nbasis
 CSSS      Write(6,*)
       do c = 1, Nbasis
-      do d = 1, Nbasis
 CSSS      if (a .le. b .and. c .le. d) then
-CSSS         Write(6, "(5(1x,F15.10))") (SOI_JY(a,b,c,d), a=1, nbasis)
-         y = y + SOI_JY(a,b,c,d)*SOI_JY(a,b,c,d)
+         Write(6, "(5(1x,F15.10))") (SOI_JY(a,b,c,d), d=1, nbasis)
+CSSS         y = y + SOI_JY(a,b,c,d)*SOI_JY(a,b,c,d)
 CSSS      endif
       enddo 
       enddo
       enddo
-      enddo
-      Write(6,"(a, F20.10)") "L_y check sum=", y
+SSS      Write(6,"(a, F20.10)") "L_y check sum=", y
 #endif
 
       return

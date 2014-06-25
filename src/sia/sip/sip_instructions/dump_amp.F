@@ -180,7 +180,7 @@ c---------------------------------------------------------------------------
          xmax = max(x(a,i,b,j), xmax)
          xmin = min(x(a,i,b,j), xmin)
          sumsq = sumsq + x(a,i,b,j)*x(a,i,b,j)
-         write(6,*) a, i, b, j, x(a,i,b,j) 
+         write(6,10) a, i, b, j, x(a,i,b,j) 
       enddo
       enddo
       enddo
@@ -198,6 +198,7 @@ c---------------------------------------------------------------------------
       enddo
 
 100   format (4I4, F12.8) 
+ 10   format (4I4, F20.10) 
  
       print *,'Task ',me,' line ',current_line,
      *        ' Array, block = ',array,block,

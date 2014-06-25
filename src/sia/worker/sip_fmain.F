@@ -336,6 +336,7 @@ c------------------------------------------------------------------------
      *                    damp_init, cc_conv, scf_conv, stabvalue,
      *
      *                    excite, eom_tol, eom_roots, ! Watson Added
+     *                    polarizability, a_tensor, g_tensor, d_tensor,
      *
      *                    io_company_id, niocompany, need_predef,
      *                    npre_defined, dryrun)

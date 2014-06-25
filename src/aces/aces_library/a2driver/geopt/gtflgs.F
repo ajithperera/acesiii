@@ -1768,10 +1768,24 @@ c   o If CC calc, then set MAXCYC and turn on RLE with order equal to 5
       end if
 
 c   o PROPERTY CALCULATION FOR CORRELATED CALCULATION
+
 #ifdef _DEBUG_LVL0
       Print*, "First order props and grad flags @enter:",
      &         ioppar(h_IOPPAR_props),ioppar(h_IOPPAR_grad_calc) 
 #endif
+C
+C PROPS=EOM_NLO and POL, and FIRST_ORDER and A-TEN (A-Tensor) need
+C to backword compatible. Lets do that here. Ajith Perera, 04/2014.
+C
+      if (ioppar(h_IOPPAR_props).eq.14) then
+         szTmp = 'props=EOM_NLO'//achar(0)
+         call asv_update_kv(szTmp,iASV,szData,0)    
+       endif 
+      if (ioppar(h_IOPPAR_props).eq.15) then
+         szTmp = 'props=FIRST_ORDER'//achar(0)
+         call asv_update_kv(szTmp,iASV,szData,0)
+       endif
+
       if (ioppar(h_IOPPAR_props).ge.1) then
          szTmp = 'deriv=first'//achar(0)
          call asv_update_kv(szTmp,iASV,szData,0)
@@ -1780,6 +1794,19 @@ c   o PROPERTY CALCULATION FOR CORRELATED CALCULATION
              call asv_update_kv(szTmp,iASV,szData,0) 
          endif 
       end if
+      If ((ioppar(h_IOPPAR_props) .eq.  15    .or. 
+     &    ioppar(h_IOPPAR_props)  .eq.  16    .or. 
+     &    ioppar(h_IOPPAR_props)  .eq.  17)   .and.
+     &   (ioppar(h_IOPPAR_reference) .eq. 0   .or.
+     &    ioppar(h_IOPPAR_mult)      .eq. 1)) Then 
+          Write(6,*)
+          Write(6,"(1x,a,a,a)") "The EPR calculations are invalid with",
+     &                    " closed shell molecules: Inspect the input",
+     &                    " and resubmit!"
+          Call Errex 
+      Endif 
+
+  
 #ifdef _DEBUG_LVL0
       Print*, "First order props, deriv level and grad_calc @exit:", 
      &         ioppar(h_IOPPAR_props), ioppar(h_IOPPAR_deriv_lev),

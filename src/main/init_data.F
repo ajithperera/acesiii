@@ -41,7 +41,9 @@ C  in the file COPYRIGHT.
       integer          ireorder(max_centers) 
       integer          natoms
       integer          nscfa_fock, nscfb_fock
-      integer          ieom_temprt, ieom_roots, iexcite  ! Watson Added
+      integer          ieom_temprt, ieom_roots, iexcite    ! Watson Added
+      integer          ipolarizability, ig_tensor, ia_tensor! perera Added
+      integer          id_tensor                            ! perera Added
       character*4      atmnam(max_centers)
       logical          cartesian
       logical          uhf
@@ -229,7 +231,23 @@ C
 C
 C Watson
 C
-
+C Ajith Perera for second-order properties; 04/2014.
+  
+       iPolarizability = 0
+       ia_tensor = 0
+       ig_tensor = 0
+       id_tensor = 0
+       If (Ijunk(18) .EQ. 14 .OR. Ijunk(18) .EQ. 11) 
+     &     iPolarizability = 1
+       If (Ijunk(18) .EQ. 15 .OR. Ijunk(18) .EQ. 1) ia_tensor = 1
+       If (Ijunk(18) .EQ. 16) ig_tensor = 1
+       If (ijunk(18) .EQ. 17) id_tensor = 1
+  
+       polarizability = DBLE(iPolarizability)
+       a_tensor       = DBLE(ia_tensor)
+       g_tensor       = DBLE(ig_tensor)
+       d_tensor       = DBLE(id_tensor)
+C 
 c-------------------------------------------------------------------------
 c   Read IFLAGS2 off JOBARC.
 c-------------------------------------------------------------------------

@@ -127,6 +127,7 @@ c nContAOs : total number of contracted functions
       double precision damp_init, cc_conv, scf_conv
 
       double precision excite, eom_tol, eom_roots ! Watson Added
+      double precision  polarizability, a_tensor, g_tensor, d_tensor
       double precision reg,stabvalue
 
       integer itrips, itripe
@@ -187,7 +188,8 @@ c nContAOs : total number of contracted functions
      &                     vib_freq_calc, fast_erd_memcalc, vib_exact,
      &                     if_scf, calc_2der_integrals,
      &                     init_scf, if_fno,
-     &                     last
+     &                     polarizability,a_tensor,g_tensor,
+     &                     d_tensor,last 
 
       logical managers_are_workers, master_is_worker
  

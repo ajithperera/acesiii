@@ -966,7 +966,10 @@
        scalar c10  
        Scalar property
        Scalar beta_is_minus
-
+       scalar do_pols
+       scalar do_aten
+       scalar do_gten
+       scalar do_dten
 #
 #
 #______________________________________________________________________________
@@ -12602,9 +12605,27 @@
       eight = 8.0
       nine = 9.0
       ten = 10.0
+# Set the property type based on the input key-word
 
-       property = 20.0
-       beta_is_minus = 0.0
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      if do_pols == one
+         property = 10.0
+         beta_is_minus = 0.0
+      endif
+
+      if do_gten == one
+         property = 20.0
+         beta_is_minus = 0.0
+#bgn_debug
+#         property = 30.0
+#         beta_is_minus = 100.0
+#end_debug
+      endif
+
        if property == 10.0
 #          call get_HBx_Dipole 
        endif 

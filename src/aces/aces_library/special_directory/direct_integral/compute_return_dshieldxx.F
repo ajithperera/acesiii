@@ -173,7 +173,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
       call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                   -goc_x)
+     *                   -goc_x*ncharge)
       endif 
 
       DERCX = 1
@@ -214,7 +214,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
       call add_integrals2(out_dsh_xx,da1,da2,db1,db2,
      *                   dbuf(dpkgscr+nfirst-1),Ea1,Ea2,Eb1,Eb2,
-     *                  -1.0D0)
+     *                  -ncharge)
        endif ! nints
 
        end do !n

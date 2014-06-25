@@ -434,6 +434,16 @@
       distributed DpqB(mu,nu) 
       distributed DHFA(mu,nu) 
       distributed DHFB(mu,nu) 
+
+      distributed DpqA_x(mu,nu) 
+      distributed DpqB_x(mu,nu) 
+
+      distributed DpqA_y(mu,nu) 
+      distributed DpqB_y(mu,nu) 
+
+      distributed DpqA_z(mu,nu) 
+      distributed DpqB_z(mu,nu) 
+
       temp Tpq(mu,nu) 
       temp Txx(mu,nu) 
       temp Txi(mu,i) 
@@ -894,6 +904,11 @@
 
       Scalar property
       Scalar beta_is_minus
+      scalar do_pols
+      scalar do_aten
+      scalar do_gten
+      scalar do_dten
+
       Scalar NCOUNT
       Scalar X_COMP
       Scalar Y_COMP
@@ -9087,7 +9102,7 @@
 
         CALL DCIABAAAA_X
         CALL DCIABBBBB_X
-        if property == 10.0
+        if property == 20.0
            CALL DCIABABAB_X
            CALL DCIABBABA_X
         endif
@@ -9451,7 +9466,7 @@
         CALL DABCIAAAA_X
         CALL DABCIBBBB_X
 
-        if property == 10.0
+        if property == 20.0
            CALL DABCIABAB_X
            CALL DABCIBABA_X
         endif 
@@ -11718,7 +11733,61 @@
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
+
+            GET DHFa(mu,lambda)
+            GET DHFa(nu,sigma)
+            GET DHFa(mu,sigma)
+            GET DHFa(nu,lambda)
 #
+            GET DHFb(mu,lambda)
+            GET DHFb(nu,sigma)
+            GET DHFb(mu,sigma)
+            GET DHFb(nu,lambda)
+#
+            GET DpqA_x(mu,lambda)
+            GET DpqA_x(nu,sigma)
+            GET DpqA_x(mu,sigma)
+            GET DpqA_x(nu,lambda)
+#
+            GET DpqB_x(mu,lambda)
+            GET DpqB_x(nu,sigma)
+            GET DpqB_x(mu,sigma)
+            GET DpqB_x(nu,lambda)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+#exchange terms 
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,sigma)^DHFA(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(nu,lambda)^DHFA(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,sigma)^DHFB(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(nu,lambda)^DHFB(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
 #           Fully transform Diixx
 #           ---------------------
             DO i
@@ -11734,7 +11803,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11758,7 +11827,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11808,7 +11877,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11833,7 +11902,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11879,7 +11948,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11901,7 +11970,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11920,7 +11989,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -11937,7 +12006,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif 
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -11968,7 +12037,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                Endif 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -11984,7 +12053,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                Endif 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12001,7 +12070,7 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                Endif 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12015,14 +12084,12 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                If property == 10.0  
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                Endif 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-
-            IF  property == 10.0
 
 # ABAB spin case 
 
@@ -12060,8 +12127,6 @@
             ENDDO j
             ENDDO i
       
-            ENDIF
-
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
 
@@ -12111,6 +12176,61 @@
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
+
+            GET DHFa(mu,lambda)
+            GET DHFa(nu,sigma)
+            GET DHFa(mu,sigma)
+            GET DHFa(nu,lambda)
+#
+            GET DHFb(mu,lambda)
+            GET DHFb(nu,sigma)
+            GET DHFb(mu,sigma)
+            GET DHFb(nu,lambda)
+#
+            GET DpqA_y(mu,lambda)
+            GET DpqA_y(nu,sigma)
+            GET DpqA_y(mu,sigma)
+            GET DpqA_y(nu,lambda)
+#           
+            GET DpqB_y(mu,lambda)
+            GET DpqB_y(nu,sigma)
+            GET DpqB_y(mu,sigma)
+            GET DpqB_y(nu,lambda)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+#exchange terms
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,sigma)^DHFA(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(nu,lambda)^DHFA(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,sigma)^DHFB(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(nu,lambda)^DHFB(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
 #
 #           Fully transform Diixx
 #           ---------------------
@@ -12127,7 +12247,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12151,7 +12271,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12226,7 +12346,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12272,7 +12392,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12294,7 +12414,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12313,7 +12433,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -12330,7 +12450,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -12361,7 +12481,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
             PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12378,7 +12498,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12396,7 +12516,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12411,7 +12531,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12510,6 +12630,62 @@
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
 #
+            GET DHFa(mu,lambda)
+            GET DHFa(nu,sigma)
+            GET DHFa(mu,sigma)
+            GET DHFa(nu,lambda)
+#
+            GET DHFb(mu,lambda)
+            GET DHFb(nu,sigma)
+            GET DHFb(mu,sigma)
+            GET DHFb(nu,lambda)
+#
+            GET DpqA_z(mu,lambda)
+            GET DpqA_z(nu,sigma)
+            GET DpqA_z(mu,sigma)
+            GET DpqA_z(nu,lambda)
+#           
+            GET DpqB_z(mu,lambda)
+            GET DpqB_z(nu,sigma)
+            GET DpqB_z(mu,sigma)
+            GET DpqB_z(nu,lambda)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+#exchange terms
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,sigma)^DHFA(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(nu,lambda)^DHFA(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,sigma)^DHFB(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(nu,lambda)^DHFB(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -1.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+#            execute dump_amp Txxxx(mu,nu,lambda,sigma)
+#
 #           Fully transform Diixx
 #           ---------------------
             DO i
@@ -12525,7 +12701,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12549,7 +12725,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12599,7 +12775,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12624,7 +12800,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12670,7 +12846,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12692,7 +12868,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12713,7 +12889,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -12731,7 +12907,7 @@
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -12785,7 +12961,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12802,7 +12978,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12820,7 +12996,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12835,7 +13011,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= -1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12882,10 +13058,14 @@
 # The 1/4 factor is D(ab,cd) = D(cd,ab) (symmetrization is not done though)
 #
             T1xxxx(mu,nu,lambda, sigma)  = PXXXX_x(mu,nu,lambda,sigma)
+   
 #bgn_debug
+#            execute dump_amp T1xxxx(mu,nu,lambda, sigma)
+#            execute dump_amp AO_2SOI_Z(mu, nu, lambda, sigma)
 #            tmp = T1xxxx(mu,lambda,nu,sigma)* T1xxxx(mu,lambda,nu,sigma)
 #            D2AO_PP += tmp
 #end_debug
+
             tmp = AO_2SOI_X(mu, nu, lambda, sigma)*T1xxxx(mu,nu,lambda,sigma)
             D2SO_PX += tmp
 
@@ -13935,11 +14115,11 @@
 #PREPARE Djijx_x(j,i,j1,sigma) = Tjijx(j,i,j1,sigma) 
 
      EXECUTE SERVER_BARRIER 
-
+#
      ENDPROC  ZERO_AOD_BLOCKS
 #    ---------------------
 #___________________________________________________
-
+#
       PROC DMAIN
 
          CREATE T1A_OLD_X
@@ -13977,37 +14157,60 @@
 #end_debug
          execute sip_barrier 
          execute server_barrier 
+
          CALL PDCONT 
-         execute server_barrier
-##         call verify
 
-         execute sip_barrier
          execute server_barrier
 
-# Loop over perturbation statrs here.
+# Set the property type based on the input key-word
 
-         property = 10.0
+         do_pols = polarizability
+         do_aten = a_tensor
+         do_gten = g_tensor
+         do_dten = d_tensor
+
+# Notcie that 10.0 is used here for g-tensor (in T,L_xyz 10.0 is for
+# polarizablities)
+
+         if do_gten == 1.00
+            property = 10.0
+            beta_is_minus = 0.0
+#bgn_debug
+#         property = 30.0
+#         beta_is_minus = 100.0
+#end_debug
+      endif
+
+         execute print_scalar property
 
          if property == 10.0
             CALL GET_2P_SPIN_ORBIT 
          endif
-
 #bgn_debug
       suma=0.0
       sumb=0.0
      
       PARDO mu, nu, lambda, sigma
+            Txxxx(mu,nu,lambda,sigma) = 0.0
+
             REQUEST AO_2SOI_X(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma  
- 
-            tmp = AO_2SOI_X(mu, nu, lambda, sigma)*AO_2SOI_X(mu, nu, lambda, sigma)
-            suma +=tmp
+            GET DpqA_z(mu,lambda)
+            GET DpqB_z(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFB(nu,sigma)
+            execute dump_amp DhfA(mu,lambda) 
 
-            tmp = AO_2SOI_Y(mu, nu, lambda, sigma)*AO_2SOI_Y(mu, nu, lambda, sigma)
-            suma +=tmp
-
-            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*AO_2SOI_Z(mu, nu, lambda, sigma)
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= -3.0
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            tmp = AO_2SOI_Z(mu, nu, lambda, sigma)*Txxxx(mu, nu, lambda, sigma)
             suma +=tmp
 
       ENDPARDO mu, nu, lambda, sigma
@@ -14015,7 +14218,8 @@
       COLLECTIVE sumaa +=suma
       execute print_scalar sumaa
 #end_debug
-    
+# Loop over perturbation statrs here.
+
          NCOUNT = 0.0
 
           DO NPERT 
@@ -14251,6 +14455,15 @@
       CREATE DhfA
       CREATE DhfB
 
+      CREATE DpqA_x
+      CREATE DpqB_x
+
+      CREATE DpqA_y
+      CREATE DpqB_y
+
+      CREATE DpqA_z
+      CREATE DpqB_z
+
       CREATE t1a_old 
       CREATE t1b_old 
       CREATE l1a_old 
@@ -14274,22 +14487,22 @@
       execute sip_barrier 
       execute server_barrier
 
-      execute server_barrier
-      execute list_to_blocks                VSpipi
-      execute list_to_blocks                Vaaii
-      execute list_to_blocks                Viaai
-      execute list_to_blocks                VSaaai
-      execute list_to_blocks                VSqjqj
-      execute list_to_blocks                Vbbjj
-      execute list_to_blocks                Vjbbj
-      execute list_to_blocks                VSbbbj
-      execute list_to_blocks                Vbbii
-      execute list_to_blocks                Vjbii
-      execute list_to_blocks                Vbbai
-      execute list_to_blocks                Vpiqj
-      execute list_to_blocks                Vaajj
-      execute list_to_blocks                Viabj
-      execute list_to_blocks                Vaabj
+#      execute server_barrier
+#      execute list_to_blocks                VSpipi
+#      execute list_to_blocks                Vaaii
+#      execute list_to_blocks                Viaai
+#      execute list_to_blocks                VSaaai
+#      execute list_to_blocks                VSqjqj
+#      execute list_to_blocks                Vbbjj
+#      execute list_to_blocks                Vjbbj
+#      execute list_to_blocks                VSbbbj
+#      execute list_to_blocks                Vbbii
+#      execute list_to_blocks                Vjbii
+#      execute list_to_blocks                Vbbai
+#      execute list_to_blocks                Vpiqj
+#      execute list_to_blocks                Vaajj
+#      execute list_to_blocks                Viabj
+#      execute list_to_blocks                Vaabj
 
       execute list_to_blocks t1a_old
       execute list_to_blocks t1b_old
@@ -14321,13 +14534,11 @@
       execute list_to_blocks  T2ab_z
       execute list_to_blocks  T2bb_z
 
-
       execute list_to_blocks  l1a_x
       execute list_to_blocks  l1b_x
       execute list_to_blocks L2aa_x
       execute list_to_blocks L2ab_x
       execute list_to_blocks L2bb_x
-
 
       execute list_to_blocks  l1a_y
       execute list_to_blocks  l1b_y
@@ -14340,10 +14551,20 @@
       execute list_to_blocks L2aa_z
       execute list_to_blocks L2ab_z
       execute list_to_blocks L2bb_z
+      
+      execute list_to_blocks Dpqa_x 
+      execute list_to_blocks Dpqb_x 
+
+      execute list_to_blocks Dpqa_y
+      execute list_to_blocks Dpqb_y
+
+      execute list_to_blocks Dpqa_z
+      execute list_to_blocks Dpqb_z
 
       execute read_list_to_blocks
       execute server_barrier 
 
+      CALL HFDENS 
       CALL DMAIN 
 
       execute sip_barrier 

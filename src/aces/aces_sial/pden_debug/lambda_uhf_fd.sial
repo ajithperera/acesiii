@@ -10074,7 +10074,7 @@
       IF ICOUNT == 1.0
          FD_SCALE = 100.0
          FD_SCALE *= SCALE
-         Z_COMP = 9.0
+         X_COMP = 9.0
          IF PROPERTY == 10.0
             CALL GET_FD_P_DIPOLE
          ENDIF
@@ -10089,7 +10089,7 @@
          FD_SCALE = 100.0
          FD_SCALE *= SCALE
          FD_SCALE *= -1.0
-         Z_COMP = 9.0
+         X_COMP = 9.0
          IF PROPERTY == 10.0
             CALL GET_FD_P_DIPOLE
          ENDIF

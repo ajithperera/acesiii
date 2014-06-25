@@ -808,7 +808,10 @@
  
        scalar property
        scalar BETA_IS_MINUS
-
+       scalar do_pols
+       scalar do_aten
+       scalar do_gten
+       scalar do_dten
 #____________________________________________________________________________
 # generate one-electron B-field integrals
 #

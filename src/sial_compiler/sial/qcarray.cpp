@@ -40,7 +40,7 @@ extern InstructCls Instruct;
 
 QCArrayClass::QCArrayClass()
 {
-    nvars=22;
+    nvars=26;
 }
 
 void QCArrayClass::initializer()
@@ -185,10 +185,24 @@ void QCArrayClass::insertconstant()
     arraytype[21]=scalar;
     fvalue[21]=0;
 
-    nvars = 22;
+    vararray[22]="polarizability";
+    arraytype[22]=scalar;
+    fvalue[22]=0;
+
+    vararray[23]="a_tensor";
+    arraytype[23]=scalar;
+    fvalue[23]=0;
+
+    vararray[24]="g_tensor";
+    arraytype[24]=scalar;
+    fvalue[24]=0;
+
+    vararray[25]="d_tensor";
+    arraytype[25]=scalar;
+    fvalue[25]=0;
+
+    nvars = 26;
 }
-
-
 
 void QCArrayClass::insert(int type, int idno, int nindex, int*indexarray)
 {
