@@ -10412,7 +10412,7 @@
          ENDDO nu
          ENDDO mu
 
-         execute ecp_dercont Spq 
+#         execute ecp_dercont Spq 
       endif
 #
 # -----------------------------------------------------------------------------

@@ -1659,6 +1659,8 @@
       PARDO  a, i
               GET t1a_old_x(a,i)
               GET l1a_old_x(i,a)
+              execute dump_amp t1a_old_x(a,i) 
+              execute dump_amp l1a_old_x(i,a) 
               tai (a,i)  = l1a_old_x(i,a)
               tai (a,i) += t1a_old_x(a,i)
               tai (a,i) *=0.5
@@ -3733,38 +3735,41 @@
            PARDO a, i, a2, i1
 #               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
 #               REQUEST L2old_aa(i,a,i1,a2) a2 # read from list
-               REQUEST T2old_aa_z(a,i,a2,i1) i1  # read from list
-               REQUEST L2old_aa_z(i,a,i1,a2) a2 # read from list
+               REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
+               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+               execute dump_amp T2old_aa_x(a,i,a2,i1) 
+               execute dump_amp L2old_aa_x(i,a,i1,a2) 
+
 #               taiai(a,i,a2,i1) = L2old_aa_x(i,a,i1,a2)
 #               sum = T2old_aa(a,i,a2,i1) * taiai(a,i,a2,i1)
 #               suma += sum
 #               sum = L2old_aa(i,a,i1,a2) * L2old_aa(i,a,i1,a2)
 #               suma += sum
-               sum = T2old_aa_z(a,i,a2,i1) * T2old_aa_z(a,i,a2,i1)
-               suma += sum
-               sum =  L2old_aa_z(i,a,i1,a2) * L2old_aa_z(i,a,i1,a2)
-               suma += sum
+#               sum = T2old_aa_z(a,i,a2,i1) * T2old_aa_z(a,i,a2,i1)
+#               suma += sum
+#               sum =  L2old_aa_z(i,a,i1,a2) * L2old_aa_z(i,a,i1,a2)
+#               suma += sum
            ENDPARDO a, i, a2, i1
-           PARDO b1, j, b2, j1
+#           PARDO b1, j, b2, j1
 #               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
 #               REQUEST L2old_bb(j,b1,j1,b2)  j1 # Read from the list
-               REQUEST T2old_bb_z(b1,j,b2,j1) j1 # Read from the list
-               REQUEST L2old_bb_z(j,b1,j1,b2)  j1 # Read from the list
+#               REQUEST T2old_bb_z(b1,j,b2,j1) j1 # Read from the list
+#               REQUEST L2old_bb_z(j,b1,j1,b2)  j1 # Read from the list
 #               tbjbj(b1,j,b2,j1) = L2old_bb_x(j,b1,j1,b2)
 #               sum = T2old_bb(b1,j,b2,j1) * tbjbj(b1,j,b2,j1)
 #               sumb += sum
 #               sum = L2old_bb(j,b1,j1,b2) * L2old_bb(j,b1,j1,b2)
 #               sumb += sum
-               sum = T2old_bb_z(b1,j,b2,j1) * T2old_bb_z(b1,j,b2,j1)
-               sumb += sum
-               sum = L2old_bb_z(j,b1,j1,b2) * L2old_bb_z(j,b1,j1,b2)
-               sumb += sum
-           ENDPARDO b1, j, b2, j1
-           execute server_barrier
-           collective sumaa += suma
-           collective sumbb += sumb
-           execute print_scalar sumaa
-           execute print_scalar sumbb
+#               sum = T2old_bb_z(b1,j,b2,j1) * T2old_bb_z(b1,j,b2,j1)
+#               sumb += sum
+#               sum = L2old_bb_z(j,b1,j1,b2) * L2old_bb_z(j,b1,j1,b2)
+#               sumb += sum
+#           ENDPARDO b1, j, b2, j1
+#           execute server_barrier
+#           collective sumaa += suma
+#           collective sumbb += sumb
+#           execute print_scalar sumaa
+#           execute print_scalar sumbb
 #debug_end
 # set the type of property based on key-words.
 

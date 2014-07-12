@@ -4248,6 +4248,7 @@
             DO i2  
 #
                REQUEST Diiix(i,i1,i2,sigma) i  
+               execute dump_amp Diiix(i,i1,i2,sigma)
 #
                T1iixx(i,i1,lambda,sigma) = Diiix(i,i1,i2,sigma)*ca(lambda,i2) 
                Tiixx(i,i1,lambda,sigma) += T1iixx(i,i1,lambda,sigma)  

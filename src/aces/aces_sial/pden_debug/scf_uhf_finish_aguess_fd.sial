@@ -49,6 +49,7 @@
       index   korder = 1, scf_hist
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
+      index   NPERT  = 1, 2
       index   kone   = 1, 1
       index   kdiis  = 1, 10 
       index   d1     = 1, 10 
@@ -110,6 +111,10 @@
       distributed FTpq_b(mu,nu) 
       distributed CBT_a(mu,p) 
       distributed CBT_b(mu,q) 
+
+      distributed Hbx(mu,nu)
+      distributed Hby(mu,nu)
+      distributed Hbz(mu,nu)
 
       static dflags11(iiter1,jjter1)
       static dflags12(iiter1,jjter2)
@@ -415,6 +420,36 @@
       scalar pcount 
       scalar ncount1 
       scalar rank 
+
+      scalar PRINT_TMP
+      scalar NCOUNT
+      scalar property
+      scalar spin_den
+      scalar asym
+      Scalar Xtmp
+      Scalar Xsum
+      Scalar Ysum
+      Scalar Zsum
+      Scalar XXP
+      Scalar YYP
+      Scalar ZZP
+      Scalar XXM
+      Scalar YYM
+      Scalar ZZM
+      scalar scale
+      scalar fd_scale 
+      scalar fd_width
+      scalar inv_fd_width
+      scalar icount
+      scalar FD_XX
+      scalar FD_YY
+      scalar FD_ZZ
+      scalar FDP
+      scalar FDM
+      scalar X_COMPONENT 
+      scalar Y_COMPONENT 
+      scalar Z_COMPONENT 
+
 #
 # Parameters needed for DIIS 
 
@@ -1360,21 +1395,21 @@
 #
        execute sip_barrier
 #
-       execute get_my_rank rank 
-       if rank == 0.0 
-       DO mu    
-       DO nu   
+#       execute get_my_rank rank 
+#       if rank == 0.0 
+#       DO mu    
+#       DO nu   
 #
-             Txx(mu,nu)        = 0.0  
-             execute return_h1 txx 
+#            Txx(mu,nu)        = 0.0  
+#             execute return_h1 txx 
 #
-             PUT Fpq_a(mu,nu) += Txx(mu,nu) 
-             PUT Fpq_b(mu,nu) += Txx(mu,nu) 
+#             PUT Fpq_a(mu,nu) += Txx(mu,nu) 
+#             PUT Fpq_b(mu,nu) += Txx(mu,nu) 
 #
-       ENDDO nu   
-       ENDDO mu    
-       endif 
-
+#       ENDDO nu   
+#       ENDDO mu    
+#       endif 
+#
 #
        ENDPROC FOCK_MATRIX_FAST   
 #      ------------------------ 
@@ -1432,6 +1467,111 @@
 #
        ENDPROC HF_ENERGY   
 #      ----------------- 
+
+       PROC HF_ENERGY_P
+#      ----------------
+#
+#      The HF energy is computed from the HF density (DHFa(b)) and the
+#      Fock matrix (Fpq_a(b)).
+#      ---------------------------------------------------------------
+#
+       energy = 0.0
+       esum = 0.0
+       execute get_my_rank rank
+       if rank == 0.0
+       DO mu
+       DO nu
+#
+             GET Fpq_a(mu,nu)
+             GET Fpq_b(mu,nu)
+             GET DHFa(mu,nu)
+             GET DHFb(mu,nu)
+#
+             Txx(mu,nu)   = 0.0
+             execute return_h1 txx
+             GET HBX (mu, nu)
+             Txx(mu, nu) +=  HBX (mu, nu)
+             TXX(mu, nu) *= FD_SCALE
+ 
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_a(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHFa(mu,nu)
+             esum        += etemp
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_b(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHFb(mu,nu)
+             esum        += etemp
+#
+       ENDDO nu
+       ENDDO mu
+       endif
+
+       execute sip_barrier
+
+       esum *= 0.5
+       collective energy += esum
+       energy += scfeneg
+#
+       execute print_scalar energy
+#
+       ENDPROC HF_ENERGY_P
+#      ------------------
+
+       PROC HF_ENERGY_M
+#      ----------------
+#
+#      The HF energy is computed from the HF density (DHFa(b)) and the
+#      Fock matrix (Fpq_a(b)).
+#      ---------------------------------------------------------------
+#
+       energy = 0.0
+       esum = 0.0
+       execute get_my_rank rank
+       if rank == 0.0
+       DO mu
+       DO nu
+#
+             GET Fpq_a(mu,nu)
+             GET Fpq_b(mu,nu)
+             GET DHFa(mu,nu)
+             GET DHFb(mu,nu)
+#
+             Txx(mu,nu)   = 0.0
+             execute return_h1 txx  
+             GET HBX (mu, nu)
+             Txx(mu, nu) +=  HBX (mu, nu)
+             TXX(mu, nu) *= FD_SCALE
+             TXX(mu, nu) *= -1.0
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_a(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHFa(mu,nu)
+             esum        += etemp
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_b(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHFb(mu,nu)
+             esum        += etemp
+#
+       ENDDO nu
+       ENDDO mu
+       endif
+
+       execute sip_barrier
+
+       esum *= 0.5
+       collective energy += esum
+       energy += scfeneg
+#
+       execute print_scalar energy
+#
+       ENDPROC HF_ENERGY_M
+#      -------------------
 #
 # ---------------------------------------------------------------------------- 
 #
@@ -3065,7 +3205,179 @@
             CALL DIISN_A 
            #CALL DIISN_B 
        ENDPROC DIISN 
+
+       PROC ADD_ONEHAM_P
+#      -------------------
+       execute get_my_rank rank
+
+       if rank == 0.0 
+
+       DO mu
+       DO nu
+            IF X_COMPONENT == 9.0
+               Get HBX(mu, nu) 
+            ENDIF 
+            IF Y_COMPONENT == 9.0
+               Get HBY(mu, nu) 
+            ENDIF 
+
+            IF Z_COMPONENT == 9.0
+               Get HBZ(mu, nu) 
+            ENDIF 
+
+            GET Fpq_a(mu, nu) 
+            GET Fpq_b(mu, nu) 
+         
+            TXX(mu, nu) = HBX(mu,nu)
+            TXX(mu, nu) *= FD_SCALE 
+
+            PUT Fpq_a(mu,nu) += Txx(mu,nu)
+            PUT Fpq_b(mu,nu) += Txx(mu,nu)
+
+       ENDDO nu
+       ENDDO mu
+
+       endif 
+
+       ENDPROC ADD_ONEHAM_P
+#      ---------------------
+
+       PROC ADD_ONEHAM_M
+#      -------------------
+       execute get_my_rank rank
+
+       if rank == 0.0
+
+       DO mu
+       DO nu  
+
+            IF X_COMPONENT == 9.0
+               Get HBX(mu, nu)
+            ENDIF
+
+            IF Y_COMPONENT == 9.0
+               Get HBY(mu, nu)
+            ENDIF
+
+            IF Z_COMPONENT == 9.0
+               Get HBZ(mu, nu)
+            ENDIF
+
+            GET Fpq_a(mu, nu)
+            GET Fpq_b(mu, nu)
+
+            TXX(mu, nu) = HBX(mu,nu)
+            TXX(mu, nu) *= FD_SCALE   
+            TXX(mu, nu) *= -1.0
+
+            PUT Fpq_a(mu,nu) += Txx(mu,nu)
+            PUT Fpq_b(mu,nu) += Txx(mu,nu)
+
+       ENDDO nu
+       ENDDO mu
+
+       endif
+       execute sip_barrier
+
+       ENDPROC ADD_ONEHAM_M
+#      ---------------------
+
+        PROC GET_HBXYZ_Dipole
+#       --------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier
+
+           PARDO mu, nu
+              EXECUTE return_x Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                 execute print_scalar one
+#                 Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+#end_dbg
+
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+
+              EXECUTE return_y Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                 execute print_scalar one
+#                 Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+#end_dbg
+
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+
+              EXECUTE return_z Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                execute print_scalar one
+#                Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+        execute sip_barrier
 #
+       ENDPROC get_HBXYZ_Dipole
+#      -----------------------
+
+        PROC GET_HBXYZ_Angmom
+#       --------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier
+
+           PARDO mu, nu
+              EXECUTE compute_angmom_xbatch Tpq(mu,nu)
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_angmom_ybatch Tpq(mu,nu)
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_angmom_zbatch Tpq(mu,nu)
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Angmom
+#      -----------------------
+
+        PROC GET_HBXYZ_Spin_orbit
+#       ------------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier
+
+           PARDO mu, nu
+              EXECUTE compute_1soi_xbatch Tpq(mu,nu)
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_1soi_ybatch Tpq(mu,nu)
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_1soi_zbatch Tpq(mu,nu)
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Spin_orbit
+#      ----------------------------
 # ---------------------------------------------------------------------------- 
 #
 #  
@@ -3118,6 +3430,46 @@
 
       execute print_scalar diis_start
       execute print_scalar diis_order
+
+      FD_WIDTH     = 200.0
+      INV_FD_WIDTH = 1.0/FD_WIDTH
+      SCALE        = 1000000.0
+      FD_SCALE     = 1.0/SCALE 
+      FD_SCALE     *= FD_WIDTH
+      INV_FD_WIDTH *= SCALE
+      execute print_scalar INV_FD_WIDTH
+
+      property = 10.0
+
+      ASYM     = 0.0
+      SPIN_DEN = 0.0
+
+      if property == 10.0
+
+         SPIN_DEN = 0.0
+         call get_HBXYZ_Dipole
+
+      endif
+
+      if property == 20.0
+         ASYM     = 1.0
+         SPIN_DEN = 1.0
+         call get_HBXYZ_spin_orbit
+
+       endif
+#bgn_debug
+       if property == 30.0
+          ASYM     = 1.0
+          SPIN_DEN = 0.0
+          call get_HBXYZ_Angmom
+       endif
+#end_debug
+#      ICOUNT = 0.0
+
+#      DO NPERT 
+
+#         ICOUNT += 1.0
+#         execute print_scalar icount
 #
 #
 #     Create the one-particle arrays needed for the computation. 
@@ -3339,6 +3691,14 @@
 # Start iterations 
 # ---------------- 
 #
+      ICOUNT = 0.0
+      X_COMPONENT =9.0
+
+      DO NPERT
+
+         ICOUNT += 1.0
+         execute print_scalar icount
+
       DO kiter 
          diis_count += 1.0 
          pcount     += 1.0 
@@ -3375,8 +3735,23 @@
 
          CALL FOCK_MATRIX_FAST   
          execute sip_barrier 
-#
-         CALL HF_ENERGY 
+
+         IF NCOUNT == 1.0
+           CALL ADD_ONEHAM_P
+         ENDIF
+
+         IF NCOUNT == 2.0
+            CALL ADD_ONEHAM_M
+         ENDIF
+
+         IF NCOUNT == 1.0
+            CALL HF_ENERGY_P
+         ENDIF
+
+         IF NCOUNT == 2.0
+            CALL HF_ENERGY_M
+         ENDIF
+
          energy2 = energy 
          execute sip_barrier
 #
@@ -3586,58 +3961,96 @@
          endif
 #
       ENDDO kiter 
+
+      IF ICOUNT == 1.0
+         FDP = energy
+         execute print_scalar energy
+      ENDIF 
+
+      IF ICOUNT == 2.0
+         FDM = energy
+         execute print_scalar energy
+      ENDIF 
+
+      DELETE Fpq_a
+      DELETE Fpq_b
+#      DELETE DHFa
+#      DELETE DHFb
+#      DELETE DHFa_old
+#      DELETE DHFb_old
+#      DELETE Fa
+#      DELETE Fb
+#      DELETE Fai
+#      DELETE Fbj
+#      DELETE FFai
+#      DELETE FFbj
+#      DELETE Qxx
+#      DELETE IDhfa
+#      DELETE IDhfb
+
+#
+#     Orthonormalizing transformation coefficient
+#     -------------------------------------------
+#
+      ENDDO NPERT 
+
+      FD_XX = FDP
+      FD_XX -= FDM
+      FD_XX *= inv_fd_width
+
+      execute print_scalar FD_XX
 #
 #     Release unneeded memory blocks.
 #
-      execute sip_barrier
-      DELETE DHFA
-      DELETE DHFB
-      DELETE DHFA_OLD
-      DELETE DHFB_OLD
-
-      CREATE FTa 
-      CREATE FTb 
-      execute sip_barrier 
-      PARDO mu, nu 
-            GET Fpq_a(mu,nu) 
-            DO p 
-               Txp(mu,p) = Fpq_a(mu,nu)*ca(nu,p) 
-               DO p1 
-                  Tpp(p1,p) = Txp(mu,p)*ca(mu,p1) 
-                  PUT FTa(p1,p) += Tpp(p1,p) 
-               ENDDO p1  
-            ENDDO p 
-      ENDPARDO mu, nu  
-#     
-      PARDO mu, nu 
-            GET Fpq_b(mu,nu) 
-            DO q 
-               Txq(mu,q) = Fpq_b(mu,nu)*cb(nu,q) 
-               DO q1 
-                  Tqq(q1,q) = Txq(mu,q)*cb(mu,q1) 
-                  PUT FTb(q1,q) += Tqq(q1,q) 
-               ENDDO q1  
-            ENDDO q 
-      ENDPARDO mu, nu  
-      execute sip_barrier 
+#      execute sip_barrier
+#      DELETE DHFA
+#      DELETE DHFB
+#      DELETE DHFA_OLD
+#      DELETE DHFB_OLD
 #
-#     Put the final Fock arrays into predefined arrays 
+#      CREATE FTa 
+#      CREATE FTb 
+#      execute sip_barrier 
+#      PARDO mu, nu 
+#            GET Fpq_a(mu,nu) 
+#            DO p 
+#               Txp(mu,p) = Fpq_a(mu,nu)*ca(nu,p) 
+#               DO p1 
+#                  Tpp(p1,p) = Txp(mu,p)*ca(mu,p1) 
+#                  PUT FTa(p1,p) += Tpp(p1,p) 
+#               ENDDO p1  
+#            ENDDO p 
+#      ENDPARDO mu, nu  
+##     
+#      PARDO mu, nu 
+#            GET Fpq_b(mu,nu) 
+#            DO q 
+#               Txq(mu,q) = Fpq_b(mu,nu)*cb(nu,q) 
+#               DO q1 
+#                  Tqq(q1,q) = Txq(mu,q)*cb(mu,q1) 
+#                  PUT FTb(q1,q) += Tqq(q1,q) 
+#               ENDDO q1  
+#            ENDDO q 
+#      ENDPARDO mu, nu  
+#      execute sip_barrier 
+##
+##     Put the final Fock arrays into predefined arrays 
 #     ------------------------------------------------ 
 #
-      DO p 
-      DO p1  
-         GET FTa(p,p1) 
-         Fock_a(p,p1) = FTa(p,p1) 
-      ENDDO p1  
-      ENDDO p 
-#
-      DO q 
-      DO q1  
-         GET FTb(q,q1) 
-         Fock_b(q,q1) = FTb(q,q1) 
-      ENDDO q1  
-      ENDDO q 
-#
+#      DO p 
+##      DO p1  
+#         GET FTa(p,p1) 
+#         Fock_a(p,p1) = FTa(p,p1) 
+#      ENDDO p1  
+#      ENDDO p 
+##
+#      DO q 
+#      DO q1  
+#         GET FTb(q,q1) 
+#         Fock_b(q,q1) = FTb(q,q1) 
+#      ENDDO q1  
+#      ENDDO q 
+######
       #execute sip_barrier 
       #execute blocks_to_list Fpq_a 
       #execute blocks_to_list Fpq_b 
