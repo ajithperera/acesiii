@@ -314,6 +314,7 @@
 #
              compute_integrals            aoint(mu,nu,lambda,sigma)
 #
+             execute dump_amp aoint(mu,nu,lambda,sigma)
 #
              DO i   
 #
