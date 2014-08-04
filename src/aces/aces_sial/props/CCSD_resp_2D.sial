@@ -3290,11 +3290,14 @@
                T1aaii(a,a1,i,i1) = Dabij_aa_x(a,a1,i,i1)
 
                T1iiaa(i1,i,a1,a)  *= 0.5
-               T1aaii(a,a1,i,i1)  *=-0.5
+               IF ASYM == 1.0
+                  T1aaii(a,a1,i,i1)  *= -0.5
+               ELSE
+                  T1aaii(a,a1,i,i1)  *=  0.5
+               ENDIF
                T1AHiiaa(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
                T2AHiiaa(i1,i,a1,a) = T1aaii(a,a1,i,i1)
                T1AHiiaa(i1,i,a1,a) += T2AHiiaa(i1,i,a1,a)
-
 #bgn_debug
 #               T1AHiiaa(i1,i,a1,a) *= 1.5
                T1AHiiaa(i1,i,a1,a) *= 1.0
@@ -4171,7 +4174,11 @@
                Tabij(a,b1,i,j1) = Dabij_ab_x(a,b1,i,j1)
 
                Tijab(i,j1,a,b1)   *=  0.5
-               Tabij(a,b1,i,j1)   *= -0.5
+               IF ASYM == 1.0
+                  Tabij(a,b1,i,j1)   *= -0.5
+               ELSE
+                  Tabij(a,b1,i,j1)   *=  0.5
+               ENDIF 
                TAHijab(i,j1,a,b1)  = Tijab(i,j1,a,b1) 
                T1AHijab(i,j1,a,b1) = Tabij(a,b1,i,j1)
                TAHijab(i,j1,a,b1) += T1AHijab(i,j1,a,b1) 
@@ -4653,7 +4660,11 @@
                T1bbjj(b1,b,j1,j) = Dabij_bb_x(b,b1,j,j1)
                
                T1jjbb(j1,j,b1,b)  *=  0.5
-               T1bbjj(b1,b,j1,j)  *= -0.5
+               IF ASYM == 1.0
+                  T1bbjj(b1,b,j1,j)  *= -0.5
+               ELSE
+                  T1bbjj(b1,b,j1,j)  *=  0.5
+               ENDIF 
                TAHjjbb(j1,j,b1,b)  = T1jjbb(j1,j,b1,b)
                T1AHjjbb(j1,j,b1,b) = T1bbjj(b1,b,j1,j)
                TAHjjbb(j1,j,b1,b) += T1AHjjbb(j1,j,b1,b)
@@ -4963,7 +4974,11 @@
             TAiiii(i2,i3,i,i1) = Dijkl_aa_x(i2,i3,i,i1) 
 
             Tiiii(i,i1,i2,i3)   *= 0.5
-            TAiiii(i2,i3,i,i1)  *= -0.5
+            IF ASYM == 1.0
+                TAiiii(i2,i3,i,i1)  *= -0.5
+            ELSE 
+                TAiiii(i2,i3,i,i1)  *=  0.5
+            ENDIF 
             TAHiiii(i,i1,i2,i3)  = Tiiii(i,i1,i2,i3)
             T1AHiiii(i,i1,i2,i3) = TAiiii(i2,i3,i,i1)
             TAHiiii(i,i1,i2,i3) += T1AHiiii(i,i1,i2,i3) 
@@ -5094,7 +5109,11 @@
             TAijij(i1,j1,i,j) = Dijkl_ab_x(i1,j1,i,j)
 
             Tijij(i,j,i1,j1)   *= 0.5
-            TAijij(i1,j1,i,j)  *= -0.5
+            IF ASYM == 1.0
+               TAijij(i1,j1,i,j)  *= -0.5
+            ELSE
+               TAijij(i1,j1,i,j)  *=  0.5
+            ENDIF 
             TAHijij(i,j,i1,j1)  = Tijij(i,j,i1,j1)  
             T1AHijij(i,j,i1,j1) = TAijij(i1,j1,i,j) 
             TAHijij(i,j,i1,j1) += T1AHijij(i,j,i1,j1)
@@ -5194,7 +5213,11 @@
              TAjjjj(j2,j3,j,j1) = Dijkl_bb_x(j2,j3,j,j1) 
   
              Tjjjj(j,j1,j2,j3)   *=  0.5
-             TAjjjj(j2,j3,j,j1)  *= -0.5
+             IF ASYM == 1.0
+                TAjjjj(j2,j3,j,j1)  *= -0.5
+             ELSE
+                TAjjjj(j2,j3,j,j1)  *=  0.5
+             ENDIF 
              TAHjjjj(j,j1,j2,j3)  = Tjjjj(j,j1,j2,j3) 
              T1AHjjjj(j,j1,j2,j3) = TAjjjj(j2,j3,j,j1)
              TAHjjjj(j,j1,j2,j3) += T1AHjjjj(j,j1,j2,j3)
@@ -6330,7 +6353,11 @@
             TAiaia(i1,a,i,a1) = Dibja_aaaa_x(i1,a,i,a1) 
              
             Tiaia(i,a1,i1,a)   *=  0.5
-            TAiaia(i1,a,i,a1)  *= -0.5
+            IF ASYM == 1.0
+               TAiaia(i1,a,i,a1)  *= -0.5
+            ELSE
+               TAiaia(i1,a,i,a1)  *=  0.5
+            ENDIF
             TAHiaia(i,a1,i1,a)  = Tiaia(i,a1,i1,a)
             T1AHiaia(i,a1,i1,a) = TAiaia(i1,a,i,a1) 
             TAHiaia(i,a1,i1,a) += T1AHiaia(i,a1,i1,a)
@@ -6559,7 +6586,11 @@
             Tibib(i1,b1,i,b)  = Dibja_abab_x(i1,b1,i,b) 
  
             TAibib(i,b,i1,b1)  *=  0.5
-            Tibib(i1,b1,i,b)   *= -0.5
+            IF ASYM == 1.0
+               Tibib(i1,b1,i,b)   *= -0.5
+            ELSE 
+               Tibib(i1,b1,i,b)   *=  0.5
+            ENDIF 
             TAHibib(i,b,i1,b1)  = TAibib(i,b,i1,b1) 
             T1AHibib(i,b,i1,b1) = Tibib(i1,b1,i,b) 
             TAHibib(i,b,i1,b1) += T1AHibib(i,b,i1,b1) 
@@ -6791,7 +6822,11 @@
             TAjbjb(j1,b,j,b1)  = Dibja_bbbb_x(j1,b,j,b1)
             
             Tjbjb(j,b1,j1,b)  *=  0.5
-            TAjbjb(j1,b,j,b1) *= -0.5
+            IF ASYM == 1.0
+               TAjbjb(j1,b,j,b1) *= -0.5
+            ELSE
+               TAjbjb(j1,b,j,b1) *=  0.5
+            ENDIF
             TAHjbjb(j,b1,j1,b) = Tjbjb(j,b1,j1,b) 
             T1AHjbjb(j,b1,j1,b)= TAjbjb(j1,b,j,b1) 
             TAHjbjb(j,b1,j1,b)+= T1AHjbjb(j,b1,j1,b) 
@@ -7006,7 +7041,11 @@
             TAjaja(j1,a1,j,a) = Dibja_baba_x(j1,a1,j,a)
            
             Tjaja(j,a,j1,a1)   *=  0.5
-            TAjaja(j1,a1,j,a)  *= -0.5
+            IF ASYM == 1.0
+               TAjaja(j1,a1,j,a)  *= -0.5
+            ELSE
+               TAjaja(j1,a1,j,a)  *=  0.5
+            ENDIF 
             TAHjaja(j,a,j1,a1)  =  Tjaja(j,a,j1,a1) 
             T1AHjaja(j,a,j1,a1) =  TAjaja(j1,a1,j,a) 
             TAHjaja(j,a,j1,a1) +=  T1AHjaja(j,a,j1,a1) 
@@ -8552,7 +8591,11 @@
             dO mu
 
                Taaai(a,a1,a2,i)  *=  0.5
-               Taiaa(a,i,a1,a2)  *= -0.5
+               IF ASYM == 1.0
+                  Taiaa(a,i,a1,a2)  *= -0.5
+               ELSE
+                  Taiaa(a,i,a1,a2)  *=  0.5
+               ENDIF
                TAHaaai(a,a1,a2,i) =  Taaai(a,a1,a2,i)
                T1AHaaai(a,a1,a2,i)=  Taiaa(a,i,a1,a2) 
                TAHaaai(a,a1,a2,i)+=  T1AHaaai(a,a1,a2,i)
@@ -8739,7 +8782,11 @@
             DO mu
 
                Tbbbj(b,b1,b2,j)  *=  0.5
-               Tbjbb(b,j,b1,b2)  *= -0.5
+               IF ASYM == 1.0
+                  Tbjbb(b,j,b1,b2)  *= -0.5
+               ELSE
+                  Tbjbb(b,j,b1,b2)  *=  0.5
+               ENDIF
                TAHbbbj(b,b1,b2,j) = Tbbbj(b,b1,b2,j)
                T1AHbbbj(b,b1,b2,j)= Tbjbb(b,j,b1,b2)
                TAHbbbj(b,b1,b2,j)+= T1AHbbbj(b,b1,b2,j)
@@ -8949,7 +8996,11 @@
 #  DBABA = -1/2 DBABA + DBABA
 #
             Tbabi(b1,a,b,i)   *=  0.5
-            Tbiab(b1,i,a,b)   *= -0.5
+            IF ASYM == 1.0
+               Tbiab(b1,i,a,b)   *= -0.5
+            ELSE
+               Tbiab(b1,i,a,b)   *=  0.5
+            ENDIF
             TAHbabi(b1,a,b,i)  = Tbabi(b1,a,b,i)
             T1AHbabi(b1,a,b,i) = Tbiab(b1,i,a,b)
             TAHbabi(b1,a,b,i) += T1AHbabi(b1,a,b,i)
@@ -9174,7 +9225,11 @@
 #  DABAB = 1/2 DABAB - DABAB
 #
             Tabaj(a,b,a1,j)  *= 0.5
-            Tajba(a,j,b,a1)  *= -0.5
+            IF ASYM == 1.0
+               Tajba(a,j,b,a1)  *= -0.5
+            ELSE
+               Tajba(a,j,b,a1)  *=  0.5
+            ENDIF 
             TAHabaj(a,b,a1,j) = Tabaj(a,b,a1,j)
             T1AHabaj(a,b,a1,j)= Tajba(a,j,b,a1)
             TAHabaj(a,b,a1,j)+= T1AHabaj(a,b,a1,j)
@@ -9856,8 +9911,11 @@
             DO sigma
 
                 Tiiia(i,i1,i2,a) *=  0.5
-                Taiii(a,i,i1,i2) *= -0.5
-                 
+                IF ASYM == 1.0
+                   Taiii(a,i,i1,i2) *= -0.5
+                ELSE
+                   Taiii(a,i,i1,i2) *=  0.5
+                ENDIF
                 TAHiiia(i,i1,i2,a)  = Tiiia(i,i1,i2,a)
                 T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2) 
                 TAHiiia(i,i1,i2,a) += T1AHiiia(i,i1,i2,a)
@@ -10032,7 +10090,11 @@
             DO sigma
 
                Tjjjb(j,j1,j2,b) *=  0.5
-               Tbjjj(b,j,j1,j2) *= -0.5
+               IF ASYM == 1.0
+                  Tbjjj(b,j,j1,j2) *= -0.5
+               ELSE
+                  Tbjjj(b,j,j1,j2) *=  0.5
+               ENDIF 
                TAHjjjb(j,j1,j2,b)  = Tjjjb(j,j1,j2,b)
                T1AHjjjb(j,j1,j2,b) = Tbjjj(b,j,j1,j2) 
                TAHjjjb(j,j1,j2,b) += T1AHjjjb(j,j1,j2,b) 
@@ -10214,7 +10276,11 @@
             DO sigma
 
                Tijib(i,j,i1,b)   *=  0.5
-               Tbiji(b,i,j,i1)   *= -0.5
+               IF ASYM == 1.0
+                  Tbiji(b,i,j,i1)   *= -0.5
+               ELSE
+                  Tbiji(b,i,j,i1)   *=  0.5
+               ENDIF 
                TAHijib(i,j,i1,b)  = Tijib(i,j,i1,b) 
                T1AHijib(i,j,i1,b) = Tbiji(b,i,j,i1)
                TAHijib(i,j,i1,b) += T1AHijib(i,j,i1,b)
@@ -10402,17 +10468,20 @@
 #  DABAB = -1/2 DABAB + DABAB
 
             DO sigma
-#bgn_debug               
-#               Tjija(j,i,j1,a)  *= 0.5
-               Tjija(j,i,j1,a)  *= 1.0
-#end_debug
 
                Tjija(j,i,j1,a)   *=  0.5
-               Tajij(a,j,i,j1)   *= -0.5
+               IF ASYM == 1.0
+                  Tajij(a,j,i,j1)   *= -0.5
+               ELSE 
+                  Tajij(a,j,i,j1)   *=  0.5
+               ENDIF
                TAHjija(j,i,j1,a)  = Tjija(j,i,j1,a) 
                T1AHjija(j,i,j1,a) = Tajij(a,j,i,j1)
                TAHjija(j,i,j1,a) += T1AHjija(j,i,j1,a)
-
+#bgn_debug               
+#               TAHjija(j,i,j1,a)  *= 0.5
+               TAHjija(j,i,j1,a)  *= 1.0
+#end_debug
                Tjijx(j,i,j1,sigma)      = TAHjija(j,i,j1,a)*ca(sigma,a)
                PREPARE Djijx_x(j,i,j1,sigma) += Tjijx(j,i,j1,sigma)
             ENDDO sigma
@@ -11661,7 +11730,11 @@
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE 
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -11684,7 +11757,11 @@
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma) *=  0.5
-               TASxxxx(lambda,sigma,mu,nu)*= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu)*= -0.5
+               ELSE 
+                  TASxxxx(lambda,sigma,mu,nu)*=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
@@ -11709,7 +11786,11 @@
                TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma) *=  0.5
-               TASxxxx(lambda,sigma,mu,nu)*= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu)*= -0.5
+               ELSE 
+                  TASxxxx(lambda,sigma,mu,nu)*=  0.5
+               ENDIF
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
@@ -11730,7 +11811,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -11758,7 +11843,11 @@
                TASxxxx(lambda,sigma,mu,nu) *= 4.0 
 
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE 
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -11784,7 +11873,11 @@
                TASxxxx(lambda,sigma,mu,nu) *= 4.0
 
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
@@ -12152,7 +12245,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12175,7 +12272,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12199,7 +12300,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12220,7 +12325,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma)= Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12246,7 +12355,11 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12270,7 +12383,11 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12668,7 +12785,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12691,7 +12812,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12715,7 +12840,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12736,7 +12865,11 @@
                T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12760,7 +12893,11 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12784,7 +12921,11 @@
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TASxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
-               TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               IF ASYM == 1.0
+                  TASxxxx(lambda,sigma,mu,nu) *= -0.5
+               ELSE
+                  TASxxxx(lambda,sigma,mu,nu) *=  0.5
+               ENDIF 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13935,7 +14076,7 @@
          if do_gten == 1.00
             property = 20.0
             beta_is_minus = 0.0
-            ASYM = 1.0
+            ASYM = 0.0
 #bgn_debug
 #         property = 30.0
 #         beta_is_minus = 100.0

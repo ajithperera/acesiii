@@ -1,0 +1,3953 @@
+#
+                       SIAL CCSD_density_deri
+
+      index   xyz    = 1,3
+      index   xyz1   = 1,3
+#     Index NPERT    = 1, 3 
+#
+      Index NPERT    = 1, 1
+#
+      aoindex mu     = 1, norb
+      aoindex nu     = 1, norb
+
+      moaindex i = baocc, eaocc
+      moaindex i1= baocc, eaocc
+      moaindex i2= baocc, eaocc
+      moaindex i3= baocc, eaocc
+
+      mobindex j = bbocc, ebocc
+      mobindex j1= bbocc, ebocc
+      mobindex j2= bbocc, ebocc
+      mobindex j3= bbocc, ebocc
+
+      moaindex a = bavirt, eavirt
+      moaindex a1= bavirt, eavirt
+      moaindex a2= bavirt, eavirt
+      moaindex a3= bavirt, eavirt
+
+      mobindex b = bbvirt, ebvirt
+      mobindex b1= bbvirt, ebvirt
+      mobindex b2= bbvirt, ebvirt
+      mobindex b3= bbvirt, ebvirt
+
+      moaindex p = baocc, eavirt
+      moaindex p1= baocc, eavirt
+      moaindex p2= baocc, eavirt
+      moaindex p3= baocc, eavirt
+#
+      mobindex q = bbocc, ebvirt
+      mobindex q1= bbocc, ebvirt
+      mobindex q2= bbocc, ebvirt
+      mobindex q3= bbocc, ebvirt
+
+      INDEX  jatom    = 1, natoms
+
+      distributed DHF_aa(mu,nu)
+      distributed DHF_bb(mu,nu)
+      distributed DpqA(mu,nu)
+      distributed DpqB(mu,nu)
+      
+      distributed DpqA_x(mu,nu)
+      distributed DpqB_x(mu,nu)
+      distributed Dccsd(mu,nu)
+      distributed Dccsd_x(mu,nu)
+      distributed Dscf(mu,nu)
+      distributed DpqA_1(mu,nu)
+      distributed DpqB_1(mu,nu)
+      distributed DpqA_2(mu,nu)
+      distributed DpqB_2(mu,nu)
+      distributed DpqA_3(mu,nu)
+      distributed DpqB_3(mu,nu)
+      
+      temp  Tiaia(i,a,i1,a1) 
+      temp  Tjbjb(j,b,j1,b1)
+      temp  Tiajb(i,a,j,b)
+      temp tbjbj(b1,j,b2,j1)
+      temp taiai(a,i,a2,i2)
+
+      temp Txi (nu,i)
+      temp Txj (nu,j)
+      temp Jxi (mu,i)
+      temp Ixx (mu,nu)
+      temp I1xx(mu,nu)
+      temp Jxj (mu,j)
+      temp Ixa (mu,a)
+      temp Ixb (mu,b)
+      temp Txx (mu,nu)
+      temp Tpq (mu,nu)
+      temp TKin (mu,nu)
+      temp Tdshld (mu,nu)
+
+      temp Tpq_x(mu,nu)
+
+      temp Taa (a,a1)
+      temp T1aa(a,a1)
+      temp Tbb (b,b1)
+      temp T1bb(b,b1)
+      temp Tii (i,i1)
+      temp TiiT(i,i1)
+
+      temp T1ii(i,i1)
+      temp T1iiT(i,i1)
+      temp Tjj (j,j1)
+      temp TjjT (j,j1)
+      temp T1jj(j,j1)
+      temp Tai(a,i)
+
+      temp TaiT(a,i)
+
+      temp Tai1(a,i)
+      temp Tbj(b,j)
+      temp Tbj1(b,j)
+      temp TbjT(b,j)
+
+      temp Tia(i,a) 
+      temp Tjb(j,b) 
+
+      distributed Dij_a(i,i1)
+      distributed Dij_b(j,j1)
+      distributed Dab_a(a,a1)
+      distributed Dab_b(b,b1)
+      distributed Doldai_a(a,i)
+      distributed Doldai_b(b,j)
+
+      distributed T2L2_VV_A (a,a1)
+      distributed T2L2_VV_B (b,b1)
+      distributed T2L2_OO_A (i,i1)
+      distributed T2L2_OO_B (j,j1)
+      distributed T1L1_OO_A (i,i1)      
+      distributed T1L1_OO_B (j,j1)     
+
+
+      distributed t1a_old(a,i)
+      distributed t1b_old(b,j)
+      distributed l1a_old(i,a)
+      distributed l1b_old(j,b)
+
+#PV.............................................
+       temp tpol(xyz,xyz1)
+       static pol(xyz,xyz1)
+       static g_tensor_1E_BL(xyz,xyz1)
+       static g_tensor_MC(xyz,xyz1)
+       static g_tensor_1E_GC(xyz,xyz1)
+       static g_tensor_dbg(xyz,xyz1)
+       scalar ipol
+
+       temp TaaT(a,a1)
+       temp TbbT(b,b1)
+
+      distributed T2L2_VV_A_x(a,a1)
+      distributed T2L2_VV_B_x(b,b1)
+      distributed T1L1_VV_A_x(a,a1)
+      distributed T1L1_VV_B_x(b,b1)
+
+      distributed T2L2_OO_A_x(i,i1)
+      distributed T2L2_OO_B_x(j,j1)
+      distributed T1L1_OO_A_x(i,i1)
+      distributed T1L1_OO_B_x(j,j1)
+
+      distributed T2L2_VV_A_y(a,a1)
+      distributed T2L2_VV_B_y(b,b1)
+      distributed T2L2_OO_A_y(i,i1)
+      distributed T2L2_OO_B_y(j,j1)
+      distributed T1L1_OO_A_y(i,i1)
+      distributed T1L1_OO_B_y(j,j1)
+
+      distributed T2L2_VV_A_z(a,a1)
+      distributed T2L2_VV_B_z(b,b1)
+      distributed T2L2_OO_A_z(i,i1)
+      distributed T2L2_OO_B_z(j,j1)
+      distributed T1L1_OO_A_z(i,i1)
+      distributed T1L1_OO_B_z(j,j1)
+
+      distributed t1a_old_x(a,i)
+      distributed t1b_old_x(b,j)
+      distributed l1a_old_x(i,a)
+      distributed l1b_old_x(j,b)
+
+      distributed t1a_x(a,i)
+      distributed t1b_x(b,j)
+      distributed l1a_x(i,a)
+      distributed l1b_x(j,b)
+
+      distributed t1a_y(a,i)
+      distributed t1b_y(b,j)
+      distributed l1a_y(i,a)
+      distributed l1b_y(j,b)
+
+      distributed t1a_z(a,i)
+      distributed t1b_z(b,j)
+      distributed l1a_z(i,a)
+      distributed l1b_z(j,b)
+
+      served T2old_aa_x(a,i,a1,i1)
+      served T2old_bb_x(b,j,b1,j1)
+      served T2old_ab_x(a,i,b,j)
+      served L2old_aa_x(i,a,i1,a1)
+      served L2old_bb_x(j,b,j1,b1)
+      served L2old_ab_x(i,a,j,b)
+
+      served T2aa_x(a,i,a1,i1)
+      served T2bb_x(b,j,b1,j1)
+      served T2ab_x(a,i,b,j)
+      served L2aa_x(i,a,i1,a1)
+      served L2bb_x(j,b,j1,b1)
+      served L2ab_x(i,a,j,b)
+
+      served T2aa_y(a,i,a1,i1)
+      served T2bb_y(b,j,b1,j1)
+      served T2ab_y(a,i,b,j)
+      served L2aa_y(i,a,i1,a1)
+      served L2bb_y(j,b,j1,b1)
+      served L2ab_y(i,a,j,b)
+
+      served T2aa_z(a,i,a1,i1)
+      served T2bb_z(b,j,b1,j1)
+      served T2ab_z(a,i,b,j)
+      served L2aa_z(i,a,i1,a1)
+      served L2bb_z(j,b,j1,b1)
+      served L2ab_z(i,a,j,b)
+
+      LOCAL  LT1A_x (a,i)
+      LOCAL  LT1B_x (b,j)
+
+      distributed Dij_a_x(i,i1)
+      distributed Dij_b_x(j,j1)
+
+      distributed Dab_a_x(a,a1)
+      distributed Dab_b_x(b,b1)
+
+      distributed Dij_a_x_U(i,i1)
+      distributed Dij_b_x_U(j,j1)
+
+      distributed Dij_a_x_L(i,i1)
+      distributed Dij_b_x_L(j,j1)
+
+      distributed Dab_a_x_U(a,a1)
+      distributed Dab_b_x_U(b,b1)
+      distributed Dab_a_x_L(a,a1)
+      distributed Dab_b_x_L(b,b1)
+
+      distributed Doldai_a_x(a,i)
+      distributed Doldai_b_x(b,j)
+
+      served T2old_aa(a,i,a1,i1)
+      served T2old_bb(b,j,b1,j1)
+      served T2old_ab(a,i,b,j)
+      served L2old_aa(i,a,i1,a1)
+      served L2old_bb(j,b,j1,b1)
+      served L2old_ab(i,a,j,b)
+
+      LOCAL  LA1A (i,a)
+      LOCAL  LA1B (j,b)
+      LOCAL  LT1A (a,i)
+      LOCAL  LT1B (b,j)
+
+      served VSpipi(p1,i,p,i1)
+      served Viaai(i,a1,a,i1)
+      served Vaaii(a,a1,i,i1)
+      served VSaaai(a2,a,a1,i)
+      served VSqjqj(q1,j,q,j1)
+      served Vjbbj(j,b1,b,j1)
+      served Vbbjj(b,b1,j,j1)
+      served VSbbbj(b2,b,b1,j)
+      served Vjbii(j,b,i,i1)
+      served Vbbai(b,b1,a,i)
+      served Vbbii(b,b1,i,i1)
+      served Vpiqj(p,i,q,j)
+      served Vaajj(a,a1,j,j1)
+      served Viabj(i,a,b,j)
+      served Vaabj(a,a1,b,j)
+
+      TEMP tpppp(p,p1,p2,p3)
+      TEMP tpqqp(p,q,q1,p1)
+      TEMP tqqqq(q,q1,q2,q3)
+      TEMP Taibj(a1,i,b,j1)
+      TEMP tqppq(q,p,p1,q1)
+
+      distributed HBx(mu,nu)
+      distributed HBy(mu,nu)
+      distributed HBz(mu,nu)
+
+      scalar XX
+      scalar XY
+      scalar YX
+      scalar XZ
+      scalar ZX
+      scalar YY
+      scalar YZ
+      scalar ZY
+      scalar ZZ
+
+      scalar Axx
+      scalar Axy
+      scalar Ayx
+      scalar Axz
+      scalar Azx
+      scalar Ayy
+      scalar Ayz
+      scalar Azy
+      scalar Azz
+
+      scalar Px
+      scalar Py
+      scalar Pz
+
+      scalar MCx
+      scalar MCy
+      scalar MCz
+
+      scalar GC1xx_tmp
+      scalar GC1xy_tmp
+      scalar GC1yx_tmp
+      scalar GC1xz_tmp
+      scalar GC1zx_tmp
+      scalar GC1yy_tmp
+      scalar GC1yz_tmp
+      scalar GC1zy_tmp
+      scalar GC1zz_tmp
+
+      scalar GC1xx
+      scalar GC1xy
+      scalar GC1yx
+      scalar GC1xz
+      scalar GC1zx
+      scalar GC1yy
+      scalar GC1yz
+      scalar GC1zy
+      scalar GC1zz
+
+      scalar Pxx
+      scalar Pxy
+      scalar Pxz
+      scalar Pyx 
+      scalar Pyy
+      scalar Pyz 
+      scalar Pzx
+      scalar Pzy
+      scalar Pzz       
+
+      SCALAR  tmpnuc
+      SCALAR  dipnucx
+      SCALAR  dipnucy
+      SCALAR  dipnucz
+
+      SCALAR  ONE
+      SCALAR  TWO
+      SCALAR  THREE
+      SCALAR  PROPERTY
+      SCALAR  ASYM
+      SCALAR  SPIN_DEN
+      scalar do_pols
+      scalar do_aten
+      scalar do_gten
+      scalar do_dten
+#
+      scalar tmp
+      Scalar suma
+      Scalar sumb
+      Scalar sumaa
+      Scalar sumbb
+      Scalar Diff
+      Scalar sum
+      Scalar rank
+      Scalar Ncount
+ 
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PROC READ_2EL
+      
+      execute server_barrier
+
+      execute list_to_blocks                VSpipi 
+      execute list_to_blocks                Vaaii 
+      execute list_to_blocks                Viaai 
+      execute list_to_blocks                VSaaai 
+      execute list_to_blocks                VSqjqj 
+      execute list_to_blocks                Vbbjj 
+      execute list_to_blocks                Vjbbj 
+      execute list_to_blocks                VSbbbj 
+      execute list_to_blocks                Vbbii  
+      execute list_to_blocks                Vjbii  
+      execute list_to_blocks                Vbbai 
+      execute list_to_blocks                Vpiqj
+      execute list_to_blocks                Vaajj
+      execute list_to_blocks                Viabj
+      execute list_to_blocks                Vaabj
+
+      execute server_barrier
+
+     ENDPROC READ_2EL
+
+
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+      PROC HFDENS
+#-------------------------------------------------------------------
+      PARDO mu, nu, i
+            Txi(nu,i)       = ca(nu,i)
+            Tpq(mu,nu)      = ca(mu,i)*Txi(nu,i)
+            PUT DHF_aa(mu,nu) +=Tpq(mu,nu)
+      ENDPARDO mu, nu, i
+      EXECUTE  SIP_BARRIER
+      PARDO mu, nu, j
+            Txj(nu,j)       = cb(nu,j)
+            Tpq(mu,nu)      = cb(mu,j)*Txj(nu,j)
+            PUT DHF_bb(mu,nu) +=Tpq(mu,nu)
+      ENDPARDO mu, nu, j
+      EXECUTE  SIP_BARRIER
+      ENDPROC HFDENS
+
+     PROC CREATE_FIXED
+#    -------------------
+      ALLOCATE LT1A(*,*)
+      ALLOCATE LT1B(*,*)
+      ALLOCATE LA1A(*,*)
+      ALLOCATE LA1B(*,*)
+
+      CREATE  Dij_a(i,i1)
+      CREATE  Dij_b(j,j1)
+      CREATE  Dab_a(a,a1)
+      CREATE  Dab_b(b,b1)
+      CREATE  Doldai_a(a,i)
+      CREATE  Doldai_b(b,j)
+
+      CREATE DpqA
+      CREATE DpqB
+      CREATE Dccsd
+      CREATE Dscf
+      CREATE DpqA_1
+      CREATE DpqB_1
+      CREATE DpqA_2
+      CREATE DpqB_2
+      CREATE DpqA_3
+      CREATE DpqB_3
+
+      CREATE T2L2_VV_A
+      CREATE T2L2_VV_B
+      CREATE T1L1_OO_A
+      CREATE T1L1_OO_B
+      CREATE T2L2_OO_A
+      CREATE T2L2_OO_B
+
+      EXECUTE SERVER_BARRIER
+
+      DO a
+      DO i
+         GET         t1a_old(a,i)
+         LT1A(a,i) = t1a_old(a,i)
+      ENDDO i
+      ENDDO a
+      DO a
+      DO i
+         GET         l1a_old(i,a)
+         LA1A(i,a) = l1a_old(i,a)
+      ENDDO i
+      ENDDO a
+      DO b
+      DO j
+         GET         t1b_old(b,j)
+         LT1B(b,j) = t1b_old(b,j)
+      ENDDO j
+      ENDDO b
+      DO b
+      DO j
+         GET         l1b_old(j,b)
+         LA1B(j,b) = l1b_old(j,b)
+      ENDDO j
+      ENDDO b
+
+      EXECUTE  SERVER_BARRIER
+
+      ENDPROC CREATE_FIXED
+#     ---------------------
+
+      PROC CREATE_XARRAYS
+#     -------------------
+      CREATE  T1A_OLD_X(a,i)
+      CREATE  T1B_OLD_X(b,j)
+
+      CREATE  L1A_OLD_X(i,a)
+      CREATE  L1B_OLD_X(j,b)
+       
+      CREATE  DPQA_X(mu,nu)
+      CREATE  DPQB_X(mu,nu)
+
+      CREATE  DCCSD_x(mu,nu)
+
+      CREATE  Dij_a_x(i,i1)
+      CREATE  Dij_b_x(j,j1)
+
+      CREATE  Dij_a_x_U(i,i1)
+      CREATE  Dij_a_x_L(i,i1)
+      CREATE  Dij_b_x_U(j,j1)
+      CREATE  Dij_b_x_L(j,j1)
+
+      CREATE  Dab_a_x(a,a1)
+      CREATE  Dab_b_x(b,b1)
+
+      CREATE  Dab_a_x_U(a,a1)
+      CREATE  Dab_b_x_U(b,b1)
+      CREATE  Dab_a_x_L(a,a1)
+      CREATE  Dab_b_x_L(b,b1)
+
+      CREATE  Doldai_a_x(a,i)
+      CREATE  Doldai_b_x(b,j)
+
+      ALLOCATE LT1A_x(*,*)
+      ALLOCATE LT1B_x(*,*)
+
+      CREATE T2L2_VV_A_x
+      CREATE T2L2_VV_B_x
+      CREATE T1L1_VV_A_x
+      CREATE T1L1_VV_B_x
+
+      CREATE T1L1_OO_A_x
+      CREATE T1L1_OO_B_x
+      CREATE T2L2_OO_A_x
+      CREATE T2L2_OO_B_x
+
+      EXECUTE  SERVER_BARRIER
+
+      ENDPROC CREATE_XARRAYS
+#     ----------------------
+
+      PROC FILL_LT1_ARRAYS
+#     --------------------
+
+      DO a
+      DO i
+         GET           t1a_old_x(a,i)
+         LT1A_x(a,i) = t1a_old_x(a,i)
+      ENDDO i
+      ENDDO a
+      DO b
+      DO j
+         GET           t1b_old_x(b,j)
+         LT1B_x(b,j) = t1b_old_x(b,j)
+      ENDDO j
+      ENDDO b
+
+      EXECUTE  SERVER_BARRIER
+
+      ENDPROC FILL_LT1_ARRAYS
+#     -----------------------
+
+      PROC DELETE_XARRAYS
+#     -------------------
+
+      DELETE  T1A_OLD_X(a,i)
+      DELETE  T1B_OLD_X(b,j)
+
+      DELETE  L1A_OLD_X(i,a)
+      DELETE  L1B_OLD_X(j,b)
+
+      DEALLOCATE LT1A_x(*,*)
+      DEALLOCATE LT1B_x(*,*)
+
+      DELETE  Dij_a_x(i,i1)
+      DELETE  Dij_b_x(j,j1)
+
+      DELETE  DPQA_X(mu,nu)
+      DELETE  DPQB_X(mu,nu)
+      DELETE  DCCSD_X(mu,nu)
+
+      DELETE  Dij_a_x_U(i,i1)
+      DELETE  Dij_a_x_L(i,i1)
+      DELETE  Dij_b_x_U(j,j1)
+      DELETE  Dij_b_x_L(j,j1)
+
+      DELETE  Dab_a_x(a,a1)
+      DELETE  Dab_b_x(b,b1)
+
+      DELETE  Dab_a_x_U(a,a1)
+      DELETE  Dab_b_x_U(b,b1)
+      DELETE  Dab_a_x_L(a,a1)
+      DELETE  Dab_b_x_L(b,b1)
+
+      DELETE  Doldai_a_x(a,i)
+      DELETE  Doldai_b_x(b,j)
+
+      DELETE T2L2_VV_A_x
+      DELETE T2L2_VV_B_x
+      DELETE T1L1_VV_A_x
+      DELETE T1L1_VV_B_x
+
+      DELETE T1L1_OO_A_x
+      DELETE T1L1_OO_B_x
+      DELETE T2L2_OO_A_x
+      DELETE T2L2_OO_B_x
+
+      EXECUTE SERVER_BARRIER
+
+      ENDPROC DELETE_XARRAYS
+#     ----------------------
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#
+# In this superprocedure the particle-particle block of the relaxed density 
+# matrix is computed. The expressions programmed are: 
+# 
+# D_{ab} = 1/4 P_+(ab) t^{ae}_{mn} \lambda^{mn}_{be}  
+#        + 1/4 P_+(ab) t^{aE}_{mN} \lambda^{mN}_{bE}  
+#        + 1/2 P_+(ab) t^{a}_{m} \lambda^{m}_{b} 
+#
+# D_{AB} = D_{ab} [a<-->A, b<-->B, i<-->I, j<-->J, m<-->M, n<-->N] 
+#
+      PROC DABA
+      PARDO a, a1, i
+            GET t1a_old(a,i)    # read from list
+            GET l1a_old(i,a1)   # read from list
+            Taa(a,a1)        = t1a_old(a,i)*l1a_old(i,a1)
+            Taa(a,a1)       *= 0.5
+            T1aa(a1,a)       = Taa(a,a1)
+            PUT Dab_a(a,a1) += Taa(a,a1)
+            PUT Dab_a(a1,a) += T1aa(a1,a)
+            DO a2
+            DO i1
+               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
+               REQUEST L2old_aa(i,a1,i1,a2) a2 # read from list
+               Taa(a,a1)        = T2old_aa(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               Taa(a,a1)       *= 0.25
+               T1aa(a1,a)       = Taa(a,a1)
+               PUT Dab_a(a,a1) += Taa(a,a1)
+               PUT Dab_a(a1,a) += T1aa(a1,a)
+
+#               PUT T2L2_VV_A (a,a1) += Taa (a,a1)
+            ENDDO i1
+            ENDDO a2
+            DO b
+            DO j
+               REQUEST T2old_ab(a,i,b,j) j    # read from the list
+               REQUEST L2old_ab(i,a1,j,b) j   # read from the list
+               Taa(a,a1)        = T2old_ab(a,i,b,j)*L2old_ab(i,a1,j,b)
+               Taa(a,a1)       *= 0.5
+               T1aa(a1,a)       = Taa(a,a1)
+               PUT Dab_a(a,a1) += Taa(a,a1)
+               PUT Dab_a(a1,a) += T1aa(a1,a)
+#               PUT  T2L2_VV_A (a,a1) += Taa (a,a1)
+            ENDDO j
+            ENDDO b
+      ENDPARDO a, a1, i
+      ENDPROC DABA
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+      PROC DABB
+#     --------- 
+      PARDO b1, b, j
+            GET t1b_old(b1,j)  # Read from the list
+            GET l1b_old(j,b)   # Read from the list
+            Tbb(b1,b)        = t1b_old(b1,j)*l1b_old(j,b)
+            Tbb(b1,b)       *= 0.5
+            T1bb(b,b1)       = Tbb(b1,b)
+            PUT Dab_b(b1,b) += Tbb(b1,b)
+            PUT Dab_b(b,b1) += T1bb(b,b1)
+            DO b2
+            DO j1
+               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
+               REQUEST L2old_bb(j,b,j1,b2)  j1 # Read from the list
+               Tbb(b1,b)        = T2old_bb(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
+               Tbb(b1,b)       *= 0.25
+               T1bb(b,b1)       = Tbb(b1,b)
+               PUT Dab_b(b1,b) += Tbb(b1,b)
+               PUT Dab_b(b,b1) += T1bb(b,b1)
+
+#               PUT T2L2_VV_B (b,b1) += T1bb (b,b1)
+            ENDDO j1
+            ENDDO b2
+            DO a
+            DO i
+               REQUEST T2old_ab(a,i,b1,j) j   # Read from the list
+               REQUEST L2old_ab(i,a,j,b)  j   # Read from the list
+               Tbb(b1,b)        = T2old_ab(a,i,b1,j)*L2old_ab(i,a,j,b)
+               Tbb(b1,b)       *= 0.5
+               T1bb(b,b1)       = Tbb(b1,b)
+               PUT Dab_b(b1,b) += Tbb(b1,b)
+               PUT Dab_b(b,b1) += T1bb(b,b1)
+
+#              PUT  T2L2_VV_B (b,b1) += T1bb (b,b1) 
+
+            ENDDO i
+            ENDDO a
+      ENDPARDO b1, b, j
+      ENDPROC DABB
+#.....................................................................
+      PROC DAB
+           CALL DABA
+           CALL DABB
+      ENDPROC DAB
+#_____________________________________________________________________
+
+     PROC GMIAB
+#    -----------
+# Alpha
+     PARDO a, a1, i2
+            DO i
+               REQUEST T2old_aa(a,i,a1,i2) i2
+               DO i1
+
+                  REQUEST L2old_aa(i1,a,i2,a1) a1
+                  Tii(i,i1)        = T2old_aa(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
+                  Tii(i,i1)       *= -0.5
+                  T1ii(i1,i)       = Tii(i,i1)
+                  PUT  T2L2_OO_A (i,i1) += Tii(i,i1) 
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, a1, i2
+
+      PARDO a, b, j
+            DO i
+               REQUEST T2old_ab(a,i,b,j) j
+               DO i1
+
+                  REQUEST L2old_ab(i1,a,j,b) b
+                  Tii(i,i1)        = T2old_ab(a,i,b,j)*L2old_ab(i1,a,j,b)
+                  Tii(i,i1)       *= -1.0
+                  PUT  T2L2_OO_A (i,i1) += Tii(i,i1) 
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, b, j
+
+      PARDO a, i, i1
+
+            GET t1a_old(a,i)
+            GET l1a_old(i1,a)
+            Tii(i,i1)        = l1a_old(i1,a)*t1a_old(a,i)
+            Tii(i,i1)       *= -1.0
+            PUT T1L1_OO_A(i,i1) += Tii(i,i1)    
+
+      ENDPARDO a, i, i1
+# Beta
+      PARDO b, b1, j2
+            DO j1
+            DO j
+
+               REQUEST L2old_bb(j,b,j2,b1)  j2
+               REQUEST T2old_bb(b,j1,b1,j2) j2
+               Tjj(j1,j)        = T2old_bb(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
+               Tjj(j1,j)       *= -0.5
+               T1jj(j,j1)       = Tjj(j1,j)
+               PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+
+            ENDDO j
+            ENDDO j1
+      ENDPARDO b, b1, j2
+
+      PARDO b, a, i
+            DO j1
+               REQUEST T2old_ab(a,i,b,j1) j1
+               DO j
+                  REQUEST L2old_ab(i,a,j,b) b
+                  Tjj(j1,j)        = T2old_ab(a,i,b,j1)*L2old_ab(i,a,j,b)
+                  Tjj(j1,j)       *= -1.0
+                  T1jj(j,j1)       = Tjj(j1,j)
+                  PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+
+               ENDDO j
+            ENDDO j1
+      ENDPARDO b, a, i
+
+      PARDO b, j, j1
+            GET t1b_old(b,j1)
+            GET l1b_old(j,b)
+            Tjj(j,j1)        = l1b_old(j,b)*t1b_old(b,j1)
+            Tjj(j,j1)       *= -1.0
+            PUT T1L1_OO_B(j,j1) += Tjj(j,j1)
+      ENDPARDO b, j, j1
+
+     ENDPROC GMIAB
+#    -------------
+
+      PROC GAEAB
+#     ----------
+# Alpha
+      PARDO a, a1, i
+            DO a2
+            DO i1
+               REQUEST T2old_aa(a,i,a2,i1) i1 
+               REQUEST L2old_aa(i,a1,i1,a2) a2 
+               Taa(a,a1)        = T2old_aa(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               Taa(a,a1)       *= 0.5
+               PUT T2L2_VV_A (a,a1) += Taa (a,a1)
+            ENDDO i1
+            ENDDO a2
+
+            DO b
+            DO j
+               REQUEST T2old_ab(a,i,b,j) j    
+               REQUEST L2old_ab(i,a1,j,b) j  
+               Taa(a,a1)        = T2old_ab(a,i,b,j)*L2old_ab(i,a1,j,b)
+               PUT  T2L2_VV_A (a,a1) += Taa (a,a1)
+            ENDDO j
+            ENDDO b
+      ENDPARDO a, a1, i
+# Beta
+      PARDO b1, b, j
+            DO b2
+            DO j1
+               REQUEST T2old_bb(b1,j,b2,j1) j1
+               REQUEST L2old_bb(j,b,j1,b2)  j1
+               Tbb(b1,b)        = T2old_bb(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
+               Tbb(b1,b)       *= 0.5
+               PUT T2L2_VV_B (b,b1) += Tbb (b,b1)
+            ENDDO j1
+            ENDDO b2
+            DO a
+            DO i
+               REQUEST T2old_ab(a,i,b1,j) j   
+               REQUEST L2old_ab(i,a,j,b)  j   
+               Tbb(b1,b)        = T2old_ab(a,i,b1,j)*L2old_ab(i,a,j,b)
+               PUT  T2L2_VV_B (b,b1) += Tbb (b,b1)
+
+            ENDDO i
+            ENDDO a
+      ENDPARDO b1, b, j
+
+      ENDPROC GAEAB
+#     -------------
+
+      PROC GMIAB_X
+#     ------------
+# Alpha 
+     PARDO a, a1, i2
+            DO i
+               REQUEST T2old_aa(a,i,a1,i2) i2
+               REQUEST T2old_aa_x(a,i,a1,i2) i2
+               DO i1
+                  REQUEST L2old_aa(i1,a,i2,a1) a1
+                  REQUEST L2old_aa_x(i1,a,i2,a1) a1
+                  Tii(i,i1)   = T2old_aa_x(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
+                  TiiT(i,i1)  = T2old_aa(a,i,a1,i2)*L2old_aa_x(i1,a,i2,a1)
+                  Tii(i,i1)  += TiiT(i,i1)
+                  Tii(i,i1)  *= -0.5
+                  PUT T2L2_OO_A_x(i,i1) += Tii(i,i1) 
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, a1, i2
+
+      PARDO a, b, j
+            DO i
+               REQUEST T2old_ab(a,i,b,j) j
+               REQUEST T2old_ab_x(a,i,b,j) j
+               DO i1
+                  REQUEST L2old_ab(i1,a,j,b) b
+                  REQUEST L2old_ab_x(i1,a,j,b) b
+                  Tii(i,i1)        = T2old_ab_x(a,i,b,j)*L2old_ab(i1,a,j,b)
+                  TiiT(i,i1)       = T2old_ab(a,i,b,j)*L2old_ab_x(i1,a,j,b)
+                  Tii(i,i1)       +=  TiiT(i,i1)
+                  Tii(i,i1)       *= -1.0
+                 PUT  T2L2_OO_A_x(i,i1) += Tii(i,i1)
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, b, j
+
+      PARDO a, i, i1
+            GET t1a_old(a,i)
+            GET l1a_old(i1,a)
+            GET t1a_old_x(a,i)
+            GET l1a_old_x(i1,a)
+            Tii(i,i1)        = l1a_old_x(i1,a)*t1a_old(a,i)
+            TiiT(i,i1)       = l1a_old(i1,a)*t1a_old_x(a,i)
+            Tii(i,i1)       +=  TiiT(i,i1)
+            Tii(i,i1)       *= -1.0
+            T1ii(i1,i)       = Tii(i,i1)
+            PUT T1L1_OO_A_x(i,i1) += Tii(i,i1)    
+      ENDPARDO a, i, i1
+
+# Beta
+
+      PARDO b, b1, j2
+            DO j1
+               REQUEST T2old_bb(b,j1,b1,j2) j2
+               REQUEST T2old_bb_x(b,j1,b1,j2) j2
+            DO j
+               REQUEST L2old_bb(j,b,j2,b1)  j2
+               REQUEST T2old_bb_x(b,j1,b1,j2) j2
+               Tjj(j1,j)   = T2old_bb_x(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
+               TjjT(j1,j)  = T2old_bb(b,j1,b1,j2)*L2old_bb_x(j,b,j2,b1)
+               Tjj(j1,j)  += TjjT(j1,j)
+               Tjj(j1,j)  *= -0.5
+               PUT  T2L2_OO_B_x(j,j1) += Tjj(j1,j)
+            ENDDO j
+            ENDDO j1
+      ENDPARDO b, b1, j2
+
+      PARDO b, a, i
+            DO j1
+               REQUEST T2old_ab(a,i,b,j1) j1
+               REQUEST T2old_ab_x(a,i,b,j1) j1
+               DO j
+                  REQUEST L2old_ab(i,a,j,b) b
+                  REQUEST L2old_ab_x(i,a,j,b) b
+                  Tjj(j1,j)        = T2old_ab_x(a,i,b,j1)*L2old_ab(i,a,j,b)
+                  TjjT(j1,j)       = T2old_ab(a,i,b,j1)*L2old_ab_x(i,a,j,b)
+                  Tjj(j1,j)       += TjjT(j1,j)
+                  Tjj(j1,j)       *= -1.0
+                  PUT  T2L2_OO_B_x(j,j1) += Tjj(j1,j)
+               ENDDO j
+            ENDDO j1
+      ENDPARDO b, a, i
+
+      PARDO b, j, j1
+            GET t1b_old(b,j1)
+            GET l1b_old(j,b)
+            GET t1b_old_x(b,j1)
+            GET l1b_old_x(j,b)
+            Tjj(j1,j)        = l1b_old(j,b)*t1b_old_x(b,j1)
+            TjjT(j1,j)       = l1b_old_x(j,b)*t1b_old(b,j1)
+            Tjj(j1,j)       += TjjT(j1,j)
+            Tjj(j1,j)       *= -1.0
+            PUT T1L1_OO_B_x(j1,j) += Tjj(j1,j)
+      ENDPARDO b, j, j1
+
+     ENDPROC GMIAB_X
+#    ---------------
+
+      PROC GAEAB_X
+#     -------------
+# Alpha
+      PARDO a, a1, i
+            DO a2
+            DO i1
+               REQUEST T2old_aa(a,i,a2,i1) i1 
+               REQUEST L2old_aa(i,a1,i1,a2) a2 
+               REQUEST T2old_aa_x(a,i,a2,i1) i1  
+               REQUEST L2old_aa_x(i,a1,i1,a2) a2 
+               Taa(a1,a)        = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               TaaT(a1,a)       = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
+               Taa(a1,a)       += TaaT(a1,a)
+               Taa(a1,a)       *= 0.5
+               T1aa(a,a1)       = Taa(a1,a)
+               PUT T2L2_VV_A_x(a,a1) += T1aa(a,a1)
+            ENDDO i1
+            ENDDO a2
+            DO b
+            DO j
+               REQUEST T2old_ab(a,i,b,j) j    
+               REQUEST L2old_ab(i,a1,j,b) j  
+               REQUEST T2old_ab_x(a,i,b,j) j    
+               REQUEST L2old_ab_x(i,a1,j,b) j  
+               Taa(a1,a)        = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
+               TaaT(a1,a)        = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
+               Taa(a1,a)        += TaaT(a1,a)
+               T1aa(a,a1)       = Taa(a1,a)
+               PUT  T2L2_VV_A_x(a,a1) += T1aa (a,a1)
+            ENDDO j
+            ENDDO b
+      ENDPARDO a, a1, i
+# Beta
+      PARDO b1, b, j
+            DO b2
+            DO j1
+               REQUEST T2old_bb(b1,j,b2,j1) j1 
+               REQUEST L2old_bb(j,b,j1,b2)  j1 
+               REQUEST T2old_bb_x(b1,j,b2,j1) j1
+               REQUEST L2old_bb_x(j,b,j1,b2)  j1 
+               Tbb(b1,b)      = T2old_bb_x(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
+               TbbT(b1,b)      = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
+               Tbb(b1,b)     += TbbT(b1,b)
+               Tbb(b1,b)     *= 0.5
+               PUT T2L2_VV_B_x(b,b1) += Tbb (b1,b)
+            ENDDO j1
+            ENDDO b2
+            DO a
+            DO i
+               REQUEST T2old_ab(a,i,b1,j) j   
+               REQUEST L2old_ab(i,a,j,b)  j  
+               REQUEST T2old_ab_x(a,i,b1,j) j  
+               REQUEST L2old_ab_x(i,a,j,b)  j   
+               Tbb(b1,b)        = T2old_ab_x(a,i,b1,j)*L2old_ab(i,a,j,b)
+               TbbT(b1,b)       = T2old_ab(a,i,b1,j)*L2old_ab_x(i,a,j,b)
+               Tbb(b1,b)       += TbbT(b1,b)
+              PUT  T2L2_VV_B_x(b,b1) += Tbb (b1,b)
+            ENDDO i
+            ENDDO a
+      ENDPARDO b1, b, j
+
+      ENDPROC GAEAB_X
+#     -------------
+
+      PROC DABA_x
+#     -----------
+      PARDO a, a1, i
+            GET t1a_old(a,i)    
+            GET l1a_old(i,a1) 
+
+            GET t1a_old_x(a,i)    
+            GET l1a_old_x(i,a1) 
+
+            Taa(a,a1)  = t1a_old_x(a,i) * l1a_old(i,a1)  
+            PUT Dab_a_x_U(a,a1) += Taa(a,a1)
+
+            Taa(a,a1)  = t1a_old(a,i) * l1a_old_x(i,a1)
+            PUT Dab_a_x_L(a,a1) += Taa(a,a1)
+#bgn_debug
+#      ENDPARDO a, a1, i
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      suma = 0.0
+#      sumb = 0.0
+#      do a 
+#      do a1
+#         get Dab_a_x_U(a,a1)
+#         get Dab_a_x_L(a,a1)
+#         if rank == 0.0
+#         execute dump_amp  Dab_a_x_U(a,a1)
+#         execute dump_amp  Dab_a_x_L(a,a1)
+#         endif 
+#         tmp = Dab_a_x_U(a,a1) * Dab_a_x_U(a,a1)
+#         suma += tmp
+#         tmp = Dab_a_x_L(a,a1) * Dab_a_x_L(a,a1)
+#         sumb += tmp
+#      enddo a1
+#      enddo a
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#
+#     PARDO a, a1, i
+#end_debug
+
+            DO a2
+            DO i1
+               REQUEST T2old_aa(a,i,a2,i1) i1  
+               REQUEST L2old_aa(i,a1,i1,a2) a2 
+
+               REQUEST T2old_aa_x(a,i,a2,i1) i1  
+               REQUEST L2old_aa_x(i,a1,i1,a2) a2 
+
+               Taa(a,a1)  = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               Taa(a,a1) *= 0.5
+#bgn_debug
+               Taa(a,a1) *= 1.0
+#end_debug
+               PUT Dab_a_x_U(a,a1) += Taa(a,a1)
+
+               Taa(a1,a)   = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
+               Taa(a1,a)  *= -0.5
+#bgn_debug
+               Taa(a,a1) *= 1.0
+#end_debug
+               PUT Dab_a_x_L(a1,a)   += Taa(a1,a)
+
+               TaaT(a,a1)  = Taa(a1,a)
+               T1aa(a,a1) += TaaT(a,a1)
+            ENDDO i1
+            ENDDO a2
+#bgn_debug
+#      ENDPARDO a, a1, i
+#      execute sip_barrier
+#      suma = 0.0
+#      sumb = 0.0
+#      do a
+#      do a1
+#        get Dab_a_x_U(a,a1)
+#        get Dab_a_x_L(a1,a)
+#         if rank == 0.0
+#         execute dump_amp  Dab_a_x_U(a,a1)
+#         execute dump_amp  Dab_a_x_L(a1,a)
+#         endif 
+#         tmp = Dab_a_x_U(a,a1) * Dab_a_x_U(a,a1)
+#         suma += tmp
+#         tmp = Dab_a_x_L(a1,a) * Dab_a_x_L(a1,a)
+#         sumb += tmp
+#      enddo a1
+#      enddo a
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#     PARDO a, a1, i
+#end_debug
+
+            DO b
+            DO j
+               REQUEST T2old_ab(a,i,b,j) j    
+               REQUEST L2old_ab(i,a1,j,b) j  
+
+               REQUEST T2old_ab_x(a,i,b,j) j    
+               REQUEST L2old_ab_x(i,a1,j,b) j  
+
+               Taa(a,a1)   = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
+               T1aa(a,a)   = Taa(a,a1)
+               PUT Dab_a_x_U(a,a1) += Taa(a,a1)
+
+               Taa(a1,a)   = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
+               Taa(a1,a)  *= -1.0
+               PUT Dab_a_x_L(a,a1) += Taa(a,a1)
+
+               TaaT(a,a1)  = Taa(a1,a)
+               T1aa(a,a1) += TaaT(a,a1)
+
+            ENDDO j
+            ENDDO b
+      ENDPARDO a, a1, i
+
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      sumb = 0.0
+#      do a
+#      do a1
+#         get Dab_a_x_U(a,a1)
+#         get Dab_a_x_L(a,a1)
+#         if rank == 0.0
+#         execute dump_amp  Dab_a_x_U(a,a1)
+#         execute dump_amp  Dab_a_x_L(a,a1)
+#         endif 
+#         tmp = Dab_a_x_U(a,a1) * Dab_a_x_U(a,a1)
+#         suma += tmp
+#         tmp = Dab_a_x_L(a,a1) * Dab_a_x_L(a,a1)
+#         sumb += tmp
+#     enddo a1
+#     enddo a
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#end_debug
+
+# Make symmetric or anti-symmetric combinations
+
+      PARDO a, a1
+            get Dab_a_x_U(a,a1) 
+            get Dab_a_x_L(a,a1) 
+            
+            taa(a,a1)  =  Dab_a_x_U(a,a1) 
+            t1aa(a,a1) =  Dab_a_x_L(a,a1) 
+
+#            taa(a,a1) *= 0.5
+#            IF ASYM == 1.0
+#               t1aa(a,a1) *= -0.5
+#            ElSE 
+#               t1aa(a,a1) *=  0.5 
+#            ENDIF
+
+            taa(a,a1) += t1aa(a,a1)
+
+            PUT Dab_a_x(a,a1) = taa(a,a1)
+
+      ENDPARDO a, a1
+
+#bgn_debug
+     execute sip_barrier 
+     suma = 0.0
+     DO a
+     DO a1
+        GET Dab_a_x(a,a1)
+        if rank == 0.0
+          execute dump_amp Dab_a_x(a,a1)
+        endif 
+         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
+         suma += tmp
+      ENDDO a1
+      ENDDO a 
+      execute print_scalar suma  
+#end_debug
+          
+      ENDPROC DABA_x
+#..................................................................
+      PROC DABB_x
+#     --------- 
+      PARDO b1, b, j
+            GET t1b_old(b1,j)  
+            GET l1b_old(j,b)  
+            GET t1b_old_x(b1,j) 
+            GET l1b_old_x(j,b)   
+
+            Tbb(b1,b)  = t1b_old_x(b1,j)*l1b_old(j,b)
+            PUT Dab_b_x_U(b1,b) += Tbb(b1,b)
+
+            Tbb(b1,b)  = t1b_old(b1,j)*l1b_old_x(j,b)
+            PUT Dab_b_x_L(b1,b) += Tbb(b1,b)
+
+#bgn_debug
+#      ENDPARDO b1, b, j
+#      execute sip_barrier
+#      suma = 0.0
+#      sumb = 0.0
+#      do b
+#      do b1
+#         get Dab_b_x_U(b1,b)
+#         get Dab_b_x_L(b1,b)
+#         if rank == 0.0
+#        execute dump_amp  Dab_b_x_U(b1,b)
+#        execute dump_amp  Dab_b_x_L(b1,b)
+#         endif 
+#         tmp = Dab_b_x_U(b1,b) * Dab_b_x_U(b1,b)
+#         suma += tmp
+#         tmp = Dab_b_x_L(b1,b) * Dab_b_x_L(b1,b)
+#         sumb += tmp
+#      enddo b1
+#      enddo b
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#     PARDO b, b1, j
+#end_debug
+            DO b2
+            DO j1
+               REQUEST T2old_bb(b1,j,b2,j1) j1 
+               REQUEST L2old_bb(j,b,j1,b2)  j1 
+               REQUEST T2old_bb_x(b1,j,b2,j1) j1 
+               REQUEST L2old_bb_x(j,b,j1,b2)  j1 
+
+               Tbb(b1,b)  = T2old_bb_x(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
+               Tbb(b1,b) *= 0.5
+               TbbT(b,b1) = Tbb(b1,b)
+               PUT Dab_b_x_U(b1,b) += Tbb(b1,b)
+
+               Tbb(b,b1)  = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
+               Tbb(b,b1) *= -0.5
+               PUT Dab_b_x_L(b,b1)   += Tbb(b,b1)
+
+               Tbb(b,b1) += TbbT(b,b1)  
+            ENDDO j1
+            ENDDO b2
+#bgn_debug
+#      ENDPARDO b, b1, j
+#      execute sip_barrier
+#      suma = 0.0
+#      sumb = 0.0
+#      do b
+#      do b1
+#         get Dab_b_x_U(b1,b)
+#        get Dab_b_x_L(b,b1)
+#         if rank == 0.0
+#         execute dump_amp  Dab_b_x_U(b1,b)
+#         execute dump_amp  Dab_b_x_L(b,b1)
+#         endif
+#         tmp = Dab_b_x_U(b1,b) * Dab_b_x_U(b1,b)
+#         suma += tmp
+#         tmp = Dab_b_x_L(b,b1) * Dab_b_x_L(b,b1)
+#         sumb += tmp
+#      enddo b1
+#      enddo b
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#     PARDO b, b1, j
+#end_debug
+            DO a
+            DO i
+               REQUEST T2old_ab(a,i,b1,j) j   
+               REQUEST L2old_ab(i,a,j,b)  j   
+               REQUEST T2old_ab_x(a,i,b1,j) j   
+               REQUEST L2old_ab_x(i,a,j,b)  j   
+
+               Tbb(b1,b)  = T2old_ab_x(a,i,b1,j)*L2old_ab(i,a,j,b)
+               T1bb(b1,b) = Tbb(b,b1)
+               PUT Dab_b_x_U(b1,b) += Tbb(b1,b)
+
+               Tbb(b,b1)  = T2old_ab(a,i,b1,j)*L2old_ab_x(i,a,j,b)
+               Tbb(b,b1) *= -1.0
+               PUT Dab_b_x_L(b,b1) += Tbb(b,b1)
+
+               TbbT(b1,b)  = Tbb(b,b1)
+               T1bb(b1,b) += TbbT(b1,b)
+            ENDDO i
+            ENDDO a
+      ENDPARDO b1, b, j
+
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      sumb = 0.0
+#      do b
+#      do b1
+#        get Dab_b_x_U(b1,b)
+#         get Dab_b_x_L(b,b1)
+#         if rank == 0.0
+#         execute dump_amp  Dab_b_x_U(b1,b)
+#         execute dump_amp  Dab_b_x_L(b,b1)
+#         endif 
+#         tmp = Dab_b_x_U(b1,b) * Dab_b_x_U(b1,b)
+#         suma += tmp
+#         tmp = Dab_b_x_L(b,b1) * Dab_b_x_L(b,b1)
+#         sumb += tmp
+#      enddo b1
+#      enddo b
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#end_debug
+
+# Make symmetric or anti-symmetric combinations
+
+      PARDO b, b1
+            get Dab_b_x_U(b,b1)
+            get Dab_b_x_L(b,b1)
+            
+            tbb(b,b1)  =  Dab_b_x_U(b,b1)
+            t1bb(b,b1) =  Dab_b_x_L(b,b1)
+            tbb(b,b1) += t1bb(b,b1)
+
+#            tbbt(b1,b) = tbb(b,b1) 
+#            tbb(b,b1) *= 0.5
+#
+#            IF ASYM == 1.0
+#               tbbt(b1,b) *= -0.5
+#            ELSE
+#               tbbt(b,b1) *=  0.5
+#            ENDIF 
+#              
+#            tbb(b,b1) += t1bb(b,b1)
+            
+            PUT Dab_b_x(b,b1) = tbb(b,b1)
+
+      ENDPARDO b, b1
+
+#bgn_debug
+      execute sip_barrier
+      sumb=0.0
+      do b
+      do b1
+         get Dab_b_x(b,b1) 
+         if rank == 0.0
+            execute dump_amp Dab_b_x(b,b1)
+         endif 
+         tmp = Dab_b_x(b,b1) * Dab_b_x(b,b1)
+         sumb += tmp
+      enddo b1
+      enddo b
+      execute print_scalar sumb
+#end_debug
+           
+      ENDPROC DABB_x
+#     ---------------
+#.........................................................................
+      PROC DAB_x
+           CALL DABA_x
+           CALL DABB_x
+      ENDPROC DAB_x
+# --------------------------------------------------------------------------- 
+#
+# In this superprocedure the occupied-occupied block of the relaxed
+# density matrix is computed. The expressions programmed are:
+#
+# D_{ij} = -1/4 P_+(ij) t^{ef}_{im} \lambda^{jm}_{ef} 
+#          -1/4 P_+(ij) t^{eF}_{iM} \lambda^{jM}_{eF}   
+#          -1/2 P_+(ij) t^{e}_{i} \lambda^{j}_{e}   
+#
+# D_{IJ} = D_{ij} [i<-->I, j<-->J, e<-->E, f<-->F] 
+#
+# --------------------------------------------------------------------------- 
+      PROC DIJA
+#     --------- 
+      PARDO a, a1, i2
+            DO i
+               REQUEST T2old_aa(a,i,a1,i2) i2
+               DO i1
+                  REQUEST L2old_aa(i1,a,i2,a1) a1
+                  Tii(i,i1)        = T2old_aa(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
+                  Tii(i,i1)       *= -0.25
+                  T1ii(i1,i)       = Tii(i,i1)
+                  PUT Dij_a(i,i1) += Tii(i,i1)
+                  PUT Dij_a(i1,i) += T1ii(i1,i)
+
+#                  PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-alpha
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, a1, i2
+      PARDO a, b, j
+            DO i
+               REQUEST T2old_ab(a,i,b,j) j
+               DO i1
+                  REQUEST L2old_ab(i1,a,j,b) b
+                  Tii(i,i1)        = T2old_ab(a,i,b,j)*L2old_ab(i1,a,j,b)
+                  Tii(i,i1)       *= -0.5
+                  T1ii(i1,i)       = Tii(i,i1)
+                  PUT Dij_a(i,i1) += Tii(i,i1)
+                  PUT Dij_a(i1,i) += T1ii(i1,i)
+                  
+#                 PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-beta
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, b, j
+      PARDO a, i, i1
+            GET t1a_old(a,i)
+            GET l1a_old(i1,a)
+            Tii(i,i1)        = l1a_old(i1,a)*t1a_old(a,i)
+            Tii(i,i1)       *= -0.5
+            T1ii(i1,i)       = Tii(i,i1)
+            PUT Dij_a(i,i1) += Tii(i,i1)
+            PUT Dij_a(i1,i) += T1ii(i1,i)
+
+#            PUT T1L1_OO_A(i,i1) += Tii(i,i1)    # 4 term of Eq. 9
+      ENDPARDO a, i, i1
+      ENDPROC DIJA
+#---------------------------------------------------------------
+      PROC DIJB
+#     --------- 
+      PARDO b, b1, j2
+            DO j1
+            DO j
+               REQUEST L2old_bb(j,b,j2,b1)  j2
+               REQUEST T2old_bb(b,j1,b1,j2) j2
+               Tjj(j1,j)        = T2old_bb(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
+               Tjj(j1,j)       *= -0.25
+               T1jj(j,j1)       = Tjj(j1,j)
+               PUT Dij_b(j1,j) += Tjj(j1,j)
+               PUT Dij_b(j,j1) += T1jj(j,j1)
+
+#               PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+            ENDDO j
+            ENDDO j1
+      ENDPARDO b, b1, j2
+      PARDO b, a, i
+            DO j1
+               REQUEST T2old_ab(a,i,b,j1) j1
+               DO j
+                  REQUEST L2old_ab(i,a,j,b) b
+                  Tjj(j1,j)        = T2old_ab(a,i,b,j1)*L2old_ab(i,a,j,b)
+                  Tjj(j1,j)       *= -0.5
+                  T1jj(j,j1)       = Tjj(j1,j)
+                  PUT Dij_b(j1,j) += Tjj(j1,j)
+                  PUT Dij_b(j,j1) += T1jj(j,j1)
+                  
+#                  PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+
+               ENDDO j
+            ENDDO j1
+      ENDPARDO b, a, i
+           PARDO b, j, j1
+            GET t1b_old(b,j1)
+            GET l1b_old(j,b)
+            Tjj(j1,j)        = l1b_old(j,b)*t1b_old(b,j1)
+            Tjj(j1,j)       *= -0.5
+            T1jj(j,j1)       = Tjj(j1,j)
+            PUT Dij_b(j1,j) += Tjj(j1,j)
+            PUT Dij_b(j,j1) += T1jj(j,j1)
+
+#            PUT T1L1_OO_B(j1,j) += Tjj(j1,j)
+      ENDPARDO b, j, j1
+      ENDPROC DIJB
+#.....................................................................................
+      PROC DIJ
+#     ----------- 
+           CALL DIJA
+           CALL DIJB
+      ENDPROC DIJ
+#________________________________________________________________________
+      PROC DIJA_x
+#    -----------
+      PARDO a, a1, i2
+            DO i
+               REQUEST T2old_aa_x(a,i,a1,i2) i2
+               DO i1
+                  REQUEST L2old_aa(i1,a,i2,a1) a1
+
+                  Tii(i,i1)   = T2old_aa_x(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
+                  Tii(i,i1)  *= -0.5
+                  PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, a1, i2
+      PARDO a, a1, i2 
+            DO i
+               REQUEST T2old_aa(a,i,a1,i2) i2
+               DO i1
+                  REQUEST L2old_aa_x(i1,a,i2,a1) a1
+               
+                  Tii(i1,i)  = L2old_aa_x(i1,a,i2,a1)*T2old_aa(a,i,a1,i2)
+                  Tii(i1,i) *= 0.5
+                  TiiT(i,i1) = Tii(i1,i)
+                  PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
+                  
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, a1, i2
+
+      PARDO a, b, j
+            DO i
+               REQUEST T2old_ab_x(a,i,b,j) j
+               DO i1
+                  REQUEST L2old_ab(i1,a,j,b) b
+                  
+                  Tii(i,i1)   = T2old_ab_x(a,i,b,j)*L2old_ab(i1,a,j,b)
+                  Tii(i,i1)  *= -1.0
+                  PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, b, j
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      sum = 0.0
+#      do i
+#      do i1
+#         get Dij_a_x_U(i,i1)
+#         if rank == 0.0
+#         execute dump_amp Dij_a_x_U(i,i1)
+#         endif
+#         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#end_debug
+
+      PARDO a, b, j
+            DO i
+               REQUEST T2old_ab(a,i,b,j) j
+               DO i1
+                  REQUEST L2old_ab_x(i1,a,j,b) b
+
+                  Tii(i1,i)  = L2old_ab_x(i1,a,j,b)*T2old_ab(a,i,b,j)
+                  TiiT(i,i1) = Tii(i1,i) 
+                  Tii(i1,i) *= 1.0
+                  PUT Dij_a_x_L(i1,i) += Tii(i1,i)
+
+               ENDDO i1
+            ENDDO i
+      ENDPARDO a, b, j
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      sum = 0.0
+#      do i
+#      do i1
+#         Tii(i,i1) = 0.0
+#         Tii(i1,i) = 0.0
+#
+#         if rank == 0.0
+#         execute dump_amp Dij_a_x_L(i1,i)
+#         endif
+#         tmp = Dij_a_x(i,i1) * Dij_a_x(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#end_debug
+
+      PARDO a, i, i1
+            GET t1a_old_x(a,i)
+            GET l1a_old(i1,a)
+
+            Tii(i,i1)        = t1a_old_x(a,i)*l1a_old(i1,a)
+            Tii(i,i1)       *= -1.0
+            PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
+
+      ENDPARDO a, i, i1
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      sum = 0.0
+#      do i
+#     do i1
+#         get Dij_a_x_U(i1,i)
+#         if rank == 0.0
+#         execute dump_amp Dij_a_x_U(i1,i)
+#         endif
+#         tmp = Dij_a_x(i,i1) * Dij_a_x(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#end_debug
+
+      PARDO a, i, i1
+            GET t1a_old(a,i)
+            GET l1a_old_x(i1,a)
+
+            Tii(i,i1)  = t1a_old(a,i) * l1a_old_x(i1,a)
+            Tii(i,i1) *= -1.0
+
+            PUT Dij_a_x_L(i,i1)  += Tii(i,i1)
+
+      ENDPARDO a, i, i1
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      sum = 0.0
+#      do i
+#      do i1
+#         get Dij_a_x_L(i1,i)
+#         if rank == 0.0
+#         endif
+#         tmp = Dij_a_x(i,i1) * Dij_a_x(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
+#end_debug
+
+# Make symmetric or anti-symmetric combinations
+
+      execute sip_barrier 
+      PARDO i, i1
+            get Dij_a_x_U(i1,i)
+            get Dij_a_x_L(i1,i)
+
+            Tii(i1,i)  = Dij_a_x_U(i1,i)
+            T1ii(i1,i) = Dij_a_x_L(i1,i)
+
+#            Tii(i1,i) *= 0.5
+#            IF ASYM == 1.0
+#               T1ii(i1,i) *= -0.5
+#            ELSE
+#               T1ii(i1,i) *=  0.5
+#            ENDIF 
+
+            tii(i1,i) +=  t1ii(i1,i)
+            PUT Dij_a_x(i1,i) = tii(i1,i) 
+
+      ENDPARDO i, i1
+
+#bgn_debug
+      execute sip_barrier
+      suma=0.0
+      do i
+      do i1
+         get Dij_a_x_U(i1,i)
+         get Dij_a_x_L(i1,i)
+         get Dij_a_x(i1,i) 
+#          get T2L2_OO_A_x(i1,i) 
+         if rank == 0.0
+         execute dump_amp Dij_a_x_U(i1,i)
+         execute dump_amp Dij_a_x_L(i1,i)
+         execute dump_amp Dij_a_x(i1,i) 
+#         execute dump_amp  T2L2_OO_A_x(i1,i)  
+         endif 
+         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
+         suma += tmp
+      enddo i1
+      enddo i
+      execute print_scalar suma 
+#end_debug
+      
+      ENDPROC DIJA_x
+#---------------------------------------------------------------
+      PROC DIJB_x
+#     ---------- 
+      PARDO b, b1, j2
+            DO j1
+            DO j
+               REQUEST L2old_bb(j,b,j2,b1)  j2
+               REQUEST T2old_bb_x(b,j1,b1,j2) j2
+
+               Tjj(j1,j)    = T2old_bb_x(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
+               Tjj(j1,j)   *= -0.5
+               TjjT(j,j1)    = Tjj(j1,j)
+               PUT  Dij_b_x_U(j1,j)   += Tjj(j1,j)
+
+            ENDDO j
+
+            ENDDO j1
+      ENDPARDO b, b1, j2
+
+      PARDO b, b1, j2
+            DO j1
+            DO j
+               REQUEST L2old_bb_x(j,b,j2,b1)  j2
+               REQUEST T2old_bb(b,j1,b1,j2) j2
+
+               Tjj(j,j1)     = L2old_bb_x(j,b,j2,b1)*T2old_bb(b,j1,b1,j2)
+               Tjj(j,j1)    *= 0.5
+               PUT  Dij_b_x_L(j,j1)   += Tjj(j,j1)
+
+            ENDDO j
+            ENDDO j1
+      ENDPARDO b, b1, j2
+
+#bgn_debug
+      execute sip_barrier
+#      execute get_my_rank rank
+#      suma = 0.0
+#      sumb = 0.0
+#      do j
+#      do j1
+#         get Dij_b_x_U(j,j1)
+#         get Dij_b_x_L(j,j1)
+#         if rank == 0.0
+#         execute dump_amp Dij_b_x_U(j,j1)
+#         execute dump_amp Dij_b_x_L(j,j1)
+#         endif
+#         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
+#         suma += tmp
+#        tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
+#        sumb += tmp
+#      enddo j1
+#      enddo j
+#     execute print_scalar suma
+#     execute print_scalar sumb
+#end_debug
+
+      PARDO b, a, i
+            DO j1
+               REQUEST T2old_ab_x(a,i,b,j1) j1
+               DO j
+                  REQUEST L2old_ab(i,a,j,b) b
+                  Tjj(j1,j)   = T2old_ab_x(a,i,b,j1)*L2old_ab(i,a,j,b)
+                  Tjj(j1,j)  *= -1.0
+                  TjjT(j,j1)  = Tjj(j1,j)
+                  PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
+
+               ENDDO j
+            ENDDO j1
+      ENDPARDO b, a, i
+
+      PARDO b, a, i
+            DO j1
+               REQUEST T2old_ab(a,i,b,j1) j1
+               DO j
+                  REQUEST L2old_ab_x(i,a,j,b) b
+                  Tjj(j,j1)   = L2old_ab(i,a,j,b)*T2old_ab_x(a,i,b,j1)
+                  PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
+
+               ENDDO j
+            ENDDO j1
+
+      ENDPARDO b, a, i
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      suma = 0.0
+#      sumb = 0.0
+#      do j
+#      do j1
+#         get Dij_b_x_U(j,j1)
+#        get Dij_b_x_L(j,j1)
+#        if rank == 0.0
+#         execute dump_amp Dij_b_x_U(j,j1)
+#         execute dump_amp Dij_b_x_L(j,j1)
+#         endif
+#         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
+#         suma += tmp
+#         tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
+#         sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute print_scalar suma
+#      execute print_scalar sumb
+#end_debug
+
+      PARDO b, j, j1
+            GET l1b_old(j,b)
+            GET t1b_old_x(b,j1)
+
+            Tjj(j1,j)    = t1b_old_x(b,j1)*l1b_old(j,b)
+            Tjj(j1,j)   *= -1.0
+            PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
+
+      ENDPARDO b, j, j1
+
+      PARDO b, j, j1
+            GET t1b_old(b,j1)
+            GET l1b_old_x(j,b)
+
+            Tjj(j1,j)   = t1b_old(b,j1)*l1b_old_x(j,b)
+            Tjj(j1,j)   *= -1.0
+            PUT Dij_b_x_L(j1,j)   += Tjj(j1,j)
+
+      ENDPARDO b, j, j1
+
+#bgn_debug
+#      execute sip_barrier
+#      execute get_my_rank rank
+#      suma = 0.0
+#      sumb = 0.0
+#      do j
+#      do j1
+#         get Dij_b_x_U(j,j1)
+#         get Dij_b_x_L(j,j1)
+#         if rank == 0.0
+#         execute dump_amp Dij_b_x_U(j,j1)
+#         execute dump_amp Dij_b_x_L(j,j1)
+#         endif
+#         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
+#         suma += tmp
+#         tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
+#         sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute print_scalar suma
+#      execute print_scalar sumb
+#end_debug
+
+# Make symmetric or anti-symmetric combinations
+
+      PARDO j, j1
+            get Dij_b_x_U(j1,j)
+            get Dij_b_x_L(j1,j)
+
+            Tjj(j1,j)  = Dij_b_x_U(j1,j)
+            T1jj(j1,j) = Dij_b_x_L(j1,j)
+
+#            Tjj(j1,j) *= 0.5
+#            IF ASYM == 1.0
+#               T1jj(j1,j) *= -0.5
+#            ELSE 
+#               T1jj(j1,j) *=  0.5
+#            ENDIF 
+
+            tjj(j1,j) +=  t1jj(j1,j)
+
+            PUT Dij_b_x(j1,j) = tjj(j1,j)
+      ENDPARDO j, j1
+
+#bgn_debug
+      execute sip_barrier
+      sumb=0.0
+      do j
+      do j1
+         get Dij_b_x(j1,j)
+         get T2L2_OO_B_x(j1,j) 
+         if rank == 0.0
+         execute dump_amp Dij_b_x(j1,j)
+         endif
+         tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
+         suma += tmp
+      enddo j1
+      enddo j
+      execute print_scalar sumb
+#end_debug
+
+      ENDPROC DIJB_x
+#...............................................................................  
+      PROC DIJ_x
+#     -------------
+           CALL DIJA_x
+           CALL DIJB_x
+      ENDPROC DIJ_x
+#     -------------
+#_______________________________________________________________________________
+# In this superprocedure the virtual-occupied block of the relaxed
+# density matrix is computed. The expressions programmed are:
+#
+# D_{ai} = 0.5 t^{a}_{i} + 0.5 \lambda^{i}_{a}  
+#        + 0.5 Sum_{m,e} t^{ae}_{im} \lambda^{m}_{e} 
+#        - 0.5 Sum_{m,e} t^{a}_{m} t^{e}_{i} \lambda^{m}_{e} 
+#        -0.25 Sum_{m,n,e,f} \lambda^{mn}_{ef} t^{ef}_{in} t^{a}_{m}
+#        -0.25 Sum_{m,n,e,f} \lambda^{mn}_{ef} t^{af}_{mn} t^{e}_{i}
+
+      PROC DAI
+#------------------------------------------------------------------
+      PARDO  a, i
+        tai1(a,i) = 0.0
+         DO i1
+            GET  T1L1_OO_A (i,i1)
+            GET  T2L2_OO_A (i,i1)
+            tii (i,i1)  = T1L1_OO_A (i,i1)
+            tii (i,i1) += T2L2_OO_A (i,i1)
+            tai (a,i)   = LT1A (a,i1) * tii (i,i1)
+            tai1(a,i) += tai(a,i)
+         ENDDO i1
+         PUT Doldai_a(a,i) += tai1 (a,i)
+       ENDPARDO a,i
+       EXECUTE  SIP_BARRIER
+#-------------------------------------------------------------------------
+# 6th term
+       PARDO  a, a1, i
+            GET                     T2L2_VV_A (a,a1)
+            tai (a,i)             = T2L2_VV_A (a,a1) * LT1A (a1,i)
+            tai (a,i)            *= -1.0
+            PUT  Doldai_a(a,i)    += tai (a,i)
+      ENDPARDO  a, a1, i
+# end 6th term
+
+# -------------------------------------------------------------------------
+      PARDO   a1,i1
+         GET  l1a_old(i1,a1)
+         DO a
+            DO i
+               REQUEST                 T2old_aa(a,i,a1,i1) i
+               tai  (a,i)            = T2old_aa (a,i,a1,i1) * l1a_old(i1,a1)
+               tai (a,i)          *=0.5
+               PUT  Doldai_a(a,i) += tai (a,i)
+           ENDDO i
+         ENDDO a
+      ENDPARDO   a1,i1
+
+
+      PARDO  b,j 
+         GET  l1b_old(j,b)
+         DO a
+            DO i
+               REQUEST                 T2old_ab(a,i,b,j) i
+               tai  (a,i)            = T2old_ab(a,i,b,j) * l1b_old(j,b)
+               tai  (a,i)           *= 0.5
+               PUT  Doldai_a(a,i) += tai (a,i)
+            ENDDO i
+         ENDDO a
+      ENDPARDO  b,j 
+# R--------------------------------------------------------------------------
+
+      PARDO  a, i
+              GET t1a_old(a,i)
+              GET l1a_old(i,a)
+              tai (a,i)  = l1a_old(i,a)
+              tai (a,i) += t1a_old(a,i)
+               tai (a,i) *=0.5
+               PUT  Doldai_a(a,i) += tai (a,i)
+      ENDPARDO  a, i
+
+
+      EXECUTE  SIP_BARRIER
+
+#    ===========================================================
+#       COMPUTE  VIRTUAL - OCCUPIED  PIECE  TO  THE  DENSITY
+#    ===========================================================
+#    BETA                                                   BETA
+#    ----                                                   ----
+#------------------
+
+
+      PARDO  b, j
+        tbj1(b,j) = 0.0
+         DO j1
+            GET  T1L1_OO_B (j,j1)
+            GET  T2L2_OO_B (j,j1)
+            tjj (j,j1)  = T1L1_OO_B (j,j1)
+            tjj (j,j1) += T2L2_OO_B (j,j1)
+            tbj (b,j)   = LT1B (b,j1) * tjj (j,j1)
+            tbj1(b,j) += tbj(b,j)
+         ENDDO j1
+
+        PUT Doldai_b(b,j) += tbj1 (b,j)
+      ENDPARDO b,j
+
+       EXECUTE  SIP_BARRIER
+
+#-----------------------------------------------------------------------------
+       PARDO  b, b1, j
+            GET                     T2L2_VV_B (b,b1)
+            tbj (b,j)             = T2L2_VV_B (b,b1) * LT1B (b1,j)
+            tbj(b,j)            *= -1.0
+            PUT  Doldai_b(b,j)   += tbj (b,j)
+       ENDPARDO  b, b1, j
+
+#-----------------------------------------------------------------------------
+      PARDO  b1,j1
+         GET  l1b_old(j1,b1)
+         DO b
+            DO j
+               REQUEST                 T2old_bb(b,j,b1,j1) j
+               tbj  (b,j)            = T2old_bb(b,j,b1,j1) * l1b_old(j1,b1)
+               tbj  (b,j)          *=0.5
+               PUT  Doldai_b(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  b1,j1
+
+
+      PARDO  i, a
+         GET  l1a_old(i,a)
+         DO b
+            DO j
+               REQUEST                 T2old_ab(a,i,b,j) j
+               tbj  (b,j)            = T2old_ab(a,i,b,j) * l1a_old(i,a)
+               tbj  (b,j)           *= 0.5
+               PUT  Doldai_b(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  i, a
+#--------------------------------------------------------------------
+# First and second term of Dai
+      PARDO  b, j
+              GET t1b_old(b,j)
+              GET l1b_old(j,b)
+               tbj (b,j ) = l1b_old(j,b)
+               tbj (b,j)  += t1b_old(b,j)
+               tbj (b,j) *=0.5
+               PUT  Doldai_b(b,j) += tbj (b,j)
+      ENDPARDO  b, j
+# end
+
+#bgn_debug
+#      do b
+#      do j
+#         get Doldai_b(b,j)
+#         if rank == 0.0
+#         execute dump_amp Doldai_b(b,j)
+#         endif
+#      enddo j
+#      enddo b
+#      execute print_scalar sum
+#end_debug
+
+
+      EXECUTE  SERVER_BARRIER
+      execute load_balance_off
+      EXECUTE  SERVER_BARRIER
+      
+      ENDPROC DAI
+#----------------------------------------------------------------------
+
+      PROC DAI_x
+#     ----------
+       PARDO  a, i
+        tai1(a,i) = 0.0
+         DO i1
+            GET  T1L1_OO_A (i,i1)
+            GET  T2L2_OO_A (i,i1)
+            tii (i,i1)  = T1L1_OO_A (i,i1)
+            tii (i,i1) += T2L2_OO_A (i,i1)
+            tai (a,i)   = LT1A_x (a,i1) * tii (i,i1)
+            tai1(a,i) += tai(a,i)
+
+            GET  T1L1_OO_A_x (i,i1)
+            GET  T2L2_OO_A_x (i,i1)
+            tiiT (i,i1)  = T1L1_OO_A_x (i,i1)
+            tiiT (i,i1) += T2L2_OO_A_x (i,i1)
+            taiT (a,i)   = LT1A (a,i1) * tiiT (i,i1)
+            tai1(a,i) += taiT(a,i)
+#bgn_debug
+            tai1(a,i) *= 1.0
+#end_debug
+          ENDDO i1
+            PUT Doldai_a_x(a,i) += tai1 (a,i)
+       ENDPARDO a,i
+
+       EXECUTE  SIP_BARRIER
+
+#debug_bgn
+#           suma  = 0.0
+#           sumaa = 0.0
+#
+#           pardo a, i
+#           pardo i, i1
+#               GET Doldai_a_x(a,i)
+#                execute dump_amp Doldai_a_x(a,i) 
+#                sum = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+#                GET T2L2_OO_A (i,i1)
+#                GET T1L1_OO_A (i,i1)
+#                GET  T2L2_OO_A_x (i,i1)
+#                GET  T1L1_OO_A_x (i,i1)
+#         if rank == 0.0
+#             execute dump_amp Doldai_a_x(a,i)
+#             execute dump_amp T2L2_OO_A (i,i1)
+#             execute dump_amp T1L1_OO_A (i,i1)
+#             execute dump_amp T2L2_OO_A_x (i,i1)
+#             execute dump_amp T1L1_OO_A_x (i,i1)
+#          endif 
+#
+#                sum = T2L2_OO_A (i,i1)*T2L2_OO_A (i,i1)
+#                suma += sum
+#           endpardo a, i
+#           execute sip_barrier
+#           collective sumaa += suma
+#           execute print_scalar sumaa
+#           endpardo  i, i1
+#           do a
+#           do i1 
+#              sum = LT1A(a,i1)*LT1A(a,i1)
+#              suma += sum
+#           enddo i1
+#           enddo a
+#             
+#debug_end 
+
+#bgn_debug
+      do a
+      do a1 
+         get  T2L2_VV_A_x (a,a1) 
+         get  T2L2_VV_A (a,a1)
+         if rank == 0.0
+            execute dump_amp T2L2_VV_A_x (a,a1) 
+            execute dump_amp T2L2_VV_A (a,a1) 
+        endif 
+       enddo a1
+       enddo a
+#end_debug
+
+       PARDO  a, a1, i
+            GET                     T2L2_VV_A_x (a,a1)
+            tai (a,i)             = T2L2_VV_A_x (a,a1) * LT1A (a1,i)
+            tai (a,i)            *= -1.0
+#bgn_debug
+            tai(a,i) *= 1.0
+#end_debug
+            PUT  Doldai_a_x(a,i)    += tai (a,i)
+      ENDPARDO  a, a1, i
+      
+      PARDO  a, a1, i
+            GET                     T2L2_VV_A (a,a1)
+            tai (a,i)             = T2L2_VV_A (a,a1) * LT1A_x (a1,i)
+            tai (a,i)            *= -1.0
+#bgn_debug
+            tai(a,i) *= 1.0
+#end_debug
+            PUT  Doldai_a_x(a,i)    += tai (a,i)
+      ENDPARDO  a, a1, i
+
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         if rank == 0.0
+#            execute dump_amp Doldai_a_x(a,i)
+#         endif 
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += sum
+#      enddo i
+#      enddo a
+#end_debug
+
+      PARDO   a1,i1
+         GET  l1a_old_x(i1,a1)
+         DO a
+            DO i
+               REQUEST                 T2old_aa(a,i,a1,i1) i
+               tai  (a,i)            = T2old_aa (a,i,a1,i1) * l1a_old_x(i1,a1)
+               PUT  Doldai_a_x(a,i) += tai (a,i)
+           ENDDO i
+         ENDDO a
+      ENDPARDO   a1,i1
+      PARDO   a1,i1
+         GET  l1a_old(i1,a1)
+         DO a
+            DO i
+               REQUEST                 T2old_aa_x(a,i,a1,i1) i
+               tai  (a,i)            = T2old_aa_x (a,i,a1,i1) * l1a_old(i1,a1)
+               PUT  Doldai_a_x(a,i) += tai (a,i)
+           ENDDO i
+         ENDDO a
+      ENDPARDO   a1,i1
+      PARDO  b,j
+         GET  l1b_old_x(j,b)
+         DO a
+            DO i
+               REQUEST                 T2old_ab(a,i,b,j) i
+               tai  (a,i)            = T2old_ab(a,i,b,j) * l1b_old_x(j,b)
+               PUT  Doldai_a_x(a,i) += tai (a,i)
+            ENDDO i
+         ENDDO a
+      ENDPARDO  b,j
+      PARDO  b,j
+         GET  l1b_old(j,b)
+         DO a
+            DO i
+               REQUEST                 T2old_ab_x(a,i,b,j) i
+               tai  (a,i)            = T2old_ab_x(a,i,b,j) * l1b_old(j,b)
+               PUT  Doldai_a_x(a,i) += tai (a,i)
+            ENDDO i
+         ENDDO a
+      ENDPARDO  b,j
+
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         if rank == 0.0
+#            execute dump_amp Doldai_a_x(a,i)
+#         endif
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += sum
+#      enddo i
+#      enddo a
+#      execute print_scalar suma 
+#end_debug
+
+      PARDO  a, i
+              GET t1a_old_x(a,i)
+              GET l1a_old_x(i,a)
+#bgn_debug
+#              execute dump_amp t1a_old_x(a,i) 
+#              execute dump_amp l1a_old_x(i,a) 
+#end_debug
+              tai (a,i)  = l1a_old_x(i,a)
+              tai (a,i) *= -1.0
+              tai (a,i)  += t1a_old_x(a,i)
+
+              PUT  Doldai_a_x(a,i) += tai (a,i)
+      ENDPARDO  a, i
+      EXECUTE  SIP_BARRIER
+
+#bgn_debug
+      sum = 0.0
+      do a
+      do i
+         get Doldai_a_x(a,i)
+         if rank == 0.0
+            execute dump_amp Doldai_a_x(a,i)
+         endif
+         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+         sum += tmp
+      enddo i
+      enddo a
+      execute print_scalar sum 
+
+#end_debug
+
+# BETA  block
+
+      PARDO  b, j
+        tbj1(b,j) = 0.0
+         DO j1
+            GET  T1L1_OO_B (j,j1)
+            GET  T2L2_OO_B (j,j1)
+
+            tjj (j,j1)  = T1L1_OO_B (j,j1)
+            tjj (j,j1) += T2L2_OO_B (j,j1)
+            tbj (b,j)   = LT1B_x (b,j1) * tjj (j,j1)
+            tbj1(b,j) += tbj(b,j)
+
+            GET  T1L1_OO_B_x (j,j1)
+            GET  T2L2_OO_B_x (j,j1)
+
+            tjjT (j,j1)  = T1L1_OO_B_x (j,j1)
+            tjjT (j,j1) += T2L2_OO_B_x (j,j1)
+            tbjT (b,j)   = LT1B (b,j1) * tjjT (j,j1)
+            tbj1(b,j) += tbjT(b,j)
+#bgn_debug
+         tbj1 (b,j) *= 1.0
+#end_debug 
+         ENDDO j1
+
+         PUT Doldai_b_x(b,j) += tbj1 (b,j)
+  
+      ENDPARDO b,j
+      EXECUTE  SIP_BARRIER
+      
+#debug_bgn
+#           sumb = 0.0
+#           sumbb = 0.0
+#           pardo b, j
+#           pardo j, j1
+#               GET Doldai_b_x(b,j)
+#                get T1L1_OO_B(j,j1) 
+#                get T2L2_OO_B(j,j1) 
+#               execute dump_amp  Doldai_b_x(b,j) 
+#               execute dump_amp   T1L1_OO_B (j,j1) 
+#               execute dump_amp   T2L2_OO_B (j,j1) 
+#                
+#                sum = Doldai_b_x(b,j)*Doldai_b_x(b,j)
+#                GET T2L2_OO_B (j,j1)
+#                sum = T2L2_OO_B (j,j1)*T2L2_OO_B (j,j1)
+#                sumb += sum
+#           endpardo b, j
+#           endpardo j, j1
+#           execute sip_barrier
+#           collective sumbb += sumb
+#           Diff = sumaa
+#           Diff-= sumbb 
+#           execute print_scalar sumbb
+#           do b
+#           do j1 
+#              sum = LT1B(b,j1)*LT1B(b,j1)
+#              sumb += sum
+#           enddo j1
+#           enddo b
+#  
+#           Diff = suma
+#           Diff-= sumb 
+#           execute print_scalar Diff
+#debug_end
+
+#--------------------------------------------------------
+#bgn_debug
+#      do b
+#      do b1
+#         get T2L2_VV_B_x(b,b1) 
+#         get T2L2_VV_B(b,b1)
+#         if rank == 0.0
+#         execute dump_amp T2L2_VV_B_x(b,b1) 
+#         execute dump_amp T2L2_VV_B(b,b1) 
+#         endif 
+#      enddo b1
+#      enddo b
+#end_debug
+
+       PARDO  b, b1, j
+            GET                     T2L2_VV_B_x(b,b1)
+            tbj (b,j)             = T2L2_VV_B_x(b,b1) *LT1B(b1,j)
+            tbj(b,j)            *= -1.0
+            PUT  Doldai_b_x(b,j)   += tbj (b,j)
+       ENDPARDO  b, b1, j
+       PARDO  b, b1, j
+            GET                     T2L2_VV_B (b,b1)
+            tbj (b,j)             = T2L2_VV_B (b,b1) *LT1B_x(b1,j)
+            tbj(b,j)            *= -1.0
+            PUT  Doldai_b_x(b,j)   += tbj (b,j)
+       ENDPARDO  b, b1, j
+
+#bgn_debug
+#    execute sip_barrier
+#    do b
+#    do j
+#       get Doldai_b_x(b,j) 
+#       if rank == 0.0
+#          execute dump_amp Doldai_b_x(b,j) 
+#       endif
+#    enddo j
+#    enddo b
+#end_debug
+    
+#-------------------------------------------------------
+      PARDO  b1,j1
+         GET  l1b_old_x(j1,b1)
+         DO b
+            DO j
+               REQUEST                 T2old_bb(b,j,b1,j1) j
+               tbj  (b,j)            = T2old_bb(b,j,b1,j1) * l1b_old_x(j1,b1)
+               PUT  Doldai_b_x(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  b1,j1
+      PARDO  b1,j1
+         GET  l1b_old(j1,b1)
+         DO b 
+            DO j
+               REQUEST                 T2old_bb_x(b,j,b1,j1) j
+               tbj  (b,j)            = T2old_bb_x(b,j,b1,j1) * l1b_old(j1,b1)
+               PUT  Doldai_b_x(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  b1,j1
+      PARDO  i, a
+         GET  l1a_old_x(i,a)
+         DO b
+            DO j
+               REQUEST                 T2old_ab(a,i,b,j) j
+               tbj  (b,j)            = T2old_ab(a,i,b,j) * l1a_old_x(i,a)
+               PUT  Doldai_b_x(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  i, a
+      PARDO  i, a
+         GET  l1a_old(i,a)
+         DO b     
+            DO j  
+               REQUEST                 T2old_ab_x(a,i,b,j) j
+               tbj  (b,j)            = T2old_ab_x(a,i,b,j)*l1a_old(i,a)
+               PUT  Doldai_b_x(b,j) += tbj (b,j)
+            ENDDO j
+         ENDDO b
+      ENDPARDO  i, a
+
+      PARDO  b, j
+              GET t1b_old_x(b,j)
+              GET l1b_old_x(j,b)
+
+               tbj (b,j ) = l1b_old_x(j,b)
+               tbj (b,j ) *= -1.0
+               tbj (b,j)  += t1b_old_x(b,j)
+
+               PUT  Doldai_b_x(b,j) += tbj (b,j)
+      ENDPARDO  b, j
+
+      EXECUTE  SERVER_BARRIER
+      execute load_balance_off
+      EXECUTE  SERVER_BARRIER
+
+#bgn_debug
+      do b
+      do j
+         get Doldai_b_x(b,j)
+         if rank == 0.0
+         execute dump_amp Doldai_b_x(b,j)
+         endif 
+         tmp = Doldai_b_x(b,j) *  Doldai_b_x(b,j) 
+         sumb += tmp
+      enddo j
+      enddo b
+      execute print_scalar sumb
+#end_debug
+ 
+      ENDPROC DAI_x
+#     -------------
+
+      PROC D1TRANS
+#     Transform Dai_aa
+#     ----------------
+#bgn_debug
+#      PARDO a, a1
+#            GET Dab_a(a,a1)
+#            execute dump_amp Dab_a(a,a1)
+#      ENDPARDO a, a1
+#end_debug
+
+      PARDO a, i
+            GET Doldai_a(a,i)
+            DO mu
+               Jxi(mu,i)  = Doldai_a(a,i)*ca(mu,a)
+               DO nu
+                  Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
+                  I1xx(nu,mu)     = Ixx(mu,nu)
+                  PUT DpqA(mu,nu) += Ixx(mu,nu) #PV
+                  PUT DpqA(nu,mu) += I1xx(nu,mu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO a, i
+#
+#     Transform Dai_bb
+#     ----------------
+      PARDO b, j
+            GET Doldai_b(b,j)
+            DO mu
+               Jxj(mu,j)  = Doldai_b(b,j)*cb(mu,b)
+               DO nu
+                  Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
+                  I1xx(nu,mu)     = Ixx(mu,nu)
+                  PUT DpqB(mu,nu) += Ixx(mu,nu)  #PV
+                  PUT DpqB(nu,mu) += I1xx(nu,mu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO b, j
+#
+#     Transform Dab_a
+#     ---------------
+      PARDO a, a1
+            GET Dab_a(a,a1)
+            DO mu
+               Ixa(mu,a1)  = Dab_a(a,a1)*ca(mu,a)
+               DO nu
+                  Ixx(mu,nu) = Ixa(mu,a1)*ca(nu,a1)
+                  PUT DpqA(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO a, a1
+#
+#     Transform Dab_b
+#     ----------------
+      PARDO b, b1
+            GET Dab_b(b,b1)
+            DO mu
+               Ixb(mu,b1)  = Dab_b(b,b1)*cb(mu,b)
+               DO nu
+                  Ixx(mu,nu) = Ixb(mu,b1)*cb(nu,b1)
+                  PUT DpqB(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO b, b1
+#     Transform Dij_aa
+#     ----------------
+      PARDO i, i1
+            GET Dij_a(i,i1)
+            DO mu
+               Jxi(mu,i1)  = Dij_a(i,i1)*ca(mu,i)
+               DO nu
+                  Ixx(mu,nu) = Jxi(mu,i1)*ca(nu,i1)
+                  PUT DpqA(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO i, i1
+#
+#     Transform Dij_bb
+#     ----------------
+      PARDO j, j1
+            GET Dij_b(j,j1)
+            DO mu
+               Jxj(mu,j1)  = Dij_b(j,j1)*cb(mu,j)
+               DO nu
+                  Ixx(mu,nu) = Jxj(mu,j1)*cb(nu,j1)
+                  PUT DpqB(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO j, j1
+      execute sip_barrier
+#
+# Finally contract with the derivative integrals
+# ----------------------------------------------
+#        XX=0.0
+#       Axx=0.0
+#        YY=0.0
+#       Ayy=0.0
+#        ZZ=0.0
+#       Azz=0.0
+#       Px=0.0
+#       Py=0.0
+#       Pz=0.0
+#
+#        PARDO mu, nu
+#            GET DpqA(mu,nu)
+#            GET DpqB(mu,nu)
+#            GET DHF_aa(mu,nu)
+#            GET DHF_bb(mu,nu)
+#
+#            get HBx(mu,nu)
+#            get HBy(mu,nu)
+#            get HBz(mu,nu) 
+#
+#            Dccsd(mu,nu)  = DpqA(mu,nu)
+#            Dccsd(mu,nu) += DpqB(mu,nu)
+#            
+#            Dscf(mu,nu)   = DHF_aa(mu,nu)
+#            Dscf(mu,nu)  += DHF_bb(mu,nu)
+#
+#            Tpq(mu,nu)  = Dccsd(mu,nu)
+#            Tpq(mu,nu) = Dscf(mu,nu)
+#
+#             XX   = Tpq(mu,nu)*HBx(mu,nu)
+#             Axx += XX
+#
+#             YY  = Tpq(mu,nu)*HBy(mu,nu)
+#            Ayy += YY
+#
+#             ZZ  = Tpq(mu,nu)*HBz(mu,nu)
+#            Azz += ZZ
+#         ENDPARDO mu, nu
+#
+#      execute sip_barrier
+#      collective Px +=Axx
+#      execute print_scalar Px
+#
+#      execute sip_barrier
+#      collective Py +=Ayy
+#      execute print_scalar Py
+#
+#      execute sip_barrier
+#      collective Pz +=Azz
+#      execute print_scalar Pz
+#
+      ENDPROC D1TRANS
+#     ----------------
+
+      PROC CCSD_MASSCR
+#     ---------------
+        XX  = 0.0
+        AXX = 0.0
+        MCx = 0.0
+
+        PARDO mu, nu
+
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            execute print_scalar one
+            execute compute_kin_batch Tkin(mu,nu)
+
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) -= DpqB(mu,nu)
+            
+#            GET DHF_aa(mu,nu)
+#            GET DHF_bb(mu,nu)
+#
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            Tpq(mu,nu) = Dscf(mu,nu)
+
+            Tpq(mu,nu)  = Dccsd(mu,nu)
+            Tpq(mu,nu) += Dscf(mu,nu)
+
+            XX   = Tpq(mu,nu)*Tkin(mu,nu)
+            Axx += XX
+
+        ENDPARDO mu, nu
+#
+      execute sip_barrier
+      collective MCx +=Axx
+      execute sip_barrier
+
+      MCy = MCx
+      MCz = MCx
+
+      execute print_scalar MCx
+#
+      ENDPROC CCSD_MASSCR
+#     -------------------
+
+      PROC CCSD_1E_GAUGECR
+#     --------------------
+        AXX = 0.0
+        AXY = 0.0
+        AXZ = 0.0
+        AYY = 0.0
+        AYZ = 0.0
+        AZZ = 0.0
+        
+        GC1xx_tmp  = 0.0
+        GC1xy_tmp  = 0.0
+        GC1xz_tmp  = 0.0
+        GC1yy_tmp  = 0.0
+        GC1yz_tmp  = 0.0
+        GC1zz_tmp  = 0.0
+
+        GC1xx  = 0.0
+        GC1xy  = 0.0
+        GC1xz  = 0.0
+        GC1yy  = 0.0
+        GC1yz  = 0.0
+        GC1zz  = 0.0
+
+        PARDO mu, nu
+
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) -= DpqB(mu,nu)
+            
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+#
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  -= DHF_bb(mu,nu)
+            Tpq(mu,nu) = Dscf(mu,nu)
+
+            Tpq(mu,nu)  = Dccsd(mu,nu)
+            Tpq(mu,nu) += Dscf(mu,nu)
+
+            execute compute_dshield_xxbatch TDshld(mu,nu)
+            XX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axx += XX
+
+            execute compute_dshield_xybatch TDshld(mu,nu)
+            XY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axy += XY
+
+            execute compute_dshield_yxbatch TDshld(mu,nu)
+            YX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayx += YX
+
+            execute compute_dshield_xzbatch TDshld(mu,nu)
+            XZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Axz += XZ
+
+            execute compute_dshield_zxbatch TDshld(mu,nu)
+            ZX   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azx += ZX
+           
+            execute compute_dshield_yybatch TDshld(mu,nu)
+            YY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayy += YY
+
+            execute compute_dshield_yzbatch TDshld(mu,nu)
+            YZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Ayz += YZ
+
+            execute compute_dshield_zybatch TDshld(mu,nu)
+            ZY   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azy += ZY
+
+            execute compute_dshield_zzbatch TDshld(mu,nu)
+            ZZ   = Tpq(mu,nu)*TDshld(mu,nu) 
+            Azz += ZZ
+
+        ENDPARDO mu, nu
+#
+      execute sip_barrier
+
+      collective GC1xx_tmp +=Axx
+      collective GC1xy_tmp +=Axy
+      collective GC1yx_tmp +=Ayx
+      collective GC1xz_tmp +=Axz
+      collective GC1zx_tmp +=Azx
+      collective GC1yy_tmp +=Ayy
+      collective GC1yz_tmp +=Ayz
+      collective GC1zy_tmp +=Azy
+      collective GC1zz_tmp +=Azz
+
+      execute print_scalar GC1xx_tmp
+      execute print_scalar GC1xy_tmp
+      execute print_scalar GC1yx_tmp
+      execute print_scalar GC1xz_tmp
+      execute print_scalar GC1zx_tmp
+      execute print_scalar GC1yy_tmp
+      execute print_scalar GC1yz_tmp
+      execute print_scalar GC1zy_tmp
+      execute print_scalar GC1zz_tmp
+
+# The symmerty of the tensor is assured; xy=yx;xz=zx,yz=zy
+
+      GC1xx  = GC1xy_tmp
+      GC1xx += GC1xy_tmp
+      GC1xx += GC1yy_tmp
+      GC1xx += GC1yz_tmp
+      GC1xx += GC1yz_tmp
+      GC1xx += GC1zz_tmp
+ 
+      GC1yy  = GC1xy_tmp
+      GC1yy += GC1xy_tmp
+      GC1yy += GC1xx_tmp
+      GC1yy += GC1yz_tmp
+      GC1yy += GC1yz_tmp
+      GC1yy += GC1zz_tmp
+
+      GC1zz  = GC1xy_tmp
+      GC1zz += GC1xy_tmp
+      GC1zz += GC1xx_tmp
+      GC1zz += GC1yz_tmp
+      GC1zz += GC1yz_tmp
+      GC1zz += GC1yy_tmp
+   
+      GC1xy  = GC1xy_tmp 
+      GC1yx  = GC1yx_tmp 
+     
+      GC1xz  = GC1xz_tmp
+      GC1zx  = GC1zx_tmp
+ 
+      GC1yz  = GC1yz_tmp
+      GC1zy  = GC1zy_tmp
+
+      execute print_scalar GC1xx
+      execute print_scalar GC1xy
+      execute print_scalar GC1xz
+      execute print_scalar GC1yy
+      execute print_scalar GC1yz
+      execute print_scalar GC1zz
+
+#
+      ENDPROC CCSD_1E_GAUGECR
+#     -----------------------
+
+      PROC D1TRANS_x
+#     ---------------
+#     Transform Dai_aa
+
+      PARDO a, i
+            GET Doldai_a_x(a,i)
+            DO mu
+               Jxi(mu,i)  = Doldai_a_x(a,i)*ca(mu,a)
+               DO nu
+                  Ixx(mu,nu)      = Jxi(mu,i)*ca(nu,i)
+                  I1xx(nu,mu)     = Ixx(mu,nu)
+                  PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
+                  IF  ASYM == 1.0
+                      I1xx(nu,mu) *= -1.0 
+                      PUT DpqA_x(nu,mu) += I1xx(nu,mu) #PV
+                  ELSE 
+                      PUT DpqA_x(nu,mu) += I1xx(nu,mu) #PV
+                  ENDIF 
+         
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO a, i
+#     Transform Dai_bb
+      PARDO b, j
+            GET Doldai_b_x(b,j)
+            DO mu
+               Jxj(mu,j)  = Doldai_b_x(b,j)*cb(mu,b)
+               DO nu
+                  Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
+                  I1xx(nu,mu)     = Ixx(mu,nu)
+                   PUT DpqB_x(mu,nu) += Ixx(mu,nu)  #PV
+                   IF  ASYM == 1.0
+                       I1xx(nu,mu) *= -1.0 
+                       PUT DpqB_x(nu,mu) += I1xx(nu,mu) #PV
+                   ELSE 
+                       PUT DpqB_x(nu,mu) += I1xx(nu,mu) #PV
+                   ENDIF 
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO b, j
+#     Transform Dab_a
+      PARDO a, a1
+            GET Dab_a_x(a,a1)
+            DO mu
+               Ixa(mu,a1)  = Dab_a_x(a,a1)*ca(mu,a)
+               DO nu
+                  Ixx(mu,nu) = Ixa(mu,a1)*ca(nu,a1)
+                  PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO a, a1
+#     Transform Dab_b
+      PARDO b, b1
+            GET Dab_b_x(b,b1)
+            DO mu
+               Ixb(mu,b1)  = Dab_b_x(b,b1)*cb(mu,b)
+               DO nu
+                  Ixx(mu,nu) = Ixb(mu,b1)*cb(nu,b1)
+                  PUT DpqB_x(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO b, b1
+#     Transform Dij_aa
+#     ----------------
+      PARDO i, i1
+            GET Dij_a_x(i,i1)
+            DO mu
+               Jxi(mu,i1)  = Dij_a_x(i,i1)*ca(mu,i)
+               DO nu
+                  Ixx(mu,nu) = Jxi(mu,i1)*ca(nu,i1)
+                   PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO i, i1
+#     Transform Dij_bb
+      PARDO j, j1
+            GET Dij_b_x(j,j1)
+            DO mu
+               Jxj(mu,j1)  = Dij_b_x(j,j1)*cb(mu,j)
+               DO nu
+                  Ixx(mu,nu) = Jxj(mu,j1)*cb(nu,j1)
+                   PUT DpqB_x(mu,nu) += Ixx(mu,nu) #PV
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO j, j1
+      execute sip_barrier
+
+#bgn_debug
+#      PARDO mu, nu
+#            get DpqA_x(mu,nu)
+#            execute dump_amp DpqA_x(mu,nu) 
+#              
+#            Ixx(mu,nu) = DpqA_x(mu,nu)
+#            If mu > nu
+#               Ixx(mu,nu) *= -1.0
+#            endif
+#            if mu == nu
+#               execute symm_force_ij Ixx
+#            endif
+#            Put DpqA_x(mu,nu) = Ixx(mu,nu)
+#      ENDPARDO mu,nu
+#
+#      PARDO mu, nu
+#            get DpqB_x(mu,nu)
+#            Ixx(mu,nu) = DpqB_x(mu,nu)
+#            If mu > nu
+#               Ixx(mu,nu) *= -1.0
+#            endif
+#            if mu == nu
+#               execute symm_force_ij  Ixx
+#            endif
+#            PUT  DpqB_x(mu,nu) = Ixx(mu,nu)
+#      ENDPARDO mu,nu
+#
+#      execute sip_barrier
+#end_debug
+
+      ENDPROC D1TRANS_x
+#     ------------------
+
+      PROC CCSD_RESPONSE_X
+#     --------------------
+# Finally contract with the derivative integrals
+# ----------------------------------------------
+      XX=0.0
+      Axx=0.0
+      YY=0.0
+      Ayy=0.0
+      ZZ=0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
+
+      PARDO mu, nu
+            GET DpqA_x(mu,nu)
+            GET DpqB_x(mu,nu)
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            Dccsd_x(mu,nu)   = DpqA_x(mu,nu)
+            IF SPIN_DEN == 1.0
+               DpqB_x(mu,nu)  *= -1.0
+               Dccsd_x(mu,nu) += DpqB_x(mu,nu)
+            ELSE
+               Dccsd_x(mu,nu) += DpqB_x(mu,nu)
+            ENDIF 
+            Tpq_x(mu,nu)     = Dccsd_x(mu,nu)
+ 
+             XX   = Tpq_x(mu,nu)*HBx(mu,nu)            
+             Axx += XX             
+
+            YY  = Tpq_x(mu,nu)*HBy(mu,nu)     
+            Ayy += YY
+
+             ZZ  = Tpq_x(mu,nu)*HBz(mu,nu)
+            Azz += ZZ
+       ENDPARDO mu, nu
+
+      execute sip_barrier
+      collective Pxx +=Axx
+      execute print_scalar Pxx
+  
+      execute sip_barrier
+      collective Pxy +=Ayy
+      execute print_scalar Pxy
+
+      execute sip_barrier
+      collective Pxz +=Azz
+      execute print_scalar Pxz
+
+      ENDPROC CCSD_RESPONSE_X
+#    ------------------------
+
+       PROC GET_HBXYZ_Dipole
+#     ----------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier
+
+           PARDO mu, nu
+              EXECUTE return_x Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                 execute print_scalar one
+#                 Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+#end_dbg
+
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+
+              EXECUTE return_y Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                 execute print_scalar one
+#                 Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+#end_dbg
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+
+              EXECUTE return_z Tpq(mu,nu)
+#begin_dbg
+#              If mu > nu
+#                execute print_scalar one
+#                Tpq(mu, nu) *= -1.0
+#              Endif
+#              if mu == nu
+#                execute  print_scalar two
+#                execute symm_force_ij Tpq
+#              endif
+#end_dbg
+
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Dipole
+#      -----------------------
+
+        PROC GET_HBXYZ_Angmom
+#       --------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier 
+
+           PARDO mu, nu
+              EXECUTE compute_angmom_xbatch Tpq(mu,nu)
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_angmom_ybatch Tpq(mu,nu)
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_angmom_zbatch Tpq(mu,nu)
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Angmom
+#      -----------------------
+
+        PROC GET_HBXYZ_Spin_orbit
+#       -----------------------
+           CREATE HBX
+           CREATE HBY
+           CREATE HBZ
+           execute sip_barrier 
+
+           PARDO mu, nu
+              EXECUTE compute_1soi_xbatch Tpq(mu,nu)
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_1soi_ybatch Tpq(mu,nu)
+              PUT  HBy(mu,nu) = Tpq(mu,nu)
+              EXECUTE compute_1soi_zbatch Tpq(mu,nu)
+              PUT  HBz(mu,nu) = Tpq(mu,nu)
+         ENDPARDO mu,nu
+
+         execute sip_barrier
+#
+       ENDPROC get_HBXYZ_Spin_orbit
+#      --------------------------
+
+          PROC ENERGY_X        
+#------------------------
+          XX=0.0
+          Axx=0.0
+          Px=0.0
+          PARDO a,a1
+           GET Dab_a_x(a,a1)
+           XX  = Dab_a_x(a,a1)*Dab_a_x(a,a1) 
+           AXX   += XX                
+         ENDPARDO a,a1
+
+         yy=0.0
+          Ayy=0.0
+          Py=0.0
+          PARDO b,b1
+           GET Dab_b_x(b,b1)
+           yy  = Dab_b_x(b,b1)*Dab_b_x(b,b1)
+           Ayy   += yy
+         ENDPARDO b,b1
+
+        execute sip_barrier
+        collective Px += Axx           
+        execute print_scalar Px                
+        collective Py += Ayy
+        execute print_scalar Py
+        diff = Px
+        diff-= py
+        execute print_scalar diff
+        ENDPROC ENERGY_X          
+#............................
+       PROC ENERGYov_X
+          XX=0.0
+          Axx=0.0
+          Px=0.0
+          PARDO a,i
+           GET Doldai_a_x(a,i)
+           XX  = Doldai_a_x(a,i)*Doldai_a_x(a,i)
+           AXX   += XX
+         ENDPARDO a,i
+
+         yy=0.0
+          Ayy=0.0
+          Py=0.0
+          PARDO b,j
+           GET Doldai_b_x(b,j)
+           yy  = Doldai_b_x(b,j)*Doldai_b_x(b,j)
+           Ayy   += yy
+         ENDPARDO b,j
+
+        execute sip_barrier
+        collective Px += Axx
+        execute print_scalar Px
+        collective Py += Ayy
+        execute print_scalar Py
+        diff = Px
+        diff-= py
+        execute print_scalar diff
+        ENDPROC ENERGYOV_X          
+#-------------------------------------------------
+
+        PROC ENERGYoo_X
+          XX=0.0
+          Axx=0.0
+          Px=0.0
+          PARDO i,i1
+           GET Dij_a_x(i,i1)
+           XX  = Dij_a_x(i,i1)*Dij_a_x(i,i1)
+           AXX   += XX
+         ENDPARDO i,i1
+
+         yy=0.0
+          Ayy=0.0
+          Py=0.0
+          PARDO j,j1
+           GET Dij_b_x(j,j1)
+           yy  = Dij_b_x(j,j1)*Dij_b_x(j,j1)
+           Ayy   += yy
+         ENDPARDO j,j1
+
+        execute sip_barrier
+        collective Px += Axx
+        execute print_scalar Px
+        collective Py += Ayy
+        execute print_scalar Py
+        diff = Px
+        diff-= py
+        execute print_scalar diff
+        ENDPROC ENERGYoo_X
+#       ------------------
+
+        PROC ASYM_AB_X
+#       --------------
+
+        PARDO A, A1
+              GET Dab_a_x(a,a1)
+              Taa(a,a1) = Dab_a_x(a,a1)
+              If A > A1
+                 Taa(a,a1) *= -1.0
+              Endif 
+              If A == A1
+                 execute symm_force_ij Taa(a,a1)
+              Endif 
+              PUT  Dab_a_x(a,a1) = Taa(a,a1)
+        ENDPARDO A, A1
+
+        PARDO B, B1
+              GET Dab_b_x(b,b1)
+              Tbb(b,b1) = Dab_b_x(b,b1)
+              IF b1 > b
+                 Tbb(b,b1) *= -1.0
+              Endif 
+              If B == B1
+                 execute symm_force_ij Tbb(b,b1)
+              Endif 
+              PUT Dab_b_x(b,b1) = Tbb(b,b1)
+        ENDPARDO B, B1
+
+        ENDPROC ASYM_AB_X
+#       -----------------
+
+        PROC ASYM_IJ_X
+#       --------------
+        PARDO I, I1
+              GET Dij_a_x(i,i1)
+              Tii(i,i1) = Dij_a_x(i,i1)
+              If i1 > i
+                 Tii(i,i1) *= -1.0
+              Endif 
+              If I1 == i
+                  execute symm_force_ij Tii(i,i1)
+              Endif
+              PUT Dij_a_x(i,i1) = Tii(i,i1)
+        ENDPARDO I, I1
+
+        PARDO J, J1
+              GET Dij_b_x(j,j1)
+              Tjj(j,j1) = Dij_b_x(j,j1)
+              If j1 > j 
+                  Tjj(j,j1) *= -1.0
+              Endif 
+              If j1 == j
+                 execute symm_force_ij Tjj(j,j1)
+              Endif 
+              PUT Dij_b_x(j,j1) = Tjj(j,j1)
+        ENDPARDO J, J1
+
+        ENDPROC ASYM_IJ_X
+#       -----------------
+
+     PROC PICK_PERT_T_X
+#    ------------------
+
+      PARDO I, A
+            GET T1a_x(A,I)
+            Get L1a_x(i,a)
+            Tai(A,I) = T1a_x(A,I)
+            Tia(i,a) = L1a_x(i,a)
+            PUT T1a_old_x(A,I) = Tai(A,I)
+            PUT L1a_old_x(I,A) = Tia(i,a)
+      ENDPARDO I, A
+
+      PARDO J, B
+            GET T1b_x(B,J)
+            Get L1b_x(J,B)
+            Tbj(B,J) = T1b_x(B,J)
+            Tjb(J,B) = L1b_x(J,B)
+            PUT T1b_old_x(B,J) = Tbj(B,J)
+            PUT L1b_old_x(J,B) = Tjb(J,B)
+      ENDPARDO J,B
+
+      PARDO A, A1, I, I1
+            REQUEST T2aa_X(A,I,A1,I1) I1
+            REQUEST L2aa_x(i,a,i1,a1) a1
+            Taiai(A,I,A1,I1) = T2aa_X(A,I,A1,I1)
+            Tiaia(i,a,i1,a1) = L2aa_x(i,a,i1,a1)
+            PREPARE T2old_aa_X(A,I,A1,I1) = Taiai(A,I,A1,I1)
+            PREPARE L2old_aa_X(I,A,I1,A1) = Tiaia(i,a,i1,a1)
+      ENDPARDO A, A1, I, I1,
+
+      PARDO B, B1, J, J1
+            REQUEST T2bb_X(B,J,B1,J1) J1
+            REQUEST L2bb_x(j,b,j1,b1) b1
+            Tbjbj(B,J,B1,J1) = T2bb_X(B,J,B1,J1)
+            Tjbjb(j,b,j1,b1) = L2bb_x(j,b,j1,b1)
+            PREPARE T2old_bb_X(B,J,B1,J1)= Tbjbj(B,J,B1,J1)
+            PREPARE  L2old_bb_X(J,B,J1,B1)= Tjbjb(j,b,j1,b1)
+      ENDPARDO B, B1, J, J1
+
+      PARDO A, B, I, J
+            REQUEST T2ab_X(A,I,B,J) J
+            REQUEST L2ab_x(i,a,j,b) b
+            Taibj(A,I,B,J) = T2ab_X(A,I,B,J)
+            Tiajb(i,a,j,b) = L2ab_x(i,a,j,b)
+            PREPARE T2old_ab_X(A,I,B,J) = Taibj(A,I,B,J)
+            PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
+      ENDPARDO A, B, I, J,
+
+      EXECUTE SERVER_BARRIER
+
+#bgn_debug
+#       execute get_my_rank rank
+#       if rank == 0.0
+#          do i
+#          do a
+#            GET T1a_old_x(A,I)
+#            GET L1a_old_x(I,A)
+#             execute dump_amp T1a_old_x(A,I)
+#             execute dump_amp L1a_old_x(I,A)
+#          enddo a
+#          enddo i
+#       endif
+#end_debug
+     ENDPROC PICK_PERT_T_X
+#    --------------------
+
+    PROC PICK_PERT_T_Y
+#    ------------------
+
+      PARDO I, A
+            GET T1a_Y(A,I)
+            Get L1a_Y(i,a)
+            Tai(A,I) = T1a_Y(A,I)
+            Tia(i,a) = L1a_Y(i,a)
+            PUT T1a_old_x(A,I) = Tai(A,I)
+            PUT L1a_old_x(I,A) = Tia(i,a)
+      ENDPARDO I, A
+
+      PARDO J, B
+            GET T1b_Y(B,J)
+            Get L1b_Y(J,B)
+            Tbj(B,J) = T1b_Y(B,J)
+            Tjb(J,B) = L1b_Y(J,B)
+            PUT T1b_old_x(B,J) = Tbj(B,J)
+            PUT L1b_old_x(J,B) = Tjb(J,B)
+      ENDPARDO J,B
+
+      PARDO A, A1, I, I1
+            REQUEST T2aa_Y(A,I,A1,I1) I1
+            REQUEST L2aa_Y(i,a,i1,a1) a1
+            Taiai(A,I,A1,I1) = T2aa_Y(A,I,A1,I1)
+            Tiaia(i,a,i1,a1) = L2aa_Y(i,a,i1,a1)
+            PREPARE T2old_aa_X(A,I,A1,I1) = Taiai(A,I,A1,I1)
+            PREPARE L2old_aa_X(I,A,I1,A1) = Tiaia(i,a,i1,a1)
+      ENDPARDO A, A1, I, I1,
+
+      PARDO B, B1, J, J1
+            REQUEST T2bb_Y(B,J,B1,J1) J1
+            REQUEST L2bb_Y(j,b,j1,b1) b1
+            Tbjbj(B,J,B1,J1) = T2bb_Y(B,J,B1,J1)
+            Tjbjb(j,b,j1,b1) = L2bb_Y(j,b,j1,b1)
+            PREPARE T2old_bb_X(B,J,B1,J1)= Tbjbj(B,J,B1,J1)
+            PREPARE L2old_bb_X(J,B,J1,B1)= Tjbjb(j,b,j1,b1)
+      ENDPARDO B, B1, J, J1
+
+      PARDO A, B, I, J
+            REQUEST T2ab_Y(A,I,B,J) J
+            REQUEST L2ab_Y(i,a,j,b) b
+            Taibj(A,I,B,J) = T2ab_Y(A,I,B,J)
+            Tiajb(i,a,j,b) = L2ab_Y(i,a,j,b)
+            PREPARE T2old_ab_X(A,I,B,J) = Taibj(A,I,B,J)
+            PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
+      ENDPARDO A, B, I, J,
+
+      EXECUTE SERVER_BARRIER
+
+      ENDPROC PICK_PERT_T_Y
+#     ---------------------
+
+     PROC PICK_PERT_T_Z
+#    ------------------
+
+      PARDO I, A
+            GET T1a_Z(A,I)
+            Get L1a_Z(i,a)
+            Tai(A,I) = T1a_Z(A,I)
+            Tia(i,a) = L1a_Z(i,a)
+            PUT T1a_old_x(A,I) = Tai(A,I)
+            PUT L1a_old_x(I,A) = Tia(i,a)
+      ENDPARDO I, A
+
+      PARDO J, B
+            GET T1b_Z(B,J)
+            Get L1b_Z(J,B)
+            Tbj(B,J) = T1b_Z(B,J)
+            Tjb(J,B) = L1b_Z(J,B)
+            PUT T1b_old_x(B,J) = Tbj(B,J)
+            PUT L1b_old_x(J,B) = Tjb(J,B)
+      ENDPARDO J,B
+
+      PARDO A, A1, I, I1
+            REQUEST T2aa_Z(A,I,A1,I1) I1
+            REQUEST L2aa_Z(i,a,i1,a1) a1
+            Taiai(A,I,A1,I1) = T2aa_Z(A,I,A1,I1)
+            Tiaia(i,a,i1,a1) = L2aa_Z(i,a,i1,a1)
+            PREPARE T2old_aa_X(A,I,A1,I1) = Taiai(A,I,A1,I1)
+            PREPARE L2old_aa_X(I,A, I1,A1) = Tiaia(i,a,i1,a1)
+      ENDPARDO A, A1, I, I1,
+
+      PARDO B, B1, J, J1
+            REQUEST T2bb_Z(B,J,B1,J1) J1
+            REQUEST L2bb_Z(j,b,j1,b1) b1
+            Tbjbj(B,J,B1,J1) = T2bb_Z(B,J,B1,J1)
+            Tjbjb(j,b,j1,b1) = L2bb_Z(j,b,j1,b1)
+            PREPARE T2old_bb_X(B,J,B1,J1)= Tbjbj(B,J,B1,J1)
+            PREPARE L2old_bb_X(J,B,J1,B1)= Tjbjb(j,b,j1,b1)
+      ENDPARDO B, B1, J, J1
+
+     PARDO A, B, I, J
+            REQUEST T2ab_Z(A,I,B,J) J
+            REQUEST L2ab_Z(i,a,j,b) b
+            Taibj(A,I,B,J) = T2ab_Z(A,I,B,J)
+            Tiajb(i,a,j,b) = L2ab_Z(i,a,j,b)
+            PREPARE T2old_ab_X(A,I,B,J) = Taibj(A,I,B,J)
+            PREPARE L2old_ab_X(i,a,j,b) = Tiajb(i,a,j,b)
+      ENDPARDO A, B, I, J,
+
+      EXECUTE SERVER_BARRIER
+
+     ENDPROC PICK_PERT_T_Z
+#    ----------------------
+
+     PROC PUT_DENS_X
+#    ---------------
+     PARDO mu, nu
+          GET DpqA_x(mu,nu)
+          TXX(mu,nu) = DpqA_x(mu,nu)
+          PUT DpqA_1(mu,nu) = DpqA_x(mu,nu) 
+     ENDPARDO mu, nu
+     
+     PARDO mu, nu
+          GET DpqB_x(mu,nu)
+          TXX(mu,nu) = DpqB_x(mu,nu)
+          PUT DpqB_1(mu,nu) = DpqB_x(mu,nu) 
+     ENDPARDO mu, nu
+
+     ENDPROC PUT_DENS_X
+#    ------------------
+
+     PROC PUT_DENS_Y
+#    ---------------
+     PARDO mu, nu
+          GET DpqA_x(mu,nu)
+          TXX(mu,nu) = DpqA_x(mu,nu)
+          PUT DpqA_2(mu,nu) = DpqA_x(mu,nu)
+     ENDPARDO mu, nu
+    
+     PARDO mu, nu
+          GET DpqB_x(mu,nu)
+          TXX(mu,nu) = DpqB_x(mu,nu)
+          PUT DpqB_2(mu,nu) = DpqB_x(mu,nu)
+     ENDPARDO mu, nu
+
+     ENDPROC PUT_DENS_Y
+#    ------------------
+
+     PROC PUT_DENS_Z
+#    ---------------
+     PARDO mu, nu
+          GET DpqA_x(mu,nu)
+          TXX(mu,nu) = DpqA_x(mu,nu)
+          PUT DpqA_1(mu,nu) = DpqA_x(mu,nu)
+     ENDPARDO mu, nu
+    
+     PARDO mu, nu
+          GET DpqB_x(mu,nu)
+          TXX(mu,nu) = DpqB_x(mu,nu)
+          PUT DpqB_1(mu,nu) = DpqB_x(mu,nu)
+     ENDPARDO mu, nu
+
+     ENDPROC PUT_DENS_Z
+#    ------------------
+     
+     PROC CHECK_TL_ARRAYS
+#    --------------------
+#debug_bgn
+           execute get_my_rank rank
+           suma  = 0.0
+           sumb  = 0.0
+           sumaa = 0.0
+           sumbb = 0.0
+           sum = 0.0
+
+           pardo a, i
+               GET  t1a_old_x(a,i)
+               GET  l1a_old_x(i,a)
+                sum = t1a_old_x(a,i) * t1a_old_x(a,i)
+                suma += sum
+                sum = l1a_old_x(i,a) * l1a_old_x(i,a)
+                suma += sum
+           endpardo a, i
+
+           sum = 0.0
+           pardo  b, j
+               GET t1b_old_x(b,j)
+               GET l1b_old_x(j,b)
+                sum =   t1b_old_x(b,j) *  t1b_old_x(b,j)
+                sumb += sum
+                sum =   l1b_old_x(j,b) * l1b_old_x(j,b)
+                sumb += sum
+           endpardo b, j
+
+           execute server_barrier
+           collective sumaa += suma
+           collective sumbb += sumb
+
+#           diff = sumaa
+#           diff -= sumbb
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+
+#           PARDO a, i, a2, i1
+#               REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
+#               REQUEST L2old_aa(i,a,i1,a2) a2 # read from list
+#               REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
+#               REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+#               execute dump_amp T2old_aa_x(a,i,a2,i1) 
+#               execute dump_amp L2old_aa_x(i,a,i1,a2) 
+#
+#               taiai(a,i,a2,i1) = L2old_aa_x(i,a,i1,a2)
+#               sum = T2old_aa(a,i,a2,i1) * taiai(a,i,a2,i1)
+#               suma += sum
+#               sum = L2old_aa(i,a,i1,a2) * L2old_aa(i,a,i1,a2)
+#               suma += sum
+#               sum = T2old_aa_z(a,i,a2,i1) * T2old_aa_z(a,i,a2,i1)
+#               suma += sum
+#               sum =  L2old_aa_z(i,a,i1,a2) * L2old_aa_z(i,a,i1,a2)
+#               suma += sum
+#           ENDPARDO a, i, a2, i1
+#           PARDO b1, j, b2, j1
+#               REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
+#               REQUEST L2old_bb(j,b1,j1,b2)  j1 # Read from the list
+#               REQUEST T2old_bb_z(b1,j,b2,j1) j1 # Read from the list
+#               REQUEST L2old_bb_z(j,b1,j1,b2)  j1 # Read from the list
+#               tbjbj(b1,j,b2,j1) = L2old_bb_x(j,b1,j1,b2)
+#               sum = T2old_bb(b1,j,b2,j1) * tbjbj(b1,j,b2,j1)
+#               sumb += sum
+#               sum = L2old_bb(j,b1,j1,b2) * L2old_bb(j,b1,j1,b2)
+#               sumb += sum
+#               sum = T2old_bb_z(b1,j,b2,j1) * T2old_bb_z(b1,j,b2,j1)
+#               sumb += sum
+#               sum = L2old_bb_z(j,b1,j1,b2) * L2old_bb_z(j,b1,j1,b2)
+#               sumb += sum
+#           ENDPARDO b1, j, b2, j1
+#           execute server_barrier
+#           collective sumaa += suma
+#           collective sumbb += sumb
+#           execute print_scalar sumaa
+#           execute print_scalar sumbb
+
+     ENDPROC CHECK_TL_ARRAYS
+#    -----------------------
+
+     PROC CHECK_AO_DENS
+#    ------------------
+#debug_bgn
+#            call ENERGY_X
+#            call ENERGYoo_X
+#            call ENERGYov_X
+#debug_end
+#debug_bgn
+#           suma  = 0.0
+#           sumb  = 0.0
+#           sumaa = 0.0
+#           sumbb = 0.0
+#           sum = 0.0
+#
+#           pardo mu, nu
+#               GET DpqA_x(mu,nu)
+#                sum = DpqA_x(mu,nu) * DpqA_x(mu,nu)
+#                suma += sum
+#           endpardo mu, nu
+#
+#           sum = 0.0
+#           pardo mu, nu
+#               GET DpqA_y(mu,nu)
+#                sum =  DpqA_y(mu,nu) * DpqA_y(mu,nu)
+#                sumb += sum
+#           endpardo mu, nu
+#           execute server_barrier
+#           collective sumaa += suma
+#           collective sumbb += sumb
+#           diff = sumaa
+#           diff -= sumbb
+#           execute print_scalar sumaa
+#          execute print_scalar sumbb
+#debug_end
+#
+     ENDPROC CHECK_AO_DENS
+#    --------------------
+
+         PROC DMAIN
+#        -----------
+
+            one   = 1.0
+            two   = 2.0
+            three = 3.0
+
+            create DHF_aa
+            create DHF_bb
+
+            execute sip_barrier
+
+            CALL HFDENS
+            CALL CREATE_FIXED
+
+# set the type of property based on key-words.
+
+            do_pols = polarizability
+            do_aten = a_tensor
+            do_gten = g_tensor
+            do_dten = d_tensor
+
+            if do_pols == 1.0
+               property = 10.0
+            endif
+
+            if do_gten == 1.0
+               property = 20.0
+#bgn_debug
+#               property = 30.0
+#end_debug
+            endif
+#
+            if do_aten == 1.0
+               property = 40
+            endif
+#
+# Two variables that control the formation of antisymmetric or
+# symmetric density or total or spin density.
+#
+            if property == 10.0
+
+               ASYM     = 0.0
+               SPIN_DEN = 0.0
+               call get_HBXYZ_Dipole
+
+            endif
+
+            if property == 20.0
+               ASYM     = 1.0
+               SPIN_DEN = 1.0
+               call get_HBXYZ_spin_orbit
+
+            endif
+#bgn_debug
+#            if property == 30.0
+#               ASYM     = 1.0
+#               SPIN_DEN = 0.0
+#               call get_HBXYZ_Angmom
+#            endif
+#end_debug
+          
+            call GAEAB
+            call GMIAB
+            call DAB
+            call DIJ
+
+            execute sip_barrier
+
+            call DAI
+
+            CALL D1TRANS                                            
+
+            NCOUNT = 0.0
+            DO NPERT 
+
+               CALL CREATE_XARRAYS
+
+               NCOUNT += 1.0
+#bgn_debug
+               NCOUNT = 2.0 
+#end_debug      
+               IF NCOUNT == 1.0
+                  CALL PICK_PERT_T_X
+               ENDIF
+
+               IF NCOUNT == 2.0
+                  CALL PICK_PERT_T_Y
+               ENDIF
+
+               IF NCOUNT == 3.0
+                  CALL PICK_PERT_T_Z
+               ENDIF
+
+               CALL CHECK_TL_ARRAYS
+               CALL FILL_LT1_ARRAYS
+
+               call GAEAB_x
+               call GMIAB_x
+               call DAB_x
+               call DIJ_x
+
+               execute sip_barrier
+
+               if ASYM == 1.0
+                  CALL ASYM_AB_X
+                  CALL ASYM_IJ_X
+                  execute sip_barrier 
+               endif
+
+               call DAI_x
+               execute sip_barrier
+
+               CALL CHECK_AO_DENS
+
+               CALL D1TRANS_x
+#
+# compute the 2nd order terms that involve 1st order response.
+#
+               CALL CCSD_RESPONSE_X
+  
+              IF NCOUNT == 1.0
+                 CALL PUT_DENS_X
+                 EXECUTE SIP_BARRIER
+              ENDIF
+
+              IF NCOUNT == 2.0
+                 CALL PUT_DENS_Y
+                 EXECUTE SIP_BARRIER
+              ENDIF
+
+              IF NCOUNT == 3.0
+                 CALL PUT_DENS_Z
+                 EXECUTE SIP_BARRIER
+              ENDIF
+
+              CALL DELETE_XARRAYS
+ 
+        ENDDO NPERT
+#          
+#
+# compute the 2nd order terms that involve oth order response.
+# There are there terms for g-tensor: Mass correction and 1 
+# and two particle gauge correction.
+# 
+# Mass correction term.
+          
+          if property == 20.0
+
+             CALL CCSD_MASSCR 
+
+# 1-el gauge correction
+     
+             CALL CCSD_1E_GAUGECR
+
+          endif 
+    
+          if property == 10.0
+
+            do xyz
+               if xyz == 1
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pxx
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pxy
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pxz
+                       pol(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif
+               enddo xyz1
+               endif
+
+               if xyz == 2
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pyx
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pyy
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pyz
+                       pol(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif 
+               enddo xyz1
+               endif 
+
+              if xyz == 3 
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pzx
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2 
+                     tpol(xyz,xyz1) = Pzy
+                     pol(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pzz
+                       pol(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif 
+               enddo xyz1
+               endif 
+
+            enddo xyz
+            endif 
+
+            if property == 20.0
+#            if property == 30.0
+
+            do xyz
+               if xyz == 1
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pxx
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = MCx
+                     g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = GC1xx
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pxy
+                     G_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pxz
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif
+               enddo xyz1
+               endif
+
+#               if xyz == 2
+#               do xyz1
+#                  if xyz1 == 1
+#                     tpol(xyz,xyz1) = Pyx
+#                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+#                  endif
+#                  if xyz1 == 2
+#                     tpol(xyz,xyz1) = Pyy
+#                  endif
+#                  if xyz1 == 2
+#                     tpol(xyz,xyz1) = Pxy
+#                     G_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+#                  endif
+#                    if xyz1 == 3
+#                       tpol(xyz,xyz1) = Pxz
+#                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+#                    endif
+#               enddo xyz1
+#               endif
+
+               if xyz == 2
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pyx
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pyy
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = MCy
+                     g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                     tpol(xyz,xyz1) = GC1yy
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pyz
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif
+               enddo xyz1
+               endif
+
+              if xyz == 3
+               do xyz1
+                  if xyz1 == 1
+                     tpol(xyz,xyz1) = Pzx
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                  if xyz1 == 2
+                     tpol(xyz,xyz1) = Pzy
+                     g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                  endif
+                    if xyz1 == 3
+                       tpol(xyz,xyz1) = Pzz
+                       g_tensor_1E_BL(xyz,xyz1) = tpol(xyz,xyz1)
+                       tpol(xyz,xyz1) = MCz
+                       g_tensor_Mc(xyz,xyz1) = tpol(xyz,xyz1)
+                       tpol(xyz,xyz1) = GC1zz
+                     g_tensor_1E_GC(xyz,xyz1) = tpol(xyz,xyz1)
+                    endif
+               enddo xyz1
+               endif
+
+            enddo xyz
+            endif
+
+           if property == 10.0
+              ipol = 711.0
+              execute print_rel_info ipol pol 
+              ipol = 712.0
+              execute print_rel_info ipol pol
+
+           endif 
+
+          if property == 20.0
+#           if property == 30.0
+	      ipol = 713.0
+	      execute print_rel_info ipol g_tensor_MC
+              ipol = 714.0
+              execute print_rel_info ipol g_tensor_1E_GC
+	      ipol = 715.0
+	      execute print_rel_info ipol g_tensor_1E_BL
+	   endif 
+#
+      tmpnuc = 0.0
+      DO jatom
+         tmpnuc = tmpnuc + 1.0
+      ENDDO jatom
+
+      dipnucx = tmpnuc
+      dipnucy = dipnucx
+      dipnucz = dipnucy
+
+      EXECUTE  NUC_DIPOLE_MOMENT  ONE    dipnucx
+      EXECUTE  NUC_DIPOLE_MOMENT  TWO    dipnucy
+      EXECUTE  NUC_DIPOLE_MOMENT  THREE  dipnucz
+
+      Px += dipnucx
+      Py += dipnucy
+      Pz += dipnucz
+
+#PV      EXECUTE  PRINT_SCALAR  PX
+#PV      EXECUTE  PRINT_SCALAR  PY
+#PV      EXECUTE  PRINT_SCALAR  PZ
+
+      ENDPROC DMAIN
+
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+# Read two-electron transformed integrals 
+# --------------------------------------- 
+# Uncomment here and L_xyz if MO integrals are needed.
+
+#      CALL READ_2EL
+# Read converged T and Lambda amplitudes 
+# -------------------------------------- 
+#
+      CREATE t1a_old
+      CREATE t1b_old
+      CREATE l1a_old
+      CREATE l1b_old
+
+      CREATE t1a_x
+      CREATE t1b_x
+      CREATE l1a_x
+      CREATE l1b_x
+
+      CREATE t1a_y
+      CREATE t1b_y
+      CREATE l1a_y
+      CREATE l1b_y
+
+      CREATE t1a_z
+      CREATE t1b_z
+      CREATE l1a_z
+      CREATE l1b_z
+
+      execute sip_barrier 
+
+      execute list_to_blocks t1a_old
+      execute list_to_blocks t1b_old
+      execute list_to_blocks T2old_aa
+      execute list_to_blocks T2old_ab
+      execute list_to_blocks T2old_bb
+
+      execute list_to_blocks  l1a_old
+      execute list_to_blocks  l1b_old
+      execute list_to_blocks L2old_aa
+      execute list_to_blocks L2old_ab
+      execute list_to_blocks L2old_bb
+
+      execute list_to_blocks  t1a_x
+      execute list_to_blocks  t1b_x
+      execute list_to_blocks  T2aa_x
+      execute list_to_blocks  T2ab_x
+      execute list_to_blocks  T2bb_x
+
+      execute list_to_blocks  t1a_y
+      execute list_to_blocks  t1b_y
+      execute list_to_blocks  T2aa_y
+      execute list_to_blocks  T2ab_y
+      execute list_to_blocks  T2bb_y
+
+      execute list_to_blocks  t1a_z
+      execute list_to_blocks  t1b_z
+      execute list_to_blocks  T2aa_z
+      execute list_to_blocks  T2ab_z
+      execute list_to_blocks  T2bb_z
+
+      execute list_to_blocks  l1a_x
+      execute list_to_blocks  l1b_x
+      execute list_to_blocks L2aa_x
+      execute list_to_blocks L2ab_x
+      execute list_to_blocks L2bb_x
+
+      execute list_to_blocks  l1a_y
+      execute list_to_blocks  l1b_y
+      execute list_to_blocks L2aa_y
+      execute list_to_blocks L2ab_y
+      execute list_to_blocks L2bb_y
+
+      execute list_to_blocks  l1a_z
+      execute list_to_blocks  l1b_z
+      execute list_to_blocks L2aa_z
+      execute list_to_blocks L2ab_z
+      execute list_to_blocks L2bb_z
+
+      execute read_list_to_blocks
+
+      execute sip_barrier
+      execute server_barrier
+
+      CALL DMAIN
+#
+#  Write the pert. T amplitudes and perturbed one particle density to 
+#  block data file. 
+
+      execute server_barrier
+      execute blocks_to_list t1a_old
+      execute blocks_to_list t1b_old
+      execute blocks_to_list T2old_aa
+      execute blocks_to_list T2old_ab
+      execute blocks_to_list T2old_bb
+
+      execute blocks_to_list l1a_old
+      execute blocks_to_list l1b_old
+      execute blocks_to_list L2old_aa
+      execute blocks_to_list L2old_ab
+      execute blocks_to_list L2old_bb
+
+      execute list_to_blocks  t1a_x
+      execute list_to_blocks  t1b_x
+      execute list_to_blocks  T2aa_x
+      execute list_to_blocks  T2ab_x
+      execute list_to_blocks  T2bb_x
+
+      execute list_to_blocks  t1a_y
+      execute list_to_blocks  t1b_y
+      execute list_to_blocks  T2aa_y
+      execute list_to_blocks  T2ab_y
+      execute list_to_blocks  T2bb_y
+
+      execute list_to_blocks  t1a_z
+      execute list_to_blocks  t1b_z
+      execute list_to_blocks  T2aa_z
+      execute list_to_blocks  T2ab_z
+      execute list_to_blocks  T2bb_z
+
+      execute list_to_blocks  l1a_x
+      execute list_to_blocks  l1b_x
+      execute list_to_blocks L2aa_x
+      execute list_to_blocks L2ab_x
+      execute list_to_blocks L2bb_x
+
+      execute list_to_blocks  l1a_y
+      execute list_to_blocks  l1b_y
+      execute list_to_blocks L2aa_y
+      execute list_to_blocks L2ab_y
+      execute list_to_blocks L2bb_y
+
+      execute list_to_blocks  l1a_z
+      execute list_to_blocks  l1b_z
+      execute list_to_blocks L2aa_z
+      execute list_to_blocks L2ab_z
+      execute list_to_blocks L2bb_z
+
+      execute blocks_to_list DpqA_1
+      execute blocks_to_list DpqB_1
+
+      execute blocks_to_list Dpqa_2
+      execute blocks_to_list Dpqb_2
+
+      execute blocks_to_list Dpqa_3
+      execute blocks_to_list Dpqb_3
+
+      execute server_barrier
+      execute sip_barrier
+      execute write_blocks_to_list
+      execute sip_barrier
+
+# done reading T and lambda
+
+      ENDSIAL  CCSD_density_deri
