@@ -8313,23 +8313,29 @@
 
       etemp = 26.0
       execute print_rel_info etemp pinf
+      esum = 0.0
       DO a
       DO i
          GET t1a_old(a,i)
+         etemp = t1a_old(a,i) * t1a_old(a,i)
+         esum += etemp 
          execute maxamp_print t1a_old
       ENDDO i
       ENDDO a
+      execute print_scalar esum
 
       etemp = 27.0
+      esum = 0.0
       execute print_rel_info etemp pinf
       DO b
       DO j
          GET t1b_old(b,j)
+         etemp = t1b_old(b,j) * t1b_old(b,j)
+         esum += etemp 
          execute maxamp_print t1b_old
       ENDDO j
       ENDDO b
-#
-
+      execute print_scalar esum
 #
       CALL WRITE_2EL   
 #

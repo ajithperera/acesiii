@@ -314,8 +314,6 @@
 #
              compute_integrals            aoint(mu,nu,lambda,sigma)
 #
-             execute dump_amp aoint(mu,nu,lambda,sigma)
-#
              DO i   
 #
                  T1xxxi(mu,nu,lambda,i)  = aoint(mu,nu,lambda,sigma)*ca(sigma,i)

@@ -869,7 +869,7 @@
        scalar do_aten
        scalar do_gten
        scalar do_dten
-  
+       scalar ASYM
 #____________________________________________________________________________
 # generate one-electron B-field integrals
 #
@@ -1130,6 +1130,45 @@
          ENDPARDO mu,nu
       ENDIF 
       execute sip_barrier
+#bgn_debug
+      sum0 = 0.0
+      do a
+      do i
+         get HBa_me_x(i,a)
+         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
+         sum0 +=tmp
+      enddo i
+      enddo a
+      execute print_scalar sum0
+      sum0 = 0.0
+      do b
+      do j
+         get  HBb_me_x(j,b)
+         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
+         sum0 +=tmp
+      enddo j
+      enddo b
+      execute print_scalar sum0
+      sum0 = 0.0
+      do i
+      do i1
+          GET HBa_mi_x(i,i1)
+          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
+          sum0 +=tmp
+      enddo i1
+      enddo i
+      execute print_scalar sum0
+      sum0 = 0.0
+      do a
+      do a1
+         GET HBa_ae_x(a,a1)
+         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
+         sum0 +=tmp
+      enddo a1
+      enddo a
+      execute print_scalar sum0
+#end_debug
+
 
 #      DELETE HBa_ae_x
 #      DELETE HBa_me_x
@@ -1229,6 +1268,9 @@
      PARDO a, i
            get HBa_me_x(i,a)
            tai(a,i) = HBa_me_x(i,a)
+           IF ASYM == 1.0
+              tai(a,i) *= -1.0
+           ENDIF 
            execute energy_denominator tai
            PUT t1a_old_x(a,i) = tai(a,i)
            PUT D0ai(a,i) = tai(a,i)
@@ -1236,10 +1278,36 @@
      PARDO b, j
            get HBb_me_x(j,b)
            tbj(b,j) = HBb_me_x(j,b)
+           IF ASYM == 1.0
+              tbj(b,j) *= -1.0
+           ENDIF 
            execute energy_denominator tbj
            PUT t1b_old_x(b,j) = tbj(b,j)
            PUT D0bj(b,j) = tbj(b,j)
      ENDPARDO b, j
+
+#bgn_debug
+      execute sip_barrier 
+      sum0 = 0.0
+      do a
+      do i
+         get  t1a_old_x(a,i) 
+         tmp  = t1a_old_x(a,i) *  t1a_old_x(a,i)
+         sum0 +=tmp
+      enddo i
+      enddo a
+      execute print_scalar sum0
+      sum0 = 0.0
+      do b
+      do j
+         get    t1b_old_x(b,j)
+         tmp  = t1b_old_x(b,j) * t1b_old_x(b,j)
+         sum0 +=tmp
+      enddo j
+      enddo b
+      execute print_scalar sum0
+#end_debug
+
      ENDPROC IGUESS_UHF
 #_____________________________________________________________________________
       PROC TAUAA 
@@ -1556,6 +1624,9 @@
       PARDO a,a1
            get HBa_ae_x(a,a1)
            taa(a,a1)           = HBa_ae_x(a,a1)
+#bgn_debug
+           taa(a,a1) *= 1.0
+#end_debug
            put Fae_a_x(a,a1)  += Taa(a,a1)                       
       ENDPARDO a, a1
 
@@ -1568,6 +1639,10 @@
              T1aa(a,a1)  = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
              Taa(a,a1) *= -0.5
+#bgn_debug
+           taa(a,a1) *= 1.0
+#end_debug
+
            ENDDO i
            put Fae_a_x (a,a1) +=Taa(a,a1)
        ENDPARDO a,a1
@@ -1649,6 +1724,9 @@
              T1bb(b,b1)  = tbj(b,j) * HBb_me_x(j,b1)
              Tbb(b,b1)  +=T1bb(b,b1)   
              Tbb(b,b1) *= -0.5
+#bgn_debug
+             Tbb(b,b1) *= 1.0
+#end_debug
            ENDDO j
              put Fae_b_x (b,b1) +=Tbb(b,b1)
        ENDPARDO b,b1
@@ -1832,6 +1910,9 @@
       PARDO i,a
           get HBa_me_x(i,a)
           Tia(i,a) =  HBa_me_x(i,a)
+#bgn_debug
+          Tia(i,a)  *= 1.0
+#end_debug
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
       ENDPROC FMEA_X
@@ -1859,7 +1940,10 @@
       ENDPARDO j, b
       PARDO j,b
           get HBb_me_x(j,b)
-           Tjb(j,b) = HBb_me_x(j,b)
+          Tjb(j,b) = HBb_me_x(j,b)
+#bgn_debug
+          Tjb(j,b) *= 1.0
+#end_debug
           put Fme_b_x(j,b) +=Tjb(j,b)
       ENDPARDO j,b
       ENDPROC FMEB_X
@@ -1993,10 +2077,12 @@
                PUT Fmi_a_x(i1,i) += Tii(i1,i)
             ENDDO a
       ENDPARDO i1, i, b, j 
-
       PARDO i1,i                                                 
             get HBa_mi_x(i1,i)                                    
             Tii(i1,i)          = HBa_mi_x(i1,i)
+#bgn_debug
+            Tii(i1,i) *= 1.0
+#end_debug
             put Fmi_a_x(i1,i) += Tii(i1,i)                        
       ENDPARDO i1,i                                                   
       PARDO i1,i                                                 
@@ -2008,8 +2094,22 @@
              Tii(i1,i) += T1ii(i1,i)         
            ENDDO a                                                        
            Tii(i1,i)*= 0.5                                             
+#bgn_debug
+           Tii(i1,i)*= 1.0
+#end_debug
            put Fmi_a_x(i1,i) +=Tii(i1,i)                                    
        ENDPARDO i1,i                   
+#bgn_debug
+      execute sip_barrier
+      sum = 0.0
+      PARDO i1,i
+            get Fmi_a_x(i1,i)
+            tmp = Fmi_a_x(i1,i) * Fmi_a_x(i1,i)
+            sum += tmp
+      ENDPARDO i1,i
+      execute print_scalar sum 
+#end_debug
+
       ENDPROC FMIA_X
 #..........................................................................
       PROC FMIB_X
@@ -2064,6 +2164,9 @@
              Tjj(j1,j) += T1jj(j1,j)
            ENDDO b                                                     
            Tjj(j1,j)*= 0.5                                            
+#bgn_debug
+           Tjj(j1,j)*= 1.0
+#end_debug
            put Fmi_b_x(j1,j) +=Tjj(j1,j)                              
        ENDPARDO j1,j                                                         
       ENDPROC FMIB_X
@@ -2183,19 +2286,34 @@
             deallocate L1iibj(*,i1,b,j) 
       ENDPARDO b, j, i1  
 #.................X-derivativ-component...................................
+#bgn debug
+#       PARDO a, i
+#         t1ai(a,i) *= 0.0
+#         PUT t1a_new_x(a,i)= t1ai(a,i)
+#       ENDPARDO a, i
+#       execute sip_barrier
+#end_debug
+
      PARDO a, i
             tai(a,i) = 0.0
             DO i1
                GET t1a_old(a,i1)
                GET Fmi_a_X(i1,i)
                t1ai(a,i) = t1a_old(a,i1)*Fmi_a_X(i1,i)
+#bgn_debug
+               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) -= t1ai(a,i)
+
             ENDDO i1
             DO b
             DO j
                REQUEST T2old_ab(a,i,b,j) j       
                GET Fme_b_X(j,b)
                t1ai(a,i) = T2old_ab(a,i,b,j)*Fme_b_X(j,b)
+#bgn_debug
+               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i)
             ENDDO j
             ENDDO b
@@ -2203,11 +2321,18 @@
                GET t1a_old(a1,i)
                GET Fae_a_x(a,a1)
                t1ai(a,i) = t1a_old(a1,i)*Fae_a_X(a,a1)
+#bgn_debug
+               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i)
+
                DO i1
                   REQUEST T2old_aa(a,i,a1,i1) i1
                   GET Fme_a_X(i1,a1)
                   t1ai(a,i) = T2old_aa(a,i,a1,i1)*Fme_a_X(i1,a1)
+#bgn_debug
+               t1ai(a,i) *= 1.0
+#end_debug
                   tai(a,i) += t1ai(a,i)
                ENDDO i1
             ENDDO a1
@@ -2217,8 +2342,51 @@
      PARDO a, i
            get HBa_me_x(i,a)
            tai(a,i) = HBa_me_x(i,a)
+           IF ASYM == 1.0
+              tai(a,i) *= -1.0
+           ENDIF
            PUT t1a_new_x(a,i) += tai(a,i)
      ENDPARDO a, i
+#
+#bgn debug
+       execute sip_barrier
+       sum = 0.0
+       PARDO a, i
+         get t1a_new_x(a,i)
+         tmp = t1a_new_x(a,i) * t1a_new_x(a,i)
+         sum += tmp
+       ENDPARDO a, i
+       execute print_scalar sum
+       sum = 0.0
+       PARDO a, i
+         get t1a_old(a,i)
+         tmp = t1a_old(a,i) * t1a_old(a,i)
+         sum += tmp
+       ENDPARDO a, i
+       execute print_scalar sum
+       sum = 0.0
+       PARDO i, i1
+         get Fmi_a_X(i1,i)
+         tmp = Fmi_a_X(i1,i)  * Fmi_a_X(i1,i)
+         sum += tmp
+       ENDPARDO i, i1
+       execute print_scalar sum
+       sum=0.0
+       PARDO a, a1
+          get Fae_a_x(a1,a)
+          tmp = Fae_a_x(a1,a) * Fae_a_x(a1,a)
+          sum += tmp
+       ENDPARDO a, a1
+       execute print_scalar sum
+       sum=0.0
+       pardo i, a
+          get Fme_a_x(i,a)
+          tmp = Fme_a_x(i,a) * Fme_a_x(i,a)
+          sum += tmp
+       endpardo i, a
+       execute print_scalar sum
+#end_debug
+
      ENDPROC T1ANEW 
 # ---------------------------------------------------------------------------- 
       PROC T1BNEW 
@@ -2362,6 +2530,9 @@
      PARDO b, j
            get HBb_me_x(j,b)
            tbj(b,j) = HBb_me_x(j,b)
+           IF ASYM == 1.0
+              tbj(b,j) *= -1.0
+           ENDIF 
            PUT t1b_new_x(b,j) += tbj(b,j)
      ENDPARDO b, j
       ENDPROC T1BNEW 
@@ -9542,10 +9713,12 @@
 
       if do_pols == one
          property = 10.0
+         ASYM = 0.0
          beta_is_minus = 0.0
       endif 
 
       if do_gten == one
+         ASYM = 1.0
          property = 20.0
          beta_is_minus = 0.0
 #bgn_debug
