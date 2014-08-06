@@ -86,11 +86,14 @@
       temp T1bb(b,b1)
       temp Tii (i,i1)
       temp TiiT(i,i1)
+      temp TiiT1(i,i1)
 
       temp T1ii(i,i1)
       temp T1iiT(i,i1)
       temp Tjj (j,j1)
       temp TjjT (j,j1)
+      temp T1jjT (j,j1)
+      temp TjjT1 (j,j1)
       temp T1jj(j,j1)
       temp Tai(a,i)
 
@@ -1446,7 +1449,6 @@
                
                   Tii(i1,i)  = L2old_aa_x(i1,a,i2,a1)*T2old_aa(a,i,a1,i2)
                   Tii(i1,i) *= 0.5
-                  TiiT(i,i1) = Tii(i1,i)
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
                   
                ENDDO i1
@@ -1579,17 +1581,22 @@
             get Dij_a_x_U(i1,i)
             get Dij_a_x_L(i1,i)
 
+            get Dij_a_x_U(i,i1)
+            get Dij_a_x_L(i,i1)
+
             Tii(i1,i)  = Dij_a_x_U(i1,i)
             T1ii(i1,i) = Dij_a_x_L(i1,i)
 
-#            Tii(i1,i) *= 0.5
-#            IF ASYM == 1.0
-#               T1ii(i1,i) *= -0.5
-#            ELSE
-#               T1ii(i1,i) *=  0.5
-#            ENDIF 
+            TiiT(i,i1)  = Dij_a_x_U(i1,i)
+            T1iiT(i,i1) = Dij_a_x_L(i1,i)
 
-            tii(i1,i) +=  t1ii(i1,i)
+            tii(i1,i)  +=  t1ii(i1,i)
+            TiiT(i,i1) +=  T1iiT(i,i1)
+            TiiT1(i1,i) =  TiiT(i,i1)
+
+            tii(i1,i) -=  TiiT1(i1,i)
+            tii(i1,i) *= 0.5
+
             PUT Dij_a_x(i1,i) = tii(i1,i) 
 
       ENDPARDO i, i1
@@ -1773,17 +1780,22 @@
             get Dij_b_x_U(j1,j)
             get Dij_b_x_L(j1,j)
 
+            get Dij_b_x_U(j,j1)
+            get Dij_b_x_L(j,j1)
+
+
             Tjj(j1,j)  = Dij_b_x_U(j1,j)
             T1jj(j1,j) = Dij_b_x_L(j1,j)
 
-#            Tjj(j1,j) *= 0.5
-#            IF ASYM == 1.0
-#               T1jj(j1,j) *= -0.5
-#            ELSE 
-#               T1jj(j1,j) *=  0.5
-#            ENDIF 
+            TjjT(j,j1)  = Dij_b_x_U(j,j1)
+            T1jjT(j,j1) = Dij_b_x_L(j,j)
 
-            tjj(j1,j) +=  t1jj(j1,j)
+            tjj(j1,j)  +=  t1jj(j1,j)
+            TjjT(j,j1) +=  T1jjT(j,j1)
+            TjjT1(j1,j) =  TjjT(j,j1)
+
+            tjj(j1,j) -=  TjjT1(j1,j)
+            tjj(j1,j) *=  0.5
 
             PUT Dij_b_x(j1,j) = tjj(j1,j)
       ENDPARDO j, j1

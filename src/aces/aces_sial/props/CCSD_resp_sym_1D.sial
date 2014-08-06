@@ -79,16 +79,25 @@
       temp Tpq_x(mu,nu)
 
       temp Taa (a,a1)
+      temp TaaT (a,a1)
       temp T1aa(a,a1)
+      temp T1aaT(a,a1)
+      temp TaaT1(a,a1)
       temp Tbb (b,b1)
+      temp TbbT (b,b1)
       temp T1bb(b,b1)
+      temp T1bbT(b,b1)
+      temp TbbT1(b,b1)
       temp Tii (i,i1)
       temp TiiT(i,i1)
+      temp TiiT1(i,i1)
 
       temp T1ii(i,i1)
       temp T1iiT(i,i1)
       temp Tjj (j,j1)
       temp TjjT (j,j1)
+      temp T1jjT (j,j1)
+      temp TjjT1 (j,j1)
       temp T1jj(j,j1)
       temp Tai(a,i)
 
@@ -121,8 +130,6 @@
       distributed t1b_old(b,j)
       distributed l1a_old(i,a)
       distributed l1b_old(j,b)
-      distributed dold_atmp(a,i)
-      distributed dold_btmp(b,j)
 
 #PV.............................................
        temp tpol(xyz,xyz1)
@@ -132,9 +139,6 @@
        static g_tensor_1E_GC(xyz,xyz1)
        static g_tensor_dbg(xyz,xyz1)
        scalar ipol
-
-       temp TaaT(a,a1)
-       temp TbbT(b,b1)
 
       distributed T2L2_VV_A_x(a,a1)
       distributed T2L2_VV_B_x(b,b1)
@@ -420,9 +424,6 @@
       CREATE DpqB_2
       CREATE DpqA_3
       CREATE DpqB_3
-
-      CREATE Dold_atmp
-      CREATE Dold_btmp
 
       CREATE T2L2_VV_A
       CREATE T2L2_VV_B
@@ -1244,18 +1245,22 @@
             get Dab_a_x_U(a,a1)
             get Dab_a_x_L(a,a1)
 
+            get Dab_a_x_U(a1,a)
+            get Dab_a_x_L(a1,a)
+
             taa(a,a1)  =  Dab_a_x_U(a,a1)
             t1aa(a,a1) =  Dab_a_x_L(a,a1)
 
-#            taa(a,a1) *= 0.5
-#            IF ASYM == 1.0
-#               t1aa(a,a1) *= -0.5
-#            ElSE
-#               t1aa(a,a1) *=  0.5
-#            ENDIF
+            TaaT(a1,a) = Dab_a_x_U(a1,a)
+            T1aaT(a1,a) = Dab_a_x_L(a1,a)
 
-            taa(a,a1) += t1aa(a,a1)
-
+            taa(a,a1)  += t1aa(a,a1)
+            TaaT(a1,a) += T1aaT(a1,a)
+            TaaT1(a,a1) = TaaT(a1,a) 
+            
+            taa(a,a1) += TaaT1(a,a1)
+            taa(a,a1) *= 0.5
+            
             PUT Dab_a_x(a,a1) = taa(a,a1)
 
       ENDPARDO a, a1
@@ -1399,19 +1404,17 @@
 
             tbb(b,b1)  =  Dab_b_x_U(b,b1)
             t1bb(b,b1) =  Dab_b_x_L(b,b1)
-            tbb(b,b1) += t1bb(b,b1)
 
-#            tbbt(b1,b) = tbb(b,b1)
-#            tbb(b,b1) *= 0.5
-#
-#            IF ASYM == 1.0
-#               tbbt(b1,b) *= -0.5
-#            ELSE
-#               tbbt(b,b1) *=  0.5
-#            ENDIF
-#
-#            tbb(b,b1) += t1bb(b,b1)
+            TbbT(b1,b)  =  Dab_b_x_U(b1,b)
+            T1bbT(b1,b) =  Dab_b_x_L(b1,b)
 
+            tbb(b,b1)  += t1bb(b,b1)
+            TbbT(b1,b) += T1bbT(b1,b)  
+            T1bbT(b,b1) = TbbT(b1,b) 
+            
+            tbb(b,b1) += T1bbT(b,b1)
+            tbb(b,b1) *= 0.5
+             
             PUT Dab_b_x(b,b1) = tbb(b,b1)
 
       ENDPARDO b, b1
@@ -1716,7 +1719,6 @@
 
                   Tii(i1,i)  = L2old_aa_x(i1,a,i2,a1)*T2old_aa(a,i,a1,i2)
                   Tii(i1,i) *= -0.5
-                  TiiT(i,i1) = Tii(i1,i)
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
 
                ENDDO i1
@@ -1868,17 +1870,22 @@
             get Dij_a_x_U(i1,i)
             get Dij_a_x_L(i1,i)
 
+            get Dij_a_x_U(i,i1)
+            get Dij_a_x_L(i,i1)
+
             Tii(i1,i)  = Dij_a_x_U(i1,i)
             T1ii(i1,i) = Dij_a_x_L(i1,i)
 
-#            Tii(i1,i) *= 0.5
-#            IF ASYM == 1.0
-#               T1ii(i1,i) *= -0.5
-#            ELSE
-#               T1ii(i1,i) *=  0.5
-#            ENDIF
+            TiiT(i,i1)  = Dij_a_x_U(i,i1)
+            T1iiT(i,i1) = Dij_a_x_L(i,i1)
 
-            tii(i1,i) +=  t1ii(i1,i)
+            tii(i1,i)  +=  t1ii(i1,i)
+            TiiT(i,i1) +=  T1iiT(i,i1) 
+            TiiT1(i1,i) =  TiiT(i,i1) 
+            
+            tii(i1,i) += TiiT1(i1,i)
+            tii(i1,i) *= 0.5
+
             PUT Dij_a_x(i1,i) = tii(i1,i)
 
       ENDPARDO i, i1
@@ -1892,12 +1899,12 @@
 #         get Dij_a_x_L(i1,i)
          get Dij_a_x(i1,i)
 #          get T2L2_OO_A_x(i1,i)
-#        if rank == 0.0
+        if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i1,i)
 #         execute dump_amp Dij_a_x_L(i1,i)
-#         execute dump_amp Dij_a_x(i1,i)
+         execute dump_amp Dij_a_x(i1,i)
 #         execute dump_amp  T2L2_OO_A_x(i1,i)
-#         endif
+         endif
          tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
          suma += tmp
       enddo i1
@@ -2058,17 +2065,21 @@
             get Dij_b_x_U(j1,j)
             get Dij_b_x_L(j1,j)
 
+            get Dij_b_x_U(j,j1)
+            get Dij_b_x_L(j,j1)
+
             Tjj(j1,j)  = Dij_b_x_U(j1,j)
             T1jj(j1,j) = Dij_b_x_L(j1,j)
+            
+            TjjT(j,j1)  = Dij_b_x_U(j,j1)
+            T1jjT(j,j1) = Dij_b_x_L(j,j1)
 
-#            Tjj(j1,j) *= 0.5
-#            IF ASYM == 1.0
-#               T1jj(j1,j) *= -0.5
-#            ELSE
-#               T1jj(j1,j) *=  0.5
-#            ENDIF
-
-            tjj(j1,j) +=  t1jj(j1,j)
+            tjj(j1,j)  +=  t1jj(j1,j)
+            TjjT(j,j1) +=  T1jjT(j,j1)
+            TjjT1(j1,j) =  TjjT(j,j1)
+             
+            Tjj(j1,j)  += TjjT1(j1,j)  
+            Tjj(j1,j)  *= 0.5
 
            PUT Dij_b_x(j1,j) = tjj(j1,j)
       ENDPARDO j, j1
@@ -2079,9 +2090,9 @@
       do j
       do j1
          get Dij_b_x(j1,j)
-#         if rank == 0.0
-#         execute dump_amp Dij_b_x(j1,j)
-#         endif
+         if rank == 0.0
+         execute dump_amp Dij_b_x(j1,j)
+         endif
          tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
          sumb += tmp
       enddo j1
@@ -2324,22 +2335,8 @@
             GET                     T2L2_VV_A_x (a,a1) 
             tai (a,i)             = T2L2_VV_A_x (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
-#            tai (a,i) *=1.0
             PUT  Doldai_a_x(a,i)    += tai (a,i)
-#            PUT  Dold_atmp(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
-
-#      execute sip_barrier
-#      suma = 0.0
-#      do a
-#      do i
-#         get Dold_atmp(a,i)
-#         tmp = Dold_atmp(a,i) * Dold_atmp(a,i)
-#         suma += tmp
-#      enddo i
-#      enddo a
-#      execute print_scalar suma
-
 
       PARDO  a, a1, i
             GET                     T2L2_VV_A (a,a1)
@@ -2470,7 +2467,7 @@
               PUT  Doldai_a_x(a,i) += tai (a,i)
       ENDPARDO  a, i
       EXECUTE  SIP_BARRIER
-
+# 
 #bgn_debug
       suma = 0.0
       do a
@@ -2552,19 +2549,8 @@
             GET                     T2L2_VV_B_x(b,b1)
             tbj (b,j)             = T2L2_VV_B_x(b,b1) *LT1B(b1,j)
             tbj(b,j)            *= -1.0
-#            tbj(b,j) *= 1.0
             PUT  Doldai_b_x(b,j)   += tbj (b,j)
-#            PUT  Dold_btmp(b,j)   += tbj (b,j)
        ENDPARDO  b, b1, j
-      sumb = 0.0
-#      do b
-#      do j
-#         get Dold_btmp(b,j)
-#         tmp = Dold_btmp(b,j) * Dold_btmp(b,j)
-#         sumb += tmp
-#      enddo j
-#      enddo b
-#      execute print_scalar sumb
 
        PARDO  b, b1, j
             GET                     T2L2_VV_B (b,b1)
