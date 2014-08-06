@@ -1102,6 +1102,7 @@
 
 # Make symmetric or anti-symmetric combinations
 
+      execute sip_barrier 
       PARDO a, a1
             get Dab_a_x_U(a,a1) 
             get Dab_a_x_L(a,a1) 
@@ -1264,6 +1265,7 @@
 
 # Make symmetric or anti-symmetric combinations
 
+      execute sip_barrier 
       PARDO b, b1
             get Dab_b_x_U(b,b1)
             get Dab_b_x_L(b,b1)
@@ -1690,7 +1692,7 @@
                REQUEST T2old_ab(a,i,b,j1) j1
                DO j
                   REQUEST L2old_ab_x(i,a,j,b) b
-                  Tjj(j,j1)   = L2old_ab(i,a,j,b)*T2old_ab_x(a,i,b,j1)
+                  Tjj(j,j1)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
                   PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
 
                ENDDO j
@@ -1766,6 +1768,7 @@
 
 # Make symmetric or anti-symmetric combinations
 
+      execute sip_barrier
       PARDO j, j1
             get Dij_b_x_U(j1,j)
             get Dij_b_x_L(j1,j)

@@ -613,7 +613,7 @@
                PUT Dab_a(a,a1) += Taa(a,a1)
                PUT Dab_a(a1,a) += T1aa(a1,a)
 
-               PUT T2L2_VV_A (a,a1) += Taa (a,a1)
+#               PUT T2L2_VV_A (a,a1) += Taa (a,a1)
             ENDDO i1
             ENDDO a2
             DO b
@@ -625,7 +625,7 @@
                T1aa(a1,a)       = Taa(a,a1)
                PUT Dab_a(a,a1) += Taa(a,a1)
                PUT Dab_a(a1,a) += T1aa(a1,a)
-               PUT  T2L2_VV_A (a,a1) += Taa (a,a1)
+#               PUT  T2L2_VV_A (a,a1) += Taa (a,a1)
             ENDDO j
             ENDDO b
       ENDPARDO a, a1, i
@@ -651,7 +651,7 @@
                PUT Dab_b(b1,b) += Tbb(b1,b)
                PUT Dab_b(b,b1) += T1bb(b,b1)
 
-               PUT T2L2_VV_B (b,b1) += T1bb (b,b1)
+#               PUT T2L2_VV_B (b,b1) += T1bb (b,b1)
             ENDDO j1
             ENDDO b2
             DO a
@@ -664,7 +664,7 @@
                PUT Dab_b(b1,b) += Tbb(b1,b)
                PUT Dab_b(b,b1) += T1bb(b,b1)
 
-              PUT  T2L2_VV_B (b,b1) += T1bb (b,b1) 
+#              PUT  T2L2_VV_B (b,b1) += T1bb (b,b1) 
 
             ENDDO i
             ENDDO a
@@ -998,7 +998,7 @@
                T1aa(a,a1)       = Taa(a1,a)
                PUT Dab_a_x(a1,a) += Taa(a1,a)
                PUT Dab_a_x(a,a1) += T1aa(a,a1)
-               PUT T2L2_VV_A_x(a,a1) += T1aa(a,a1)
+#               PUT T2L2_VV_A_x(a,a1) += T1aa(a,a1)
             ENDDO i1
             ENDDO a2
             DO b
@@ -1014,7 +1014,7 @@
                T1aa(a,a1)       = Taa(a1,a)
                PUT Dab_a_x(a,a1) += T1aa(a,a1)
                PUT Dab_a_x(a1,a) += Taa(a1,a)
-               PUT  T2L2_VV_A_x(a,a1) += T1aa (a,a1)
+#               PUT  T2L2_VV_A_x(a,a1) += T1aa (a,a1)
             ENDDO j
             ENDDO b
       ENDPARDO a, a1, i
@@ -1061,7 +1061,7 @@
                T1bb(b,b1)       = Tbb(b1,b)
                PUT Dab_b_x(b1,b) += Tbb(b1,b)
                PUT Dab_b_x(b,b1) += T1bb(b,b1)
-               PUT T2L2_VV_B_x(b,b1) += T1bb (b,b1)
+#               PUT T2L2_VV_B_x(b,b1) += T1bb (b,b1)
             ENDDO j1
             ENDDO b2
             DO a
@@ -1077,7 +1077,7 @@
                T1bb(b,b1)       = Tbb(b1,b)
                PUT Dab_b_x(b1,b) += Tbb(b1,b)
                PUT Dab_b_x(b,b1) += T1bb(b,b1)
-               PUT  T2L2_VV_B_x(b,b1) += T1bb (b,b1)
+#               PUT  T2L2_VV_B_x(b,b1) += T1bb (b,b1)
             ENDDO i
             ENDDO a
       ENDPARDO b1, b, j
@@ -1126,7 +1126,7 @@
                   PUT Dij_a(i,i1) += Tii(i,i1)
                   PUT Dij_a(i1,i) += T1ii(i1,i)
 
-                  PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-alpha
+#                  PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-alpha
 
                ENDDO i1
             ENDDO i
@@ -1142,7 +1142,7 @@
                   PUT Dij_a(i,i1) += Tii(i,i1)
                   PUT Dij_a(i1,i) += T1ii(i1,i)
                  
-                 PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-beta
+#                 PUT  T2L2_OO_A (i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-beta
 
                ENDDO i1
             ENDDO i
@@ -1156,7 +1156,7 @@
             PUT Dij_a(i,i1) += Tii(i,i1)
             PUT Dij_a(i1,i) += T1ii(i1,i)
 
-            PUT T1L1_OO_A(i,i1) += Tii(i,i1)    # 4 term of Eq. 9
+#            PUT T1L1_OO_A(i,i1) += Tii(i,i1)    # 4 term of Eq. 9
       ENDPARDO a, i, i1
       ENDPROC DIJA
 #---------------------------------------------------------------
@@ -1173,7 +1173,7 @@
                PUT Dij_b(j1,j) += Tjj(j1,j)
                PUT Dij_b(j,j1) += T1jj(j,j1)
 
-               PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+#               PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
             ENDDO j
             ENDDO j1
       ENDPARDO b, b1, j2
@@ -1188,7 +1188,7 @@
                   PUT Dij_b(j1,j) += Tjj(j1,j)
                   PUT Dij_b(j,j1) += T1jj(j,j1)
                   
-                  PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+#                  PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
 
                ENDDO j
             ENDDO j1
@@ -1202,7 +1202,7 @@
             PUT Dij_b(j1,j) += Tjj(j1,j)
             PUT Dij_b(j,j1) += T1jj(j,j1)
 
-            PUT T1L1_OO_B(j1,j) += Tjj(j1,j)
+#            PUT T1L1_OO_B(j1,j) += Tjj(j1,j)
       ENDPARDO b, j, j1
       ENDPROC DIJB
 #.....................................................................................
@@ -1229,7 +1229,7 @@
                   T1ii(i1,i)       = Tii(i,i1)
                   PUT Dij_a_x(i,i1) += Tii(i,i1)
                   PUT Dij_a_x(i1,i) += T1ii(i1,i)
-                  PUT T2L2_OO_A_x(i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-alpha
+#                  PUT T2L2_OO_A_x(i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-alpha
                ENDDO i1
             ENDDO i
       ENDPARDO a, a1, i2
@@ -1247,7 +1247,7 @@
                   T1ii(i1,i)       = Tii(i,i1)
                   PUT Dij_a_x(i,i1) += Tii(i,i1)
                   PUT Dij_a_x(i1,i) += T1ii(i1,i)
-                 PUT  T2L2_OO_A_x(i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-beta
+#                 PUT  T2L2_OO_A_x(i,i1) += Tii(i,i1) #last term of Eq. 9 alpha-beta
                ENDDO i1
             ENDDO i
       ENDPARDO a, b, j
@@ -1263,7 +1263,7 @@
             T1ii(i1,i)       = Tii(i,i1)
             PUT Dij_a_x(i,i1) += Tii(i,i1)
             PUT Dij_a_x(i1,i) += T1ii(i1,i)
-            PUT T1L1_OO_A_x(i,i1) += Tii(i,i1)    # 4 term of Eq. 9
+#            PUT T1L1_OO_A_x(i,i1) += Tii(i,i1)    # 4 term of Eq. 9
       ENDPARDO a, i, i1
 #bgn_debug
       execute sip_barrier
@@ -1271,6 +1271,9 @@
       do i
       do i1
          get Dij_a_x(i1,i)
+         if rank == 0.0
+         execute dump_amp Dij_a_x(i1,i)
+         endif 
          tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
          suma += tmp
       enddo i1
@@ -1296,7 +1299,7 @@
                T1jj(j,j1)       = Tjj(j1,j)
                PUT Dij_b_x(j1,j) += Tjj(j1,j)
                PUT Dij_b_x(j,j1) += T1jj(j,j1)
-               PUT  T2L2_OO_B_x(j,j1) += T1jj(j,j1)
+#               PUT  T2L2_OO_B_x(j,j1) += T1jj(j,j1)
             ENDDO j
             ENDDO j1
       ENDPARDO b, b1, j2
@@ -1314,7 +1317,7 @@
                   T1jj(j,j1)       = Tjj(j1,j)
                   PUT Dij_b_x(j1,j) += Tjj(j1,j)
                   PUT Dij_b_x(j,j1) += T1jj(j,j1)
-                  PUT  T2L2_OO_B_x(j,j1) += T1jj(j,j1)
+#                  PUT  T2L2_OO_B_x(j,j1) += T1jj(j,j1)
                ENDDO j
             ENDDO j1
       ENDPARDO b, a, i
@@ -1330,7 +1333,7 @@
             T1jj(j,j1)       = Tjj(j1,j)
             PUT Dij_b_x(j1,j) += Tjj(j1,j)
             PUT Dij_b_x(j,j1) += T1jj(j,j1)
-            PUT T1L1_OO_B_x(j1,j) += Tjj(j1,j)
+#            PUT T1L1_OO_B_x(j1,j) += Tjj(j1,j)
       ENDPARDO b, j, j1
 #bgn_debug
       execute sip_barrier
@@ -3156,6 +3159,7 @@
 
          PROC DMAIN
 #        -----------
+            execute get_my_rank rank
 
             one   = 1.0
             two   = 2.0
@@ -3216,8 +3220,8 @@
 #            endif
 #end_debug
             
-#            call GAEAB
-#            call GMIAB
+            call GAEAB
+            call GMIAB
             call DAB
             call DIJ
             execute sip_barrier
@@ -3250,8 +3254,8 @@
                CALL CHECK_TL_ARRAYS
                CALL FILL_LT1_ARRAYS
 
-#               call GAEAB_x
-#               call GMIAB_x
+               call GAEAB_x
+               call GMIAB_x
                call DAB_x
                call DIJ_x
                execute sip_barrier
