@@ -6505,27 +6505,27 @@
      execute print_scalar ecorrT  
 
      if kiter > 0
-            ncount1 = 0.0
+         ncount1 = 0.0
          DO kptr1
             ncount1 = ncount1 + 1.0
             if ncount1 == one
-               tpinf(kiter,kptr1) = ecorrT
-               pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
+              tpinf(kiter,kptr1) = ecorrT
+              pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
             endif
          ENDDO kptr1
 
-            ncount1 = 0.0
+         ncount1 = 0.0
          DO kptr1
             ncount1 = ncount1 + 1.0
             if ncount1 == two
                etemp = ecorrT
 #Prakash       etemp+= scfeneg
                tpinf(kiter,kptr1) = etemp
-               pinf(kiter,kptr1)  = tpinf(Kiter,kptr1)
+               pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
             endif
          ENDDO kptr1
-
-         execute print_rel_info five pinf
+#
+#         execute print_rel_info five pinf
       endif
 
      ENDPROC ENERGY_NEW 

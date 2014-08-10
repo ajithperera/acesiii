@@ -7400,7 +7400,7 @@
             endif
          ENDDO kptr1
 
-         execute print_rel_info eight pinf
+#         execute print_rel_info eight pinf
       endif
 
      ENDPROC LOLDENERGY_X

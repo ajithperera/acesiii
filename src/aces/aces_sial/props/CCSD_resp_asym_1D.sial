@@ -1075,8 +1075,6 @@
 #end_debug
                PUT Dab_a_x_L(a1,a)   += Taa(a1,a)
 
-               TaaT(a,a1)  = Taa(a1,a)
-               T1aa(a,a1) += TaaT(a,a1)
             ENDDO i1
             ENDDO a2
 #bgn_debug
@@ -1505,7 +1503,7 @@
                   Tii(i,i1)   = T2old_aa_x(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
                   Tii(i,i1)  *= -0.5
 #bgn_debug
-                  Tii(i,i1) *= 1.0
+#                  Tii(i,i1) *= 1.0
 #end_debug
                   PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
 
@@ -1521,7 +1519,7 @@
                   Tii(i1,i)  = L2old_aa_x(i1,a,i2,a1)*T2old_aa(a,i,a1,i2)
                   Tii(i1,i) *= 0.5
 #bgn_debug
-                  Tii(i,i1) *= 1.0
+#                  Tii(i,i1) *= 1.0
 #end_debug
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
                   
@@ -1538,7 +1536,7 @@
                   Tii(i,i1)   = T2old_ab_x(a,i,b,j)*L2old_ab(i1,a,j,b)
                   Tii(i,i1)  *= -1.0
 #bgn_debug
-                  Tii(i,i1) *=1.0
+#                  Tii(i,i1) *=1.0
 #bgn_debug
                   PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
 
@@ -1571,7 +1569,7 @@
 
                   Tii(i1,i)  = L2old_ab_x(i1,a,j,b)*T2old_ab(a,i,b,j)
 #bgn_debug
-                  Tii(i,i1) *=1.0
+#                  Tii(i,i1) *=1.0
 #bgn_debug
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
 
@@ -1620,7 +1618,7 @@
             Tii(i,i1)        = t1a_old_x(a,i)*l1a_old(i1,a)
             Tii(i,i1)       *= -1.0
 #bgn_debug
-                  Tii(i,i1) *=1.0
+#                  Tii(i,i1) *=1.0
 #bgn_debug
             PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
 
@@ -1650,7 +1648,7 @@
             Tii(i,i1)  = t1a_old(a,i) * l1a_old_x(i1,a)
             Tii(i,i1) *= -1.0
 #bgn_debug
-                  Tii(i,i1) *= 1.0
+#                  Tii(i,i1) *= 1.0
 #bgn_debug
             PUT Dij_a_x_L(i,i1)  += Tii(i,i1)
 
@@ -1736,7 +1734,6 @@
 
                Tjj(j1,j)    = T2old_bb_x(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
                Tjj(j1,j)   *= -0.5
-               TjjT(j,j1)    = Tjj(j1,j)
                PUT  Dij_b_x_U(j1,j)   += Tjj(j1,j)
 
             ENDDO j
@@ -1785,10 +1782,10 @@
             DO j1
                REQUEST T2old_ab_x(a,i,b,j1) j1
                DO j
+
                   REQUEST L2old_ab(i,a,j,b) b
                   Tjj(j1,j)   = T2old_ab_x(a,i,b,j1)*L2old_ab(i,a,j,b)
                   Tjj(j1,j)  *= -1.0
-                  TjjT(j,j1)  = Tjj(j1,j)
                   PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
 
                ENDDO j
@@ -1799,6 +1796,7 @@
             DO j1
                REQUEST T2old_ab(a,i,b,j1) j1
                DO j
+
                   REQUEST L2old_ab_x(i,a,j,b) b
                   Tjj(j,j1)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
                   PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
@@ -2107,7 +2105,7 @@
             taiT (a,i)   = LT1A (a,i1) * tiiT (i,i1)
             tai1(a,i) += taiT(a,i)
 #bgn_debug
-            tai1(a,i) *= 1.0
+#            tai1(a,i) *= 1.0
 #end_debug
           ENDDO i1
             PUT Doldai_a_x(a,i) += tai1 (a,i)
@@ -2170,7 +2168,7 @@
             tai (a,i)             = T2L2_VV_A_x (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
 #bgn_debug
-            tai(a,i) *= 1.0
+#            tai(a,i) *= 1.0
 #end_debug
             PUT  Doldai_a_x(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
@@ -2180,7 +2178,7 @@
             tai (a,i)             = T2L2_VV_A (a,a1) * LT1A_x (a1,i)
             tai (a,i)            *= -1.0
 #bgn_debug
-            tai(a,i) *= 1.0
+#            tai(a,i) *= 1.0
 #end_debug
             PUT  Doldai_a_x(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
@@ -2308,7 +2306,7 @@
             tbjT (b,j)   = LT1B (b,j1) * tjjT (j,j1)
             tbj1(b,j) += tbjT(b,j)
 #bgn_debug
-         tbj1 (b,j) *= 1.0
+#         tbj1 (b,j) *= 1.0
 #end_debug 
          ENDDO j1
 
@@ -3395,6 +3393,9 @@
       do j
       do j1
           GET HBb_mi_x(j,j1)
+          if rank == 0.0
+             execute dump_amp HBb_mi_x(j,j1)
+          endif 
           tmp = HBb_mi_x(j,j1) * HBb_mi_x(j,j1)
           sumb +=tmp
       enddo j1
