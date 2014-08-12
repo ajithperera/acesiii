@@ -854,6 +854,9 @@
        scalar c8 
        scalar c9 
        scalar c10  
+       scalar suma
+       scalar sumb
+       scalar tmp
 #
 #
 #    ------------------------------------------------------------------------
@@ -9515,6 +9518,27 @@
       eight = 8.0
       nine = 9.0 
       ten = 10.0
+
+#bgn_debug
+      suma = 0.0
+      do i
+      do a
+         get t1a_old(a,i)
+         tmp = t1a_old(a,i) * t1a_old(a,i)
+         suma += tmp
+      enddo a
+      enddo i
+      sumb=0.0 
+      do b
+      do j
+         get t1b_old(b,j) 
+         tmp = t1b_old(b,j) * t1b_old(b,j) 
+         sumb += tmp
+      enddo j
+      enddo b
+      execute print_scalar suma
+      execute print_scalar sumb
+#end_debug
 #
 # Create one-particle intermediate arrays 
 # --------------------------------------- 

@@ -808,6 +808,7 @@
  
        scalar property
        scalar BETA_IS_MINUS
+       scalar ASYM
        scalar do_pols
        scalar do_aten
        scalar do_gten
@@ -1094,6 +1095,9 @@
      PARDO a, i
            get HBa_me_x(i,a)
            tai(a,i) = HBa_me_x(i,a)
+           IF ASYM == 1.0
+              tai(a,i) *= -1.0
+           ENDIF
            execute energy_denominator tai
            PUT t1a_old_z(a,i) = tai(a,i)
            PUT D0ai(a,i) = tai(a,i)
@@ -1101,6 +1105,9 @@
      PARDO b, j
            get HBb_me_x(j,b)
            tbj(b,j) = HBb_me_x(j,b)
+           IF ASYM == 1.0
+              tbj(b,j) *= -1.0
+           ENDIF
            execute energy_denominator tbj
            PUT t1b_old_z(b,j) = tbj(b,j)
            PUT D0bj(b,j) = tbj(b,j)
@@ -2080,6 +2087,9 @@
      PARDO a, i
            get HBa_me_x(i,a)
            tai(a,i) = HBa_me_x(i,a)
+           IF ASYM == 1.0
+              tai(a,i) *= -1.0
+           ENDIF
            PUT t1a_new_x(a,i) += tai(a,i)
      ENDPARDO a, i
      ENDPROC T1ANEW 
@@ -2225,6 +2235,9 @@
      PARDO b, j
            get HBb_me_x(j,b)
            tbj(b,j) = HBb_me_x(j,b)
+           IF ASYM == 1.0
+              tbj(b,j) *= -1.0
+           ENDIF
            PUT t1b_new_x(b,j) += tbj(b,j)
      ENDPARDO b, j
       ENDPROC T1BNEW 

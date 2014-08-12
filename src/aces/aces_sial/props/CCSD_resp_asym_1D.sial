@@ -823,7 +823,7 @@
                REQUEST L2old_bb(j,b,j1,b2)  j1
                Tbb(b1,b)        = T2old_bb(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
                Tbb(b1,b)       *= 0.5
-               PUT T2L2_VV_B (b,b1) += Tbb (b,b1)
+               PUT T2L2_VV_B (b1,b) += Tbb (b1,b)
             ENDDO j1
             ENDDO b2
             DO a
@@ -831,8 +831,7 @@
                REQUEST T2old_ab(a,i,b1,j) j   
                REQUEST L2old_ab(i,a,j,b)  j   
                Tbb(b1,b)        = T2old_ab(a,i,b1,j)*L2old_ab(i,a,j,b)
-               PUT  T2L2_VV_B (b,b1) += Tbb (b,b1)
-
+               PUT  T2L2_VV_B (b1,b) += Tbb (b1,b)
             ENDDO i
             ENDDO a
       ENDPARDO b1, b, j
@@ -884,7 +883,6 @@
             TiiT(i,i1)       = l1a_old(i1,a)*t1a_old_x(a,i)
             Tii(i,i1)       +=  TiiT(i,i1)
             Tii(i,i1)       *= -1.0
-            T1ii(i1,i)       = Tii(i,i1)
             PUT T1L1_OO_A_x(i,i1) += Tii(i,i1)    
       ENDPARDO a, i, i1
 
@@ -981,7 +979,7 @@
                TbbT(b1,b)      = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
                Tbb(b1,b)     += TbbT(b1,b)
                Tbb(b1,b)     *= 0.5
-               PUT T2L2_VV_B_x(b,b1) += Tbb (b1,b)
+               PUT T2L2_VV_B_x(b1,b) += Tbb (b1,b)
             ENDDO j1
             ENDDO b2
             DO a
@@ -993,7 +991,7 @@
                Tbb(b1,b)        = T2old_ab_x(a,i,b1,j)*L2old_ab(i,a,j,b)
                TbbT(b1,b)       = T2old_ab(a,i,b1,j)*L2old_ab_x(i,a,j,b)
                Tbb(b1,b)       += TbbT(b1,b)
-              PUT  T2L2_VV_B_x(b,b1) += Tbb (b1,b)
+              PUT  T2L2_VV_B_x(b1,b) += Tbb (b1,b)
             ENDDO i
             ENDDO a
       ENDPARDO b1, b, j

@@ -7228,22 +7228,23 @@
 #
      PROC LIGUESS_X
 #    ---------------
+     EXECUTE SERVER_BARRIER 
      PARDO a, a1, i, i1
            REQUEST T2old_aa_x(a,i,a1,i1) a 
            Tiaia(i,a,i1,a1) = T2old_aa_x(a,i,a1,i1)
-#           PREPARE L2old_aa_x(i,a,i1,a1) = Tiaia(i,a,i1,a1)
+           PREPARE L2old_aa_x(i,a,i1,a1) = Tiaia(i,a,i1,a1)
            PREPARE D0iaia(i,a,i1,a1) = Tiaia(i,a,i1,a1) 
      ENDPARDO a, a1, i, i1
      PARDO b, b1, j, j1
            REQUEST T2old_bb_x(b,j,b1,j1) b 
            Tjbjb(j,b,j1,b1) = T2old_bb_x(b,j,b1,j1)
-#           PREPARE L2old_bb_x(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
+           PREPARE L2old_bb_x(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
            PREPARE D0jbjb(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
      ENDPARDO b, b1, j, j1
      PARDO b, a, j, i
            REQUEST T2old_ab_x(a,i,b,j) a 
            Tiajb(i,a,j,b) = T2old_ab_x(a,i,b,j)
-#           PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
+           PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
            PREPARE D0iajb(i,a,j,b) = Tiajb(i,a,j,b)
      ENDPARDO b, a, j, i
      PARDO a, i
@@ -12677,6 +12678,7 @@
       execute print_scalar sum0
 #end_debug
 
+      execute server_barrier
       CALL UPDATEL12X
       CALL LIGUESS_X
       execute sip_barrier
