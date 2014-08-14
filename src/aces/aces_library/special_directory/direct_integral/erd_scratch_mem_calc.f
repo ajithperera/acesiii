@@ -219,7 +219,7 @@ c----------------------------------------------------------------------------
 c   Second-derivative integrals. Loop through all possible flag combinations.  
 c----------------------------------------------------------------------------
 C 
-         Write(6,*) "Check for the 2nd der ints flag:", calc_2der
+C         Write(6,*) "Check for the 2nd der ints flag:", calc_2der
 C
          if (.not. calc_2der) go to 2000
          do iflag = 1, 12
@@ -289,7 +289,6 @@ C
 c--------------------------------------------------------------------------
 c   Set the derivative flag arguments.
 c--------------------------------------------------------------------------
- 
                call erd__memory_eri_derv_batch(nalpha, ncoeff, 
      *                 ncfps(m), ncfps(n), ncfps(r), ncfps(s),
      *                 npfps(m), npfps(n), npfps(r), npfps(s),

@@ -324,6 +324,7 @@ C
          MIJ = PFACT * L1CACHE / NXYZT
          MIJ = MAX (1,MIJ)
          MIJ = MIN (MIJ,NIJ)
+
 C
 C
 C             ...the optimum block size MIJ has been determined.

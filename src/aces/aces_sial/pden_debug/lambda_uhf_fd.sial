@@ -10044,7 +10044,7 @@
       nine = 9.0 
       ten = 10.0
  
-      property = 20.0
+      property = 10.0
 #
 # Create one-particle intermediate arrays 
 # --------------------------------------- 
@@ -10058,7 +10058,7 @@
       ICOUNT = 0.0
       X_COMP = 0.0
       Y_COMP = 0.0
-      Z_COMP = 9.0
+      Z_COMP = 0.0
       SCALE = 0.000001
 
       DO NPERT

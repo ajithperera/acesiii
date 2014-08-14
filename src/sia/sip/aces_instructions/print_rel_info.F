@@ -1858,9 +1858,9 @@ c
       include 'int_gen_parms.h'
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
-      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM,
-     &                 Nunpaired
-      double precision efinal, conv, Fac, Gfac
+      integer Nunpaired 
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac, Gfac, Refspin
       open(66,file='summary.out')
       ival = sval
       conv = 27.21138505
@@ -1873,8 +1873,17 @@ c Fine structure constant and parts per million
 c
 c External multiplication constant for paramagnetic spin-orbit 
 c contribution.
+
+      Nunpaired = Nalpha_occupied - Nbeta_occupied
+
+      If (Nunpaired .EQ. 0) Then
+         Write(6, "(a)") "Invalid input: A closed shell EPR calculation"
+         Call abort_job()
+      Endif
+
+      Refspin   = Dble(Nunpaired)
   
-       Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
+      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0))
 
        if (me .eq. 0)then
        if (ival .eq. 715) then
@@ -1919,8 +1928,9 @@ c
       include 'int_gen_parms.h'
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
+      integer Nunpaired
       double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
-      double precision efinal, conv, Fac, Gfac
+      double precision efinal, conv, Fac, Gfac, Refspin
       open(66,file='summary.out')
       ival = sval
       conv = 27.21138505
@@ -1934,7 +1944,16 @@ c
 c External multiplication constant for paramagnetic spin-orbit
 c contribution.
 
-       Fac = FNS*FNS*PPM*(1.0D0/2.0D0)
+      Nunpaired = Nalpha_occupied - Nbeta_occupied
+
+      If (Nunpaired .EQ. 0) Then
+         Write(6, "(a)") "Invalid input: A closed shell EPR calculation"
+         Call abort_job()
+      Endif
+
+      Refspin   = Dble(Nunpaired)
+
+      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 716) then

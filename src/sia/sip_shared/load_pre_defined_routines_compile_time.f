@@ -381,6 +381,8 @@ C Ajith Perera, miscellaneous developments.
       dummy = load_user_sub('compute_kin_batch'//char(0),0)
 
       dummy = load_user_sub('write_vecs2jarc'//char(0),0)
+
+      dummy = load_user_sub('antihermitize_pqrs'//char(0),0)
 c -----------------------------------------------------------------
 c Prakash instructions need for delta integrals
 c ------------------------------------------------------------------

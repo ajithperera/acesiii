@@ -178,6 +178,7 @@ C Ajith Perera, SOI instructions
      &         compute_dshield_zybatch
 
       external write_vecs2jarc, compute_kin_batch
+      external antihermitize_pqrs 
 c -------------------------------------------------------------------
 c Prakash Instructions needed for delta integraks
 c -------------------------------------------------------------------
@@ -735,6 +736,10 @@ c-------------------------------------------------------------------
      
       dummy = load_user_sub('write_vecs2jarc'//char(0), 
      &                       write_vecs2jarc)
+
+      dummy = load_user_sub('antihermitize_pqrs'//char(0), 
+     &                       antihermitize_pqrs)
+      call set_upgrade_flag(dummy)
 c
 c-----------------------------------------------------------------------
 c Prakash instructions for delta integrals

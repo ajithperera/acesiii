@@ -95,20 +95,6 @@
       distributed Doldai_a(a,i)
       distributed Doldai_b(b,j)
 
-      distributed DOO_a_P(i,i1)
-      distributed DOO_b_P(j,j1)
-      distributed DVV_a_P(a,a1)
-      distributed DVV_b_P(b,b1)
-      distributed DOV_a_P(a,i)
-      distributed DOV_b_P(b,j)
-
-      distributed DOO_a_M(i,i1)
-      distributed DOO_b_M(j,j1)
-      distributed DVV_a_M(a,a1)
-      distributed DVV_b_M(b,b1)
-      distributed DOV_a_M(a,i)
-      distributed DOV_b_M(b,j)
-
       distributed T2L2_VV_A (a,a1)
       distributed T2L2_VV_B (b,b1)
       distributed T2L2_OO_A (i,i1)
@@ -1001,110 +987,35 @@
 
      PROC PUT_DOOVV_P
 #    ---------------
-      CREATE DOO_a_P(i,i1)
-      CREATE DOO_b_P(j,j1)
-      CREATE DVV_a_P(a,a1)
-      CREATE DVV_b_P(b,b1)
-      execute sip_barrier 
 
-      PARDO a, a1
-            GET DAB_a(a,a1)
-            Taa(a, a) = DAB_a(a,a1) 
-            PUT DVV_A_P(a, a1) = Taa(a, a)
-      ENDPARDO a, a1
-      PARDO b, b1
-            GET DAB_b(b,b1)
-            Tbb(b,b1) = DAB_b(b,b1)
-            PUT DVV_B_P(b,b1) = Tbb(b,b1)
-      ENDPARDO b, b1
-      PARDO i, i1
-            GET DIJ_a(i,i1)
-            Tii(i,i1) = DIJ_a(i,i1) 
-            PUT DOO_A_P(i, i1) = Tii(i, i1)
-      ENDPARDO i, i1 
-      PARDO j, j1
-            GET DIJ_b(j,j1)
-            Tjj(j,j1) = DIJ_b(j,j1) 
-            PUT DOO_B_P(j, j1) = Tjj(j, j1)
-      ENDPARDO j, j1
+       PARDO a, a1
+             GET DAB_a(a,a1)
+             Taa(a, a) = DOAB  (a,a1) 
+             PUT DVV_A_P(a, a1) = Taa(a, a)
+       ENDIF 
+       PARDO b, b1
+             GET DAB_b(b,b1)
+             Tbb(b,b1) A = DOAB_b(b,b1)
+             PUT DVV_B_P(b,b1) = Tbb(b,b1)
+       ENDPARDO b, b1
+       PARDO i, i1
+             GET DIJ_a(i,i1)
+             Tii(i,i1) = DIJ_a  (i,i1) 
+             PUT DOO_A_P(i, i1) = Tii(i, i1)
+       ENDIF 
+       PARDO j, j1
+             GET DIJ_b(j,j1)
+             Tjj(j,j1) = DIJ_a  (j,i1) 
+             PUT DOO_A_P(i, i1) = Tii(j, j1)
+       ENDPARDO j, j1
 
      ENDPROC PUT_DOOVV_P
 #    -------------------
+   
+       
 
-     PROC PUT_DOOVV_M
-#    ----------------
-      CREATE DOO_a_M(i,i1)
-      CREATE DOO_b_M(j,j1)
-      CREATE DVV_a_M(a,a1)
-      CREATE DVV_b_M(b,b1)
-      execute sip_barrier 
-
-      PARDO a, a1
-            GET DAB_a(a,a1)
-            Taa(a, a) = DAB_a(a,a1)
-            PUT DVV_A_M(a, a1) = Taa(a, a)
-      ENDPARDO a, a1
-      PARDO b, b1
-            GET DAB_b(b,b1)
-            Tbb(b,b1) = DAB_b(b,b1)
-            PUT DVV_B_M(b,b1) = Tbb(b,b1)
-      ENDPARDO b, b1
-      PARDO i, i1
-            GET DIJ_a(i,i1)
-            Tii(i,i1) = DIJ_a(i,i1)
-            PUT DOO_A_M(i, i1) = Tii(i, i1)
-      ENDPARDO i, i1
-      PARDO j, j1
-            GET DIJ_b(j,j1)
-            Tjj(j,j1) = DIJ_b(j,j1)
-            PUT DOO_B_M(j, j1) = Tjj(j, j1)
-      ENDPARDO j, j1
-
-     ENDPROC PUT_DOOVV_M
-#    -------------------
-
-     PROC PUT_DOV_P
-#    ----------------
-      CREATE DOV_a_P(a,i)
-      CREATE DOV_b_P(b,j)
-      execute sip_barrier 
-
-      PARDO a, i
-            GET Doldai_a(a,i)
-            Tai(a, i) = Doldai_a(a,i)
-            PUT DOV_A_P(a, i) = Tai(a, i)
-      ENDPARDO a, i
-      PARDO b, j
-            GET Doldai_b(b,j)
-            Tbj(b,j) = Doldai_b(b,j)
-            PUT DOV_B_P(b,j) = Tbj(b,j)
-      ENDPARDO b, j
-
-     ENDPROC PUT_DOV_P
-#    -----------------
-
-     PROC PUT_DOV_M
-#    ---------------
-      CREATE DOV_a_M(a,i)
-      CREATE DOV_b_M(b,j)
-      execute sip_barrier 
-
-      PARDO a, i
-            GET Doldai_a(a,i)
-            Tai(a, i) = Doldai_a(a,i)
-            PUT DOV_A_M(a, i) = Tai(a, i)
-      ENDPARDO a, i
-      PARDO b, j
-            GET Doldai_b(b,j)
-            Tbj(b,j) = Doldai_b(b,j)
-            PUT DOV_B_M(b,j) = Tbj(b,j)
-      ENDPARDO b, j
-
-     ENDPROC PUT_DOV_M
-#    -----------------
-
-     PROC GET_HBXYZ_Dipole
-#    --------------------
+        PROC GET_HBXYZ_Dipole
+#       --------------------
            CREATE HBX
            CREATE HBY
            CREATE HBZ
@@ -1266,20 +1177,17 @@
                IF NCOUNT == 1.0
                   CALL PUT_DOOVV_P
                ENDIF 
-               IF NCOUNT == 2.0
+               IF NCOUNT == 1.0
                   CALL PUT_DOOVV_M
                ENDIF 
 
                call DAI
-               execute sip_barrier
-
                IF NCOUNT == 1.0
                   CALL PUT_DOV_P
                ENDIF 
                IF NCOUNT == 2.0
-                  CALL PUT_DOV_M
+                  CALL PUT_DOV_P
                ENDIF
-
                execute sip_barrier
                execute server_barrier
                CALL D1TRANS 

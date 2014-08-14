@@ -8707,7 +8707,7 @@
       six   = 6.0
       seven = 7.0
 
-      property = 20.0
+      property = 10.0
 #
 # Read transformed integrals from lists 
 # ------------------------------------- 

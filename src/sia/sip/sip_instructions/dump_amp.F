@@ -238,14 +238,14 @@ c---------------------------------------------------------------------------
          xmax = max(x(a,i), xmax)
          xmin = min(x(a,i), xmin)
          sumsq = sumsq + x(a,i)*x(a,i)
-C         write(6,*) a, i, x(a,i) 
+c         write(6,*) a, i, x(a,i) 
       enddo
       enddo
 
       mxcol = 7
       imin = i1
       imax = i1 + mxcol - 1
-      do while (imin .lt. i2) 
+      do while (imin .le. i2) 
           if(imax .gt. i2) imax = i2
           write(6,9028) (i, i=imin,imax)
           do a = a1,a2
@@ -262,7 +262,7 @@ C         write(6,*) a, i, x(a,i)
 
       do i = i1,i2
       do a = a1,a2
-         write(1,100) a, i, x(a,i) 
+C         write(1,100) a, i, x(a,i) 
       enddo
       enddo
 

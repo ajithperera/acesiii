@@ -744,9 +744,9 @@
       PARDO b, j, j1
             GET t1b_old(b,j1)
             GET l1b_old(j,b)
-            Tjj(j,j1)        = l1b_old(j,b)*t1b_old(b,j1)
-            Tjj(j,j1)       *= -0.5
-            PUT T1L1_OO_B(j,j1) += Tjj(j,j1)
+            Tjj(j1,j)        = l1b_old(j,b)*t1b_old(b,j1)
+            Tjj(j1,j)       *= -0.5
+            PUT T1L1_OO_B(j1,j) += Tjj(j1,j)
       ENDPARDO b, j, j1
 
      ENDPROC GMIAB
@@ -908,11 +908,11 @@
                REQUEST L2old_aa(i,a1,i1,a2) a2
                REQUEST T2old_aa_x(a,i,a2,i1) i1
                REQUEST L2old_aa_x(i,a1,i1,a2) a2
-               Taa(a1,a)        = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
-               TaaT(a1,a)       = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
-               Taa(a1,a)       += TaaT(a1,a)
-               Taa(a1,a)       *= 0.25
-               PUT T2L2_VV_A_x(a1,a) += Taa(a1,a)
+               Taa(a,a1)        = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               TaaT(a,a1)       = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
+               Taa(a,a1)       += TaaT(a,a1)
+               Taa(a,a1)       *= 0.25
+               PUT T2L2_VV_A_x(a,a1) += Taa(a,a1)
             ENDDO i1
             ENDDO a2
             DO b
@@ -921,11 +921,11 @@
                REQUEST L2old_ab(i,a1,j,b) j
                REQUEST T2old_ab_x(a,i,b,j) j
                REQUEST L2old_ab_x(i,a1,j,b) j
-               Taa(a1,a)        = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
-               TaaT(a1,a)        = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
-               Taa(a1,a)        += TaaT(a1,a)
-               Taa(a1,a)        *= 0.5
-               PUT  T2L2_VV_A_x(a1,a) += Taa (a1,a)
+               Taa(a,a1)        = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
+               TaaT(a,a1)       = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
+               Taa(a,a1)       += TaaT(a,a1)
+               Taa(a,a1)       *= 0.5
+               PUT  T2L2_VV_A_x(a,a1) += Taa (a,a1)
             ENDDO j
             ENDDO b
       ENDPARDO a, a1, i
@@ -938,7 +938,7 @@
                REQUEST T2old_bb_x(b1,j,b2,j1) j1
                REQUEST L2old_bb_x(j,b,j1,b2)  j1
                Tbb(b1,b)      = T2old_bb_x(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
-               TbbT(b1,b)      = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
+               TbbT(b1,b)     = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
                Tbb(b1,b)     += TbbT(b1,b)
                Tbb(b1,b)     *= 0.25
                PUT T2L2_VV_B_x(b1,b) += Tbb (b1,b)
@@ -1493,9 +1493,9 @@
                DO i1
                   REQUEST L2old_ab_x(i1,a,j,b) b
 
-                  Tii(i1,i)  = L2old_ab_x(i1,a,j,b)*T2old_ab(a,i,b,j)
-                  Tii(i1,i) *= -1.0
-                  PUT Dij_a_x_L(i1,i) += Tii(i1,i)
+                  Tii(i,i1)  = L2old_ab_x(i1,a,j,b)*T2old_ab(a,i,b,j)
+                  Tii(i,i1) *= -1.0
+                  PUT Dij_a_x_L(i,i1) += Tii(i,i1)
 
                ENDDO i1
             ENDDO i
@@ -1696,9 +1696,9 @@
                REQUEST T2old_ab(a,i,b,j1) j1
                DO j
                   REQUEST L2old_ab_x(i,a,j,b) b
-                  Tjj(j,j1)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
-                  Tjj(j,j1)  *= -1.0
-                  PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
+                  Tjj(j1,j)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
+                  Tjj(j1,j)  *= -1.0
+                  PUT Dij_b_x_L(j1,j)    += Tjj(j1,j)
 
                ENDDO j
             ENDDO j1
@@ -2524,57 +2524,57 @@
 #     -----------------
 # Finally contract with the derivative integrals
 # ----------------------------------------------
-#        XX=0.0
-#       Axx=0.0
-#        YY=0.0
-#       Ayy=0.0
-#        ZZ=0.0
-#       Azz=0.0
-#       Px=0.0
-#       Py=0.0
-#       Pz=0.0
-#
-#        PARDO mu, nu
-#            GET DpqA(mu,nu)
-#            GET DpqB(mu,nu)
-#            GET DHF_aa(mu,nu)
-#            GET DHF_bb(mu,nu)
-#
-#            get HBx(mu,nu)
-#            get HBy(mu,nu)
-#            get HBz(mu,nu) 
-#
-#            Dccsd(mu,nu)  = DpqA(mu,nu)
-#            Dccsd(mu,nu) += DpqB(mu,nu)
-#            
-#            Dscf(mu,nu)   = DHF_aa(mu,nu)
-#            Dscf(mu,nu)  += DHF_bb(mu,nu)
-#
-#            Tpq(mu,nu)  = Dccsd(mu,nu)
-#            Tpq(mu,nu) = Dscf(mu,nu)
-#
-#             XX   = Tpq(mu,nu)*HBx(mu,nu)
-#             Axx += XX
-#
-#             YY  = Tpq(mu,nu)*HBy(mu,nu)
-#            Ayy += YY
-#
-#             ZZ  = Tpq(mu,nu)*HBz(mu,nu)
-#            Azz += ZZ
-#         ENDPARDO mu, nu
-#
-#      execute sip_barrier
-#      collective Px +=Axx
-#      execute print_scalar Px
-#
-#      execute sip_barrier
-#      collective Py +=Ayy
-#      execute print_scalar Py
-#
-#      execute sip_barrier
-#      collective Pz +=Azz
-#      execute print_scalar Pz
-#
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Px =0.0
+      Py =0.0
+      Pz =0.0
+
+        PARDO mu, nu
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu) 
+ 
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) += DpqB(mu,nu)
+            
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  += DHF_bb(mu,nu)
+
+            Tpq(mu,nu)  = Dccsd(mu,nu)
+            Tpq(mu,nu) += Dscf(mu,nu)
+
+            XX   = Tpq(mu,nu)*HBx(mu,nu)
+            Axx += XX
+
+            YY  = Tpq(mu,nu)*HBy(mu,nu)
+            Ayy += YY
+
+            ZZ  = Tpq(mu,nu)*HBz(mu,nu)
+            Azz += ZZ
+         ENDPARDO mu, nu
+
+      execute sip_barrier
+      collective Px +=Axx
+      execute print_scalar Px
+
+      execute sip_barrier
+      collective Py +=Ayy
+      execute print_scalar Py
+
+      execute sip_barrier
+      collective Pz +=Azz
+      execute print_scalar Pz
+
       ENDPROC CMP_DIPOLEMS 
 #     --------------------
 
@@ -3319,6 +3319,9 @@
            collective sumaa += suma
            collective sumbb += sumb
 
+           execute print_scalar sumaa
+           execute print_scalar sumbb
+
            sum = 0.0
            pardo  b, j
                GET t1b_old_x(b,j)
@@ -3622,13 +3625,16 @@
       EXECUTE  NUC_DIPOLE_MOMENT  TWO    dipnucy
       EXECUTE  NUC_DIPOLE_MOMENT  THREE  dipnucz
 
+      Px *= -1.0
+      Py *= -1.0
+      Pz *= -1.0
       Px += dipnucx
       Py += dipnucy
       Pz += dipnucz
 
-#PV      EXECUTE  PRINT_SCALAR  PX
-#PV      EXECUTE  PRINT_SCALAR  PY
-#PV      EXECUTE  PRINT_SCALAR  PZ
+      EXECUTE  PRINT_SCALAR  PX
+      EXECUTE  PRINT_SCALAR  PY
+      EXECUTE  PRINT_SCALAR  PZ
 
       ENDPROC DMAIN
 

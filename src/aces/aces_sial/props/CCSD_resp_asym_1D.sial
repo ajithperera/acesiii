@@ -721,7 +721,6 @@
                   REQUEST L2old_aa(i1,a,i2,a1) a1
                   Tii(i,i1)        = T2old_aa(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
                   Tii(i,i1)       *= -0.5
-                  T1ii(i1,i)       = Tii(i,i1)
                   PUT  T2L2_OO_A (i,i1) += Tii(i,i1) 
 
                ENDDO i1
@@ -760,8 +759,7 @@
                REQUEST T2old_bb(b,j1,b1,j2) j2
                Tjj(j1,j)        = T2old_bb(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
                Tjj(j1,j)       *= -0.5
-               T1jj(j,j1)       = Tjj(j1,j)
-               PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+               PUT  T2L2_OO_B (j1,j) += Tjj(j1,j)
 
             ENDDO j
             ENDDO j1
@@ -774,8 +772,7 @@
                   REQUEST L2old_ab(i,a,j,b) b
                   Tjj(j1,j)        = T2old_ab(a,i,b,j1)*L2old_ab(i,a,j,b)
                   Tjj(j1,j)       *= -1.0
-                  T1jj(j,j1)       = Tjj(j1,j)
-                  PUT  T2L2_OO_B (j,j1) += T1jj(j,j1)
+                  PUT  T2L2_OO_B (j,j1) += Tjj(j1,j)
 
                ENDDO j
             ENDDO j1
@@ -784,9 +781,9 @@
       PARDO b, j, j1
             GET t1b_old(b,j1)
             GET l1b_old(j,b)
-            Tjj(j,j1)        = l1b_old(j,b)*t1b_old(b,j1)
-            Tjj(j,j1)       *= -1.0
-            PUT T1L1_OO_B(j,j1) += Tjj(j,j1)
+            Tjj(j1,j)        = l1b_old(j,b)*t1b_old(b,j1)
+            Tjj(j1,j)       *= -1.0
+            PUT T1L1_OO_B(j,j1) += Tjj(j1,j)
       ENDPARDO b, j, j1
 
      ENDPROC GMIAB
@@ -945,12 +942,11 @@
                REQUEST L2old_aa(i,a1,i1,a2) a2 
                REQUEST T2old_aa_x(a,i,a2,i1) i1  
                REQUEST L2old_aa_x(i,a1,i1,a2) a2 
-               Taa(a1,a)        = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
-               TaaT(a1,a)       = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
-               Taa(a1,a)       += TaaT(a1,a)
-               Taa(a1,a)       *= 0.5
-               T1aa(a,a1)       = Taa(a1,a)
-               PUT T2L2_VV_A_x(a,a1) += T1aa(a,a1)
+               Taa(a,a1)        = T2old_aa_x(a,i,a2,i1)*L2old_aa(i,a1,i1,a2)
+               TaaT(a,a1)       = T2old_aa(a,i,a2,i1)*L2old_aa_x(i,a1,i1,a2)
+               Taa(a,a1)       += TaaT(a,a1)
+               Taa(a,a1)       *= 0.5
+               PUT T2L2_VV_A_x(a,a1) += Taa(a,a1)
             ENDDO i1
             ENDDO a2
             DO b
@@ -959,11 +955,10 @@
                REQUEST L2old_ab(i,a1,j,b) j  
                REQUEST T2old_ab_x(a,i,b,j) j    
                REQUEST L2old_ab_x(i,a1,j,b) j  
-               Taa(a1,a)        = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
-               TaaT(a1,a)        = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
-               Taa(a1,a)        += TaaT(a1,a)
-               T1aa(a,a1)       = Taa(a1,a)
-               PUT  T2L2_VV_A_x(a,a1) += T1aa (a,a1)
+               Taa(a,a1)       = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
+               TaaT(a,a1)      = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
+               Taa(a,a1)      += TaaT(a,a1)
+               PUT  T2L2_VV_A_x(a,a1) += Taa (a,a1)
             ENDDO j
             ENDDO b
       ENDPARDO a, a1, i
@@ -976,7 +971,7 @@
                REQUEST T2old_bb_x(b1,j,b2,j1) j1
                REQUEST L2old_bb_x(j,b,j1,b2)  j1 
                Tbb(b1,b)      = T2old_bb_x(b1,j,b2,j1)*L2old_bb(j,b,j1,b2)
-               TbbT(b1,b)      = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
+               TbbT(b1,b)     = T2old_bb(b1,j,b2,j1)*L2old_bb_x(j,b,j1,b2)
                Tbb(b1,b)     += TbbT(b1,b)
                Tbb(b1,b)     *= 0.5
                PUT T2L2_VV_B_x(b1,b) += Tbb (b1,b)
