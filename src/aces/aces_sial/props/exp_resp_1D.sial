@@ -773,7 +773,7 @@
                   REQUEST L2old_ab(i,a,j,b) b
                   Tjj(j1,j)        = T2old_ab(a,i,b,j1)*L2old_ab(i,a,j,b)
                   Tjj(j1,j)       *= -1.0
-                  PUT  T2L2_OO_B (j1,j) += T1jj(j1,j)
+                  PUT  T2L2_OO_B (j1,j) += Tjj(j1,j)
 
                ENDDO j
             ENDDO j1

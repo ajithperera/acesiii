@@ -12756,14 +12756,12 @@
       CALL L2NEWBB_x
       CALL L2NEWAB_x
   
-      execute print_scalar nine
       CALL VABCD_X
       CALL W1EAFM_X
       call W1MEBJ_X
 
       execute sip_barrier
       execute server_barrier
-
 
       CALL UPDATEL1
       CALL UPDATEL2
@@ -12793,6 +12791,7 @@
      CALL MOVEL2
 
 
+      execute print_scalar ediff 
       IF ecorrT < eold
             ediff = eold - ecorrT
             IF ediff < ecrit
