@@ -12816,9 +12816,10 @@
       execute print_scalar eold 
       ENDDO kiter
 #------------------------------End of lambda iterations
-
-      execute sip_barrier
       EXECUTE SERVER_BARRIER
+      totenerg  = ecorrT
+      execute print_scalar totenerg
+      execute print_rel_info ten pinf
 
 # If the lambda iterations converge and start work on new perturbation.
 # Delete the perturbation dependent distributed arrays,

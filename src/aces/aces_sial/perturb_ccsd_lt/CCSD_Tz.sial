@@ -6111,17 +6111,16 @@
      execute sip_barrier
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa
+#     execute print_scalar ecorraa
 
      collective ecorrbb += esumb
-     execute print_scalar ecorrbb
+#     execute print_scalar ecorrbb
 
      ecorrT  = ecorraa 
      ecorrT += ecorrbb
 
      ecorrD  = ecorraa 
      ecorrD -= ecorrbb
-     execute print_scalar ecorrD
 
      esuma   = 0.0 
      ecorraa = 0.0 
@@ -6189,13 +6188,13 @@
      execute sip_barrier 
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa 
+#     execute print_scalar ecorraa 
 
      collective ecorrbb += esumb 
-     execute print_scalar ecorrbb 
+#     execute print_scalar ecorrbb 
 
      collective ecorrab += esumab
-    execute print_scalar ecorrab 
+#     execute print_scalar ecorrab 
 
      ecorrT  += ecorraa 
      ecorrT  += ecorrbb
@@ -6203,9 +6202,8 @@
      ecorrD  = ecorraa
      ecorrD -= ecorrbb
    
-     execute print_scalar ecorrD
      ecorrT += ecorrab 
-    #execute print_scalar ecorrT  
+     execute print_scalar ecorrT  
 
      if kiter > 0
             ncount1 = 0.0
@@ -6228,7 +6226,7 @@
             endif
          ENDDO kptr1
 
-         execute print_rel_info five pinf
+#         execute print_rel_info five pinf
       endif
 
      ENDPROC ENERGY_NEW 
@@ -9141,22 +9139,38 @@
       six   = 6.0
       seven = 7.0
 
-# ------------------------------------- 
-      
-      property = 20.0
-      beta_is_minus = 0.0
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      if do_pols == one
+         property = 10.0
+         ASYM = 0.0
+         beta_is_minus = 0.0
+      endif
+
+      if do_gten == one
+         property = 20.0
+         ASYM = 1
+         beta_is_minus = 0.0
+#bgn_debug
+#         property = 30.0
+#         beta_is_minus = 100.0
+#end_debug
+      endif
 
       if property == 10.0
-         call get_HBx_Dipole
-      endif 
+         call get_HBx_Dipole                # I think is allright
+      endif
 
       if property == 20.0
-         call get_HBx_Angmom
-      endif 
+         call get_HBx_Angmom                # I think is allright
+      endif
 
       if property == 30.0
-         BETA_IS_MINUS = 100.0
-         call get_HBx_Spin_orbit
+         beta_is_minus = 100.0
+         call get_HBx_Spin_orbit            # I think is allright
       endif
 
       call trans_2mo
@@ -9366,6 +9380,7 @@
 #        Check on convergence 
 #        -------------------- 
 #
+         execute print_scalar ediff 
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
@@ -9389,12 +9404,7 @@
 
 
       totenerg  = ecorrT  
-
-
-#pv      totenerg += scfeneg  
-     #execute print_scalar totenerg  
       execute print_rel_info seven pinf
-
 
 # Write amplitudes to file
 # ------------------------

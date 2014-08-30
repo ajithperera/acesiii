@@ -1944,6 +1944,7 @@
             GET  T2L2_OO_A (i,i1)
             tii (i,i1)  = T1L1_OO_A (i,i1)
             tii (i,i1) += T2L2_OO_A (i,i1)
+            tii (i,i1) *=0.5
             tai (a,i)   = LT1A (a,i1) * tii (i,i1)
             tai1(a,i) += tai(a,i)
          ENDDO i1
@@ -1954,7 +1955,9 @@
 # 6th term
        PARDO  a, a1, i
             GET                     T2L2_VV_A (a,a1)
-            tai (a,i)             = T2L2_VV_A (a,a1) * LT1A (a1,i)
+            taa(a,a1)             =  T2L2_VV_A (a,a1)
+            taa(a,a1)            *= 0.5
+            tai (a,i)             = taa (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
             PUT  Doldai_a(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
@@ -2014,6 +2017,7 @@
             GET  T2L2_OO_B (j,j1)
             tjj (j,j1)  = T1L1_OO_B (j,j1)
             tjj (j,j1) += T2L2_OO_B (j,j1)
+            tjj (j,j1) *= 0.5
             tbj (b,j)   = LT1B (b,j1) * tjj (j,j1)
             tbj1(b,j) += tbj(b,j)
          ENDDO j1
@@ -2026,7 +2030,9 @@
 #-----------------------------------------------------------------------------
        PARDO  b, b1, j
             GET                     T2L2_VV_B (b,b1)
-            tbj (b,j)             = T2L2_VV_B (b,b1) * LT1B (b1,j)
+            tbb (b,b1)             = T2L2_VV_B (b,b1) 
+            tbb (b,b1)            *= 0.5
+            tbj (b,j)             = tbb(b,b1) * LT1B (b1,j)
             tbj(b,j)            *= -1.0
             PUT  Doldai_b(b,j)   += tbj (b,j)
        ENDPARDO  b, b1, j
@@ -2555,62 +2561,86 @@
             ENDDO mu
       ENDPARDO j, j1
       execute sip_barrier
+
+      ENDPROC D1TRANS
+#     ---------------
+
+      PROC CMP_DIPOLEMS
+#     -----------------
 #
 # Finally contract with the derivative integrals
 # ----------------------------------------------
-#        XX=0.0
-#       Axx=0.0
-#        YY=0.0
-#       Ayy=0.0
-#        ZZ=0.0
-#       Azz=0.0
-#       Px=0.0
-#       Py=0.0
-#       Pz=0.0
-#
-#        PARDO mu, nu
-#            GET DpqA(mu,nu)
-#            GET DpqB(mu,nu)
-#            GET DHF_aa(mu,nu)
-#            GET DHF_bb(mu,nu)
-#
-#            get HBx(mu,nu)
-#            get HBy(mu,nu)
-#            get HBz(mu,nu) 
-#
-#            Dccsd(mu,nu)  = DpqA(mu,nu)
-#            Dccsd(mu,nu) += DpqB(mu,nu)
-#            
-#            Dscf(mu,nu)   = DHF_aa(mu,nu)
-#            Dscf(mu,nu)  += DHF_bb(mu,nu)
-#
-#            Tpq(mu,nu)  = Dccsd(mu,nu)
-#            Tpq(mu,nu) = Dscf(mu,nu)
-#
-#             XX   = Tpq(mu,nu)*HBx(mu,nu)
-#             Axx += XX
-#
-#             YY  = Tpq(mu,nu)*HBy(mu,nu)
-#            Ayy += YY
-#
-#             ZZ  = Tpq(mu,nu)*HBz(mu,nu)
-#            Azz += ZZ
-#         ENDPARDO mu, nu
-#
-#      execute sip_barrier
-#      collective Px +=Axx
-#      execute print_scalar Px
-#
-#      execute sip_barrier
-#      collective Py +=Ayy
-#      execute print_scalar Py
-#
-#      execute sip_barrier
-#      collective Pz +=Azz
-#      execute print_scalar Pz
-#
-      ENDPROC D1TRANS
-#     ----------------
+        XX=0.0
+       Axx=0.0
+        YY=0.0
+       Ayy=0.0
+        ZZ=0.0
+       Azz=0.0
+        Px=0.0
+        Py=0.0
+        Pz=0.0
+
+        CREATE HBX
+        CREATE HBY
+        CREATE HBZ
+        execute sip_barrier
+
+        PARDO mu, nu
+              EXECUTE return_x Tpq(mu,nu)
+              PUT  HBx(mu,nu) = Tpq(mu,nu)
+              EXECUTE return_y Tpq(mu,nu)
+              PUT  HBY(mu,nu) = Tpq(mu,nu)
+              EXECUTE return_z Tpq(mu,nu)
+              PUT  HBZ(mu,nu) = Tpq(mu,nu)
+        ENDPARDO mu, nu
+        execute sip_barrier
+
+        PARDO mu, nu
+            GET DpqA(mu,nu)
+            GET DpqB(mu,nu)
+            GET DHF_aa(mu,nu)
+            GET DHF_bb(mu,nu)
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu) 
+
+            Dccsd(mu,nu)  = DpqA(mu,nu)
+            Dccsd(mu,nu) += DpqB(mu,nu)
+            
+            Dscf(mu,nu)   = DHF_aa(mu,nu)
+            Dscf(mu,nu)  += DHF_bb(mu,nu)
+
+            Tpq(mu,nu)  = Dccsd(mu,nu)
+            Tpq(mu,nu) += Dscf(mu,nu)
+
+            XX   = Tpq(mu,nu)*HBx(mu,nu)
+            Axx += XX
+
+            YY  = Tpq(mu,nu)*HBy(mu,nu)
+           Ayy += YY
+
+            ZZ  = Tpq(mu,nu)*HBz(mu,nu)
+           Azz += ZZ
+         ENDPARDO mu, nu
+
+      execute sip_barrier
+      collective Px +=Axx
+      execute print_scalar Px
+
+      execute sip_barrier
+      collective Py +=Ayy
+      execute print_scalar Py
+
+      execute sip_barrier
+      collective Pz +=Azz
+      execute print_scalar Pz
+      DELETE HBX
+      DELETE HBY
+      DELETE HBZ
+
+     ENDPROC CMP_DIPOLEMS
+#     -------------------
 
       PROC CCSD_MASSCR
 #     ---------------
@@ -3943,6 +3973,18 @@
             if do_aten == 1.0
                property = 40
             endif
+
+            call GAEAB
+            call GMIAB
+            call DAB
+            call DIJ
+
+            execute sip_barrier
+
+            call DAI
+            execute sip_barrier
+            CALL D1TRANS                                            
+            CALL CMP_DIPOLEMS
 #
 # Two variables that control the formation of antisymmetric or
 # symmetric density or total or spin density.
@@ -3961,17 +4003,6 @@
 #               call get_HBXYZ_Angmom
 #            endif
 #end_debug
-          
-            call GAEAB
-            call GMIAB
-            call DAB
-            call DIJ
-
-            execute sip_barrier
-
-            call DAI
-
-            CALL D1TRANS                                            
 
             NCOUNT = 0.0
             DO NPERT 
@@ -4251,13 +4282,16 @@
       EXECUTE  NUC_DIPOLE_MOMENT  TWO    dipnucy
       EXECUTE  NUC_DIPOLE_MOMENT  THREE  dipnucz
 
+      px *= -1.0
+      py *= -1.0
+      pz *= -1.0
       Px += dipnucx
       Py += dipnucy
       Pz += dipnucz
 
-#PV      EXECUTE  PRINT_SCALAR  PX
-#PV      EXECUTE  PRINT_SCALAR  PY
-#PV      EXECUTE  PRINT_SCALAR  PZ
+      EXECUTE  PRINT_SCALAR  PX
+      EXECUTE  PRINT_SCALAR  PY
+      EXECUTE  PRINT_SCALAR  PZ
 
       ENDPROC DMAIN
 

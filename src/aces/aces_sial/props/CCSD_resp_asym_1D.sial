@@ -2879,12 +2879,11 @@
 
       PARDO a, i
             GET Doldai_a_x(a,i)
-            if rank == 0.0
-            execute dump_amp Doldai_a_x(a,i) 
-            endif 
+#            if rank == 0.0
+#            execute dump_amp Doldai_a_x(a,i) 
+#            endif 
             DO mu
                Jxi(mu,i)  = Doldai_a_x(a,i)*ca(mu,a)
-               execute dump_amp Doldai_a_x(a,i) 
                DO nu
                   Ixx(mu,nu)  = Jxi(mu,i)*ca(nu,i)
                   IXX(mu,nu) *= 0.5
@@ -2905,9 +2904,9 @@
 #     Transform Dai_bb
       PARDO b, j
             GET Doldai_b_x(b,j)
-            if rank == 0.0
-            execute dump_amp Doldai_b_x(b,j) 
-            endif 
+#            if rank == 0.0
+#            execute dump_amp Doldai_b_x(b,j) 
+#            endif 
             DO mu
                Jxj(mu,j)  = Doldai_b_x(b,j)*cb(mu,b)
                DO nu
@@ -2987,16 +2986,16 @@
       execute sip_barrier
 
 #bgn_debug
-      PARDO mu, nu
-            get DpqA_x(mu,nu)
-            if rank == 0.0
-               execute dump_amp DpqA_x(mu,nu) 
-            endif 
-            get DpqB_x(mu,nu) 
-            if rank == 0.0
-               execute dump_amp DpqA_x(mu,nu) 
-            endif 
-      ENDPARDO mu,nu
+#      PARDO mu, nu
+#            get DpqA_x(mu,nu)
+#            if rank == 0.0
+#               execute dump_amp DpqA_x(mu,nu) 
+#            endif 
+#            get DpqB_x(mu,nu) 
+#            if rank == 0.0
+#               execute dump_amp DpqA_x(mu,nu) 
+#            endif 
+#      ENDPARDO mu,nu
 #end_debug
 
       ENDPROC D1TRANS_x
@@ -3464,9 +3463,6 @@
       do j
       do j1
           GET HBb_mi_x(j,j1)
-          if rank == 0.0
-             execute dump_amp HBb_mi_x(j,j1)
-          endif 
           tmp = HBb_mi_x(j,j1) * HBb_mi_x(j,j1)
           sumb +=tmp
       enddo j1

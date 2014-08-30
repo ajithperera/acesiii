@@ -6164,18 +6164,16 @@
      execute sip_barrier
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa
+#     execute print_scalar ecorraa
 
      collective ecorrbb += esumb
-     execute print_scalar ecorrbb
+#     execute print_scalar ecorrbb
 
      ecorrT  = ecorraa 
      ecorrT  += ecorrbb
 
      ecorrD  += ecorrbb
      ecorrD  -= ecorrbb
-     
-     execute print_scalar ecorrD
 
      esuma   = 0.0 
      ecorraa = 0.0 
@@ -6244,13 +6242,13 @@
      execute sip_barrier 
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa 
+#     execute print_scalar ecorraa 
 
      collective ecorrbb += esumb 
-     execute print_scalar ecorrbb 
+#     execute print_scalar ecorrbb 
 
      collective ecorrab += esumab
-    execute print_scalar ecorrab 
+#    execute print_scalar ecorrab 
 
      ecorrT  += ecorraa 
      ecorrT  += ecorrbb
@@ -6258,7 +6256,6 @@
      ecorrD  += ecorraa 
      ecorrD  -= ecorrbb
 
-     execute print_scalar ecorrD
      ecorrT += ecorrab 
      execute print_scalar ecorrT  
 
@@ -6283,7 +6280,7 @@
             endif
          ENDDO kptr1
 
-         execute print_rel_info five pinf
+#         execute print_rel_info five pinf
       endif
 
      ENDPROC ENERGY_NEW 
@@ -9431,6 +9428,7 @@
 #        Check on convergence 
 #        -------------------- 
 #
+         execute print_scalar ediff 
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
@@ -9451,12 +9449,7 @@
 
       ENDDO KITER 
 #...........................................................................
-
-
-      totenerg  = ecorrT  
-
-
-#pv      totenerg += scfeneg  
+     totenerg  = ecorrT  
      execute print_scalar totenerg  
      execute print_rel_info seven pinf
 

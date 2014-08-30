@@ -7919,13 +7919,13 @@ PARDO j, i, i1, j1
      execute server_barrier
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa
+#     execute print_scalar ecorraa
 
      collective ecorrbb += esumb
-     execute print_scalar ecorrbb
+#     execute print_scalar ecorrbb
 
      collective ecorrab += esumab
-     execute print_scalar ecorrab
+#     execute print_scalar ecorrab
 
      ecorrT  = ecorraa 
      ecorrT += ecorrbb
@@ -7934,8 +7934,6 @@ PARDO j, i, i1, j1
      ecorrD -= ecorrbb
 
      ecorrT += ecorrab
-     execute print_scalar ecorrT
-
 
       esuma   = 0.0
       esumb   = 0.0
@@ -7958,10 +7956,10 @@ PARDO j, i, i1, j1
      execute server_barrier 
 
      collective ecorraa += esuma
-     execute print_scalar ecorraa
+#     execute print_scalar ecorraa
 
      collective ecorrbb += esumb
-     execute print_scalar ecorrbb
+#     execute print_scalar ecorrbb
 
      ecorrT  = ecorraa 
      ecorrT += ecorrbb
@@ -7992,7 +7990,7 @@ PARDO j, i, i1, j1
             endif
          ENDDO kptr1
 
-         execute print_rel_info eight pinf
+#         execute print_rel_info eight pinf
       endif
      ENDPROC LOLDENERGY
 #
@@ -12828,7 +12826,7 @@ PARDO j, i, i1, j1
      CALL MOVEL1
      CALL MOVEL2
 
-
+      execute print_scalar ediff 
       IF ecorrT < eold
             ediff = eold - ecorrT
             IF ediff < ecrit
@@ -12850,6 +12848,10 @@ PARDO j, i, i1, j1
 
       eold = ecorrT
       ENDDO kiter
+      totenerg  = ecorrT
+      execute print_scalar totenerg
+      execute print_rel_info ten pinf
+
       ENDPROC LMAIN 
 #_________________START---MAIN---Program_________________________   
 
@@ -12887,11 +12889,11 @@ PARDO j, i, i1, j1
        execute print_scalar property
 
        if property == 10.0
-#          call get_HBx_Dipole
+          call get_HBx_Dipole
        endif
 
        if property == 20.0
-          call get_HBx_Angmom
+#          call get_HBx_Angmom
        endif
 
        if property == 30.0
