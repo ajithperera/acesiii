@@ -514,6 +514,10 @@
       scalar eold 
       scalar ecrit 
       scalar ediff 
+      scalar enhfa 
+      scalar enhfb
+      scalar ecorrnha 
+      scalar ecorrnhb
       scalar mp2_energy
 #
 # Arrays/Scalars used exclusively in DIIS procedure. 
@@ -725,6 +729,7 @@
        scalar c9 
        scalar c10  
        scalar NONHF
+ 
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -2813,17 +2818,11 @@
       PROC WMEBJ 
 # 
            CALL WMEBJAA
-	   execute print_scalar one
            CALL WMEBJBB
-           execute print_scalar one
            CALL WMEBJAB
-           execute print_scalar one
            CALL WMEBJBA
-           execute print_scalar one
            CALL WMJBEAB
-           execute print_scalar one
            CALL WMJBEBA
-           execute print_scalar one
       ENDPROC WMEBJ 
 #
 # SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS 
@@ -2876,19 +2875,46 @@
 #
      ENDPARDO a, b, i, j 
 
+     IF NONHF == 1.0
+
+        enhfa    = 0.0
+        ecorrnha = 0.0
+        PARDO a, i
+           GET t1a_old(a,i)
+           GET Fme_a_ia(i,a)
+           etemp = t1a_old(a,i) * Fme_a_ia(i,a)
+           enhfa +=  etemp
+        ENDPARDO a, i
+
+        enhfb    = 0.0
+        ecorrnhb = 0.0
+        PARDO b, j
+           GET t1b_old(b,j)
+           GET Fme_b_ia(j,b)
+           etemp = t1b_old(b,j) * Fme_b_ia(j,b)
+           enhfb +=  etemp
+        ENDPARDO b, j
+     ENDIF 
+
      execute sip_barrier 
 
      collective ecorraa += esuma
-    #execute print_scalar ecorraa 
-#
      collective ecorrbb += esumb 
-    #execute print_scalar ecorrbb 
-#
      collective ecorrab += esumab
-    #execute print_scalar ecorrab 
+
+     IF NONHF == 1.0
+        collective ecorrnha += enhfa
+        collective ecorrnhb += enhfb
+     ENDIF 
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab 
+
+     IF NONHF == 1.0
+        ecorrT += ecorrnha
+        ecorrT += ecorrnhb
+     ENDIF
+
     #execute print_scalar ecorrT  
 
      if kiter > 0
