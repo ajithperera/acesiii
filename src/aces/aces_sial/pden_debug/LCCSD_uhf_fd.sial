@@ -14,8 +14,8 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL LCCSD_UHF
-#                          --------------
+                           SIAL LCCSD_UHF_FD
+#                          -----------------
 #
 #
 # Status of served update: mimimize prepare/request 
@@ -35,6 +35,7 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index   NPERT  = 1, 2
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -85,6 +86,20 @@
       distributed Fme_b(j,b) 
       distributed Fmi_a(i,i1) 
       distributed Fmi_b(j,j1) 
+
+      distributed t1a_1(a,i)
+      distributed t1b_1(b,j)
+
+      distributed t1a_2(a,i)
+      distributed t1b_2(b,j)
+
+      distributed HBx(mu,nu)
+      distributed HBa_ae_x(a,a1)
+      distributed HBb_ae_x(b,b1)
+      distributed HBa_me_x(i,a1)
+      distributed HBb_me_x(j,b1)
+      distributed HBb_mi_x(j,j1)
+      distributed HBa_mi_x(i,i1)
 
       distributed Fae_a_ab(a,a1) 
       distributed Fae_b_ab(b,b1) 
@@ -353,6 +368,12 @@
       temp t1xi(mu,i) 
       temp txj(mu,j) 
       temp t1xj(mu,j) 
+      temp Tix(i,nu)
+      temp tjx(j,mu)
+      temp  Txa(mu,a)
+      temp  Txb(mu,b)
+      temp Txx(mu,nu)
+
 #
 # Declare distributed arrays 
 # -------------------------- 
@@ -363,6 +384,14 @@
       served T2old_aa(a,i,a1,i1)
       served T2old_bb(b,j,b1,j1)
       served T2old_ab(a,i,b,j)
+
+      served T2aa_1(a,i,a1,i1)
+      served T2bb_1(b,j,b1,j1)
+      served T2ab_1(a,i,b,j)
+
+      served T2aa_2(a,i,a1,i1)
+      served T2bb_2(b,j,b1,j1)
+      served T2ab_2(a,i,b,j)
 #
       served Tau_aa(a,i,a1,i1)
       served Tau_bb(b,j,b1,j1)
@@ -506,6 +535,7 @@
       scalar esuma
       scalar esumb
       scalar esumab
+      scalar sum0
       scalar ecorraa
       scalar ecorrbb
       scalar ecorrab
@@ -518,6 +548,11 @@
       scalar enhfb
       scalar ecorrnha 
       scalar ecorrnhb
+      scalar enhf_fda
+      scalar enhf_fdb
+      scalar ecorrnh_fda
+      scalar ecorrnh_fdb
+      scalar FD
       scalar mp2_energy
 #
 # Arrays/Scalars used exclusively in DIIS procedure. 
@@ -728,7 +763,17 @@
        scalar c8 
        scalar c9 
        scalar c10  
+       scalar ICOUNT
+       scalar X_COMP
+       scalar Y_COMP
+       scalar Z_COMP
+       scalar FD_SCALE
+       scalar SCALE
+       scalar sum
+       scalar tmp
+       scalar rank
        scalar NONHF
+       scalar property
  
 #
 #    ------------------------------------------------------------------------ 
@@ -827,22 +872,22 @@
            PREPARE D0aibj(a,i,b,j) = Taibj(a,i,b,j)  
 #
      ENDPARDO a, b, i, j 
-#
+
      PARDO a, i
-#
-           tai(a,i) = 0.0
+           get HBa_me_x(i,a)
+           tai(a,i) = HBa_me_x(i,a)
+           execute energy_denominator tai
            PUT t1a_old(a,i) = tai(a,i)
            PUT D0ai(a,i) = tai(a,i)
-#
      ENDPARDO a, i
-#
      PARDO b, j
-#
-           tbj(b,j) = 0.0
+           get HBb_me_x(j,b)
+           tbj(b,j) = HBb_me_x(j,b)
+           execute energy_denominator tbj
            PUT t1b_old(b,j) = tbj(b,j)
            PUT D0bj(b,j) = tbj(b,j)
-#
      ENDPARDO b, j
+#
 #
 #    ------------------------------------------------------------------------ 
 # 
@@ -920,15 +965,22 @@
       PROC FAEA
 #     ----------
 #
+      IF NONHF == 1.0
       DO a
       DO a1
          GET  Fae_a_ab(a,a1) 
          Taa(a,a1) = Fae_a_ab(a,a1)  
-
          PUT Fae_a(a,a1) = Taa(a,a1)
       ENDDO a1
       ENDDO a 
-#
+      ENDIF 
+
+      PARDO a,a1
+           get HBa_ae_x(a,a1)
+           taa(a,a1)         = HBa_ae_x(a,a1)
+           put Fae_a(a,a1)  += Taa(a,a1)
+      ENDPARDO a, a1
+
       ENDPROC FAEA
 #     -------------
 #
@@ -936,6 +988,7 @@
 #
       PROC FAEB
 #     ----------
+      IF NONHF == 1.0
       DO b
       DO b1
          GET  Fae_b_ab(b,b1)
@@ -943,6 +996,13 @@
          PUT Fae_b(b,b1) = Tbb(b,b1)
       ENDDO b1
       ENDDO b
+      ENDIF 
+
+     PARDO b,b1
+           get HBb_ae_x(b,b1)
+           tbb(b,b1)        = HBb_ae_x(b,b1)
+           put Fae_b(b,b1) += tbb(b,b1)
+      ENDPARDO b, b1
 
       ENDPROC FAEB
 #     -------------
@@ -960,6 +1020,7 @@
 #
       PROC FMEA
 #     ----------
+      IF NONHF == 1.0
       DO i
       DO a
          GET Fme_a_ia(i,a)
@@ -967,6 +1028,13 @@
          PUT Fme_a(i,a) = Tme_a(i,a)
       ENDDO a
       ENDDO i
+      ENDIF 
+
+      PARDO i,a
+          get HBa_me_x(i,a)
+          Tia(i,a)        =  HBa_me_x(i,a)
+          put Fme_a(i,a) +=Tia(i,a)
+      ENDPARDO i,a
 #
       ENDPROC FMEA
 #     -------------
@@ -975,6 +1043,7 @@
 #
       PROC FMEB
 #     ----------
+      IF NONHF == 1.0
       DO j
       DO b
          GET Fme_b_ia(j,b)
@@ -982,6 +1051,13 @@
          PUT Fme_b(j,b) = Tme_b(j,b)
       ENDDO b
       ENDDO j
+      ENDIF 
+
+      PARDO j,b
+          get HBb_me_x(j,b)
+          Tjb(j,b)        = HBb_me_x(j,b)
+          put Fme_b(j,b) +=Tjb(j,b)
+      ENDPARDO j,b
 
       ENDPROC FMEB
 #     -------------
@@ -999,13 +1075,21 @@
 #
       PROC FMIA
 #     ----------
+      IF NONHF == 1.0
       DO i
       DO i1
          GET Fmi_a_ij(i,i1)
          Tii(i,i1) = Fmi_a_ij(i,i1)
-         PUT Fmi_a_ij(i,i1) = Tii(i,i1)
+         PUT Fmi_a(i,i1) = Tii(i,i1)
       ENDDO i1
       ENDDO i
+      ENDIF 
+
+      PARDO i1,i
+            get HBa_mi_x(i1,i)
+            Tii(i1,i)        = HBa_mi_x(i1,i)
+            put Fmi_a(i1,i) += Tii(i1,i)
+      ENDPARDO i1,i
 
       ENDPROC FMIA
 #     -------------
@@ -1014,14 +1098,21 @@
 #
       PROC FMIB
 #     ----------
+      IF NONHF == 1.0
       DO j
       DO j1
          GET Fmi_b_ij(j,j1)
          Tjj(j,j1) = Fmi_b_ij(j,j1)
-        
-         PUT Fmi_b_ij(j,j1) = Tjj(j,j1)
+         PUT Fmi_b(j,j1) = Tjj(j,j1)
       ENDDO j1
       ENDDO j
+      ENDIF 
+
+      PARDO j1,j
+            get HBb_mi_x(j1,j)
+            tjj(j1,j)        = HBb_mi_x(j1,j)
+            put Fmi_b(j1,j) += Tjj(j1,j)
+      ENDPARDO j1,j
 
       ENDPROC FMIB
 #     -------------
@@ -1059,6 +1150,9 @@
                GET Fmi_a(i1,i) 
 #
                t1ai(a,i) = t1a_old(a,i1)*Fmi_a(i1,i)
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) -= t1ai(a,i) 
 #
             ENDDO i1  
@@ -1072,9 +1166,15 @@
                GET t1b_old(b,j) 
 #
                t1ai(a,i) = T2old_ab(a,i,b,j)*Fme_b(j,b) 
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i) 
 #
                t2ai(a,i)  = Viabj(i,a,b,j)*t1b_old(b,j) 
+#bgn_debug
+#               t2ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t2ai(a,i) 
 #
             ENDDO j 
@@ -1086,6 +1186,9 @@
                GET Fae_a(a,a1) 
 #
                t1ai(a,i) = t1a_old(a1,i)*Fae_a(a,a1) 
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i) 
 #
                DO i1 
@@ -1097,18 +1200,29 @@
                   GET t1a_old(a1,i1) 
 #
                   t1ai(a,i) = T2old_aa(a,i,a1,i1)*Fme_a(i1,a1)
+#bgn_debug
+#                  t1ai(a,i) *= 1.0
+#end_debug
+
                   tai(a,i) += t1ai(a,i) 
 #
                   Tpppp(i1,a1,a,i)  = Vaaii(a,a1,i1,i)  
                   Tpppp(i1,a1,a,i) -= Viaai(i1,a1,a,i)  
 #
                   t2ai(a,i) = Tpppp(i1,a1,a,i)*t1a_old(a1,i1) 
+#bgn_debug
+#                  t2ai(a,i) *= 1.0
+#end_debug
+
                   tai(a,i) -= t2ai(a,i) 
 #
                ENDDO i1 
 #
             ENDDO a1 
 #
+#bgn_debug
+#               t1a_new(a,i) *= 1.0
+#end_debug
             PUT t1a_new(a,i) += tai(a,i) 
 #
       ENDPARDO a, i 
@@ -1231,7 +1345,27 @@
             deallocate L1iibj(*,i1,b,j) 
 #
       ENDPARDO b, j, i1  
-#
+
+      PARDO a, i
+           get HBa_me_x(i,a)
+           tai(a,i)            = HBa_me_x(i,a)
+           PUT t1a_new(a,i) += tai(a,i)
+      ENDPARDO a, i
+#bgn_debug
+     execute sip_barrier
+     if rank == 0.0
+     sum=0.0
+     do a
+     do i
+        get t1a_new(a,i)
+        tmp = t1a_new(a,i)*t1a_new(a,i)
+        sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum
+     endif 
+#end_debug
+
       ENDPROC T1ANEW 
 #     --------------
 #
@@ -1261,6 +1395,10 @@
                GET Fmi_b(j1,j) 
 #
                t1bj(b,j) = t1b_old(b,j1)*Fmi_b(j1,j)
+#bgn_debug
+#               tbj(b,j) *= 1.0
+#bgn_debug
+
                tbj(b,j) -= t1bj(b,j) 
 #
             ENDDO j1  
@@ -1274,22 +1412,34 @@
                GET t1a_old(a,i) 
 #
                t1bj(b,j) = T2old_ab(a,i,b,j)*Fme_a(i,a) 
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#bgn_debug
+
                tbj(b,j) += t1bj(b,j) 
 #
                t2bj(b,j)  = Viabj(i,a,b,j)*t1a_old(a,i) 
+#bgn_debug
+#               t2bj(b,j) *= 1.0
+#bgn_debug
+
                tbj(b,j) += t2bj(b,j) 
 #
             ENDDO i 
             ENDDO a 
-# 
+
             DO b1 
 #
                GET t1b_old(b1,j) 
                GET Fae_b(b,b1) 
 #
                t1bj(b,j) = t1b_old(b1,j)*Fae_b(b,b1) 
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#bgn_debug
+
                tbj(b,j) += t1bj(b,j) 
-#
+
                DO j1 
 #
                   REQUEST T2old_bb(b,j,b1,j1) j1  
@@ -1299,18 +1449,28 @@
                   GET t1b_old(b1,j1) 
 #
                   t1bj(b,j) = T2old_bb(b,j,b1,j1)*Fme_b(j1,b1)
+#bgn_debug
+#                  t1bj(b,j) *= 1.0
+#bgn_debug
+
                   tbj(b,j) += t1bj(b,j) 
 #
                   Tqqqq(j1,b1,b,j)  = Vbbjj(b,b1,j1,j)  
                   Tqqqq(j1,b1,b,j) -= Vjbbj(j1,b1,b,j)  
 #
                   t2bj(b,j) = Tqqqq(j1,b1,b,j)*t1b_old(b1,j1) 
+#bgn_debug
+#                  t2bj(b,j) *= 1.0
+#bgn_debug
+
                   tbj(b,j) -= t2bj(b,j) 
 #
                ENDDO j1 
 #
             ENDDO b1 
-#
+#bgn_debug
+#                t1b_new(b,j) *= 1.0
+#end_debug
             PUT t1b_new(b,j) += tbj(b,j) 
 #
       ENDPARDO b, j 
@@ -1433,7 +1593,27 @@
             deallocate Ljjai(a,i,*,j1)  
 #
       ENDPARDO a, i, j1  
-#
+
+      PARDO b, j
+           get HBb_me_x(j,b)
+           tbj(b,j)            = HBb_me_x(j,b)
+           PUT t1b_new(b,j) += tbj(b,j)
+      ENDPARDO b, j
+#bgn_debug
+     execute sip_barrier
+     if rank == 0.0
+     sum=0.0
+     do b
+     do j
+        get t1b_new(b,j)
+        tmp = t1b_new(b,j)*t1b_new(b,j)
+        sum += tmp
+     enddo j
+     enddo b
+     execute print_scalar sum
+     endif 
+#end_debug
+
       ENDPROC T1BNEW 
 #     --------------
 #
@@ -1909,7 +2089,7 @@
                   Taibj(a,i,b,j) += T1aibj(a,i,b,j)
 #
                ENDDO b1
-#
+
                PREPARE T2NEW_AB(a,i,b,j) += Taibj(a,i,b,j)  
 #
             ENDDO b 
@@ -2900,26 +3080,49 @@
         ENDPARDO b, j
      ENDIF 
 
-     execute sip_barrier 
+     IF FD == 1.0
+        enhf_fda    = 0.0
+        ecorrnh_fda = 0.0
+        PARDO a, i
+           GET t1a_old(a,i)
+           GET HBa_me_x(i,a)
+           etemp = t1a_old(a,i) *HBa_me_x(i,a)
+           enhf_fda +=  etemp
+        ENDPARDO a, i
+
+        enhf_fdb    = 0.0
+        ecorrnh_fdb = 0.0
+        PARDO b, j
+           GET t1b_old(b,j)
+           GET HBb_me_x(j,b)
+           etemp = t1b_old(b,j) * HBb_me_x(j,b)
+           enhf_fdb +=  etemp
+        ENDPARDO b, j
+      ENDIF
+     execute server_barrier
 
      collective ecorraa += esuma
      collective ecorrbb += esumb 
      collective ecorrab += esumab
 
-     IF NONHF == 1.0
-        collective ecorrnha += enhfa
-        collective ecorrnhb += enhfb
+     IF NONHF ==1.0
+     collective ecorrnha += enhfa
+     collective ecorrnhb += enhfb
+     ENDIF 
+
+     IF FD == 1.0
+     collective ecorrnh_fda += enhf_fda
+     collective ecorrnh_fdb += enhf_fdb
      ENDIF 
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab 
+     ecorrT += ecorrnha
+     ecorrT += ecorrnhb
+     ecorrT += ecorrnh_fda
+     ecorrT += ecorrnh_fdb
 
-     IF NONHF == 1.0
-        ecorrT += ecorrnha
-        ecorrT += ecorrnhb
-     ENDIF
-
-    #execute print_scalar ecorrT  
+    execute print_scalar ecorrT  
 
      if kiter > 0
             ncount1 = 0.0
@@ -5983,11 +6186,376 @@
 #
      ENDPROC MOVE4
 #    -------------
+
+     PROC get_FD_P_DIPOLE
+#    --------------------
+
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+
+              Txx(mu,nu) = 0.0
+
+              IF X_COMP == 9.0
+                 EXECUTE return_x Txx
+              ENDIF
+
+              IF Y_COMP == 9.0
+                 EXECUTE return_y Txx
+              ENDIF
+
+              IF Z_COMP == 9.0
+                 EXECUTE return_z Txx
+              ENDIF
+
+              TXX(mu,nu) *= FD_SCALE
+
+              PUT  HBx(mu,nu) = Txx(mu,nu)
+         ENDPARDO mu,nu
+
+     execute sip_barrier
+#bgn_debug
+#     execute  get_my_rank rank
+#     if rank == 0.0
+#      sum = 0.0
+#     do mu
+#     do nu
+#        get hbx(mu,nu)
+#        execute dump_amp Hbx(mu,nu)
+#        tmp = hbx(mu,nu)*hbx(mu,nu)
+#        sum += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar fd_scale
+#     execute print_scalar sum
+#     endif
+#end_debug
+
+     ENDPROC get_FD_P_DIPOLE
+#    -----------------------
+     PROC get_FD_P_ANGMOM
+#    --------------------
+
+         CREATE HBx
+         execute sip_barrier
+
+         PARDO mu, nu
+             Txx(mu,nu) = 0.0
+
+             IF X_COMP == 9.0
+                EXECUTE compute_angmom_xbatch Txx(mu,nu)
+             ENDIF
+
+             IF Y_COMP == 9.0
+                EXECUTE compute_angmom_ybatch Txx(mu,nu)
+             ENDIF
+
+             IF Z_COMP == 9.0
+                EXECUTE compute_angmom_zbatch Txx(mu,nu)
+             ENDIF
+
+             TXX(mu,nu) *= FD_SCALE
+
+             PUT  HBx(mu,nu) = Txx(mu,nu)
+         ENDPARDO mu,nu
+         execute sip_barrier
+#bgn_debug
+#     execute  get_my_rank rank
+#     if rank == 0.0
+#      sum = 0.0
+#     do mu
+#     do nu
+#        get hbx(mu,nu)
+#        execute dump_amp Hbx(mu,nu)
+#        tmp = hbx(mu,nu)*hbx(mu,nu)
+#        sum += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar fd_scale
+#     execute print_scalar sum
+#     endif
+#end_debug
+
+     ENDPROC get_FD_P_ANGMOM
+#    -----------------------
+    PROC GET_HBXYZ_Spin_orbit
+#   -------------------------
+           CREATE HBX
+           execute sip_barrier
+
+           PARDO mu, nu
+              IF X_COMP == 9.0
+                 EXECUTE compute_1soi_xbatch Txx(mu,nu)
+              ENDIF
+              IF Y_COMP == 9.0
+                 EXECUTE compute_1soi_ybatch Txx(mu,nu)
+              ENDIF
+              IF Z_COMP == 9.0
+                 EXECUTE compute_1soi_zbatch Txx(mu,nu)
+              ENDIF
+
+             TXX(mu,nu) *= FD_SCALE
+
+             PUT  HBx(mu,nu) = Txx(mu,nu)
+
+         ENDPARDO mu,nu
+
+         execute sip_barrier
 #
-# ---------------------------------------------------------------------------------
-#
-# ---------------------------------------------------------------------------------
-# 
+       ENDPROC get_HBXYZ_Spin_orbit
+#      --------------------------
+
+     PROC TRANS_2MO
+#    --------------
+       CREATE HBa_ae_x
+       CREATE HBa_me_x
+       CREATE HBa_mi_x
+       CREATE HBb_ae_x
+       CREATE HBb_me_x
+       CREATE HBb_mi_x
+       execute sip_barrier
+       PARDO i, i1
+             GET HBa_mi_x(i,i1)
+             Tii(i,i1) = 0.0
+             PUT  HBa_mi_x(i,i1) = Tii(i,i1)
+       ENDPARDO i, i1
+
+       PARDO a, a1
+             GET HBa_ae_x(a,a1)
+             Taa(a,a1) = 0.0
+             PUT  HBa_ae_x(a,a1)  = Taa(a,a1)
+       ENDPARDO a, a1
+
+       PARDO a, i
+             GET HBa_me_x(i,a)
+             Tia(i,a) = 0.0
+             PUT  HBa_me_x(i,a)  = Tia(i,a)
+       ENDPARDO a, i
+
+       PARDO j, j1
+             GET HBb_mi_x(j,j1)
+             Tjj(j,j1) = 0.0
+             PUT  HBb_mi_x(j,j1) = Tjj(j,j1)
+       ENDPARDO j, j1
+
+       PARDO b, b1
+             GET HBb_ae_x(b,b1)
+             Tbb(b,b1) = 0.0
+             PUT  HBb_ae_x(b,b1)  = Tbb(b,b1)
+       ENDPARDO b, b1
+
+       PARDO b, j
+             GET HBb_me_x(j,b)
+             Tjb(j,b) = 0.0
+             PUT  HBb_me_x(j,b)  = Tjb(j,b)
+       ENDPARDO b, j
+
+       execute sip_barrier
+# ALPHA
+       PARDO mu,nu
+            get HBx(mu,nu)
+            do i
+                Tix(i,nu) = HBx(mu,nu)*CA(mu,i)
+                do i1
+                   Tii(i,i1) = Tix(i,nu)*CA(nu,i1)
+                   PUT HBa_mi_x(i,i1) += Tii(i,i1)
+                enddo i1
+           enddo i
+        ENDPARDO mu,nu
+#.................................
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do i
+                Tix(i,nu) = HBx(mu,nu)*CA(mu,i)
+                do a
+                   Tia(i,a)  = Tix(i,nu)*CA(nu,a)
+                    PUT HBa_me_x(i,a) += Tia(i,a)
+                enddo a
+            enddo i
+        ENDPARDO mu,nu
+#..............................................
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do a
+               Txa(mu,a) = HBx(mu,nu)*ca(nu,a)
+                do a1
+                   Taa(a1,a)  = Txa(mu,a)*CA(mu,a1)
+                   PUT HBa_ae_x(a1,a) += Taa(a1,a)
+               enddo a1
+            enddo a
+        ENDPARDO mu,nu
+# BETA
+        PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do j1
+                   Tjj(j,j1) = Tjx(j,nu)*CB(nu,j1)
+                   PUT HBb_mi_x(j,j1) += Tjj(j,j1)
+                enddo j1
+            enddo j
+         ENDPARDO mu,nu
+#..................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+            do j
+                Tjx(j,nu) = HBx(mu,nu)*CB(mu,j)
+                do b
+                   Tjb(j,b)  = Tjx(j,nu)*CB(nu,b)
+                   PUT HBb_me_x(j,b) += Tjb(j,b)
+                enddo b
+             enddo j
+         ENDPARDO mu,nu
+#.....................................
+          PARDO mu,nu
+            get HBx(mu,nu)
+             do b
+                Txb(mu,b) = HBx(mu,nu)*CB(nu,b)
+               do b1
+                   Tbb(b1,b)  = Txb(mu,b)*CB(mu,b1)
+                   PUT HBb_ae_x(b1,b) += Tbb(b1,b)
+                enddo b1
+             enddo b
+         ENDPARDO mu,nu
+         execute sip_barrier
+
+#bgn_debug
+      sum0 = 0.0
+      do a
+      do i
+         get HBa_me_x(i,a)
+         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
+         sum0 +=tmp
+      enddo i
+      enddo a
+      execute print_scalar sum0
+      sum0 = 0.0
+      do b
+      do j
+         get  HBb_me_x(j,b)
+         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
+         sum0 +=tmp
+      enddo j
+      enddo b
+      execute print_scalar sum0
+      sum0 = 0.0
+      do i
+      do i1
+          GET HBa_mi_x(i,i1)
+          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
+          sum0 +=tmp
+      enddo i1
+      enddo i
+      execute print_scalar sum0
+      sum0 = 0.0
+      do j
+      do j1
+          GET HBb_mi_x(j,j1)
+          tmp = HBb_mi_x(j,j1) * HBb_mi_x(j,j1)
+          sum0 +=tmp
+      enddo j1
+      enddo j
+      execute print_scalar sum0
+      sum0 = 0.0
+      do a
+      do a1
+         GET HBa_ae_x(a,a1)
+         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
+         sum0 +=tmp
+      enddo a1
+      enddo a
+      execute print_scalar sum0
+      sum0 = 0.0
+      do b
+      do b1
+         GET HBb_ae_x(b,b1)
+         tmp =  HBb_ae_x(b,b1) *  HBb_ae_x(b,b1)
+         sum0 +=tmp
+      enddo b1
+      enddo b
+      execute print_scalar sum0
+#end_debug
+
+     ENDPROC TRANS_2MO
+#    ----------------
+
+     PROC PUT_FD_T1
+#    --------------
+
+         PARDO A, I
+            Get t1a_old(a,i)
+            Tai(a,i) = t1a_old(a,i)
+            PUT T1a_1(a,i) = Tai(a,i)
+         ENDPARDO A, I
+
+         PARDO B, J
+            Get t1b_old(b,j)
+            Tbj(b,j) = t1b_old(b,j)
+            PUT T1b_1(b,j) = Tbj(b,j)
+         ENDPARDO B, J
+
+         PARDO a, a1, i, i1
+           REQUEST T2old_aa(a,i,a1,i1) i1
+           Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+           PREPARE T2aa_1(a,i,a1,i1) = Taiai(a,i,a1,i1)
+         ENDPARDO a, a1, i, i1
+
+         PARDO b, b1, j, j1
+           REQUEST T2old_bb(b,j,b1,j1) j1
+           Tbjbj(b,j,b1,j1) = T2old_bb(b,j,b1,j1)
+           PREPARE T2bb_1(b,j,b1,j1) = Tbjbj(b,j,b1,j1)
+         ENDPARDO b, b1, j, j1
+
+         PARDO a, b, i, j
+           REQUEST T2old_ab(a,i,b,j) j
+           Taibj(a,i,b,j) = T2old_ab(a,i,b,j)
+           PREPARE T2ab_1(a,i,b,j) = Taibj(a,i,b,j)
+         ENDPARDO a, b, i, j
+
+        execute server_barrier
+
+     ENDPROC PUT_FD_T1
+#    -----------------
+     PROC PUT_FD_T2
+#    --------------
+
+         PARDO A, I
+            Get t1a_old(a,i)
+            Tai(a,i) = t1a_old(a,i)
+            PUT T1a_2(a,i) = Tai(a,i)
+         ENDPARDO A, I
+
+         PARDO B, J
+            Get t1b_old(b,j)
+            Tbj(b,j) = t1b_old(b,j)
+            PUT T1b_2(b,j) = Tbj(b,j)
+         ENDPARDO B, J
+
+         PARDO a, a1, i, i1
+           REQUEST T2old_aa(a,i,a1,i1) i1
+           Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+           PREPARE T2aa_2(a,i,a1,i1) = Taiai(a,i,a1,i1)
+         ENDPARDO a, a1, i, i1
+
+         PARDO b, b1, j, j1
+           REQUEST T2old_bb(b,j,b1,j1) j1
+           Tbjbj(b,j,b1,j1) = T2old_bb(b,j,b1,j1)
+           PREPARE T2bb_2(b,j,b1,j1) = Tbjbj(b,j,b1,j1)
+         ENDPARDO b, b1, j, j1
+
+         PARDO a, b, i, j
+           REQUEST T2old_ab(a,i,b,j) j
+           Taibj(a,i,b,j) = T2old_ab(a,i,b,j)
+           PREPARE T2ab_2(a,i,b,j) = Taibj(a,i,b,j)
+         ENDPARDO a, b, i, j
+
+        execute server_barrier
+
+     ENDPROC PUT_FD_T2
+#    -----------------
+
+
 # BEGIN MAIN PROGRAM 
 # ------------------ 
 #
@@ -5998,6 +6566,9 @@
       six   = 6.0
       seven = 7.0
       NONHF = 0.0
+      FD    = 1.0
+      property = 10.0
+      execute get_my_rank rank
 #
 # Read transformed integrals from lists 
 # ------------------------------------- 
@@ -6036,6 +6607,53 @@
       CREATE e5bj
 #
       EXECUTE SIP_BARRIER  
+# Start iterations
+# ----------------
+      ICOUNT = 0.0
+      X_COMP = 0.0
+      Y_COMP = 0.0
+      Z_COMP = 0.0
+
+      SCALE = 0.000001
+      CREATE T1A_1
+      CREATE T1B_1
+
+      CREATE T1A_2
+      CREATE T1B_2
+      execute sip_barrier
+
+      DO NPERT
+
+         ICOUNT += 1.0
+
+         execute print_scalar icount
+
+         IF ICOUNT == 1.0
+            FD_SCALE = 100.0
+            FD_SCALE *= SCALE
+            X_COMP = 9.0
+            IF PROPERTY == 10.0
+               CALL GET_FD_P_DIPOLE
+            ENDIF
+            IF PROPERTY == 20.0
+               CALL GET_FD_P_ANGMOM
+            ENDIF
+            CALL TRANS_2MO
+         ENDIF
+
+         IF ICOUNT == 2.0
+            FD_SCALE  = 100.0
+            FD_SCALE *= SCALE
+            FD_SCALE *= -1.0
+            X_COMP = 9.0
+            IF PROPERTY == 10.0
+               CALL GET_FD_P_DIPOLE
+            ENDIF
+            IF PROPERTY == 20.0
+               CALL GET_FD_P_ANGMOM
+            ENDIF
+            CALL TRANS_2MO
+         ENDIF
 #
 # Get initial second-order guess 
 # ------------------------------ 
@@ -6124,12 +6742,10 @@
 # For linear CC methods, all there F intermidiates are zeor for HF 
 # methods
 
-         IF NONHF == 1.0
             CALL FAE 
             CALL FMI 
             CALL FME 
             EXECUTE SIP_BARRIER 
-         ENDIF 
 #
 #        Calculate new one-particle amplitudes 
 #        ------------------------------------- 
@@ -6147,9 +6763,6 @@
          CALL T2NEWBB  
          CALL T2NEWAB  
 
-         EXECUTE SIP_BARRIER   
-         EXECUTE SERVER_BARRIER   
-#
          CALL WMINJ 
          CALL AOLADDER 
          CALL WMEBJ 
@@ -6226,6 +6839,7 @@
 #        Check on convergence 
 #        -------------------- 
 #
+         execute print_scalar ediff 
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
@@ -6251,6 +6865,26 @@
       totenerg += scfeneg  
      #execute print_scalar totenerg  
       execute print_rel_info seven pinf
+      IF ICOUNT == 1.0
+         CALL PUT_FD_T1
+      ENDIF
+
+      IF ICOUNT == 2.0
+         CALL PUT_FD_T2
+      ENDIF
+
+      DELETE HBa_ae_x
+      DELETE HBa_me_x
+      DELETE HBa_mi_x
+      DELETE HBb_ae_x
+      DELETE HBb_me_x
+      DELETE HBb_mi_x
+
+      DELETE HBX
+
+      ENDDO NPERT
+
+
 #
 # Write amplitudes to file
 # ------------------------
@@ -6315,14 +6949,21 @@
       CALL WRITE_2EL   
 #
       execute sip_barrier
-      execute blocks_to_list                t1a_old
-      execute blocks_to_list                t1b_old
-      execute blocks_to_list                T2old_aa
-      execute blocks_to_list                T2old_ab
-      execute blocks_to_list                T2old_bb
+      execute blocks_to_list                t1a_1
+      execute blocks_to_list                t1b_1
+      execute blocks_to_list                T2aa_1
+      execute blocks_to_list                T2ab_1
+      execute blocks_to_list                T2bb_1
+
+      execute blocks_to_list                t1a_2
+      execute blocks_to_list                t1b_2
+      execute blocks_to_list                T2aa_2
+      execute blocks_to_list                T2ab_2
+      execute blocks_to_list                T2bb_2
+
       execute write_blocks_to_list
       execute sip_barrier
 #
-                        ENDSIAL LCCSD_UHF 
-#                       -----------------
+                        ENDSIAL LCCSD_UHF_FD
+#                       --------------------
 

@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL Txyz
+                           SIAL LCCSD_TXYZ
 #
 #
 # Status of served update: mimimize prepare/request 
@@ -37,7 +37,7 @@
 # For the moment limit the number of perturbation to 3 but in
 # can be arbitrary. 
 #
-      index   Npert   = 1, 3 
+      index   Npert   = 1, 1
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -93,13 +93,6 @@
 
      distributed t1a_new_x(a,i)
      distributed t1b_new_x(b,j)
-
-     distributed l1a_old(i,a)
-     distributed l1b_old(j,b)
-
-     served L2old_aa(i,a,i1,a1)
-     served L2old_bb(j,b,j1,b1)
-     served L2old_ab(i,a,j,b)
 
      distributed HBx(mu,nu)
 
@@ -462,7 +455,11 @@
       temp  Taijj(a,i,j,j1) 
       temp T1aijj(a,i,j,j1) 
       temp Tqqip(a,i,b,b1)  
-#
+
+      temp tiaia(i,a,i1,a1) 
+      temp tjbjb(j,b,j1,b)
+      temp tiajb(i,a,j1,b1)
+
       temp tpx(p,mu) 
       temp t1px(p,mu) 
       temp tqx(q,mu) 
@@ -864,6 +861,8 @@
        scalar sumb
        scalar sumaa
        scalar sumbb
+       scalar sumab
+       scalar sumab0
        scalar diff
        scalar X_COMP
        scalar Y_COMP
@@ -884,9 +883,6 @@
 
          CREATE HBx
          execute sip_barrier
-
-         one = 1.0
-         two = 2.0
 
          PARDO mu, nu
 
@@ -1211,21 +1207,14 @@
       execute list_to_blocks                T2old_ab
       execute list_to_blocks                T2old_bb
 
-
-      execute list_to_blocks  l1a_old
-      execute list_to_blocks  l1b_old
-      execute list_to_blocks L2old_aa
-      execute list_to_blocks L2old_ab
-      execute list_to_blocks L2old_bb
-
       execute read_list_to_blocks
       execute server_barrier
      ENDPROC READ_2EL   
-#_________________________________________________________________________________
+#___________________________________________________________________________
 #
      PROC WRITE_2EL   
 # 
-#    ------------------------------------------------------------------------ 
+#---------------------------------------------------------------------------
 #
       execute server_barrier
       execute blocks_to_list                VSpipi(p,i,p1,i1) 
@@ -1321,7 +1310,7 @@
 
             REQUEST T2old_aa(a,i,a1,i1) i1  
             tmp1_aiai(a,i,a1,i1)      = T2old_aa(a,i,a1,i1) 
-            PREPARE Tau_aa(a,i,a1,i1)  = tmp3_aiai(a,i,a1,i1)  
+            PREPARE Tau_aa(a,i,a1,i1)  = tmp1_aiai(a,i,a1,i1)  
             PREPARE Taup_aa(a,i,a1,i1) = tmp1_aiai(a,i,a1,i1)  
 
       ENDPARDO a, i, a1, i1 
@@ -1406,9 +1395,10 @@
       ENDDO a
 
       ENDPROC FAEA
-#    ------------------------------------------------------------------------ 
-      PROC FAEB
+#     ---------
 
+      PROC FAEB
+#     ---------
       DO b
       DO b1
          GET  Fae_b_ab(b,b1)
@@ -1419,10 +1409,12 @@
       ENDDO b
 
       ENDPROC FAEB
-#    ------------------------------------------------------------------------ 
+#    -------------
       PROC FAE
+         IF NONHF == 1.0
          CALL FAEA 
          CALL FAEB 
+         ENDIF 
       ENDPROC FAE
 #____________________________________________________________________________
     PROC FAEA_X
@@ -1436,8 +1428,10 @@
       ENDPARDO a, a1
 
       ENDPROC FAEA_X
+#     --------------
 
       PROC FAEB_X
+#     -----------
       PARDO b,b1
            get HBb_ae_x(b,b1)
            tbb(b,b1) = HBb_ae_x(b,b1)
@@ -1445,6 +1439,7 @@
       ENDPARDO b, b1
 
       ENDPROC FAEB_X
+#     ---------------
 
       PROC FAE_X
          CALL FAEA_X
@@ -1482,12 +1477,17 @@
       ENDPROC FMEB
 #    ------------------------------------------------------------------------ 
       PROC FME
+
+      IF NONHF == 1.0
          CALL FMEA
          CALL FMEB
+      ENDIF 
+
       ENDPROC FME
 #    ------------------------------------------------------------------------ 
 
      PROC FMEA_X
+#    -----------
 
       PARDO i,a
           get HBa_me_x(i,a)
@@ -1497,9 +1497,11 @@
 #end_debug
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
+
       ENDPROC FMEA_X
-#............................................................................
+#     --------------
       PROC FMEB_X
+#     -----------
 
       PARDO j,b
           get HBb_me_x(j,b)
@@ -1509,8 +1511,9 @@
 #end_debug
           put Fme_b_x(j,b) +=Tjb(j,b)
       ENDPARDO j,b
+
       ENDPROC FMEB_X
-#...........................................................................
+#     ---------------
      PROC FME_X
          CALL FMEA_X
          CALL FMEB_X
@@ -1523,7 +1526,7 @@
          GET Fmi_a_ij(i,i1)
          Tii(i,i1) = Fmi_a_ij(i,i1)
 
-         PUT Fmi_a_ij(i,i1) = Tii(i,i1)
+         PUT Fmi_a(i,i1) = Tii(i,i1)
       ENDDO i1
       ENDDO i
 
@@ -1534,19 +1537,23 @@
       DO j1
          GET Fmi_b_ij(j,j1)
          Tjj(j,j1) = Fmi_b_ij(j,j1)
-
-         PUT Fmi_b_ij(j,j1) = Tjj(j,j1)
+         Tjj(j,j1) *= 0.0
+         PUT Fmi_b(j,j1) = Tjj(j,j1)
       ENDDO j1
       ENDDO j
 
       ENDPROC FMIB
 #    ------------------------------------------------------------------------ 
       PROC FMI 
+      IF NONHF == 1.0
          CALL FMIA 
          CALL FMIB 
+      ENDIF 
       ENDPROC FMI 
 #______________________________________________________________________________
+ 
      PROC FMIA_X
+#    -----------
 
       PARDO i1,i                                                 
             get HBa_mi_x(i1,i)                                    
@@ -1569,8 +1576,10 @@
 #end_debug
 
       ENDPROC FMIA_X
-#..........................................................................
+#     --------------
+
       PROC FMIB_X
+#     -----------
 
        PARDO j1,j                                                  
             get HBb_mi_x(j1,j)                                       
@@ -1579,6 +1588,7 @@
       ENDPARDO j1,j                                                    
 
       ENDPROC FMIB_X
+#     ---------------
 #.............................................................................
       PROC FMI_X
          CALL FMIA_X
@@ -1592,6 +1602,9 @@
                GET t1a_old_x(a,i1) 
                GET Fmi_a(i1,i) 
                t1ai(a,i) = t1a_old_x(a,i1)*Fmi_a(i1,i)
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) -= t1ai(a,i) 
             ENDDO i1  
             DO b 
@@ -1601,8 +1614,14 @@
                GET Fme_b(j,b) 
                GET t1b_old_x(b,j) 
                t1ai(a,i) = T2old_ab_x(a,i,b,j)*Fme_b(j,b) 
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i) 
                t2ai(a,i)  = Viabj(i,a,b,j)*t1b_old_x(b,j) 
+#bgn_debug
+#               t2ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t2ai(a,i) 
             ENDDO j 
             ENDDO b 
@@ -1610,6 +1629,9 @@
                GET t1a_old_x(a1,i) 
                GET Fae_a(a,a1) 
                t1ai(a,i) = t1a_old_x(a1,i)*Fae_a(a,a1) 
+#bgn_debug
+#               t1ai(a,i) *= 1.0
+#end_debug
                tai(a,i) += t1ai(a,i) 
                DO i1 
                   REQUEST T2old_aa_x(a,i,a1,i1) i1  
@@ -1618,13 +1640,23 @@
                   GET Fme_a(i1,a1) 
                   GET t1a_old_x(a1,i1) 
                   t1ai(a,i) = T2old_aa_x(a,i,a1,i1)*Fme_a(i1,a1)
+#bgn_debug
+#            t1ai(a,i) *= 1.0
+#end_debug
                   tai(a,i) += t1ai(a,i) 
                   Tpppp(i1,a1,a,i)  = Vaaii(a,a1,i1,i)  
                   Tpppp(i1,a1,a,i) -= Viaai(i1,a1,a,i)  
+
                   t2ai(a,i) = Tpppp(i1,a1,a,i)*t1a_old_x(a1,i1) 
+#bgn_debug
+#                t2ai(a,i) *= 1.0
+#end_debug
                   tai(a,i) -= t2ai(a,i) 
                ENDDO i1 
             ENDDO a1 
+#bgn_debug
+#            tai(a,i) *= 1.0
+#end_debug
             PUT t1a_new_x(a,i) += tai(a,i) 
       ENDPARDO a, i 
 #......................look good up top
@@ -1710,7 +1742,7 @@
                GET Fmi_a_X(i1,i)
                t1ai(a,i) = t1a_old(a,i1)*Fmi_a_X(i1,i)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) -= t1ai(a,i)
 
@@ -1721,7 +1753,7 @@
                GET Fme_b_X(j,b)
                t1ai(a,i) = T2old_ab(a,i,b,j)*Fme_b_X(j,b)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) += t1ai(a,i)
             ENDDO j
@@ -1731,7 +1763,7 @@
                GET Fae_a_x(a,a1)
                t1ai(a,i) = t1a_old(a1,i)*Fae_a_X(a,a1)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) += t1ai(a,i)
 
@@ -1740,7 +1772,7 @@
                   GET Fme_a_X(i1,a1)
                   t1ai(a,i) = T2old_aa(a,i,a1,i1)*Fme_a_X(i1,a1)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                   tai(a,i) += t1ai(a,i)
                ENDDO i1
@@ -1805,6 +1837,9 @@
                GET t1b_old_x(b,j1) 
                GET Fmi_b(j1,j) 
                t1bj(b,j) = t1b_old_x(b,j1)*Fmi_b(j1,j)
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#bgn_debug
                tbj(b,j) -= t1bj(b,j) 
             ENDDO j1  
             DO a 
@@ -1814,8 +1849,14 @@
                GET Fme_a(i,a) 
                GET t1a_old_x(a,i) 
                t1bj(b,j) = T2old_ab_x(a,i,b,j)*Fme_a(i,a) 
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#bgn_debug
                tbj(b,j) += t1bj(b,j) 
                t2bj(b,j)  = Viabj(i,a,b,j)*t1a_old_x(a,i) 
+#bgn_debug
+               t2bj(b,j) *= 1.0
+#bgn_debug
                tbj(b,j) += t2bj(b,j) 
             ENDDO i 
             ENDDO a 
@@ -1823,6 +1864,10 @@
                GET t1b_old_x(b1,j) 
                GET Fae_b(b,b1) 
                t1bj(b,j) = t1b_old_x(b1,j)*Fae_b(b,b1) 
+
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#bgn_debug
                tbj(b,j) += t1bj(b,j) 
                DO j1 
                   REQUEST T2old_bb_x(b,j,b1,j1) j1  
@@ -1831,13 +1876,23 @@
                   GET Fme_b(j1,b1) 
                   GET t1b_old_x(b1,j1) 
                   t1bj(b,j) = T2old_bb_x(b,j,b1,j1)*Fme_b(j1,b1)
+
+#bgn_debug
+#                 t1bj(b,j) *= 1.0
+#end_debug 
                   tbj(b,j) += t1bj(b,j) 
                   Tqqqq(j1,b1,b,j)  = Vbbjj(b,b1,j1,j)  
                   Tqqqq(j1,b1,b,j) -= Vjbbj(j1,b1,b,j)  
                   t2bj(b,j) = Tqqqq(j1,b1,b,j)*t1b_old_x(b1,j1) 
+#bgn_debug
+#                  t2bj(b,j) *= 1.0
+#end_debug 
                   tbj(b,j) -= t2bj(b,j) 
                ENDDO j1 
             ENDDO b1 
+#bgn_debug
+#            tbj(b,j) *= 1.0
+#end_debug 
             PUT t1b_new_x(b,j) += tbj(b,j) 
       ENDPARDO b, j 
       PARDO b1, b2, j1   
@@ -1911,6 +1966,9 @@
                GET t1b_old(b,j1)
                GET Fmi_b_X(j1,j)
                t1bj(b,j) = t1b_old(b,j1)*Fmi_b_X(j1,j)
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#end_debug
                tbj(b,j) -= t1bj(b,j)
             ENDDO j1
             DO a
@@ -1918,6 +1976,9 @@
                REQUEST T2old_ab(a,i,b,j) j
                GET Fme_a_X(i,a)
                t1bj(b,j) = T2old_ab(a,i,b,j)*Fme_a_X(i,a)
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#end_debug
                tbj(b,j) += t1bj(b,j)
             ENDDO i
             ENDDO a
@@ -1925,11 +1986,18 @@
                GET t1b_old(b1,j)
                GET Fae_b_X(b,b1)
                t1bj(b,j) = t1b_old(b1,j)*Fae_b_X(b,b1)
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#end_debug
                tbj(b,j) += t1bj(b,j)
+
                DO j1
                   REQUEST T2old_bb(b,j,b1,j1) j1
                   GET Fme_b_X(j1,b1)
                   t1bj(b,j) = T2old_bb(b,j,b1,j1)*Fme_b_X(j1,b1)
+#bgn_debug
+#               t1bj(b,j) *= 1.0
+#end_debug
                   tbj(b,j) += t1bj(b,j)
                ENDDO j1
             ENDDO b1
@@ -1944,6 +2012,16 @@
            ENDIF 
            PUT t1b_new_x(b,j) += tbj(b,j)
      ENDPARDO b, j
+#bgn_debug
+       execute sip_barrier
+       sum = 0.0
+       PARDO b, j
+         get t1b_new_x(b,j)
+         tmp = t1b_new_x(b,j) * t1b_new_x(b,j)
+         sum += tmp
+       ENDPARDO b,j
+       execute print_scalar sum
+#end_debug
       ENDPROC T1BNEW 
 #_____________________________________________________________________________ 
       PROC WminjAA
@@ -1954,9 +2032,10 @@
             Tiiii(i2,i,i3,i1) = VSpipi(i2,i,i3,i1)
             PUT Wminj_aa(i2,i,i3,i1) += Tiiii(i2,i,i3,i1)
       ENDPARDO i, i1, i2, i3
-      delete Wminj_aa
+      execute sip_barrier
 
 # Update T2new
+
       PARDO i, i1, a, a1
             Taiai(a,i,a1,i1) = 0.0
             DO i2
@@ -1971,32 +2050,10 @@
             PREPARE T2new_aa_x(a,i,a1,i1) += Taiai(a,i,a1,i1)
       ENDPARDO i, i1, a, a1
       execute sip_barrier
+      delete Wminj_aa
 
-#...........X-component.........................
-      create Wminj_aa_x
-      execute sip_barrier
-      PARDO a, i3, i, i2
-               Tiiii(i2,i,i3,i1) = 0.0
-               PUT Wminj_aa_x(i2,i,i3,i1) += Tiiii(i2,i,i3,i1)
-      ENDPARDO a, i3, i, i2
+# WMINJ_x is zero for all three spin-cases.
 
-# Update T2new
-      PARDO i, i1, a, a1
-            Taiai(a,i,a1,i1) = 0.0
-            DO i2
-            DO i3
-               REQUEST Tau_aa(a,i2,a1,i3) i3
-               GET Wminj_aa_x(i2,i,i3,i1)
-               T1aiai(a,i,a1,i1) = Tau_aa(a,i2,a1,i3)*Wminj_aa_x(i2,i,i3,i1)
-               Taiai(a,i,a1,i1) += T1aiai(a,i,a1,i1)
-            ENDDO i3
-            ENDDO i2
-            Taiai(a,i,a1,i1)            *= 0.5
-            PREPARE T2new_aa_x(a,i,a1,i1) += Taiai(a,i,a1,i1)
-      ENDPARDO i, i1, a, a1
-      execute sip_barrier
-
-      delete Wminj_aa_x
       ENDPROC WminjAA
 #__________________________________________________________________
 
@@ -2010,7 +2067,7 @@
       ENDPARDO j, j1, j2, j3
       execute sip_barrier
 
-#UPdate T2BB-new
+# Update T2BB-new
 
       PARDO j, j1, b, b1
             Tbjbj(b,j,b1,j1) = 0.0
@@ -2028,31 +2085,6 @@
       execute sip_barrier
       delete Wminj_bb
 
-#..............X-componenet...........................................
-      create Wminj_bb_x
-      execute sip_barrier
-      PARDO j3,j,b,j2
-            Tjjjj(j2,j,j3,j1)  = 0.0
-            PUT Wminj_bb_x(j2,j,j3,j1) += Tjjjj(j2,j,j3,j1)
-      ENDPARDO j3,j,b,j2
-
-#UPdate T2BB-new
-      PARDO j, j1, b, b1
-            Tbjbj(b,j,b1,j1) = 0.0
-            DO j2
-            DO j3
-               REQUEST Tau_bb(b,j2,b1,j3) j3
-               GET Wminj_bb_x(j2,j,j3,j1)
-               T1bjbj(b,j,b1,j1) = Tau_bb(b,j2,b1,j3)*Wminj_bb_x(j2,j,j3,j1)
-               Tbjbj(b,j,b1,j1) += T1bjbj(b,j,b1,j1)
-            ENDDO j3
-            ENDDO j2
-            Tbjbj(b,j,b1,j1)            *= 0.5
-            PREPARE T2new_bb_x(b,j,b1,j1) += Tbjbj(b,j,b1,j1)
-      ENDPARDO j, j1, b, b1
-      execute sip_barrier
-
-      delete Wminj_bb_x
       ENDPROC WminjBB
 #____________________________________________________________________________
       PROC WminjAB
@@ -2082,34 +2114,6 @@
       execute sip_barrier
       delete Wminj_ab
 
-#............X-component...............................................
-      create Wminj_ab_x
-      execute sip_barrier
-      PARDO i,i1,b,j1
-         REQUEST Vpiqj(i,i1,b,j1) j1
-         DO j
-            Tiijj(i1,i,j1,j) = 0.0
-            PUT Wminj_ab_x(i1,i,j1,j) = Tiijj(i1,i,j1,j)
-         ENDDO j
-      ENDPARDO i,i1,b,j1
-      execute sip_barrier
-
-# UPDATE T2AB_NEW_X
-
-      PARDO i, j, a, b
-            Taibj(a,i,b,j) = 0.0
-            DO i1
-            DO j1
-               REQUEST Tau_ab(a,i1,b,j1) j1
-               GET     Wminj_ab_x(i1,i,j1,j)
-               T1aibj(a,i,b,j) = Tau_ab(a,i1,b,j1)*Wminj_ab_x(i1,i,j1,j)
-               Taibj(a,i,b,j) += T1aibj(a,i,b,j)
-            ENDDO j1
-            ENDDO i1
-            PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
-      ENDPARDO i, j, a, b
-      execute sip_barrier
-      delete Wminj_ab_x
       ENDPROC WminjAB
 #...............................................................................
       PROC WMINJ 
@@ -2757,8 +2761,6 @@
 #
      ENDPARDO lambda, i, j   
 #
-     create t1a_ax 
-     create t1b_bx 
      execute server_barrier   
 #
 #    Contract AOINT with half back transformed Amplitudes 
@@ -2898,7 +2900,6 @@
            ENDDO nu  
 #
            PREPARE T2new_bb_x(b,j,b1,j1) += T1bjbj(b,j,b1,j1) 
-           PREPARE T2new_bb_x(b1,j,b,j1) += T3bjbj(b1,j,b,j1) 
 #
      ENDPARDO b, b1, j, j1  
 #
@@ -2913,7 +2914,6 @@
               DO mu   
 #
                  REQUEST             T2AO_ab(mu,i,nu,j) j 
-                 GET                 t1a_ax(a,mu) 
                  Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
                  TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)   
 #
@@ -2993,7 +2993,6 @@
                TYbjbj(b1,j1,b,j) -= T1bjbj(b1,j1,b,j)  
                T1bjbj(b1,j1,b,j) = Vjbbj(j1,b1,b,j) 
                TYbjbj(b1,j1,b,j) += T1bjbj(b1,j1,b,j)
-               TYbjbj(b1,j1,b,j) += e5bjbjPV(b1,j1,b,j)  
                PREPARE TAUP_bb_pv(b1,j1,b,j) = TYbjbj(b1,j1,b,j) 
       ENDPARDO j, b, j1, b1
       execute server_barrier
@@ -3041,7 +3040,6 @@
 
                T1aibj(a,i,b,j)  = Viabj(i,a,b,j) 
                Taibj(a,i,b,j) += T1aibj(a,i,b,j)
-               Taibj(a,i,b,j) += e5aibjPV(a,i,b,j) 
                PREPARE TAUP_ab_pv(a,i,b,j) = Taibj(a,i,b,j) 
       ENDPARDO j, b, i, a
       execute server_barrier
@@ -3092,7 +3090,6 @@
 
                T1aibj(a,i,b,j) = Viabj(i,a,b,j) 
                Taibj(a,i,b,j) += T1aibj(a,i,b,j) 
-               Taibj(a,i,b,j) += e6aibj(a,i,b,j) 
                PREPARE TAUP_ab_pv(a,i,b,j) = Taibj(a,i,b,j) 
       ENDPARDO i, a, j, b
       execute server_barrier
@@ -3162,7 +3159,8 @@
       ENDPROC WMJBEAB
 #     ---------------
 
-      PROC WMJBEba
+      PROC WMJBEBA
+#     -------------
       PARDO a, j, a1, j1
             REQUEST Vaajj(a,a1,j1,j) j
             Tjjpp(j1,j,a,a1) = 0.
@@ -3194,7 +3192,7 @@
            CALL WMEBJBB
            CALL WMEBJAB
            CALL WMEBJBA
-           CALL WMJBEab
+           CALL WMJBEAB
            CALL WMJBEba 
       ENDPROC WMEBJ 
 #     -------------
@@ -3231,7 +3229,7 @@
      ecorrD   = ecorrbb
      ecorrD  -= ecorrbb
      
-     execute print_scalar ecorrD
+#     execute print_scalar ecorrD
 
      esuma   = 0.0 
      ecorraa = 0.0 
@@ -6256,27 +6254,6 @@
             Tbj(b,j) = t1b_old_x(b,j)
             PUT T1b_x(b,j) = Tbj(b,j)
          ENDPARDO B, J
-#bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do a
-      do i
-         get t1a_x(a,i)
-         tmp  =  t1a_x(a,i) * t1a_x(a,i)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do j
-         get t1b_x(b,j)
-         tmp  = t1b_x(b,j) * t1b_x(b,j)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-#end_debug
 
          PARDO a, a1, i, i1
            REQUEST T2old_aa_x(a,i,a1,i1) i1
@@ -6376,9 +6353,7 @@
 
      ENDPROC PUT_PERT_TZ
 #    -------------------
-
-#_________________________________________________________________________
-#                         BEGIN MAIN PROGRAM 
+#   BEGIN MAIN PROGRAM 
 #__________________________________________________________________________
 
       ecrit = cc_conv  
@@ -6387,6 +6362,7 @@
       five  = 5.0
       six   = 6.0
       seven = 7.0
+      NONHF = 0.0
 
 # Set the property type based on the input key-word
 
@@ -6410,10 +6386,6 @@
 
       create t1a_new_x
       create t1b_new_x
-
-      CREATE l1a_old
-      CREATE l1b_old
-
 
       CREATE D0ai
       CREATE D1ai
@@ -6452,9 +6424,16 @@
       CREATE Fmi_a
       CREATE Fmi_b
 
+      IF NONHF == 1.0
+         CREATE Fae_a_ab
+         CREATE Fae_b_ab
+         CREATE Fme_a_ia
+         CREATE Fme_b_ia
+         CREATE Fmi_a_ij
+         CREATE Fmi_b_ij
+      ENDIF
 
       EXECUTE SIP_BARRIER       # goood so far 
-
 
       CALL READ_2EL             # goood so far 
 
@@ -6633,6 +6612,63 @@
          EXECUTE SIP_BARRIER   
          EXECUTE SERVER_BARRIER   
 
+#debug_bgn
+#      suma  =0.0
+#      sumb  =0.0
+#      sumaa =0.0
+#      sumbb =0.0
+#      sumab =0.0
+#
+#      PARDO a,i
+#           GET t1a_old_x(a,i)
+#           sum  = T1a_old_x(a,i)*T1a_old_x(a,i)
+#           suma += etemp
+#     ENDPARDO a,i
+#
+#     PARDO b,j
+#          get T1b_old_x(b,j)
+#          sum  = T1b_old_x(b,j)*T1b_old_x(b,j)
+#          sumb += etemp
+#     ENDPARDO b,j
+#
+#     execute sip_barrier
+#     collective sumaa += suma
+#     collective sumbb += sumb
+#
+#     execute print_scalar sumaa
+#     execute print_scalar sumbb
+#
+#     suma  =0.0
+#     sumb  =0.0
+#     sumab0=0.0
+#     pardo a, i, a1, i1
+#          REQUEST T2old_aa_x(a,i,a1,i1) a
+#          sum = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
+#          suma += sum
+#     endpardo a, i, a1, i1
+#
+#     pardo b, j, b1, j1
+#         REQUEST T2old_bb_x(b,j,b1,j1) b
+#         sum = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
+#         sumb += sum
+#     endpardo b, j, b1, j1
+#
+#     PARDO a, b, i, j
+#           REQUEST T2old_ab_x(a,i,b,j) j
+#           sum = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+#           sumab0 += sum
+#     ENDPARDO a, b, i, j
+#
+#      execute server_barrier
+#      collective sumaa += suma
+#      collective sumbb += sumb
+#      collective sumab += sumab0
+#
+#      execute print_scalar sumaa
+#      execute print_scalar sumbb
+#      execute print_scalar sumab
+##end_debug
+
          DELETE Fae_a_x 
          DELETE Fae_b_x 
          DELETE Fme_a_x
@@ -6728,6 +6764,61 @@
          IF ICOUNT == 3.0
             CALL PUT_PERT_TZ
          ENDIF 
+#debug_bgn
+      suma  =0.0
+      sumb  =0.0
+      sumaa =0.0
+      sumbb =0.0
+      sumab =0.0
+
+      PARDO a,i
+           GET t1a_old_x(a,i)
+           sum  = T1a_old_x(a,i)*T1a_old_x(a,i)
+           suma += sum
+     ENDPARDO a,i
+
+     PARDO b,j
+          get T1b_old_x(b,j)
+          sum  = T1b_old_x(b,j)*T1b_old_x(b,j)
+          sumb += sum
+     ENDPARDO b,j
+
+     execute sip_barrier
+     collective sumaa += suma
+     collective sumbb += sumb
+
+     execute print_scalar sumaa
+     execute print_scalar sumbb
+
+     suma  =0.0
+     sumb  =0.0
+     sumab0=0.0
+     pardo a, i, a1, i1
+          REQUEST T2old_aa_x(a,i,a1,i1) a
+          sum = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
+          suma += sum
+     endpardo a, i, a1, i1
+
+     pardo b, j, b1, j1
+         REQUEST T2old_bb_x(b,j,b1,j1) b
+         sum = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
+         sumb += sum
+     endpardo b, j, b1, j1
+
+     PARDO a, b, i, j
+           REQUEST T2old_ab_x(a,i,b,j) j
+           sum = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+           sumab0 += sum
+     ENDPARDO a, b, i, j
+
+      execute sip_barrier
+      collective sumaa += suma
+      collective sumbb += sumb
+      collective sumab += sumab0
+      execute print_scalar sumaa
+      execute print_scalar sumbb
+      execute print_scalar sumab
+#debug_end
 
       ENDDO NPERT 
 #...........................................................................
@@ -6740,30 +6831,7 @@
 
 # Write amplitudes to file
 # ------------------------
-
-#debug_bgn
-#      suma =0.0
-#      sumb =0.0
-#      sumaa =0.0
-#      sumbb =0.0
-#      pardo a, i, a1, i1
-#          REQUEST T2old_aa_x(a,i,a1,i1) a
-#          sum = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
-#          suma += sum
-#      endpardo a, i, a1, i1
-#      pardo b, j, b1, j1
-#          REQUEST T2old_bb_x(b,j,b1,j1) b
-#          sum = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
-#          sumb += sum
-#      endpardo b, j, b1, j1
-#      execute sip_barrier
-#      collective sumaa += suma
-#      collective sumbb += sumb
-#      diff = sumaa
-#      diff -= sumbb
-#      execute print_scalar diff
-#debug_end
-
+#
       etemp = 23.0
       execute print_rel_info etemp pinf
       DO a
@@ -6829,13 +6897,6 @@
       execute blocks_to_list                T2old_ab
       execute blocks_to_list                T2old_bb
 
-      execute blocks_to_list                l1a_old
-      execute blocks_to_list                l1b_old
-      execute blocks_to_list                l2old_aa
-      execute blocks_to_list                l2old_ab
-      execute blocks_to_list                l2old_bb
-
-
       execute blocks_to_list                t1a_x
       execute blocks_to_list                t1b_x
       execute blocks_to_list                T2aa_x
@@ -6858,7 +6919,7 @@
       execute sip_barrier
       execute write_blocks_to_list
       execute sip_barrier
-                           ENDSIAL Txyz
+                           ENDSIAL LCCSD_TXYZ
 #
 # EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 
 #

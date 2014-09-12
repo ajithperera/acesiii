@@ -1,21 +1,13 @@
 rm -f make.out make.err
-../../../bin/sial perturb_lcc_lt/LCCSD_Txyz.sial && cp perturb_lcc_lt/LCCSD_Txyz.sio ../../../bin/sio
-input  file: perturb_lcc_lt/LCCSD_Txyz.sial
-output file: perturb_lcc_lt/LCCSD_Txyz.sio
-    No compilation errors
-Writing tables to perturb_lcc_lt/LCCSD_Txyz.sio
-
-SIO (Super Instruction Object) file is saved to "perturb_lcc_lt/LCCSD_Txyz.sio".
-../../../bin/sial perturb_lcc_lt/LCCSD_uhf.sial && cp perturb_lcc_lt/LCCSD_uhf.sio ../../../bin/sio
-input  file: perturb_lcc_lt/LCCSD_uhf.sial
-output file: perturb_lcc_lt/LCCSD_uhf.sio
+../../../bin/sial perturb_lcc_lt/LCCSD_resp_1D.sial && cp perturb_lcc_lt/LCCSD_resp_1D.sio ../../../bin/sio
+input  file: perturb_lcc_lt/LCCSD_resp_1D.sial
+output file: perturb_lcc_lt/LCCSD_resp_1D.sio
  
-line 2890, array or scalar does not exist.
+line 1099, array or scalar does not exist.
 
-line 2907, array or scalar does not exist.
-
-line 2915, array or scalar does not exist.
-===========================================================
+line 1099, @@@  unexpected char, ignored till end of line.
+Unexpected char: ,
+   ',' $$$ unexpected char===========================================================
 =           errors found.                                 =
 =           please correct it before go to the next step. =
 ===========================================================
