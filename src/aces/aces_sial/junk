@@ -1,51 +1,142 @@
 rm -f make.out make.err
-../../../bin/sial pden_debug/fd_t12.sial && cp pden_debug/fd_t12.sio ../../../bin/sio
-input  file: pden_debug/fd_t12.sial
-output file: pden_debug/fd_t12.sio
+../../../bin/sial perturb_ccsd_lt/CCSD_Lxyz_RHF.sial && cp perturb_ccsd_lt/CCSD_Lxyz_RHF.sio ../../../bin/sio
+input  file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sial
+output file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sio
  
-line 228, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 1139, array or scalar does not exist.
 
-line 234, id is missing.
+line 1142, array or scalar does not exist.
 
-line 239, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 1267, array or scalar does not exist.
 
-line 265, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 1370, array or scalar does not exist.
 
-line 271, id is missing.
+line 1371, array or scalar does not exist.
 
-line 276, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 1520, array or scalar does not exist.
 
-line 291, array or scalar does not exist.
+line 1908, array or scalar does not exist.
 
-line 292, array or scalar does not exist.
+line 1909, array or scalar does not exist.
 
-line 294, array or scalar does not exist.
+line 2165, array or scalar does not exist.
 
-line 295, array or scalar does not exist.
+line 2166, array or scalar does not exist.
 
-line 297, array or scalar does not exist.
+line 2171, array or scalar does not exist.
 
-line 299, array or scalar does not exist.
+line 2173, array or scalar does not exist.
 
-line 302, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 2176, array or scalar does not exist.
 
-line 308, id is missing.
+line 2179, array or scalar does not exist.
 
-line 309, array or scalar does not exist.
+line 2180, array or scalar does not exist.
 
-line 309, @@@  unexpected char, ignored till end of line.
-Unexpected char: ,
-   ',' $$$ unexpected char
-line 313, subroutine not in table
-c_get_subroutine_handle returned 0.
+line 2182, array or scalar does not exist.
 
-line 329, call: index can not be found.
-===========================================================
-=           errors found.                                 =
-=           please correct it before go to the next step. =
-===========================================================
+line 2185, array or scalar does not exist.
+
+line 2250, array or scalar does not exist.
+
+line 2251, array or scalar does not exist.
+
+line 2380, array or scalar does not exist.
+
+line 2421, array or scalar does not exist.
+
+line 2499, array or scalar does not exist.
+
+line 2501, array or scalar does not exist.
+
+line 2513, array or scalar does not exist.
+
+line 2734, array or scalar does not exist.
+
+line 2738, array or scalar does not exist.
+
+line 3056, array or scalar does not exist.
+
+line 3058, array or scalar does not exist.
+
+line 3069, array or scalar does not exist.
+
+line 3071, array or scalar does not exist.
+
+line 3078, array or scalar does not exist.
+
+line 3080, array or scalar does not exist.
+
+line 3366, array or scalar does not exist.
+
+line 3368, array or scalar does not exist.
+
+line 3504, array or scalar does not exist.
+
+line 3505, array or scalar does not exist.
+
+line 3603, array or scalar does not exist.
+
+line 3611, array or scalar does not exist.
+
+line 3661, array or scalar does not exist.
+
+line 3819, array or scalar does not exist.
+
+line 3826, array or scalar does not exist.
+
+line 3831, array or scalar does not exist.
+
+line 3834, array or scalar does not exist.
+
+line 3875, array or scalar does not exist.
+
+line 3877, array or scalar does not exist.
+
+line 3980, array or scalar does not exist.
+
+line 4053, array or scalar does not exist.
+
+line 4076, array or scalar does not exist.
+
+line 4322, array or scalar does not exist.
+
+line 4323, array or scalar does not exist.
+
+line 4328, array or scalar does not exist.
+
+line 4329, array or scalar does not exist.
+
+line 4345, array or scalar does not exist.
+
+line 4355, array or scalar does not exist.
+
+line 4373, array or scalar does not exist.
+
+line 4374, array or scalar does not exist.
+
+line 4386, array or scalar does not exist.
+
+line 4393, array or scalar does not exist.
+
+line 4396, array or scalar does not exist.
+
+line 4446, array or scalar does not exist.
+
+line 4452, array or scalar does not exist.
+
+line 4456, array or scalar does not exist.
+
+line 4459, array or scalar does not exist.
+
+line 4553, array or scalar does not exist.
+
+line 4554, array or scalar does not exist.
+
+line 4616, array or scalar does not exist.
+
+line 4617, array or scalar does not exist.
+
+line 4662, create/delete/destroy: index can not be found.
+idno = 18352, variableno -1
+Error in getidname: idnumber 18352 is larger than nvars 788

@@ -1,13 +1,8 @@
 rm -f make.out make.err
-../../../bin/sial perturb_lcc_lt/LCCSD_resp_1D.sial && cp perturb_lcc_lt/LCCSD_resp_1D.sio ../../../bin/sio
-input  file: perturb_lcc_lt/LCCSD_resp_1D.sial
-output file: perturb_lcc_lt/LCCSD_resp_1D.sio
- 
-line 1099, array or scalar does not exist.
+../../../bin/sial perturb_ccsd_lt/CCSD_Lxyz_RHF.sial && cp perturb_ccsd_lt/CCSD_Lxyz_RHF.sio ../../../bin/sio
+input  file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sial
+output file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sio
+    No compilation errors
+Writing tables to perturb_ccsd_lt/CCSD_Lxyz_RHF.sio
 
-line 1099, @@@  unexpected char, ignored till end of line.
-Unexpected char: ,
-   ',' $$$ unexpected char===========================================================
-=           errors found.                                 =
-=           please correct it before go to the next step. =
-===========================================================
+SIO (Super Instruction Object) file is saved to "perturb_ccsd_lt/CCSD_Lxyz_RHF.sio".
