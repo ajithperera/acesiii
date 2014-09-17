@@ -1,5 +1,3 @@
-                          ENDSIAL CCSD_Txyz_RHF 
-#                        ----------------------
 #  Copyright (c) 2003-2010 University of Florida
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -132,11 +130,8 @@
 
 
      distributed Fae_a_X(a,a1)
-     distributed Fae_b_X(b,b1)
      distributed Fme_a_X(i,a)
-     distributed Fme_b_X(j,b)
      distributed Fmi_a_X(i,i1)
-     distributed Fmi_b_X(j,j1)
 
      served e5aiai_X(a,i,a1,i1)
      served e5aibj_X(a,i,b,j)
@@ -174,11 +169,8 @@
       distributed t1b_new(b,j) 
 #
       distributed Fae_a(a,a1) 
-      distributed Fae_b(b,b1) 
       distributed Fme_a(i,a) 
-      distributed Fme_b(j,b) 
-      distributed Fmi_a(i,i1) 
-      distributed Fmi_b(j,j1) 
+      distributed Fmi_a(j,j1) 
 #
 #
 # Arrays used in transformation for AO2 algorithm
@@ -239,8 +231,6 @@
 #
       served Vpiqj(p,i,q,j)
       served Vaajj(a,a1,j,j1)
-      served Viabj(i,a,b,j)
-      served Vaabj(a,a1,b,j) 
 #
       temp Txbii(mu,b,i,i1)
       temp Tbbii(b,b1,i,i1)
@@ -250,7 +240,6 @@
 #
       served Vjbii(j,b,i,i1)
       served Vbbii(b,b1,i,i1)
-      served Vbbai(b,b1,a,i)
 #
 # End Arrays used in transformation for AO2 algorithm
 # --------------------------------------------------- 
@@ -451,10 +440,8 @@
 # -------------------------- 
 #
       served T2new_aa(a,i,a1,i1)
-      served T2new_bb(b,j,b1,j1)
-      served T2new_ab(a,i,b,j)
+      served T2new_ab(b,j,b1,j1)
       served T2old_aa(a,i,a1,i1)
-      served T2old_bb(b,j,b1,j1)
       served T2old_ab(a,i,b,j)
 
       served Tau_aa(a,i,a1,i1)
@@ -599,6 +586,7 @@
       scalar esuma
       scalar esumb
       scalar esumab
+      scalar esumaa
       scalar ecorraa
       scalar ecorrbb
       scalar ecorrab
@@ -668,18 +656,14 @@
        served e5aiai(a,i,a1,i1)  
 
        served e5aiaiPV(a,i,a1,i1)
+       served e5aibjPV(a,i,b,j)
 
        served e1bjbj(b,j,b1,j1)  
        served e2bjbj(b,j,b1,j1)  
        served e3bjbj(b,j,b1,j1)  
        served e4bjbj(b,j,b1,j1)  
        served e5bjbj(b,j,b1,j1)  
-
-
        served e5bjbjPV(b,j,b1,j1)
-
-       served e5aibjPV(a,i,b,j)
-
 
        served e1aibj(a,i,b,j)  
        served e2aibj(a,i,b,j)  
@@ -961,9 +945,6 @@
        CREATE HBa_ae_x                                       
        CREATE HBa_me_x                                  
        CREATE HBa_mi_x                                     
-       CREATE HBb_ae_x                                     
-       CREATE HBb_me_x                                   
-       CREATE HBb_mi_x                                        
        execute sip_barrier
 
        PARDO i, i1
@@ -983,24 +964,6 @@
              Tia(i,a) = 0.0
              PUT  HBa_me_x(i,a)  = Tia(i,a)
        ENDPARDO a, i
-
-       PARDO j, j1
-             GET HBb_mi_x(j,j1)
-             Tjj(j,j1) = 0.0
-             PUT  HBb_mi_x(j,j1) = Tjj(j,j1)
-       ENDPARDO j, j1
-
-       PARDO b, b1
-             GET HBb_ae_x(b,b1)
-             Tbb(b,b1) = 0.0
-             PUT  HBb_ae_x(b,b1)  = Tbb(b,b1)
-       ENDPARDO b, b1
-
-       PARDO b, j 
-             GET HBb_me_x(j,b)
-             Tjb(j,b) = 0.0
-             PUT  HBb_me_x(j,b)  = Tjb(j,b)
-       ENDPARDO b, j
 
        execute sip_barrier
   
@@ -1038,42 +1001,33 @@
         ENDPARDO mu,nu
       execute sip_barrier
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get HBa_me_x(i,a)
-         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do j
-         get  HBb_me_x(j,b)
-         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-          GET HBa_mi_x(i,i1)
-          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
-          sum0 +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do a1
-         GET HBa_ae_x(a,a1)
-         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
-         sum0 +=tmp
-      enddo a1
-      enddo a
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get HBa_me_x(i,a)
+#         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do i
+#      do i1
+#          GET HBa_mi_x(i,i1)
+#          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
+#          sum0 +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         GET HBa_ae_x(a,a1)
+#         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
+#         sum0 +=tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar sum0
 #end_debug
 
 
@@ -1098,7 +1052,7 @@
 
       execute list_to_blocks                t1a_old
       execute list_to_blocks                T2old_aa
-      execute list_to_blocks                T2old_bb
+      execute list_to_blocks                T2old_ab
 
       execute list_to_blocks  l1a_old
       execute list_to_blocks L2old_aa
@@ -1260,8 +1214,8 @@
             GET t1a_old_x(b,j)
             tai_x(a,i) = t1a_old_x(a,i) 
 
-            tmp1_aibj(a,i,b,j)       = t1a_old_x(a,i)^t1a_old(b,j)
-            tmpPV(a,i,b,j)           = tai_x(a,i)^t1a_old_x(b,j)
+            tmp1_aibj(a,i,b,j)       = tai_x(a,i)^t1a_old(b,j)
+            tmpPV(a,i,b,j)           = tai(a,i)^t1a_old_x(b,j)
             tmp1_aibj(a,i,b,j)      += tmpPV(a,i,b,j)         
 
             tmp2_aibj(a,i,b,j)       = tmp1_aibj(a,i,b,j)
@@ -1320,14 +1274,14 @@
                   taibj(a,i,b,j)   = Vaaai(a1,a,b,j)*t1a_old(a1,i)
                   LWaibj(a,i,b,j) += taibj(a,i,b,j)
                ENDDO i
-               Taa(a,a1)        = Vaabj(a1,a,b,j)*t1a_old(b,j)
+               Taa(a,a1)        = Vaaai(a1,a,b,j)*t1a_old(b,j)
                PUT Fae_a(a,a1) += Taa(a,a1)
             ENDDO a1
             DO i
                Taibj(a,i,b,j)          = LWaibj(a,i,b,j)
                T1aibj(b,j,a,i)         = LWaibj(a,i,b,j)
-               PREPARE e6aibj(a,i,b,j) = Taibj(a,i,b,j)
-               PREPARE e5aibj(b,j,a,i) = T1aibj(b,j,a,i)
+               PREPARE e6aibj(a,i,b,j)  = Taibj(a,i,b,j)
+               PREPARE e5aibjPV(b,j,a,i)= T1aibj(b,j,a,i)
             ENDDO i
             deallocate LWaibj(a,*,b,j)
       ENDPARDO a, b, j
@@ -1349,6 +1303,19 @@
                PUT Fae_a(a,a1) += Taa(a,a1)
             ENDDO a
       ENDPARDO a1, i, a2, i1
+#bgn_debug
+     execute sip_barrier
+     sum=0.0
+     do a
+     do a1
+     get Fae_a(a,a1)
+     tmp  = Fae_a(a,a1) * Fae_a(a,a1)
+     sum += tmp
+     enddo a1
+     enddo a
+     execute print_scalar sum
+#end_debug
+
       ENDPROC FAEA
 #     ------------
       PROC FAE
@@ -1382,7 +1349,13 @@
            taa(a,a1) *= 1.0
 #end_debug
 
-           ENDDO i put Fae_a_x (a,a1) +=Taa(a,a1) ENDPARDO a,a1 PARDO a, a2, i allocate LWaiai(a2,i,a,*) DO a1
+           ENDDO i 
+           put Fae_a_x (a,a1) +=Taa(a,a1) 
+      ENDPARDO a,a1 
+
+      PARDO a, a2, i 
+                  allocate LWaiai(a2,i,a,*) 
+                  DO a1
                   REQUEST            Vaaai(a1,a,a2,i) i
                   REQUEST            Vaaai(a2,a,a1,i) i
                   GET                t1a_old_x(a2,i)
@@ -1401,7 +1374,6 @@
                ENDDO a1
                DO i1
                   Taiai(a2,i,a,i1)        = LWaiai(a2,i,a,i1)
-                  T1aibj(b,j,a,i)         = LWaibj(a,i,b,j)
                   PREPARE e5aiai_X(a2,i,a,i1) = Taiai(a2,i,a,i1)
                ENDDO i1
                deallocate LWaiai(a2,i,a,*)
@@ -1410,14 +1382,14 @@
       PARDO a, b, j
             allocate LWaibj(a,*,b,j)
             DO a1
-               REQUEST            Vaabj(a1,a,b,j) j
+               REQUEST            Vaaai(a1,a,b,j) j
                GET                t1a_old_x(b,j)
                DO i
                   GET                t1a_old_x(a1,i)
                   taibj(a,i,b,j)   = Vaaai(a1,a,b,j)*t1a_old_x(a1,i)
                   LWaibj(a,i,b,j) += taibj(a,i,b,j)
                ENDDO i
-               Taa(a,a1)        = Vaabj(a1,a,b,j)*t1a_old_x(b,j)
+               Taa(a,a1)        = Vaaai(a1,a,b,j)*t1a_old_x(b,j)
                PUT Fae_a_X(a,a1) += Taa(a,a1)
             ENDDO a1
             DO i
@@ -1447,6 +1419,18 @@
                PUT Fae_a_X(a,a1) += Taa(a,a1)
             ENDDO a
       ENDPARDO a1, i, a2, i1
+#bgn_debug
+     execute sip_barrier
+     sum=0.0
+     do a
+     do a1
+     get Fae_a_x(a,a1)
+     tmp  = Fae_a_x(a,a1) * Fae_a_x(a,a1)
+     sum += tmp
+     enddo a1
+     enddo a
+     execute print_scalar sum
+#end_debug
 
       ENDPROC FAEA_X
 #     --------------
@@ -1681,7 +1665,7 @@
             DO j 
                REQUEST T2old_ab_x(a,i,b,j) j 
                REQUEST Viaai(i,a,b,j) j  
-               GET Fme_b(j,b) 
+               GET Fme_a(j,b) 
                GET t1a_old_x(b,j) 
                t1ai(a,i) = T2old_ab_x(a,i,b,j)*Fme_a(j,b) 
                tai(a,i) += t1ai(a,i) 
@@ -1806,7 +1790,7 @@
             DO b
             DO j
                REQUEST T2old_ab(a,i,b,j) j       
-               GET Fme_b_X(j,b)
+               GET Fme_a_X(j,b)
                t1ai(a,i) = T2old_ab(a,i,b,j)*Fme_a_X(j,b)
 #bgn_debug
                t1ai(a,i) *= 1.0
@@ -1949,15 +1933,6 @@
          ENDDO j
       ENDPARDO i,i1,b,j1
 
-      PARDO a, i1, j, j1
-         REQUEST Vpiqj(a,i1,j,j1) j1
-         DO i
-            GET t1a_old_x(a,i)
-            Tiijj(i1,i,j1,j) = Vpiqj(a,i1,j,j1)*t1a_old_x(a,i)
-            PUT Wminj_ab_x(i1,i,j1,j) += Tiijj(i1,i,j1,j)
-         ENDDO i
-      ENDPARDO a, i1, j, j1
-
       PARDO i1, j1, a, b
          REQUEST Vpiqj(a,i1,b,j1) j1
          DO j
@@ -1985,6 +1960,21 @@
       ENDPARDO i, j, a, b
       execute sip_barrier
       delete Wminj_ab_x
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
       ENDPROC WminjAB
 #     ---------------
       PROC WMINJ 
@@ -2045,8 +2035,8 @@
                L3aibj(a,i1,b,j) = T2old_ab_x(a,i1,b,j) 
             ENDDO i1 
             DO a1 
-               REQUEST Vaabj(a,a1,b,j) j  
-               Laabj(a,a1,b,j) = Vaabj(a,a1,b,j)  
+               REQUEST Vaaai(a,a1,b,j) j  
+               Laabj(a,a1,b,j) = Vaaai(a,a1,b,j)  
             ENDDO a1 
             DO i 
                Taibj(a,i,b,j) = 0.0  
@@ -2106,7 +2096,7 @@
                   Taibj(a,i,b,j) += T1aibj(a,i,b,j)
                ENDDO a1
  
-               T1aibj(b,j,a,i)              = Taibj(b,j,a,i)
+               T1aibj(b,j,a,i)              = Taibj(a,i,b,j)
                PREPARE T2NEW_AB_x(a,i,b,j) += Taibj(a,i,b,j) 
                PREPARE T2NEW_AB_x(b,j,a,i) += T1aibj(b,j,a,i) 
             ENDDO a
@@ -2151,6 +2141,20 @@
             deallocate L3aibj(a,*,b,j)
             deallocate Laabj(a,*,b,j)
       ENDPARDO a, b, j
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
 
      ENDPROC T2NEWAB    
 #    ---------------
@@ -2280,48 +2284,60 @@
 #    Perform final transformation 
 #    ---------------------------- 
 #
-     PARDO a, b, i, j  
+    PARDO a, b, i, j
 #
-           T1aibj(a,i,b,j) = 0.0  
+           T1aibj(a,i,b,j) = 0.0
+           Taibj(a,i,b,j)  = 0.0
 #
-           DO nu  
+           DO nu
 #
-              GET                t1a_ax(a,nu) 
-              TXaibj(a,i,nu,j) = 0.0 
-              TZaibj(a,i,nu,j) = 0.0 
+              GET                t1a_ax(b,nu)
+              TXaibj(a,i,nu,j) = 0.0
+              TZaibj(a,i,nu,j) = 0.0
 #
-              DO mu   
+              DO mu
 #
-                 REQUEST             T2AO_ab(mu,i,nu,j) j 
-                 GET                 t1a_ax(a,mu) 
+                 REQUEST             T2AO_ab(mu,i,nu,j) j
+                 GET                 t1a_ax(a,mu)
                  Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
-                 TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)   
+                 TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)
 #
                  Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
-                 TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)   
+                 TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)
 #
-              ENDDO mu   
+              ENDDO mu
 #
               TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*ca(nu,b)
-              T1aibj(a,i,b,j) += TYaibj(a,i,b,j)
-#
-              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*t1a_ax(b,nu)
-              T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
-#
+              Taibj(a,i,b,j)   = TYaibj(a,i,b,j)
+
               TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*ca(nu,b)
               T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
-#
-           ENDDO nu  
-#
-           T2aibj(b,j,a,i)              = T1aibj(a,i,b,j)
-           PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j) 
-           PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i) 
-         
-#
-     ENDPARDO a, b, i, j  
-#
+              T2aibj(b,j,a,i)  = T1aibj(a,i,b,j)
+
+              PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
+              PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
+              PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
+
+           ENDDO nu
+     ENDPARDO a, b, i, j
+
      execute sip_barrier  
      delete t1a_ax 
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
      ENDPROC AOLADDER  
 #    ----------------
 
@@ -2344,7 +2360,7 @@
            deallocate LLaibj(*,i,b,j)
      ENDPARDO b, j, i
      execute server_barrier
-#..........................
+
      PARDO lambda, i, j
            allocate Lxibj(lambda,i,*,j)
            DO b
@@ -2362,14 +2378,21 @@
            deallocate Lxibj(lambda,i,*,j)
      ENDPARDO lambda, i, j
      create t1a_ax
-     create t1b_bx
      execute server_barrier
+
 #    Contract AOINT with half back transformed Amplitudes 
      PARDO mu, nu
            allocate L1xixj(mu,*,nu,*)
            DO lambda
            DO sigma
               compute_integrals aoint(mu,lambda,nu,sigma)
+              DO i
+              DO j
+                 REQUEST TAO_ab(lambda,i,sigma,j) j
+                 Yab(mu,i,nu,j)  = aoint(mu,lambda,nu,sigma)*TAO_ab(lambda,i,sigma,j)
+                 L1xixj(mu,i,nu,j) += Yab(mu,i,nu,j)
+              ENDDO j
+              ENDDO i
            DO i
            DO j
               Txixj(mu,i,nu,j) = L1xixj(mu,i,nu,j)
@@ -2398,9 +2421,10 @@
      PARDO a, b, i, j
            T1aibj(a,i,b,j) = 0.0
             DO nu
-              GET                t1b_bx(b,nu)
+              GET                t1a_ax(b,nu)
               TXaibj(a,i,nu,j) = 0.0
               TZaibj(a,i,nu,j) = 0.0
+
               DO mu
                  REQUEST             T2AO_ab(mu,i,nu,j) j
                  GET                 t1a_ax(a,mu)
@@ -2410,20 +2434,37 @@
                  Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
                  TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)
               ENDDO mu
-              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*t1b_bx(b,nu)
+
+              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*t1a_ax(b,nu)
               T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
 #
               TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*ca(nu,b)
               T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
+
            ENDDO nu
 
-           T1aibj(b,j,a,i)              = T1aibj(a,i,b,j)
+           T2aibj(b,j,a,i)              = T1aibj(a,i,b,j)
            PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
-           PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
+#           PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
 
      ENDPARDO a, b, i, j
      execute sip_barrier
      delete t1a_ax
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
      ENDPROC AOLADDER_x
 #    ------------------
       PROC WAEBFAB 
@@ -2501,6 +2542,7 @@
       ENDPARDO a, i, b, j
       execute sip_barrier
       delete Wminj_ab_x
+
       ENDPROC WAEBFAB_x
 #     -----------------
 
@@ -2587,7 +2629,7 @@
       PROC WMEBJAA_x
 #     --------------
       PARDO a, a1, i, i1
-
+               REQUEST              e5aiai_x(a1,i1,a,i) i
                TYaiai(a1,i1,a,i) = 0.
                DO i2
                   REQUEST VSpipi(a1,i1,i,i2) i2
@@ -2660,13 +2702,14 @@
             ENDDO b
             ENDDO j
       ENDPARDO a, i, a1, i1
+
       ENDPROC WMEBJAA_x
 #     ------------------
 
       PROC WMEBJAB 
 #     -------------
       PARDO j, b, i, a
-               REQUEST           Viabj(i,a,b,j) j  
+               REQUEST           Viaai(i,a,b,j) j  
                REQUEST           e5aibjPV(a,i,b,j) a 
                Taibj(a,i,b,j) = 0.
                DO j1
@@ -2676,7 +2719,7 @@
                   T1aibj(a,i,b,j) = Vpiqj(a,i,j,j1)*t1a_old(b,j1) 
                   Taibj(a,i,b,j) -= T1aibj(a,i,b,j) 
                ENDDO j1
-               T1aibj(a,i,b,j)  = Viabj(i,a,b,j) 
+               T1aibj(a,i,b,j)  = Viaai(i,a,b,j) 
                Taibj(a,i,b,j) += T1aibj(a,i,b,j)
                Taibj(a,i,b,j) += e5aibjPV(a,i,b,j) 
                PREPARE TAUP_ab_pv(a,i,b,j) = Taibj(a,i,b,j) 
@@ -2690,7 +2733,7 @@
 
                tbj(b,j1)          = t1a_old(b,j1) 
                T2bjbj(b1,j,b,j1)  = t1a_old(b1,j)^tbj(b,j1) 
-               T1bjbj(b1,j,b,j1)  = 0.5*T2old_bb(b1,j,b,j1) 
+               T1bjbj(b1,j,b,j1)  = 0.5*T2old_aa(b1,j,b,j1) 
                T1bjbj(b1,j,b,j1) += T2bjbj(b1,j,b,j1) 
                DO i  
                DO a 
@@ -2733,6 +2776,7 @@
             ENDDO j 
       ENDPARDO i1, a1, a, i
       execute server_barrier 
+
       ENDPROC WMEBJAB 
 #     ---------------
 
@@ -2807,11 +2851,12 @@
 
                Taibj(b,j,a1,i1)               = R1aibj(a1,i1,b,j)
 	       PREPARE T2new_ab_x(a1,i1,b,j) += R1aibj(a1,i1,b,j)
-               PREPARE T2new_ab_x(b,j,a1,i1) += R1aibj(b,j,a1,i1)
+               PREPARE T2new_ab_x(b,j,a1,i1) += Taibj(b,j,a1,i1)
             ENDDO b
             ENDDO j
       ENDPARDO i1, a1, a, i
       execute server_barrier
+
       ENDPROC WMEBJAB_x
 #     -----------------
       PROC T2ABS2 
@@ -2859,6 +2904,7 @@
                PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j) 
             ENDDO b 
       ENDPARDO j1, i, a, j 
+
       ENDPROC T2ABS2 
 #     --------------
 
@@ -2907,6 +2953,7 @@
                PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
             ENDDO b
       ENDPARDO j1, i, a, j
+
       ENDPROC T2ABS2_X
 #     ----------------
 
@@ -2943,7 +2990,9 @@
          REQUEST T2old_ab(a1,i,b,j1) j1
          GET t1a_old(a1,i)
          GET t1a_old(b,j1)
-         Taibj(a1,i,b,j1)   = t1a_old(a1,i)^t1a_old(b,j1)
+         tai(a1,i) = t1a_old(a1,i)
+
+         Taibj(a1,i,b,j1)   = tai(a1,i)^t1a_old(b,j1)
          DO i1
          DO b1
             REQUEST Vpiqj(a1,i1,b1,j1) j1
@@ -2977,6 +3026,7 @@
             ENDDO b
             ENDDO i
       ENDPARDO a, j, i1, b1
+
       ENDPROC WMJBEAB
 #     ---------------
 
@@ -2997,10 +3047,10 @@
       execute server_barrier
 #...............................
       PARDO a1, b, i1, b1
-         REQUEST Vbbai(b1,b,a1,i1) i1
+         REQUEST Vaaai(b1,b,a1,i1) i1
          DO i
             GET t1a_old_x(a1,i)
-            T1iiqq(i1,i,b,b1) = Vbbai(b1,b,a1,i1)*t1a_old_x(a1,i)
+            T1iiqq(i1,i,b,b1) = Vaaai(b1,b,a1,i1)*t1a_old_x(a1,i)
             PREPARE Wiibb(i1,i,b,b1)  += T1iiqq(i1,i,b,b1)
          ENDDO i
       ENDPARDO a1, b, i1, b1
@@ -3013,8 +3063,11 @@
          GET t1a_old_x(a1,i)
          GET t1a_old_x(b,j1)
 
-         Taibj(a1,i,b,j1)   = t1a_old_x(a1,i)^t1a_old(b,j1)
-         T2aibj(a1,i,b,j1)  = t1a_old(a1,i)^t1a_old_x(b,j1)
+         tai_x(a1,i) = t1a_old_x(a1,i)
+         tai(a1,i)   = t1a_old(a1,i)
+
+         Taibj(a1,i,b,j1)   = tai_x(a1,i)^t1a_old(b,j1)
+         T2aibj(a1,i,b,j1)  = tai(a1,i)^t1a_old_x(b,j1)
          Taibj(a1,i,b,j1)  += T2aibj(a1,i,b,j1)
         
          DO i1
@@ -3046,27 +3099,110 @@
 
                T2aibj(b,j,a,i)              = Taibj(a,i,b,j)
                PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
-               PREPARE T2new_ab_x(b,j,a,i) += Taibj(a,i,b,j)
+               PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
             ENDDO b
             ENDDO i
       ENDPARDO a, j, i1, b1
+
       ENDPROC WMJBEAB_x
 #     -----------------
 
       PROC WMEBJ 
 #    -----------
+
            CALL WMEBJAA
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
+
            CALL WMEBJAB
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
+
            CALL WMJBEAB
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
+
            CALL T2ABS2
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
+
       ENDPROC WMEBJ 
 #     -------------
 
       PROC WMEBJ_x
 #     -------------
+           CALL WMEBJAA_x
            CALL WMEBJAB_x
            CALL WMJBEAB_x
            CALL T2ABS2_x
+#bgn_debug
+     execute server_barrier
+     sum=0.0
+     suma=0.0
+        pardo a, i, b, j
+        REQUEST T2NEW_AB_x(a,i,b,j) j
+        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+        sum += tmp
+        endpardo a, i, b, j
+        execute server_barrier
+        collective suma += sum
+        execute print_scalar suma
+#end_debug
+
+
       ENDPROC WMEBJ_x
 #     ---------------
 
@@ -3099,9 +3235,10 @@
      execute sip_barrier 
 
      collective ecorrab += esumab
+     execute print_scalar ecorrab 
      ecorrab *= 2.0
      ecorrT += ecorrab 
-     execute print_scalar ecorrT  
+#     execute print_scalar ecorrT  
 
      if kiter > 0
          ncount1 = 0.0
@@ -3146,13 +3283,19 @@
 #    ----------------
 
       PARDO b, a, j, i
+            REQUEST                    T2old_ab_x(b,j,a,i) b
+            REQUEST                    T2new_ab_x(b,j,a,i) b
+            Taibj(a,i,b,j)           = T2new_ab_x(b,j,a,i)
+            T1aibj(a,i,b,j)          = T2old_ab_x(b,j,a,i)
+
             REQUEST                    T2old_ab_x(a,i,b,j) b
             REQUEST                    T2new_ab_x(a,i,b,j) b
-            Taibj(a,i,b,j)           = T2new_ab_x(a,i,b,j)
-            T1aibj(a,i,b,j)          = T2old_ab_x(a,i,b,j)
+            Taibj(a,i,b,j)          += T2new_ab_x(a,i,b,j)
+            T1aibj(a,i,b,j)         += T2old_ab_x(a,i,b,j)
+#
             execute energy_denominator Taibj
             T1aibj(a,i,b,j) -= Taibj(a,i,b,j)
-            T1aibj(a,i,b,j) *= -1.0
+            T1aibj(a,i,b,j) *= -0.5
             if kiter == 1
                PREPARE e1aibj(a,i,b,j) = T1aibj(a,i,b,j)
             endif
@@ -3173,10 +3316,14 @@
 
       PARDO b, a, j, i
             REQUEST                    T2new_ab_x(a,i,b,j) a
-            Taibj(a,i,b,j)           = T2new_ab_x(a,i,b,j)
+            REQUEST                    T2new_ab_x(b,j,a,i) a
+            Taibj(a,i,b,j)           = T2new_ab_x(b,j,a,i)
+            Taibj(a,i,b,j)          += T2new_ab_x(a,i,b,j)
+            Taibj(a,i,b,j)          *= 0.5
             execute energy_denominator Taibj
             PREPARE T2old_ab_x(a,i,b,j)    = Taibj(a,i,b,j)
       ENDPARDO b, a, j, i
+
       ENDPROC UPDATET2 
 #     ----------------
 
@@ -3188,7 +3335,7 @@
             tai(a,i)         = t1a_new_x(a,i)
             t1ai(a,i)        = t1a_old_x(a,i)
             execute energy_denominator tai
-            PUT t1a_old_x(a,i) = tai(a,i)
+#            PUT t1a_old_x(a,i) = tai(a,i)
             tai(a,i)        -= t1ai(a,i)
             if kiter == 1
                PUT e1ai(a,i) = Tai(a,i)
@@ -3208,9 +3355,20 @@
       ENDPARDO a, i
 
       execute sip_barrier 
+      PARDO a, i
+#
+            GET                t1a_new_x(a,i)
+            tai(a,i)         = t1a_new_x(a,i)
+            execute energy_denominator tai
+            PUT t1a_old_x(a,i) = tai(a,i)
+#
+      ENDPARDO a, i
+
       ENDPROC UPDATET1 
 #     ----------------
+
       PROC MOVET2
+#     -----------
       PARDO b, a, j, i
             REQUEST                    T2old_ab_x(a,i,b,j) a 
             Taibj(a,i,b,j)           = T2old_ab_x(a,i,b,j)
@@ -3231,8 +3389,9 @@
             endif
       ENDPARDO b, a, j, i
       ENDPROC MOVET2
-#_________________________________________________________________
+
       PROC MOVET1
+#     ----------
       PARDO a, i 
             GET        t1a_old_x(a,i)
             tai(a,i) = t1a_old_x(a,i)
@@ -3259,7 +3418,7 @@
       ENDPARDO a, i
 
       ENDPROC MOVET1
-# PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP 
+#     --------------
      PROC ZERO_DSCALAR  
 #    ----------------- 
 #
@@ -3492,12 +3651,18 @@
        execute sip_barrier
 #
      ENDPROC SETUP_DIIS   
-#_____________________________________________________________
+#
      PROC DIIS1  
+#    ---------- 
+#
 #    Zero out scalars.
+#    ----------------- 
+#
      CALL ZERO_DSCALAR 
+#
 #    Determine the 'B-matrix'. 
-
+#    ------------------------- 
+#
 #    Compute contributions due to T2aibj amplitudes.
 #    -----------------------------------------------
 #
@@ -3508,18 +3673,17 @@
 #
            REQUEST e1aibj(a,i,b,j) a # kiter-1 amplitudes
            REQUEST e2aibj(a,i,b,j) a # kiter-0 amplitudes
+#
            REQUEST e1aibj(a,j,b,i) a # kiter-1 amplitudes
            REQUEST e2aibj(a,j,b,i) a # kiter-0 amplitudes
 #
-           taibj(a,i,b,j)  = e1aibj(a,j,b,i)
-           t1aibj(a,i,b,j) = e1aibj(a,i,b,j)
-           t1aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e1aibj(a,j,b,i) 
+           t1aibj(a,i,b,j) = e1aibj(a,i,b,j) 
+           t1aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e2aibj(a,j,b,i)
-           t2aibj(a,i,b,j) = e2aibj(a,i,b,j)
-           t2aibj(a,i,b,j)-= taibj(a,i,b,j)
-#
-
+           taibj(a,i,b,j)  = e2aibj(a,j,b,i) 
+           t2aibj(a,i,b,j) = e2aibj(a,i,b,j) 
+           t2aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
 #          Compute contributions to the 'B-matrix'.
 #          ----------------------------------------
@@ -3528,18 +3692,18 @@
 #             ---------
 #
               etemp = e1aibj(a,i,b,j)*e1aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b11  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b12  += etemp
 #
 #             b1x x=2,2
 #             ---------
 #
               etemp = e2aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b22  += etemp
 #
 #             b1x x=1,2
@@ -3602,6 +3766,7 @@
      collective Tb11 += b11 
      collective Tb12 += b12 
      collective Tb22 += b22 
+     execute server_barrier 
 #
 #    Now the unique elements of the 'B-matrix' have been computed, the array is filled out
 #    in the setup_diis. 
@@ -3612,11 +3777,14 @@
 #    -------------------------------------------------------------------------------- 
 #
      CALL SETUP_DIIS 
+     execute server_barrier 
 #
      execute compute_diis # --> New instruction  
+     execute server_barrier 
 #
      c1 = Tb11 
      c2 = Tb22 
+     execute server_barrier 
     #execute print_scalar c1 
     #execute print_scalar c2 
 #
@@ -3692,12 +3860,23 @@
      execute server_barrier 
 #
      ENDPROC DIIS1  
-#_________________________________________________________________________________
+#    ------------- 
+#
+# ---------------------------------------------------------------------------------
+#
+# ---------------------------------------------------------------------------------
+#
      PROC DIIS2  
+#    ---------- 
+#
 #    Zero out scalars.
+#    ----------------- 
+#
      CALL ZERO_DSCALAR 
+#
 #    Determine the 'B-matrix'. 
-
+#    ------------------------- 
+#
 #    Compute contributions due to T2aibj amplitudes.
 #    -----------------------------------------------
 #
@@ -3709,22 +3888,22 @@
            REQUEST e1aibj(a,i,b,j) a # kiter-2 amplitudes
            REQUEST e2aibj(a,i,b,j) a # kiter-1 amplitudes
            REQUEST e3aibj(a,i,b,j) a # kiter-0 amplitudes
-
+#
            REQUEST e1aibj(a,j,b,i) a # kiter-2 amplitudes
            REQUEST e2aibj(a,j,b,i) a # kiter-1 amplitudes
            REQUEST e3aibj(a,j,b,i) a # kiter-0 amplitudes
-
-           taibj(a,i,b,j)  = e1aibj(a,j,b,i)
-           t1aibj(a,i,b,j) = e1aibj(a,i,b,j)
-           t1aibj(a,i,b,j)-= taibj(a,i,b,j)
 #
-           taibj(a,i,b,j)  = e2aibj(a,j,b,i)
-           t2aibj(a,i,b,j) = e2aibj(a,i,b,j)
-           t2aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e1aibj(a,j,b,i) 
+           t1aibj(a,i,b,j) = e1aibj(a,i,b,j) 
+           t1aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e3aibj(a,j,b,i)
-           t3aibj(a,i,b,j) = e3aibj(a,i,b,j)
-           t3aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e2aibj(a,j,b,i) 
+           t2aibj(a,i,b,j) = e2aibj(a,i,b,j) 
+           t2aibj(a,i,b,j)-= taibj(a,i,b,j) 
+#
+           taibj(a,i,b,j)  = e3aibj(a,j,b,i) 
+           t3aibj(a,i,b,j) = e3aibj(a,i,b,j) 
+           t3aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
 #          Compute contributions to the 'B-matrix'.
 #          ----------------------------------------
@@ -3733,33 +3912,33 @@
 #             ---------
 #
               etemp = e1aibj(a,i,b,j)*e1aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b11  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b12  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b13  += etemp
 #
 #             b1x x=2,3
 #             ---------
 #
               etemp = e2aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b22  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b23  += etemp
 #
 #             b1x x=3,3
 #             ---------
 #
               etemp = e3aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b33  += etemp
 #
 #             b1x x=1,3
@@ -3788,7 +3967,6 @@
 #
               etemp = t3aibj(a,i,b,j)*t3aibj(a,i,b,j)
               b33  += etemp
-
 #
      ENDPARDO a, i, b, j
 #
@@ -3854,6 +4032,7 @@
      collective Tb22 += b22 
      collective Tb23 += b23 
      collective Tb33 += b33 
+     execute server_barrier 
 #
 #    Now the unique elements of the 'B-matrix' have been computed and the array filled out. 
 #    --------------------------------------------------------------------------------------
@@ -3863,12 +4042,15 @@
 #    -------------------------------------------------------------------------------- 
 #
      CALL SETUP_DIIS 
+     execute server_barrier 
 #
      execute compute_diis # --> New instruction  
+     execute server_barrier 
 #
      c1 = Tb11 
      c2 = Tb22 
      c3 = Tb33 
+     execute server_barrier 
     #execute print_scalar c1 
     #execute print_scalar c2 
     #execute print_scalar c3 
@@ -3959,7 +4141,12 @@
      execute server_barrier 
 #
      ENDPROC DIIS2  
+#    ------------- 
+#
 # ---------------------------------------------------------------------------------
+#
+# ---------------------------------------------------------------------------------
+#
      PROC DIIS3  
 #    ---------- 
 #
@@ -3983,27 +4170,27 @@
            REQUEST e2aibj(a,i,b,j) a # kiter-2 amplitudes
            REQUEST e3aibj(a,i,b,j) a # kiter-1 amplitudes
            REQUEST e4aibj(a,i,b,j) a # kiter-0 amplitudes
-
+#
            REQUEST e1aibj(a,j,b,i) a # kiter-3 amplitudes
            REQUEST e2aibj(a,j,b,i) a # kiter-2 amplitudes
            REQUEST e3aibj(a,j,b,i) a # kiter-1 amplitudes
            REQUEST e4aibj(a,j,b,i) a # kiter-0 amplitudes
 #
-           taibj(a,i,b,j)  = e1aibj(a,j,b,i)
-           t1aibj(a,i,b,j) = e1aibj(a,i,b,j)
-           t1aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e1aibj(a,j,b,i) 
+           t1aibj(a,i,b,j) = e1aibj(a,i,b,j) 
+           t1aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e2aibj(a,j,b,i)
-           t2aibj(a,i,b,j) = e2aibj(a,i,b,j)
-           t2aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e2aibj(a,j,b,i) 
+           t2aibj(a,i,b,j) = e2aibj(a,i,b,j) 
+           t2aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e3aibj(a,j,b,i)
-           t3aibj(a,i,b,j) = e3aibj(a,i,b,j)
-           t3aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e3aibj(a,j,b,i) 
+           t3aibj(a,i,b,j) = e3aibj(a,i,b,j) 
+           t3aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e4aibj(a,j,b,i)
-           t4aibj(a,i,b,j) = e4aibj(a,i,b,j)
-           t4aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e4aibj(a,j,b,i) 
+           t4aibj(a,i,b,j) = e4aibj(a,i,b,j) 
+           t4aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
 #          Compute contributions to the 'B-matrix'.
 #          ----------------------------------------
@@ -4012,54 +4199,53 @@
 #             ---------
 #
               etemp = e1aibj(a,i,b,j)*e1aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b11  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b12  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b13  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b14  += etemp
 #
 #             b1x x=2,4
 #             ---------
 #
               etemp = e2aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b22  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b23  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b24  += etemp
 #
 #             b1x x=3,4
 #             ---------
 #
               etemp = e3aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b33  += etemp
 #
               etemp = e3aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b34  += etemp
 #
 #             b1x x=4,4
 #             ---------
 #
               etemp = e4aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b44  += etemp
-#
 #
 #             b1x x=1,4
 #             ---------
@@ -4075,7 +4261,7 @@
 #
               etemp = t1aibj(a,i,b,j)*t4aibj(a,i,b,j)
               b14  += etemp
-
+#
 #             b1x x=2,4
 #             ---------
 #
@@ -4102,7 +4288,7 @@
 #
               etemp = t4aibj(a,i,b,j)*t4aibj(a,i,b,j)
               b44  += etemp
-
+#
      ENDPARDO a, i, b, j
 #
 #    Compute contributions due to T1ai amplitudes. 
@@ -4191,6 +4377,7 @@
      collective Tb33 += b33 
      collective Tb34 += b34 
      collective Tb44 += b44 
+     execute server_barrier 
 #
 #    Now the unique elements of the 'B-matrix' have been computed and the array filled out. 
 #    --------------------------------------------------------------------------------------
@@ -4200,8 +4387,10 @@
 #    -------------------------------------------------------------------------------- 
 #
      CALL SETUP_DIIS 
+     execute server_barrier 
 #
      execute compute_diis # --> New instruction  
+     execute server_barrier 
 #
      c1 = Tb11 
      c2 = Tb22 
@@ -4211,12 +4400,14 @@
     #execute print_scalar c2 
     #execute print_scalar c3 
     #execute print_scalar c4 
+     execute server_barrier 
 #
 #    Done computing the c-vector. 
 #    ---------------------------- 
 #
 #    Form the updated amplitudes using the c-vector. 
 #    -----------------------------------------------  
+#
 #    Form T2old_ab. 
 #    -------------- 
 #
@@ -4327,6 +4518,7 @@
 #
 #    Determine the 'B-matrix'. 
 #    ------------------------- 
+#
 #    Compute contributions due to T2aibj amplitudes.
 #    -----------------------------------------------
 #
@@ -4340,32 +4532,32 @@
            REQUEST e3aibj(a,i,b,j) a # kiter-2 amplitudes
            REQUEST e4aibj(a,i,b,j) a # kiter-1 amplitudes
            REQUEST e5aibj(a,i,b,j) a # kiter-0 amplitudes
-
+#
            REQUEST e1aibj(a,j,b,i) a # kiter-4 amplitudes
            REQUEST e2aibj(a,j,b,i) a # kiter-3 amplitudes
            REQUEST e3aibj(a,j,b,i) a # kiter-2 amplitudes
            REQUEST e4aibj(a,j,b,i) a # kiter-1 amplitudes
            REQUEST e5aibj(a,j,b,i) a # kiter-0 amplitudes
 #
-           taibj(a,i,b,j)  = e1aibj(a,j,b,i)
-           t1aibj(a,i,b,j) = e1aibj(a,i,b,j)
-           t1aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e1aibj(a,j,b,i) 
+           t1aibj(a,i,b,j) = e1aibj(a,i,b,j) 
+           t1aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e2aibj(a,j,b,i)
-           t2aibj(a,i,b,j) = e2aibj(a,i,b,j)
-           t2aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e2aibj(a,j,b,i) 
+           t2aibj(a,i,b,j) = e2aibj(a,i,b,j) 
+           t2aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e3aibj(a,j,b,i)
-           t3aibj(a,i,b,j) = e3aibj(a,i,b,j)
-           t3aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e3aibj(a,j,b,i) 
+           t3aibj(a,i,b,j) = e3aibj(a,i,b,j) 
+           t3aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e4aibj(a,j,b,i)
-           t4aibj(a,i,b,j) = e4aibj(a,i,b,j)
-           t4aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e4aibj(a,j,b,i) 
+           t4aibj(a,i,b,j) = e4aibj(a,i,b,j) 
+           t4aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
-           taibj(a,i,b,j)  = e5aibj(a,j,b,i)
-           t5aibj(a,i,b,j) = e5aibj(a,i,b,j)
-           t5aibj(a,i,b,j)-= taibj(a,i,b,j)
+           taibj(a,i,b,j)  = e5aibj(a,j,b,i) 
+           t5aibj(a,i,b,j) = e5aibj(a,i,b,j) 
+           t5aibj(a,i,b,j)-= taibj(a,i,b,j) 
 #
 #          Compute contributions to the 'B-matrix'.
 #          ----------------------------------------
@@ -4374,76 +4566,77 @@
 #             ---------
 #
               etemp = e1aibj(a,i,b,j)*e1aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b11  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b12  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b13  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b14  += etemp
 #
               etemp = e1aibj(a,i,b,j)*e5aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b15  += etemp
 #
 #             b1x x=2,5
 #             ---------
 #
               etemp = e2aibj(a,i,b,j)*e2aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b22  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b23  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b24  += etemp
 #
               etemp = e2aibj(a,i,b,j)*e5aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b25  += etemp
 #
 #             b1x x=3,5
 #             ---------
 #
               etemp = e3aibj(a,i,b,j)*e3aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b33  += etemp
 #
               etemp = e3aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b34  += etemp
 #
               etemp = e3aibj(a,i,b,j)*e5aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b35  += etemp
 #
 #             b1x x=4,5
 #             ---------
 #
               etemp = e4aibj(a,i,b,j)*e4aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b44  += etemp
 #
               etemp = e4aibj(a,i,b,j)*e5aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b45  += etemp
 #
 #             b1x x=5,5
 #             ---------
 #
               etemp = e5aibj(a,i,b,j)*e5aibj(a,i,b,j)
-              etemp *= 4.0
+              etemp *= 2.0
               b55  += etemp
+#
 #
 #             b1x x=1,5
 #             ---------
@@ -4622,6 +4815,7 @@
      collective Tb44 += b44 
      collective Tb45 += b45 
      collective Tb55 += b55 
+     execute server_barrier 
 #
 #    Now the unique elements of the 'B-matrix' have been computed and the array filled out. 
 #    --------------------------------------------------------------------------------------
@@ -4631,8 +4825,10 @@
 #    -------------------------------------------------------------------------------- 
 #
      CALL SETUP_DIIS 
+     execute server_barrier 
 #
      execute compute_diis # --> New instruction  
+     execute server_barrier 
 #
      c1 = Tb11 
      c2 = Tb22 
@@ -4644,12 +4840,14 @@
     #execute print_scalar c3 
     #execute print_scalar c4 
     #execute print_scalar c5 
+     execute server_barrier 
 #
 #    Done computing the c-vector. 
 #    ---------------------------- 
 #
 #    Form the updated amplitudes using the c-vector. 
 #    -----------------------------------------------  
+#
 #    Form T2old_ab. 
 #    -------------- 
 #
@@ -4760,8 +4958,6 @@
      ENDPROC DIIS4  
 #    ------------- 
 #
-# ---------------------------------------------------------------------------------
-#
      PROC MOVE4
 #    ----------
      execute server_barrier
@@ -4771,20 +4967,21 @@
 #    ---------------------------------------------------
 #
      execute array_copy d1aibj d0aibj
-
-#
+     execute server_barrier
 #
 #    2 --> 1
 #    ---------------------------------------------------
 #
      execute array_copy e2aibj e1aibj
      execute array_copy d2aibj d1aibj
+     execute server_barrier
 #
 #    3 --> 2
 #    ---------------------------------------------------
 #
      execute array_copy e3aibj e2aibj
      execute array_copy d3aibj d2aibj
+     execute server_barrier
 #
 #
 #    4 --> 3
@@ -4792,6 +4989,7 @@
 #
      execute array_copy e4aibj e3aibj
      execute array_copy d4aibj d3aibj
+     execute server_barrier
 #
 #    5 --> 4
 #    ---------------------------------------------------
@@ -4852,6 +5050,7 @@
      execute server_barrier
 #
      ENDPROC MOVE4
+#    -------------
 
      PROC PUT_PERT_TX
 #    ----------------
@@ -4875,6 +5074,12 @@
       execute print_scalar sum0
 #end_debug
 
+         PARDO a, a1, i, i1
+           REQUEST T2old_aa_x(a,i,a1,i1) i1
+           Taiai(a,i,a1,i1) = T2old_aa_x(a,i,a1,i1)
+           PREPARE T2aa_x(a,i,a1,i1) = Taiai(a,i,a1,i1)
+         ENDPARDO a, a1, i, i1
+
          PARDO a, b, i, j
            REQUEST T2old_ab_x(a,i,b,j) j
            Taibj(a,i,b,j) = T2old_ab_x(a,i,b,j)
@@ -4895,6 +5100,12 @@
             PUT T1a_y(a,i) = Tai(a,i)
          ENDPARDO A, I
 
+         PARDO a, a1, i, i1
+           REQUEST T2old_aa_x(a,i,a1,i1) i1
+           Taiai(a,i,a1,i1) = T2old_aa_x(a,i,a1,i1)
+           PREPARE T2aa_y(a,i,a1,i1) = Taiai(a,i,a1,i1)
+         ENDPARDO a, a1, i, i1
+
          PARDO a, b, i, j
            REQUEST T2old_ab_x(a,i,b,j) j
            Taibj(a,i,b,j) = T2old_ab_x(a,i,b,j)
@@ -4914,6 +5125,12 @@
             Tai(a,i) = t1a_old_x(a,i)
             PUT T1a_z(a,i) = Tai(a,i)
          ENDPARDO A, I
+
+         PARDO a, a1, i, i1
+           REQUEST T2old_aa_x(a,i,a1,i1) i1
+           Taiai(a,i,a1,i1) = T2old_aa_x(a,i,a1,i1)
+           PREPARE T2aa_z(a,i,a1,i1) = Taiai(a,i,a1,i1)
+         ENDPARDO a, a1, i, i1
 
          PARDO a, b, i, j
            REQUEST T2old_ab_x(a,i,b,j) j
@@ -5130,7 +5347,9 @@
             t1aiai(a,i,b,j)           = T2old_ab_x(a,j,b,i)
             taiai(a,i,b,j)           -= t1aiai(a,i,b,j)
             PREPARE T2old_aa_x(a,i,b,j) = taiai(a,i,b,j)
+
        ENDPARDO a, i, b, j
+       EXECUTE SERVER_BARRIER
 
        CALL ENERGY_NEW
 
@@ -5138,8 +5357,6 @@
 # ---------------- 
        it_count = 0.0
        DO KITER 
-
-       EXECUTE SERVER_BARRIER
 #
        PARDO a, i, b, j
             REQUEST                     T2old_ab_x(a,i,b,j) a
@@ -5150,7 +5367,7 @@
             PREPARE T2old_aa_x(a,i,b,j) = taiai(a,i,b,j)
        ENDPARDO a, i, b, j
 #
-      EXECUTE SERVER_BARRIER
+       EXECUTE SERVER_BARRIER
 
          it_count += 1.0
          execute print_scalar it_count 
@@ -5172,7 +5389,6 @@
          EXECUTE SIP_BARRIER 
 
          CALL T1ANEW 
-
          CALL T2NEWAB  
 
          CALL WMINJ 
@@ -5233,6 +5449,42 @@
          ENDPARDO a, i, b, j
          EXECUTE SERVER_BARRIER
 
+#bgn_debug
+    esuma   = 0.0
+    esumb   = 0.0
+    ecorraa = 0.0
+
+    PARDO a,i
+           GET t1a_old_x(a,i)
+           etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
+           esuma += etemp
+     ENDPARDO a,i
+     execute server_barrier
+     collective ecorraa += esuma
+     execute print_scalar ecorraa
+
+     ecorraa = 0.0
+     ecorrab = 0.0
+     esumaa  = 0.0
+     esumab  = 0.0
+     PARDO a, i, a1, i1
+           REQUEST T2old_aa_x(a,i,a1,i1) i1
+           etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
+           esumaa += etemp
+     ENDPARDO a, i, a1, i1
+
+     PARDO a, b, i, j
+           REQUEST T2old_ab_x(a,i,b,j) j
+           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+           esumab += etemp
+     ENDPARDO a, b, i, j
+     execute server_barrier
+     collective ecorraa += esumaa
+     collective ecorrab += esumab
+     execute print_scalar ecorraa
+     execute print_scalar ecorrab
+#end_debug
+
 #        Check on convergence 
 #        -------------------- 
 #
@@ -5273,6 +5525,42 @@
 # T1old_aa_x, T2old_aa_x and they copied for different arrays to
 # dump them to the disk. 
 #
+#bgn_debug
+    esuma   = 0.0
+    ecorrT  = 0.0
+    ecorrD  = 0.0
+    esumb   = 0.0
+
+    PARDO a,i
+           GET t1a_old_x(a,i)
+           etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
+           esuma += etemp
+     ENDPARDO a,i
+
+     execute sip_barrier 
+     collective ecorraa += esuma
+     execute print_scalar ecorraa
+
+     ecorraa = 0.0
+     ecorrab = 0.0
+     esumaa  = 0.0
+     esumab  = 0.0
+     PARDO a, b, i, j
+           REQUEST T2old_aa_x(a,i,b,j) j
+           etemp = T2old_aa_x(a,i,b,j)*T2old_aa_x(a,i,b,j)
+           esumaa += etemp
+
+           REQUEST T2old_ab_x(a,i,b,j) j
+           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+           esumab += etemp
+             
+     ENDPARDO a, b, i, j
+     execute server_barrier 
+     collective ecorraa += esumaa
+     collective ecorrab += esumab
+     execute print_scalar ecorraa
+     execute print_scalar ecorrab
+#end_debug
 
          IF ICOUNT == 1.0
             CALL PUT_PERT_TX  
@@ -5307,16 +5595,8 @@
 #          sum = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
 #          suma += sum
 #      endpardo a, i, a1, i1
-#      pardo b, j, b1, j1
-#          REQUEST T2old_bb_x(b,j,b1,j1) b
-#          sum = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
-#          sumb += sum
-#      endpardo b, j, b1, j1
-#      execute sip_barrier
 #      collective sumaa += suma
-#      collective sumbb += sumb
 #      diff = sumaa
-#      diff -= sumbb
 #      execute print_scalar diff
 #debug_end
 

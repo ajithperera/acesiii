@@ -1,8 +1,8 @@
 rm -f make.out make.err
-../../../bin/sial perturb_ccsd_lt/CCSD_Lxyz_RHF.sial && cp perturb_ccsd_lt/CCSD_Lxyz_RHF.sio ../../../bin/sio
-input  file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sial
-output file: perturb_ccsd_lt/CCSD_Lxyz_RHF.sio
+../../../bin/sial perturb_ccsd_lt/CCSD_Txyz_RHF.sial && cp perturb_ccsd_lt/CCSD_Txyz_RHF.sio ../../../bin/sio
+input  file: perturb_ccsd_lt/CCSD_Txyz_RHF.sial
+output file: perturb_ccsd_lt/CCSD_Txyz_RHF.sio
     No compilation errors
-Writing tables to perturb_ccsd_lt/CCSD_Lxyz_RHF.sio
+Writing tables to perturb_ccsd_lt/CCSD_Txyz_RHF.sio
 
-SIO (Super Instruction Object) file is saved to "perturb_ccsd_lt/CCSD_Lxyz_RHF.sio".
+SIO (Super Instruction Object) file is saved to "perturb_ccsd_lt/CCSD_Txyz_RHF.sio".
