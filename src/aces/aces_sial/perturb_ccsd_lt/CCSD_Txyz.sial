@@ -6577,26 +6577,10 @@
      ecorrT   = ecorraa 
      ecorrT  += ecorrbb
 
-     ecorrD   = ecorrbb
-     ecorrD  -= ecorrbb
-     
+     ecorraa = 0.0
+     esuma   = 0.0
      PARDO a, a1, i, i1 
-           REQUEST VSpipi(a,i,a1,i1) i1  
            REQUEST T2old_aa_x(a,i,a1,i1) i1  
-
-           GET t1a_old_x(a1,i1) 
-           GET t1a_old_x(a1,i) 
-           GET t1a_old_x(a,i1) 
-           GET t1a_old_x(a,i) 
-
-           tai(a1,i1)         =          t1a_old_x(a1,i1) 
-           T2aiai(a,i,a1,i1)  = t1a_old_x(a,i)^tai(a1,i1)
-           tai(a,i1)          =           t1a_old_x(a,i1) 
-           T3aiai(a,i,a1,i1)  = t1a_old_x(a1,i)^tai(a,i1)
-           T2aiai(a,i,a1,i1) -= T3aiai(a,i,a1,i1)
-           T2aiai(a,i,a1,i1) += T2old_aa_x(a,i,a1,i1)
-
-#           etemp = VSpipi(a,i,a1,i1)*T2aiai(a,i,a1,i1) 
            etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
            etemp = 0.25*etemp 
            esuma += etemp 
@@ -6605,22 +6589,7 @@
      ecorrbb = 0.0 
      esumb   = 0.0 
      PARDO b, b1, j, j1 
-           REQUEST VSqjqj(b,j,b1,j1) j1  
-           REQUEST T2old_bb_x(b,j,b1,j1) j1  
-
-           GET t1b_old_x(b1,j1) 
-           GET t1b_old_x(b1,j) 
-           GET t1b_old_x(b,j1) 
-           GET t1b_old_x(b,j) 
-
-           tbj(b1,j1)         =          t1b_old_x(b1,j1) 
-           T2bjbj(b,j,b1,j1)  = t1b_old_x(b,j)^tbj(b1,j1)
-           tbj(b,j1)          =           t1b_old_x(b,j1) 
-           T3bjbj(b,j,b1,j1)  = t1b_old_x(b1,j)^tbj(b,j1)
-           T2bjbj(b,j,b1,j1) -= T3bjbj(b,j,b1,j1)
-           T2bjbj(b,j,b1,j1) += T2old_bb_x(b,j,b1,j1)
-
-#           etemp = VSqjqj(b,j,b1,j1)*T2bjbj(b,j,b1,j1) 
+          REQUEST T2old_bb_x(b,j,b1,j1) j1
            etemp = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
            etemp = 0.25*etemp 
            esumb += etemp 
@@ -6629,19 +6598,11 @@
      ecorrab = 0.0 
      esumab  = 0.0 
      PARDO a, b, i, j 
-           REQUEST Vpiqj(a,i,b,j) j  
-           REQUEST T2old_ab_x(a,i,b,j) j  
-           GET t1a_old_x(a,i) 
-           GET t1b_old_x(b,j) 
-
-           Taibj(a,i,b,j)  = t1a_old_x(a,i)^t1b_old_x(b,j) 
-           Taibj(a,i,b,j) += T2old_ab_x(a,i,b,j)  
-
-#           etemp = Taibj(a,i,b,j)*Vpiqj(a,i,b,j) 
-            etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+           REQUEST T2old_ab_x(a,i,b,j) j
+           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
            esumab += etemp 
      ENDPARDO a, b, i, j 
-     execute sip_barrier 
+     execute server_barrier 
 
      collective ecorraa += esuma
      execute print_scalar ecorraa 
@@ -6654,12 +6615,8 @@
 
      ecorrT  += ecorraa 
      ecorrT  += ecorrbb
+     ecorrT  += ecorrab 
 
-     ecorrD  += ecorraa 
-     ecorrD  -= ecorrbb
-
-     execute print_scalar ecorrD
-     ecorrT += ecorrab 
      execute print_scalar ecorrT  
 
      if kiter > 0

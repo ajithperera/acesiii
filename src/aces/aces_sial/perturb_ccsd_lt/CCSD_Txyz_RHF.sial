@@ -3222,8 +3222,17 @@
      collective ecorraa += esuma
      execute print_scalar ecorraa
 
+     ecorraa *= 2.0
      ecorrT   = ecorraa 
-     ecorraa  *= 2.0
+
+     ecorraa = 0.0
+     esuma   = 0.0
+     PARDO a, a1, i, i1
+           REQUEST T2old_aa_x(a,i,a1,i1) i1
+           etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
+           etemp = 0.25*etemp
+           esuma += etemp
+     ENDPARDO a, a1, i, i1
 
      ecorrab = 0.0 
      esumab  = 0.0 
@@ -3232,13 +3241,19 @@
            etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
            esumab += etemp 
      ENDPARDO a, b, i, j 
-     execute sip_barrier 
+     execute server_barrier 
+
+     collective ecorraa += esuma
+     execute print_scalar ecorraa
+     ecorraa *= 2.0
 
      collective ecorrab += esumab
      execute print_scalar ecorrab 
-     ecorrab *= 2.0
+     
+     ecorrT += ecorraa
      ecorrT += ecorrab 
-#     execute print_scalar ecorrT  
+
+     execute print_scalar ecorrT  
 
      if kiter > 0
          ncount1 = 0.0
@@ -5357,17 +5372,6 @@
 # ---------------- 
        it_count = 0.0
        DO KITER 
-#
-       PARDO a, i, b, j
-            REQUEST                     T2old_ab_x(a,i,b,j) a
-            REQUEST                     T2old_ab_x(a,j,b,i) a
-            taiai(a,i,b,j)            = T2old_ab_x(a,i,b,j)
-            t1aiai(a,i,b,j)           = T2old_ab_x(a,j,b,i)
-            taiai(a,i,b,j)           -= t1aiai(a,i,b,j)
-            PREPARE T2old_aa_x(a,i,b,j) = taiai(a,i,b,j)
-       ENDPARDO a, i, b, j
-#
-       EXECUTE SERVER_BARRIER
 
          it_count += 1.0
          execute print_scalar it_count 
@@ -5412,6 +5416,16 @@
          EXECUTE SIP_BARRIER   
          EXECUTE SERVER_BARRIER   
 
+         PARDO a, i, b, j
+            REQUEST                     T2old_ab_x(a,i,b,j) a
+            REQUEST                     T2old_ab_x(a,j,b,i) a
+            taiai(a,i,b,j)            = T2old_ab_x(a,i,b,j)
+            t1aiai(a,i,b,j)           = T2old_ab_x(a,j,b,i)
+            taiai(a,i,b,j)           -= t1aiai(a,i,b,j)
+            PREPARE T2old_aa_x(a,i,b,j) = taiai(a,i,b,j)
+        ENDPARDO a, i, b, j
+        EXECUTE SERVER_BARRIER   
+#
          CALL ENERGY_NEW 
 
          EXECUTE SIP_BARRIER  
