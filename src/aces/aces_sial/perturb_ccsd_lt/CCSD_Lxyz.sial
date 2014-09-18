@@ -7349,9 +7349,7 @@
      ecorraa = 0.0
 
      PARDO a, a1, i, i1
-           REQUEST VSpipi(a,i,a1,i1)   i1
            REQUEST L2old_aa_x(i,a,i1,a1) a1
-
            etemp = L2old_aa_x(i,a,i1,a1)*L2old_aa_x(i,a,i1,a1)
            etemp = 0.25*etemp
            esuma += etemp
@@ -7359,9 +7357,7 @@
      esumb    = 0.0
      ecorrbb = 0.0
      PARDO b, b1, j, j1
-           REQUEST VSqjqj(b,j,b1,j1)   j1
            REQUEST L2old_bb_x(j,b,j1,b1) b1
-
            etemp = L2old_bb_x(j,b,j1,b1)*L2old_bb_x(j,b,j1,b1)
            etemp = 0.25*etemp
            esumb += etemp
@@ -7369,9 +7365,7 @@
      ecorrab = 0.0
      esumab  = 0.0
      PARDO a, b, i, j
-           REQUEST Vpiqj(a,i,b,j) j
            REQUEST L2old_ab_x(i,a,j,b) b
-
            etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
            esumab += etemp
      ENDPARDO a, b, i, j
@@ -7394,12 +7388,12 @@
 
      execute print_scalar ecorrT
 
-      esuma   = 0.0
-      esumb   = 0.0
-      ecorraa = 0.0
-      ecorrbb = 0.0
+     esuma   = 0.0
+     esumb   = 0.0
+     ecorraa = 0.0
+     ecorrbb = 0.0
 
-      PARDO i,a
+     PARDO i,a
            GET l1a_old_x(i,a)
            etemp  = l1a_old_x(i,a)*l1a_old_x(i,a)
            esuma += etemp
@@ -12824,8 +12818,8 @@
          pinf(kiter,kptr1)  = etemp
       enddo kptr1
       enddo kiter
-      it_count = 0.0
 
+      it_count = 0.0
 # ....................................................................
 #                 iterations starts here
 #.....................................................................
@@ -12981,7 +12975,6 @@
      endif # kiter == 5
      CALL MOVEL1
      CALL MOVEL2
-
 
       execute print_scalar ediff 
       IF ecorrT < eold

@@ -6589,7 +6589,7 @@
      ecorrbb = 0.0 
      esumb   = 0.0 
      PARDO b, b1, j, j1 
-          REQUEST T2old_bb_x(b,j,b1,j1) j1
+           REQUEST T2old_bb_x(b,j,b1,j1) j1
            etemp = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
            etemp = 0.25*etemp 
            esumb += etemp 
