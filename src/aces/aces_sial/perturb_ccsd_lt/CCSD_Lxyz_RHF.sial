@@ -8149,22 +8149,22 @@
       execute blocks_to_list                T2aa_z
       execute blocks_to_list                T2ab_z
 
-      execute blocks_to_list l1a_x
-      execute blocks_to_list L2aa_x
-      execute blocks_to_list L2ab_x
+      execute blocks_to_list                l1a_x
+      execute blocks_to_list                L2aa_x
+      execute blocks_to_list                L2ab_x
 
-      execute blocks_to_list l1a_y
-      execute blocks_to_list L2aa_y
-      execute blocks_to_list L2ab_y
+      execute blocks_to_list                l1a_y
+      execute blocks_to_list                L2aa_y
+      execute blocks_to_list                L2ab_y
 
-      execute blocks_to_list l1a_z
-      execute blocks_to_list L2aa_z
-      execute blocks_to_list L2ab_z
+      execute blocks_to_list                l1a_z
+      execute blocks_to_list                L2aa_z
+      execute blocks_to_list                L2ab_z
 
       execute server_barrier
       execute sip_barrier
       execute write_blocks_to_list
       execute sip_barrier
-
+#
                            ENDSIAL CCSD_LXYZ_RHF
 #                          --------------------
