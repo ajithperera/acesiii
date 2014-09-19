@@ -6863,7 +6863,7 @@
 #
       totenerg  = ecorrT  
       totenerg += scfeneg  
-     #execute print_scalar totenerg  
+      execute print_scalar totenerg  
       execute print_rel_info seven pinf
       IF ICOUNT == 1.0
          CALL PUT_FD_T1

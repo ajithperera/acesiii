@@ -1,5 +1,5 @@
 #
-                       SIAL LCCSD_resp_1D
+                       SIAL LCCSD_0resp_1D
 
       index   xyz    = 1,3
       index   xyz1   = 1,3
@@ -293,18 +293,8 @@
       ENDPROC CREATE_FIXED
 #     ---------------------
 
-#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-#
-# In this superprocedure the particle-particle block of the relaxed density 
-# matrix is computed. The expressions programmed are: 
-# 
-# D_{ab} = 1/4 P_+(ab) t^{ae}_{mn} \lambda^{mn}_{be}  
-#        + 1/4 P_+(ab) t^{aE}_{mN} \lambda^{mN}_{bE}  
-#        + 1/2 P_+(ab) t^{a}_{m} \lambda^{m}_{b} 
-#
-# D_{AB} = D_{ab} [a<-->A, b<-->B, i<-->I, j<-->J, m<-->M, n<-->N] 
-#
       PROC DABA
+#     ----------
       PARDO a, a1, i
             GET t1a_old(a,i)    # read from list
             GET l1a_old(i,a1)   # read from list
@@ -337,7 +327,7 @@
             ENDDO b
       ENDPARDO a, a1, i
       ENDPROC DABA
-#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+#     ------------
       PROC DABB
 #     --------- 
       PARDO b1, b, j
@@ -372,7 +362,7 @@
             ENDDO a
       ENDPARDO b1, b, j
       ENDPROC DABB
-#.....................................................................
+#     ------------
       PROC DAB
            CALL DABA
            CALL DABB
@@ -918,6 +908,7 @@
       execute sip_barrier
 
       CALL D1TRANS                                            
+      CALL GET_HBXYZ_Dipole 
       CALL CMP_DIPOLEMS
 
       tmpnuc = 0.0
@@ -949,9 +940,12 @@
 #PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 # Read two-electron transformed integrals 
 # --------------------------------------- 
-# Uncomment here and L_xyz if MO integrals are needed.
+# Uncomment here and LCCSD_UHF.sial if MO integrals are needed.
+# Here, the integral are not needed. But Read in because the
+# the LCCSD_UHF.sial is forced to write them (for amp. deriavtive
+# codes). 
 
-#      CALL READ_2EL
+      CALL READ_2EL
 # Read converged T and Lambda amplitudes 
 # -------------------------------------- 
 #
@@ -1001,4 +995,4 @@
 
 # done reading T and lambda
 
-      ENDSIAL  SIAL LCCSD_resp_1D
+      ENDSIAL  SIAL LCCSD_0resp_1D

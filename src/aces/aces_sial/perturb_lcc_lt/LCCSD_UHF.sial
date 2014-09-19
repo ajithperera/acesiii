@@ -6312,6 +6312,9 @@
       ENDDO j
       ENDDO b
 #
+#  Uncomment here if the MO two electrons are not needed in
+#  the succeding SIAL codes.
+#
       CALL WRITE_2EL   
 #
       execute sip_barrier
