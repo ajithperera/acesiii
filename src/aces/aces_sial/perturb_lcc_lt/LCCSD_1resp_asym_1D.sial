@@ -3596,7 +3596,7 @@
 
       PARDO a, i
            GET T1a_y(a,i)
-           tia(i,a) = T1a_x(a,i)
+           tia(i,a) = T1a_y(a,i)
            PUT L1a_y(i,a) = tia(i,a)
       ENDPARDO a, i
 
@@ -3625,7 +3625,7 @@
       PARDO a, i
            GET T1a_z(a,i)
            tia(i,a) = T1a_z(a,i)
-           PUT L1a_y(i,a) = tia(i,a)
+           PUT L1a_z(i,a) = tia(i,a)
       ENDPARDO a, i
 
       PARDO b, j
