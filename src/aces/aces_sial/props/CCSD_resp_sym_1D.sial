@@ -2055,7 +2055,6 @@
             GET                     T2L2_VV_A_x (a,a1) 
             tai (a,i)             = T2L2_VV_A_x (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
-#            tai (a,i) *= 0.0
             PUT  Doldai_a_x(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
 

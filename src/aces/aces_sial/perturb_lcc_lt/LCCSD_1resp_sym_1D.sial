@@ -1,4 +1,19 @@
+#  Copyright (c) 2003-2010 University of Florida
 #
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  The GNU General Public License is included in this distribution
+#  in the file COPYRIGHT.
+#
+
                 SIAL LCCSD_1resp_sym_1D
 
       index   xyz    = 1,3
@@ -135,30 +150,6 @@
       static pol(xyz,xyz1)
       scalar ipol
 
-      distributed T2L2_VV_A_x(a,a1)
-      distributed T2L2_VV_B_x(b,b1)
-      distributed T1L1_VV_A_x(a,a1)
-      distributed T1L1_VV_B_x(b,b1)
-
-      distributed T2L2_OO_A_x(i,i1)
-      distributed T2L2_OO_B_x(j,j1)
-      distributed T1L1_OO_A_x(i,i1)
-      distributed T1L1_OO_B_x(j,j1)
-
-      distributed T2L2_VV_A_y(a,a1)
-      distributed T2L2_VV_B_y(b,b1)
-      distributed T2L2_OO_A_y(i,i1)
-      distributed T2L2_OO_B_y(j,j1)
-      distributed T1L1_OO_A_y(i,i1)
-      distributed T1L1_OO_B_y(j,j1)
-
-      distributed T2L2_VV_A_z(a,a1)
-      distributed T2L2_VV_B_z(b,b1)
-      distributed T2L2_OO_A_z(i,i1)
-      distributed T2L2_OO_B_z(j,j1)
-      distributed T1L1_OO_A_z(i,i1)
-      distributed T1L1_OO_B_z(j,j1)
-
       distributed t1a_old_x(a,i)
       distributed t1b_old_x(b,j)
       distributed l1a_old_x(i,a)
@@ -207,9 +198,6 @@
       served L2bb_z(j,b,j1,b1)
       served L2ab_z(i,a,j,b)
 
-      Distributed  LT1A_x (a,i)
-      Distributed  LT1B_x (b,j)
-
       distributed Dij_a_x(i,i1)
       distributed Dij_b_x(j,j1)
 
@@ -236,11 +224,6 @@
       served L2old_aa(i,a,i1,a1)
       served L2old_bb(j,b,j1,b1)
       served L2old_ab(i,a,j,b)
-
-      Distributed  LA1A (i,a)
-      Distributed  LA1B (j,b)
-      Distributed  LT1A (a,i)
-      Distributed  LT1B (b,j)
 
       served VSpipi(p1,i,p,i1)
       served Viaai(i,a1,a,i1)
@@ -397,11 +380,6 @@
 
      PROC CREATE_FIXED
 #    -------------------
-      CREATE LT1A(a,i)
-      CREATE LT1B(b,j)
-      CREATE LA1A(i,a)
-      CREATE LA1B(j,b)
-
       CREATE  Dij_a(i,i1)
       CREATE  Dij_b(j,j1)
       CREATE  Dab_a(a,a1)
@@ -420,41 +398,7 @@
       CREATE DpqA_3
       CREATE DpqB_3
 
-      CREATE T2L2_VV_A
-      CREATE T2L2_VV_B
-      CREATE T1L1_OO_A
-      CREATE T1L1_OO_B
-      CREATE T2L2_OO_A
-      CREATE T2L2_OO_B
-
       EXECUTE SERVER_BARRIER
-
-      DO a
-      DO i
-         GET         t1a_old(a,i)
-         PUT LT1A(a,i) = t1a_old(a,i)
-      ENDDO i
-      ENDDO a
-      DO a
-      DO i
-         GET         l1a_old(i,a)
-         PUT LA1A(i,a) = l1a_old(i,a)
-      ENDDO i
-      ENDDO a
-      DO b
-      DO j
-         GET         t1b_old(b,j)
-         PUT LT1B(b,j) = t1b_old(b,j)
-      ENDDO j
-      ENDDO b
-      DO b
-      DO j
-         GET         l1b_old(j,b)
-         PUT LA1B(j,b) = l1b_old(j,b)
-      ENDDO j
-      ENDDO b
-
-      EXECUTE  SERVER_BARRIER
 
       ENDPROC CREATE_FIXED
 #     ---------------------
@@ -491,44 +435,10 @@
       CREATE  Doldai_a_x(a,i)
       CREATE  Doldai_b_x(b,j)
 
-      CREATE LT1A_x(a,i)
-      CREATE LT1B_x(b,j)
-
-      CREATE T2L2_VV_A_x
-      CREATE T2L2_VV_B_x
-      CREATE T1L1_VV_A_x
-      CREATE T1L1_VV_B_x
-
-      CREATE T1L1_OO_A_x
-      CREATE T1L1_OO_B_x
-      CREATE T2L2_OO_A_x
-      CREATE T2L2_OO_B_x
-
       EXECUTE  SERVER_BARRIER
 
       ENDPROC CREATE_XARRAYS
 #     ----------------------
-
-      PROC FILL_LT1_ARRAYS
-#     --------------------
-
-      DO a
-      DO i
-         GET           t1a_old_x(a,i)
-         PUT LT1A_x(a,i) = t1a_old_x(a,i)
-      ENDDO i
-      ENDDO a
-      DO b
-      DO j
-         GET           t1b_old_x(b,j)
-         PUT LT1B_x(b,j) = t1b_old_x(b,j)
-      ENDDO j
-      ENDDO b
-
-      EXECUTE  SIP_BARRIER
-
-      ENDPROC FILL_LT1_ARRAYS
-#     -----------------------
 
       PROC DELETE_XARRAYS
 #     -------------------
@@ -538,9 +448,6 @@
 
       DELETE  L1A_OLD_X(i,a)
       DELETE  L1B_OLD_X(j,b)
-
-      DELETE LT1A_x(a,i)
-      DELETE LT1B_x(b,j)
 
       DELETE  Dij_a_x(i,i1)
       DELETE  Dij_b_x(j,j1)
@@ -564,16 +471,6 @@
 
       DELETE  Doldai_a_x(a,i)
       DELETE  Doldai_b_x(b,j)
-
-      DELETE T2L2_VV_A_x
-      DELETE T2L2_VV_B_x
-      DELETE T1L1_VV_A_x
-      DELETE T1L1_VV_B_x
-
-      DELETE T1L1_OO_A_x
-      DELETE T1L1_OO_B_x
-      DELETE T2L2_OO_A_x
-      DELETE T2L2_OO_B_x
 
       EXECUTE SERVER_BARRIER
 
@@ -649,11 +546,13 @@
             ENDDO a
       ENDPARDO b1, b, j
       ENDPROC DABB
-#.....................................................................
+#
       PROC DAB
+#     --------
            CALL DABA
            CALL DABB
       ENDPROC DAB
+#     -----------
 
       PROC NEWDAB_x
 #     -------------
@@ -984,18 +883,7 @@
 #end_debug
 
       ENDPROC NEWDAB_x
-# --------------------------------------------------------------------------- 
-#
-# In this superprocedure the occupied-occupied block of the relaxed
-# density matrix is computed. The expressions programmed are:
-#
-# D_{ij} = -1/4 P_+(ij) t^{ef}_{im} \lambda^{jm}_{ef} 
-#          -1/4 P_+(ij) t^{eF}_{iM} \lambda^{jM}_{eF}   
-#          -1/2 P_+(ij) t^{e}_{i} \lambda^{j}_{e}   
-#
-# D_{IJ} = D_{ij} [i<-->I, j<-->J, e<-->E, f<-->F] 
-#
-# --------------------------------------------------------------------------- 
+
       PROC DIJA
 #     --------- 
       PARDO a, a1, i2
@@ -3007,7 +2895,6 @@
                ENDIF
 
                CALL CHECK_TL_ARRAYS
-               CALL FILL_LT1_ARRAYS
 
                call NEWDAB_x 
                call NEWDIJ_x

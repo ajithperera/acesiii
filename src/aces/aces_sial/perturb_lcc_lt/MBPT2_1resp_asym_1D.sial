@@ -15,6 +15,9 @@
 #
                      SIAL LCCSD_1resp_asym_1D
 
+# Both zero and 1st order MBPT(2) density matrices are computed  for imaginary 
+# perturbations. The zero order reference is assumed to be canonical.
+
       index   xyz    = 1,3
       index   xyz1   = 1,3
       Index NPERT    = 1, 3 
@@ -156,6 +159,30 @@
       static g_tensor_dbg(xyz,xyz1)
       scalar ipol
 
+      distributed T2L2_VV_A_x(a,a1)
+      distributed T2L2_VV_B_x(b,b1)
+      distributed T1L1_VV_A_x(a,a1)
+      distributed T1L1_VV_B_x(b,b1)
+
+      distributed T2L2_OO_A_x(i,i1)
+      distributed T2L2_OO_B_x(j,j1)
+      distributed T1L1_OO_A_x(i,i1)
+      distributed T1L1_OO_B_x(j,j1)
+
+      distributed T2L2_VV_A_y(a,a1)
+      distributed T2L2_VV_B_y(b,b1)
+      distributed T2L2_OO_A_y(i,i1)
+      distributed T2L2_OO_B_y(j,j1)
+      distributed T1L1_OO_A_y(i,i1)
+      distributed T1L1_OO_B_y(j,j1)
+
+      distributed T2L2_VV_A_z(a,a1)
+      distributed T2L2_VV_B_z(b,b1)
+      distributed T2L2_OO_A_z(i,i1)
+      distributed T2L2_OO_B_z(j,j1)
+      distributed T1L1_OO_A_z(i,i1)
+      distributed T1L1_OO_B_z(j,j1)
+
       distributed t1a_old_x(a,i)
       distributed t1b_old_x(b,j)
       distributed l1a_old_x(i,a)
@@ -204,6 +231,9 @@
       served L2bb_z(j,b,j1,b1)
       served L2ab_z(i,a,j,b)
 
+      LOCAL  LT1A_x (a,i)
+      LOCAL  LT1B_x (b,j)
+
       distributed dtmp(a,a1)
 
       distributed Dij_a_x(i,i1)
@@ -232,6 +262,11 @@
       served L2old_aa(i,a,i1,a1)
       served L2old_bb(j,b,j1,b1)
       served L2old_ab(i,a,j,b)
+
+      LOCAL  LA1A (i,a)
+      LOCAL  LA1B (j,b)
+      LOCAL  LT1A (a,i)
+      LOCAL  LT1B (b,j)
 
       served VSpipi(p1,i,p,i1)
       served Viaai(i,a1,a,i1)
@@ -412,6 +447,11 @@
 
      PROC CREATE_FIXED
 #    -------------------
+      ALLOCATE LT1A(*,*)
+      ALLOCATE LT1B(*,*)
+      ALLOCATE LA1A(*,*)
+      ALLOCATE LA1B(*,*)
+
       CREATE  Dij_a(i,i1)
       CREATE  Dij_b(j,j1)
       CREATE  Dab_a(a,a1)
@@ -429,6 +469,40 @@
       CREATE DpqB_2
       CREATE DpqA_3
       CREATE DpqB_3
+
+      CREATE T2L2_VV_A
+      CREATE T2L2_VV_B
+      CREATE T1L1_OO_A
+      CREATE T1L1_OO_B
+      CREATE T2L2_OO_A
+      CREATE T2L2_OO_B
+
+      EXECUTE SERVER_BARRIER
+
+      DO a
+      DO i
+         GET         t1a_old(a,i)
+         LT1A(a,i) = t1a_old(a,i)
+      ENDDO i
+      ENDDO a
+      DO a
+      DO i
+         GET         l1a_old(i,a)
+         LA1A(i,a) = l1a_old(i,a)
+      ENDDO i
+      ENDDO a
+      DO b
+      DO j
+         GET         t1b_old(b,j)
+         LT1B(b,j) = t1b_old(b,j)
+      ENDDO j
+      ENDDO b
+      DO b
+      DO j
+         GET         l1b_old(j,b)
+         LA1B(j,b) = l1b_old(j,b)
+      ENDDO j
+      ENDDO b
 
       EXECUTE  SERVER_BARRIER
 
@@ -466,12 +540,46 @@
       CREATE  Doldai_a_x(a,i)
       CREATE  Doldai_b_x(b,j)
 
+      ALLOCATE LT1A_x(*,*)
+      ALLOCATE LT1B_x(*,*)
+
+      CREATE T2L2_VV_A_x
+      CREATE T2L2_VV_B_x
+      CREATE T1L1_VV_A_x
+      CREATE T1L1_VV_B_x
+
+      CREATE T1L1_OO_A_x
+      CREATE T1L1_OO_B_x
+      CREATE T2L2_OO_A_x
+      CREATE T2L2_OO_B_x
+     
       CREATE DTMP
 
       EXECUTE  SERVER_BARRIER
 
       ENDPROC CREATE_XARRAYS
 #     ----------------------
+
+      PROC FILL_LT1_ARRAYS
+#     --------------------
+
+      DO a
+      DO i
+         GET           t1a_old_x(a,i)
+         LT1A_x(a,i) = t1a_old_x(a,i)
+      ENDDO i
+      ENDDO a
+      DO b
+      DO j
+         GET           t1b_old_x(b,j)
+         LT1B_x(b,j) = t1b_old_x(b,j)
+      ENDDO j
+      ENDDO b
+
+      EXECUTE  SERVER_BARRIER
+
+      ENDPROC FILL_LT1_ARRAYS
+#     -----------------------
 
       PROC DELETE_XARRAYS
 #     -------------------
@@ -481,6 +589,9 @@
 
       DELETE  L1A_OLD_X(i,a)
       DELETE  L1B_OLD_X(j,b)
+
+      DEALLOCATE LT1A_x(*,*)
+      DEALLOCATE LT1B_x(*,*)
 
       DELETE  Dij_a_x(i,i1)
       DELETE  Dij_b_x(j,j1)
@@ -505,22 +616,26 @@
       DELETE  Doldai_a_x(a,i)
       DELETE  Doldai_b_x(b,j)
 
+      DELETE T2L2_VV_A_x
+      DELETE T2L2_VV_B_x
+      DELETE T1L1_VV_A_x
+      DELETE T1L1_VV_B_x
+
+      DELETE T1L1_OO_A_x
+      DELETE T1L1_OO_B_x
+      DELETE T2L2_OO_A_x
+      DELETE T2L2_OO_B_x
+
       DELETE DTMP
 
       EXECUTE SERVER_BARRIER
 
       ENDPROC DELETE_XARRAYS
 #     ----------------------
-#
+#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+
       PROC DABA
       PARDO a, a1, i
-            GET t1a_old(a,i)    # read from list
-            GET l1a_old(i,a1)   # read from list
-            Taa(a,a1)        = t1a_old(a,i)*l1a_old(i,a1)
-            Taa(a,a1)       *= 0.5
-            T1aa(a1,a)       = Taa(a,a1)
-            PUT Dab_a(a,a1) += Taa(a,a1)
-            PUT Dab_a(a1,a) += T1aa(a1,a)
             DO a2
             DO i1
                REQUEST T2old_aa(a,i,a2,i1) i1  # read from list
@@ -549,13 +664,6 @@
       PROC DABB
 #     --------- 
       PARDO b1, b, j
-            GET t1b_old(b1,j)  # Read from the list
-            GET l1b_old(j,b)   # Read from the list
-            Tbb(b1,b)        = t1b_old(b1,j)*l1b_old(j,b)
-            Tbb(b1,b)       *= 0.5
-            T1bb(b,b1)       = Tbb(b1,b)
-            PUT Dab_b(b1,b) += Tbb(b1,b)
-            PUT Dab_b(b,b1) += T1bb(b,b1)
             DO b2
             DO j1
                REQUEST T2old_bb(b1,j,b2,j1) j1 # Read from the list
@@ -590,55 +698,6 @@
       PROC DABA_x
 #     -----------
       PARDO a, a1, i
-            GET t1a_old(a,i)    
-            GET l1a_old(i,a1) 
-
-            GET t1a_old_x(a,i)    
-            GET l1a_old_x(i,a1) 
-
-            Taa(a,a1)  = t1a_old_x(a,i) * l1a_old(i,a1)  
-            PUT Dab_a_x_U(a,a1) += Taa(a,a1)
-
-            Taa(a,a1)  = t1a_old(a,i) * l1a_old_x(i,a1)
-            PUT Dab_a_x_L(a,a1) += Taa(a,a1)
-#bgn_debug
-#      ENDPARDO a, a1, i
-#      execute sip_barrier
-#      execute get_my_rank rank
-#      suma = 0.0
-#      sumb = 0.0
-#         pardo a, a1
-#         get Dab_a_x_U(a,a1)
-#         get Dab_a_x_L(a,a1)
-#         taa(a,a1) = Dab_a_x_U(a,a1)
-#         taat(a,a1)= Dab_a_x_L(a,a1)
-#         taa(a,a1) += taat(a,a1) 
-#         put dtmp(a,a1) =  taa(a,a1)
-#
-#
-#         if rank == 0.0
-#         execute dump_amp  Dab_a_x_U(a,a1)
-#         execute dump_amp  Dab_a_x_L(a,a1)
-#         endif 
-#         tmp = Dab_a_x_U(a,a1) * Dab_a_x_U(a,a1)
-#         suma += tmp
-#         tmp = Dab_a_x_L(a,a1) * Dab_a_x_L(a,a1)
-#         sumb += tmp
-#      endpardo a, a1
-#      execute sip_barrier 
-#      suma=0.0
-#      do a
-#      do a1
-#         get dtmp(a,a1)
-#         tmp = dtmp(a,a1) *  dtmp(a,a1) 
-#         suma += tmp
-#      enddo a1
-#      enddo a
-#     execute print_scalar suma
-#     execute print_scalar sumb
-#
-#      PARDO a, a1, i
-#end_debug
             DO a2
             DO i1
                REQUEST T2old_aa(a,i,a2,i1) i1  
@@ -802,40 +861,7 @@
       PROC DABB_x
 #     --------- 
       PARDO b1, b, j
-            GET t1b_old(b1,j)  
-            GET l1b_old(j,b)  
-            GET t1b_old_x(b1,j) 
-            GET l1b_old_x(j,b)   
 
-            Tbb(b1,b)  = t1b_old_x(b1,j)*l1b_old(j,b)
-            PUT Dab_b_x_U(b1,b) += Tbb(b1,b)
-
-            Tbb(b1,b)  = t1b_old(b1,j)*l1b_old_x(j,b)
-            PUT Dab_b_x_L(b1,b) += Tbb(b1,b)
-
-#bgn_debug
-#      ENDPARDO b1, b, j
-#      execute sip_barrier
-#      suma = 0.0
-#      sumb = 0.0
-#      do b
-#      do b1
-#         get Dab_b_x_U(b1,b)
-#         get Dab_b_x_L(b1,b)
-#         if rank == 0.0
-#        execute dump_amp  Dab_b_x_U(b1,b)
-#        execute dump_amp  Dab_b_x_L(b1,b)
-#         endif 
-#         tmp = Dab_b_x_U(b1,b) * Dab_b_x_U(b1,b)
-#         suma += tmp
-#         tmp = Dab_b_x_L(b1,b) * Dab_b_x_L(b1,b)
-#         sumb += tmp
-#      enddo b1
-#      enddo b
-#     execute print_scalar suma
-#     execute print_scalar sumb
-#     PARDO b, b1, j
-#end_debug
             DO b2
             DO j1
                REQUEST T2old_bb(b1,j,b2,j1) j1 
@@ -996,15 +1022,6 @@
                ENDDO i1
             ENDDO i
       ENDPARDO a, b, j
-      PARDO a, i, i1
-            GET t1a_old(a,i)
-            GET l1a_old(i1,a)
-            Tii(i,i1)        = l1a_old(i1,a)*t1a_old(a,i)
-            Tii(i,i1)       *= -0.5
-            T1ii(i1,i)       = Tii(i,i1)
-            PUT Dij_a(i,i1) += Tii(i,i1)
-            PUT Dij_a(i1,i) += T1ii(i1,i)
-      ENDPARDO a, i, i1
       ENDPROC DIJA
 #---------------------------------------------------------------
       PROC DIJB
@@ -1035,23 +1052,14 @@
                ENDDO j
             ENDDO j1
       ENDPARDO b, a, i
-           PARDO b, j, j1
-            GET t1b_old(b,j1)
-            GET l1b_old(j,b)
-            Tjj(j1,j)        = l1b_old(j,b)*t1b_old(b,j1)
-            Tjj(j1,j)       *= -0.5
-            T1jj(j,j1)       = Tjj(j1,j)
-            PUT Dij_b(j1,j) += Tjj(j1,j)
-            PUT Dij_b(j,j1) += T1jj(j,j1)
-      ENDPARDO b, j, j1
       ENDPROC DIJB
-#.....................................................................................
+
       PROC DIJ
 #     ----------- 
            CALL DIJA
            CALL DIJB
       ENDPROC DIJ
-#________________________________________________________________________
+
       PROC DIJA_x
 #    -----------
       PARDO a, a1, i2
@@ -1171,70 +1179,7 @@
 #      execute print_scalar sum
 #end_debug
 
-      PARDO a, i, i1
-            GET t1a_old_x(a,i)
-            GET l1a_old(i1,a)
-
-            Tii(i,i1)        = t1a_old_x(a,i)*l1a_old(i1,a)
-            Tii(i,i1)       *= -1.0
-#bgn_debug
-#                  Tii(i,i1) *=1.0
-#bgn_debug
-            PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
-
-      ENDPARDO a, i, i1
-
-#bgn_debug
-#      execute sip_barrier
-#      execute get_my_rank rank
-#      sum = 0.0
-#      do i
-#     do i1
-#         get Dij_a_x_U(i1,i)
-#         if rank == 0.0
-#         execute dump_amp Dij_a_x_U(i1,i)
-#         endif
-#         tmp = Dij_a_x(i,i1) * Dij_a_x(i,i1)
-#         sum += tmp
-#      enddo i1
-#      enddo i
-#      execute print_scalar sum
-#end_debug
-
-      PARDO a, i, i1
-            GET t1a_old(a,i)
-            GET l1a_old_x(i1,a)
-
-            Tii(i,i1)  = t1a_old(a,i) * l1a_old_x(i1,a)
-            Tii(i,i1) *= -1.0
-#bgn_debug
-#                  Tii(i,i1) *= 1.0
-#bgn_debug
-            PUT Dij_a_x_L(i,i1)  += Tii(i,i1)
-
-      ENDPARDO a, i, i1
-
-#bgn_debug
-#      execute sip_barrier
-#      execute get_my_rank rank
-#      sum = 0.0
-#      do i
-#      do i1
-#         get Dij_a_x_L(i1,i)
-#         get Dij_a_x_U(i1,i)
-#         if rank == 0.0
-#          execute dump_amp Dij_a_x_L(i1,i)
-#          execute dump_amp Dij_a_x_U(i1,i)
-#         endif
-#         tmp = Dij_a_x(i,i1) * Dij_a_x(i,i1)
-#         sum += tmp
-#      enddo i1
-#      enddo i
-#      execute print_scalar sum
-#end_debug
-
 # Make symmetric or anti-symmetric combinations
-
 
       execute sip_barrier 
 
@@ -1389,49 +1334,6 @@
 #      execute print_scalar sumb
 #end_debug
 
-      PARDO b, j, j1
-            GET l1b_old(j,b)
-            GET t1b_old_x(b,j1)
-
-            Tjj(j1,j)    = t1b_old_x(b,j1)*l1b_old(j,b)
-            Tjj(j1,j)   *= -1.0
-            PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
-
-      ENDPARDO b, j, j1
-
-      PARDO b, j, j1
-            GET t1b_old(b,j1)
-            GET l1b_old_x(j,b)
-
-            Tjj(j1,j)   = t1b_old(b,j1)*l1b_old_x(j,b)
-            Tjj(j1,j)   *= -1.0
-            PUT Dij_b_x_L(j1,j)   += Tjj(j1,j)
-
-      ENDPARDO b, j, j1
-
-#bgn_debug
-#      execute sip_barrier
-#      execute get_my_rank rank
-#      suma = 0.0
-#      sumb = 0.0
-#      do j
-#      do j1
-#         get Dij_b_x_U(j,j1)
-#         get Dij_b_x_L(j,j1)
-#         if rank == 0.0
-#         execute dump_amp Dij_b_x_U(j,j1)
-#         execute dump_amp Dij_b_x_L(j,j1)
-#         endif
-#         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
-#         suma += tmp
-#         tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
-#         sumb += tmp
-#      enddo j1
-#      enddo j
-#      execute print_scalar suma
-#      execute print_scalar sumb
-#end_debug
-
 # Make symmetric or anti-symmetric combinations
 
       execute sip_barrier
@@ -1486,73 +1388,15 @@
       PROC DAI
 #     --------
 
-      PARDO   a1,i1
-         GET  l1a_old(i1,a1)
-         DO a
-            DO i
-               REQUEST                 T2old_aa(a,i,a1,i1) i
-               tai  (a,i)            = T2old_aa (a,i,a1,i1) * l1a_old(i1,a1)
-               tai (a,i)          *=0.5
-               PUT  Doldai_a(a,i) += tai (a,i)
-           ENDDO i
-         ENDDO a
-      ENDPARDO   a1,i1
-
-
-      PARDO  b,j 
-         GET  l1b_old(j,b)
-         DO a
-            DO i
-               REQUEST                 T2old_ab(a,i,b,j) i
-               tai  (a,i)            = T2old_ab(a,i,b,j) * l1b_old(j,b)
-               tai  (a,i)           *= 0.5
-               PUT  Doldai_a(a,i) += tai (a,i)
-            ENDDO i
-         ENDDO a
-      ENDPARDO  b,j 
-
       PARDO  a, i
-              GET t1a_old(a,i)
-              GET l1a_old(i,a)
-              tai (a,i)  = l1a_old(i,a)
-              tai (a,i) += t1a_old(a,i)
-               tai (a,i) *=0.5
+               tai (a,i) *= 0.0
                PUT  Doldai_a(a,i) += tai (a,i)
       ENDPARDO  a, i
-      EXECUTE  SIP_BARRIER
 
 # Beta blcok
 
-      PARDO  b1,j1
-         GET  l1b_old(j1,b1)
-         DO b
-            DO j
-               REQUEST                 T2old_bb(b,j,b1,j1) j
-               tbj  (b,j)            = T2old_bb(b,j,b1,j1) * l1b_old(j1,b1)
-               tbj  (b,j)          *=0.5
-               PUT  Doldai_b(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-      ENDPARDO  b1,j1
-      PARDO  i, a
-         GET  l1a_old(i,a)
-         DO b
-            DO j
-               REQUEST                 T2old_ab(a,i,b,j) j
-               tbj  (b,j)            = T2old_ab(a,i,b,j) * l1a_old(i,a)
-               tbj  (b,j)           *= 0.5
-               PUT  Doldai_b(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-      ENDPARDO  i, a
-#--------------------------------------------------------------------
-# First and second term of Dai
       PARDO  b, j
-              GET t1b_old(b,j)
-              GET l1b_old(j,b)
-               tbj (b,j ) = l1b_old(j,b)
-               tbj (b,j)  += t1b_old(b,j)
-               tbj (b,j) *=0.5
+               tbj (b,j) *= 0.0
                PUT  Doldai_b(b,j) += tbj (b,j)
       ENDPARDO  b, j
 # end
@@ -1571,8 +1415,6 @@
 
 
       EXECUTE  SERVER_BARRIER
-      execute load_balance_off
-      EXECUTE  SERVER_BARRIER
       
       ENDPROC DAI
 #----------------------------------------------------------------------
@@ -1589,32 +1431,12 @@
            ENDDO i
          ENDDO a
       ENDPARDO   a1,i1
-      PARDO   a1,i1
-         GET  l1a_old(i1,a1)
-         DO a
-            DO i
-               REQUEST                 T2old_aa_x(a,i,a1,i1) i
-               tai  (a,i)            = T2old_aa_x (a,i,a1,i1) * l1a_old(i1,a1)
-               PUT  Doldai_a_x(a,i) += tai (a,i)
-           ENDDO i
-         ENDDO a
-      ENDPARDO   a1,i1
       PARDO  b,j
          GET  l1b_old_x(j,b)
          DO a
             DO i
                REQUEST                 T2old_ab(a,i,b,j) i
                tai  (a,i)            = T2old_ab(a,i,b,j) * l1b_old_x(j,b)
-               PUT  Doldai_a_x(a,i) += tai (a,i)
-            ENDDO i
-         ENDDO a
-      ENDPARDO  b,j
-      PARDO  b,j
-         GET  l1b_old(j,b)
-         DO a
-            DO i
-               REQUEST                 T2old_ab_x(a,i,b,j) i
-               tai  (a,i)            = T2old_ab_x(a,i,b,j) * l1b_old(j,b)
                PUT  Doldai_a_x(a,i) += tai (a,i)
             ENDDO i
          ENDDO a
@@ -1678,16 +1500,6 @@
             ENDDO j
          ENDDO b
       ENDPARDO  b1,j1
-      PARDO  b1,j1
-         GET  l1b_old(j1,b1)
-         DO b 
-            DO j
-               REQUEST                 T2old_bb_x(b,j,b1,j1) j
-               tbj  (b,j)            = T2old_bb_x(b,j,b1,j1) * l1b_old(j1,b1)
-               PUT  Doldai_b_x(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-      ENDPARDO  b1,j1
       PARDO  i, a
          GET  l1a_old_x(i,a)
          DO b
@@ -1698,17 +1510,6 @@
             ENDDO j
          ENDDO b
       ENDPARDO  i, a
-      PARDO  i, a
-         GET  l1a_old(i,a)
-         DO b     
-            DO j  
-               REQUEST                 T2old_ab_x(a,i,b,j) j
-               tbj  (b,j)            = T2old_ab_x(a,i,b,j)*l1a_old(i,a)
-               PUT  Doldai_b_x(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-      ENDPARDO  i, a
-
       PARDO  b, j
               GET t1b_old_x(b,j)
               GET l1b_old_x(j,b)
@@ -1903,20 +1704,19 @@
         Py=0.0
         Pz=0.0
 
-        CREATE HBX
-        CREATE HBY
-        CREATE HBZ
-        execute sip_barrier
-
-        PARDO mu, nu
-              EXECUTE return_x Tpq(mu,nu)
-              PUT  HBx(mu,nu) = Tpq(mu,nu)
-              EXECUTE return_y Tpq(mu,nu)
-              PUT  HBY(mu,nu) = Tpq(mu,nu)
-              EXECUTE return_z Tpq(mu,nu)
-              PUT  HBZ(mu,nu) = Tpq(mu,nu)
-        ENDPARDO mu, nu
-        execute sip_barrier
+#         create HBx
+#         create HBy
+#         create HBz
+#        execute sip_barrier
+#        PARDO mu, nu
+#              EXECUTE return_x Tpq(mu,nu)
+#              PUT  HBx(mu,nu) = Tpq(mu,nu)
+#              EXECUTE return_y Tpq(mu,nu)
+#              PUT  HBY(mu,nu) = Tpq(mu,nu)
+#              EXECUTE return_z Tpq(mu,nu)
+#              PUT  HBZ(mu,nu) = Tpq(mu,nu)
+#        ENDPARDO mu, nu
+#        execute sip_barrier
 
         PARDO mu, nu
             GET DpqA(mu,nu)
@@ -1958,9 +1758,9 @@
      execute sip_barrier
      collective Pz +=Azz
      execute print_scalar Pz
-     DELETE HBX
-     DELETE HBY
-     DELETE HBZ
+#     DELETE HBX
+#     DELETE HBY
+#     DELETE HBZ
 
      ENDPROC CMP_DIPOLEMS
 #    --------------------
@@ -3406,6 +3206,14 @@
             do_aten = a_tensor
             do_gten = g_tensor
             do_dten = d_tensor
+            property = 10.0
+            if property == 10.0
+
+               ASYM     = 0.0
+               SPIN_DEN = 0.0
+               call get_HBXYZ_Dipole
+
+            endif
 
             if do_gten == 1.0
                property = 20.0
@@ -3468,6 +3276,7 @@
                ENDIF
 
                CALL CHECK_TL_ARRAYS
+               CALL FILL_LT1_ARRAYS
 
                call DAB_x
                call DIJ_x
@@ -3765,8 +3574,6 @@
 
       execute sip_barrier 
 
-      execute list_to_blocks t1a_old
-      execute list_to_blocks t1b_old
       execute list_to_blocks T2old_aa
       execute list_to_blocks T2old_ab
       execute list_to_blocks T2old_bb
