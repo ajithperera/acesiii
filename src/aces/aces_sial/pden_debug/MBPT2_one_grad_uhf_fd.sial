@@ -898,62 +898,62 @@
 
       PARDO I, A
             GET T1a_p(A,I)
-            Tai(A,I) = T1a_p(A,I)
-            PUT L1a_p(I,A) =  Tai(A,I)
+            Tia(I,A) = T1a_p(A,I)
+            PUT L1a_p(I,A) =  Tia(I,A)
       ENDPARDO I, A
 
       PARDO J, B
             GET T1b_p(B,J)
-            Tbj(B,J) = T1b_p(B,J)
-            PUT L1b_p(J,B) = Tbj(B,J)
+            Tjb(J,B) = T1b_p(B,J)
+            PUT L1b_p(J,B) = Tjb(J,B)
       ENDPARDO J,B
 
       PARDO A, A1, I, I1
             REQUEST T2aa_p(A,I,A1,I1) I1
-            Taiai(A,I,A1,I1) = T2aa_p(A,I,A1,I1)
-            PREPARE L2aa_p(I,A,I1,A1) = Taiai(A,I,A1,I1)
+            tiaia(i,a,i1,a1) = T2aa_p(A,I,A1,I1)
+            PREPARE L2aa_p(I,A,I1,A1) = tiaia(i,a,i1,a1)
       ENDPARDO A, A1, I, I1,
 
       PARDO B, B1, J, J1
             REQUEST T2bb_p(B,J,B1,J1) J1
-            Tbjbj(B,J,B1,J1) = T2bb_p(B,J,B1,J1)
-            PREPARE  L2bb_p(J,B,J1,B1)= Tbjbj(B,J,B1,J1) 
+            tjbjb(j,b,j1,b1) = T2bb_p(B,J,B1,J1)
+            PREPARE  L2bb_p(J,B,J1,B1)= tjbjb(j,b,j1,b1)
       ENDPARDO B, B1, J, J1
 
       PARDO A, B, I, J
             REQUEST T2ab_p(A,I,B,J) J
-            Taibj(A,I,B,J) = T2ab_p(A,I,B,J)
-            PREPARE L2ab_p(i,a,j,b) = Taibj(A,I,B,J)
+            tiajb(i,a,j,b) = T2ab_p(A,I,B,J)
+            PREPARE L2ab_p(i,a,j,b) = tiajb(i,a,j,b)
       ENDPARDO A, B, I, J
 
       PARDO I, A
             GET T1a_m(A,I)
-            Tai(A,I) = T1a_m(A,I)
-            PUT L1a_m(I,A) = Tai(A,I)
+            Tia(I,A) = T1a_m(A,I)
+            PUT L1a_m(I,A) =  Tia(I,A)
       ENDPARDO I, A
 
       PARDO J, B
             GET T1b_m(B,J)
-            Tbj(B,J) = T1b_m(B,J)
-            PUT L1b_m(J,B) = Tbj(B,J)
+            Tjb(J,B) = T1b_m(B,J)
+            PUT L1b_m(J,B) = Tjb(J,B)
       ENDPARDO J,B
 
       PARDO A, A1, I, I1
             REQUEST T2aa_m(A,I,A1,I1) I1
-            Taiai(A,I,A1,I1) = T2aa_m(A,I,A1,I1)
-            PREPARE L2aa_m(I,A,I1,A1) = Taiai(A,I,A1,I1)
+            tiaia(i,a,i1,a1) = T2aa_m(A,I,A1,I1)
+            PREPARE L2aa_m(I,A,I1,A1) = tiaia(i,a,i1,a1)
       ENDPARDO A, A1, I, I1,
 
       PARDO B, B1, J, J1
             REQUEST T2bb_m(B,J,B1,J1) J1
-            Tbjbj(B,J,B1,J1) = T2bb_m(B,J,B1,J1)
-            PREPARE  L2bb_m(J,B,J1,B1)= Tbjbj(B,J,B1,J1) 
+            tjbjb(j,b,j1,b1) = T2bb_m(B,J,B1,J1)
+            PREPARE  L2bb_m(J,B,J1,B1)= tjbjb(j,b,j1,b1)
       ENDPARDO B, B1, J, J1
 
       PARDO A, B, I, J
             REQUEST T2ab_m(A,I,B,J) J
-            Taibj(A,I,B,J) = T2ab_m(A,I,B,J)
-            PREPARE L2ab_m(i,a,j,b) = Taibj(A,I,B,J)
+            tiajb(i,a,j,b) = T2ab_m(A,I,B,J)
+            PREPARE L2ab_m(i,a,j,b) = tiajb(i,a,j,b)
       ENDPARDO A, B, I, J
 
       execute server_barrier 
@@ -1371,7 +1371,6 @@
 
                NCOUNT += 1.0
                execute print_scalar ncount
-#               CALL CREATE_XARRAYS
 
                IF NCOUNT == 1.0
                   CALL PICK_TLP
@@ -1393,7 +1392,7 @@
                   CALL PUT_DOOVV_M
                ENDIF 
 
-#               call DAI
+               call DAI
                execute sip_barrier
 
                IF NCOUNT == 1.0
