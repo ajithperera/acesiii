@@ -1,5 +1,20 @@
-                           SIAL Lx                      
+#  Copyright (c) 2003-2010 University of Florida
 #
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  The GNU General Public License is included in this distribution
+#  in the file COPYRIGHT.
+
+                           SIAL CCSD_Lx_UHF
+
 # Working version of UHF based lambda code which computes the VVVV 
 # integrals on the fly. No VVVV OR VVVO intermediates are stored. 
 # The W1MEBJ intermediates are also not stored rather computed on the 
@@ -12786,7 +12801,6 @@
       execute write_blocks_to_list
       execute sip_barrier
 
-                           ENDSIAL Lx                     
-#
-#_________________END-Main-Program____________________________________             
+                           ENDSIAL  CCSD_Lx_UHF
+
 #

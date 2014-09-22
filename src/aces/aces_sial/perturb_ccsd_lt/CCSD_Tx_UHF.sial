@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL Tx                    
+                           SIAL CCSD_Tx_UHF
 #
 #
 # Status of served update: mimimize prepare/request 
@@ -9563,7 +9563,7 @@
       execute sip_barrier
       execute write_blocks_to_list
       execute sip_barrier
-                           ENDSIAL Tx    
+                           ENDSIAL CCSD_Tx_UHF
 #
 # EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 
 #
