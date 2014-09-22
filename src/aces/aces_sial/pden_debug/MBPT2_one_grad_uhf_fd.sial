@@ -321,15 +321,6 @@
 #     ----------------------
 #PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 #
-# In this superprocedure the particle-particle block of the relaxed density 
-# matrix is computed. The expressions programmed are: 
-# 
-# D_{ab} = 1/4 P_+(ab) t^{ae}_{mn} \lambda^{mn}_{be}  
-#        + 1/4 P_+(ab) t^{aE}_{mN} \lambda^{mN}_{bE}  
-#        + 1/2 P_+(ab) t^{a}_{m} \lambda^{m}_{b} 
-#
-# D_{AB} = D_{ab} [a<-->A, b<-->B, i<-->I, j<-->J, m<-->M, n<-->N] 
-#
       PROC DABA
       PARDO a, a1, i
             DO a2
@@ -538,69 +529,10 @@
            CALL DIJA
            CALL DIJB
       ENDPROC DIJ
-#PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPp
-# --------------------------------------------------------------------------- 
-# In this superprocedure the virtual-occupied block of the relaxed
-# density matrix is computed. The expressions programmed are:
-#
-# D_{ai} = 0.5 t^{a}_{i} + 0.5 \lambda^{i}_{a}  
-#        + 0.5 Sum_{m,e} t^{ae}_{im} \lambda^{m}_{e} 
-#        - 0.5 Sum_{m,e} t^{a}_{m} t^{e}_{i} \lambda^{m}_{e} 
-#        -0.25 Sum_{m,n,e,f} \lambda^{mn}_{ef} t^{ef}_{in} t^{a}_{m}
-#        -0.25 Sum_{m,n,e,f} \lambda^{mn}_{ef} t^{af}_{mn} t^{e}_{i}
 
       PROC DAI
-#------------------
-
-     PARDO  a, i
-        tai1(a,i) = 0.0
-         DO i1
-            GET  T1L1_OO_A (i,i1)
-            GET  T2L2_OO_A (i,i1)
-            GET  LT1A (a,i1)
-            tii (i,i1)  = T1L1_OO_A (i,i1)
-            tii (i,i1) += T2L2_OO_A (i,i1)
-            tai (a,i)   = LT1A (a,i1) * tii (i,i1)
-            tai1(a,i) += tai(a,i)
-         ENDDO i1
-#         PUT Doldai_a(a,i) += tai1 (a,i)
-       ENDPARDO a,i
-#-------------------------------------------------------------------------
-# 6th term
-       PARDO  a, a1, i
-            GET  LT1A (a1,i)
-            GET                     T2L2_VV_A (a,a1)
-            tai (a,i)             = T2L2_VV_A (a,a1) * LT1A (a1,i)
-            tai (a,i)            *= -1.0
-#            PUT  Doldai_a(a,i)    += tai (a,i)
-      ENDPARDO  a, a1, i
-# end 6th term
-
-# -------------------------------------------------------------------------
-      PARDO   a1,i1
-         GET  l1a_old(i1,a1)
-         DO a
-            DO i
-               REQUEST                 T2old_aa(a,i,a1,i1) i
-               tai  (a,i)            = T2old_aa (a,i,a1,i1) * l1a_old(i1,a1)
-               tai (a,i)          *=0.5
-#               PUT  Doldai_a(a,i) += tai (a,i)
-           ENDDO i
-         ENDDO a
-      ENDPARDO   a1,i1
-
-
-      PARDO  b,j
-         GET  l1b_old(j,b)
-         DO a
-            DO i
-               REQUEST                 T2old_ab(a,i,b,j) i
-               tai  (a,i)            = T2old_ab(a,i,b,j) * l1b_old(j,b)
-               tai  (a,i)           *= 0.5
-#               PUT  Doldai_a(a,i) += tai (a,i)
-            ENDDO i
-         ENDDO a
-      ENDPARDO  b,j
+#     --------
+# Alpha block
 
      PARDO  a, i
               GET t1a_old(a,i)
@@ -611,55 +543,7 @@
               PUT  Doldai_a(a,i) += tai (a,i)
      ENDPARDO  a, i
 
-     PARDO  b, j
-        tbj1(b,j) = 0.0
-         DO j1
-            GET  T1L1_OO_B (j,j1)
-            GET  T2L2_OO_B (j,j1)
-            GET  LT1B (b,j1)
-            tjj (j,j1)  = T1L1_OO_B (j,j1)
-            tjj (j,j1) += T2L2_OO_B (j,j1)
-            tbj (b,j)   = LT1B (b,j1) * tjj (j,j1)
-            tbj1(b,j) += tbj(b,j)
-         ENDDO j1
-
-#        PUT Doldai_b(b,j) += tbj1 (b,j)
-      ENDPARDO b,j
-
-#-----------------------------------------------------------------------------
-       PARDO  b, b1, j
-            GET                     LT1B (b1,j)
-            GET                     T2L2_VV_B (b,b1)
-            tbj (b,j)             = T2L2_VV_B (b,b1) * LT1B (b1,j)
-            tbj(b,j)            *= -1.0
-#            PUT  Doldai_b(b,j)   += tbj (b,j)
-       ENDPARDO  b, b1, j
-
-#-----------------------------------------------------------------------------
-      PARDO  b1,j1
-         GET  l1b_old(j1,b1)
-         DO b
-            DO j
-               REQUEST                 T2old_bb(b,j,b1,j1) j
-               tbj  (b,j)            = T2old_bb(b,j,b1,j1) * l1b_old(j1,b1)
-               tbj  (b,j)          *=0.5
-#               PUT  Doldai_b(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-      ENDPARDO  b1,j1
-
-      PARDO  i, a
-         GET  l1a_old(i,a)
-         DO b
-            DO j
-               REQUEST                 T2old_ab(a,i,b,j) j
-               tbj  (b,j)            = T2old_ab(a,i,b,j) * l1a_old(i,a)
-               tbj  (b,j)           *= 0.5
-#               PUT  Doldai_b(b,j) += tbj (b,j)
-            ENDDO j
-         ENDDO b
-
-     ENDPARDO  i, a
+#Beta block
 
      PARDO  b, j
               GET t1b_old(b,j)
@@ -673,7 +557,7 @@
       EXECUTE  SIP_BARRIER
 
       ENDPROC DAI
-#------------------
+#     ------------
 
       PROC D1TRANS
 #     Transform Dai_aa
