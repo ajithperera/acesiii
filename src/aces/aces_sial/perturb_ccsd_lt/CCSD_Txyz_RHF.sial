@@ -570,6 +570,10 @@
      local LWaiai(a2,i,a,i1) 
      local LWbjbj(b2,j,b,j1) 
      local LWaibj(a,i,b,j) 
+     served TDaixj(a,i,nu,j)
+     local LDaixj(a,i,nu,j)
+#
+
 #
 # Distributed two-particle arrays 
 # ------------------------------- 
@@ -2280,46 +2284,95 @@
 
      execute server_barrier  
      execute sip_barrier  
+
+#
+#    Perform final transformation
+#    ----------------------------
+#
+        PARDO nu, i, j
+#
+              allocate LDaixj(*,i,nu,j)
+#
+              DO mu
+#
+                 REQUEST T2AO_ab(mu,i,nu,j) j
+#
+                 DO a
+                    Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
+                    LDaixj(a,i,nu,j) += Taixj(a,i,nu,j)
+                 ENDDO a
+#
+              ENDDO mu
+#
+              DO a
+                 PREPARE TDaixj(a,i,nu,j) = LDaixj(a,i,nu,j)
+              ENDDO a
+#
+              deallocate LDaixj(*,i,nu,j)
+#
+        ENDPARDO nu, i, j
+        execute server_barrier
+#
+        PARDO a, i, j, nu
+#
+              REQUEST TDaixj(a,i,nu,j) a
+#
+              DO b
+#
+                 GET                          t1a_ax(b,nu)
+#
+                 Taibj(a,i,b,j)             = TDaixj(a,i,nu,j)*ca(nu,b)
+                 T1aibj(a,i,b,j)            = TDaixj(a,i,nu,j)*t1a_ax(b,nu)
+                 T1aibj(a,i,b,j)           *= -1.0
+                 T2aibj(b,j,a,i)            = T1aibj(a,i,b,j)
+#
+                 PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
+                 PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
+                 PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
+#
+              ENDDO b
+#
+        ENDPARDO a, i, j, nu
 #
 #    Perform final transformation 
 #    ---------------------------- 
 #
-    PARDO a, b, i, j
+#    PARDO a, b, i, j
 #
-           T1aibj(a,i,b,j) = 0.0
-           Taibj(a,i,b,j)  = 0.0
+#          T1aibj(a,i,b,j) = 0.0
+#          Taibj(a,i,b,j)  = 0.0
 #
-           DO nu
+#            DO nu
 #
-              GET                t1a_ax(b,nu)
-              TXaibj(a,i,nu,j) = 0.0
-              TZaibj(a,i,nu,j) = 0.0
+#              GET                t1a_ax(b,nu)
+#              TXaibj(a,i,nu,j) = 0.0
+#              TZaibj(a,i,nu,j) = 0.0
 #
-              DO mu
+#              DO mu
+##
+#                 REQUEST             T2AO_ab(mu,i,nu,j) j
+#                 GET                 t1a_ax(a,mu)
+#                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
+#                 TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)
 #
-                 REQUEST             T2AO_ab(mu,i,nu,j) j
-                 GET                 t1a_ax(a,mu)
-                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
-                 TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)
+#                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
+#                 TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)
 #
-                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
-                 TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)
+#              ENDDO mu
 #
-              ENDDO mu
+#              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*ca(nu,b)
+#              Taibj(a,i,b,j)   = TYaibj(a,i,b,j)
 #
-              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*ca(nu,b)
-              Taibj(a,i,b,j)   = TYaibj(a,i,b,j)
-
-              TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*ca(nu,b)
-              T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
-              T2aibj(b,j,a,i)  = T1aibj(a,i,b,j)
-
-              PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
-              PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
-              PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
-
-           ENDDO nu
-     ENDPARDO a, b, i, j
+#              TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*ca(nu,b)
+#              T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
+#              T2aibj(b,j,a,i)  = T1aibj(a,i,b,j)
+#
+#              PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
+#              PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
+#              PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
+#
+#           ENDDO nu
+#     ENDPARDO a, b, i, j
 
      execute sip_barrier  
      delete t1a_ax 

@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                       SIAL CSD_Aiso_ndm      
+                       SIAL CCSD_relax_Aiso
 #
 # This SIAL program computes the two particle density 
 # matrice but only stores one piece at a time similar to dens6.sial. 
@@ -10906,7 +10906,7 @@
 #     CALL S2ABCI  # --> symmetric Matches Aces  
 #     CALL S2DIJAB # --> symmetric Matches Aces  
 # 
-                    ENDSIAL CSD_Aiso_ndm      
+                    ENDSIAL CCSD_Relax_Aiso
 # 
 # ----------------------------------------------------------------------------------------
 #
