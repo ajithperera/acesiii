@@ -2333,47 +2333,6 @@
               ENDDO b
 #
         ENDPARDO a, i, j, nu
-#
-#    Perform final transformation 
-#    ---------------------------- 
-#
-#    PARDO a, b, i, j
-#
-#          T1aibj(a,i,b,j) = 0.0
-#          Taibj(a,i,b,j)  = 0.0
-#
-#            DO nu
-#
-#              GET                t1a_ax(b,nu)
-#              TXaibj(a,i,nu,j) = 0.0
-#              TZaibj(a,i,nu,j) = 0.0
-#
-#              DO mu
-##
-#                 REQUEST             T2AO_ab(mu,i,nu,j) j
-#                 GET                 t1a_ax(a,mu)
-#                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
-#                 TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)
-#
-#                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
-#                 TZaibj(a,i,nu,j) += Taixj(a,i,nu,j)
-#
-#              ENDDO mu
-#
-#              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*ca(nu,b)
-#              Taibj(a,i,b,j)   = TYaibj(a,i,b,j)
-#
-#              TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*ca(nu,b)
-#              T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
-#              T2aibj(b,j,a,i)  = T1aibj(a,i,b,j)
-#
-#              PREPARE T2new_ab_x(a,i,b,j) += Taibj(a,i,b,j)
-#              PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
-#              PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
-#
-#           ENDDO nu
-#     ENDPARDO a, b, i, j
-
      execute sip_barrier  
      delete t1a_ax 
 #bgn_debug
@@ -2498,8 +2457,6 @@
 
            T2aibj(b,j,a,i)              = T1aibj(a,i,b,j)
            PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
-#           PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
-
      ENDPARDO a, b, i, j
      execute sip_barrier
      delete t1a_ax
