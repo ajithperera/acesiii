@@ -518,6 +518,10 @@
       scalar ecorrnha 
       scalar ecorrnhb
       scalar mp2_energy
+      scalar sum 
+      scalar suma
+      scalar tmp
+
 #
 # Arrays/Scalars used exclusively in DIIS procedure. 
 # -------------------------------------------------- 
@@ -858,7 +862,6 @@
             tmp1_aiai(a,i,a1,i1)      = T2old_aa(a,i,a1,i1) 
 
             PREPARE Tau_aa(a,i,a1,i1)  = tmp1_aiai(a,i,a1,i1)  
-            PREPARE Taup_aa(a,i,a1,i1) = tmp1_aiai(a,i,a1,i1)  
 #
       ENDPARDO a, i, a1, i1 
 #
@@ -879,7 +882,6 @@
             tmp1_bjbj(b,j,b1,j1)      = T2old_bb(b,j,b1,j1) 
 
             PREPARE Tau_bb(b,j,b1,j1)  = tmp1_bjbj(b,j,b1,j1)  
-            PREPARE Taup_bb(b,j,b1,j1) = tmp1_bjbj(b,j,b1,j1)  
 #
       ENDPARDO b, j, b1, j1 
 #
@@ -897,7 +899,6 @@
             tmp1_aibj(a,i,b,j)      = T2old_ab(a,i,b,j) 
 
             PREPARE Tau_ab(a,i,b,j)  = tmp1_aibj(a,i,b,j)  
-            PREPARE Taup_ab(a,i,b,j) = tmp1_aibj(a,i,b,j)  
 #
       ENDPARDO a, i, b, j 
 #
@@ -1002,7 +1003,7 @@
       DO i1
          GET Fmi_a_ij(i,i1)
          Tii(i,i1) = Fmi_a_ij(i,i1)
-         PUT Fmi_a_ij(i,i1) = Tii(i,i1)
+         PUT Fmi_a(i,i1) = Tii(i,i1)
       ENDDO i1
       ENDDO i
 
@@ -1018,7 +1019,7 @@
          GET Fmi_b_ij(j,j1)
          Tjj(j,j1) = Fmi_b_ij(j,j1)
         
-         PUT Fmi_b_ij(j,j1) = Tjj(j,j1)
+         PUT Fmi_b(j,j1) = Tjj(j,j1)
       ENDDO j1
       ENDDO j
 
@@ -1474,7 +1475,6 @@
       ENDPARDO i, i1, a, a1
       execute sip_barrier
       delete Wminj_aa
-
       ENDPROC WminjAA
 #     --------------- 
 #
@@ -1534,6 +1534,8 @@
             PUT Wminj_ab(i1,i,j1,j) += Tiijj(i1,i,j1,j)
       ENDPARDO i, i1, j, j1
 
+      execute sip_barrier
+
       PARDO i, j, a, b
 #
             Taibj(a,i,b,j) = 0.0
@@ -1563,6 +1565,19 @@
       PROC WMINJ 
 #
            CALL WminjAA 
+#bgn_debug
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, a1,i1
+#        REQUEST T2NEW_aa(a,i,a1,i1) i1
+#        tmp = T2NEW_aa(a,i,a1,i1)* T2NEW_aa(a,i,a1,i1)
+#        sum += tmp
+#        endpardo a, i, a1, i1
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
+#end_debug
            CALL WminjAB 
            CALL WminjBB 
 #
@@ -1712,6 +1727,21 @@
             deallocate Laaai(a,*,a1,i) 
 #
       ENDPARDO a, i, a1 
+
+#bgn_debug
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, a1,i1
+#        REQUEST T2NEW_aa(a,i,a1,i1) i1
+#        tmp = T2NEW_aa(a,i,a1,i1)* T2NEW_aa(a,i,a1,i1)
+#        sum += tmp
+#        endpardo a, i, a1, i1
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
+#end_debug
+
 #
       ENDPROC T2NEWAA    
 #     ---------------
@@ -2090,10 +2120,8 @@
            DO a  
 #
               REQUEST Tau_aa(a, i,a1,i1) i1 
-              REQUEST Tau_aa(a,i1,a1,i)  i1 
               LLaiai(a,i,a1,i1)  = Tau_aa(a, i,a1,i1) 
-              Taiai(a,i,a1,i1)   = Tau_aa(a,i1,a1,i) 
-              LLaiai(a,i,a1,i1) -= Taiai(a,i,a1,i1)  
+              LLaiai(a,i,a1,i1)  *= 2.0
 #
            ENDDO a  
 #
@@ -2123,10 +2151,8 @@
            DO b  
 #
               REQUEST Tau_bb(b, j,b1,j1) j1 
-              REQUEST Tau_bb(b,j1,b1,j)  j1 
               LLbjbj(b,j,b1,j1)  = Tau_bb(b, j,b1,j1) 
-              Tbjbj(b,j,b1,j1)   = Tau_bb(b,j1,b1,j) 
-              LLbjbj(b,j,b1,j1) -= Tbjbj(b,j,b1,j1)  
+              LLbjbj(b,j,b1,j1)  *= 2.0
 #
            ENDDO b  
 #
@@ -2379,7 +2405,7 @@
 #
            ENDDO nu  
 
-           PREPARE T2new_aa(a1,i,a,i1) += T1aiai(a1,i,a,i1) 
+           PREPARE T2new_aa(a,i,a1,i1) += T1aiai(a,i,a1,i1) 
 #
      ENDPARDO a, a1, i, i1  
 #
@@ -2433,6 +2459,21 @@
            PREPARE T2new_ab(a,i,b,j) += T1aibj(a,i,b,j) 
 #
      ENDPARDO a, b, i, j  
+
+#bgn_debug
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, a1,i1
+#        REQUEST T2NEW_aa(a,i,a1,i1) i1
+#        tmp = T2NEW_aa(a,i,a1,i1)* T2NEW_aa(a,i,a1,i1)
+#        sum += tmp
+#        endpardo a, i, a1, i1
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
+#end_debug
+
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -2605,7 +2646,6 @@
 
       ENDPARDO j, b, i, a
       execute server_barrier
-      execute print_scalar one
 
 # Contribution to T2new_bb 
 # ------------------------ 
@@ -2826,6 +2866,20 @@
            CALL WMEBJBA
            CALL WMJBEAB
            CALL WMJBEBA
+#bgn_debug
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, a1,i1
+#        REQUEST T2NEW_aa(a,i,a1,i1) i1
+#        tmp = T2NEW_aa(a,i,a1,i1)* T2NEW_aa(a,i,a1,i1)
+#        sum += tmp
+#        endpardo a, i, a1, i1
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
+#end_debug
+
       ENDPROC WMEBJ 
 #
 # SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS 
@@ -2899,7 +2953,7 @@
         ENDPARDO b, j
      ENDIF 
 
-     execute sip_barrier 
+     execute server_barrier 
 
      collective ecorraa += esuma
      collective ecorrbb += esumb 
@@ -2917,8 +2971,11 @@
         ecorrT += ecorrnha
         ecorrT += ecorrnhb
      ENDIF
-
-    #execute print_scalar ecorrT  
+  
+     execute print_scalar ecorraa
+     execute print_scalar ecorrbb
+     execute print_scalar ecorrab
+     execute print_scalar ecorrT  
 
      if kiter > 0
             ncount1 = 0.0
@@ -3750,7 +3807,7 @@
 #
               etemp = e1bj(b,j)*e2bj(b,j) 
               etemp *= 4.0
-              b12  += etemp            
+#              b12  += etemp            
 #
 #             b1x x=2,2 
 #             --------- 
@@ -6117,11 +6174,11 @@
             CREATE Fmi_b_ij
          ENDIF
 
-         EXECUTE SIP_BARRIER  
          EXECUTE SERVER_BARRIER  
 #
 # For linear CC methods, all there F intermidiates are zeor for HF 
 # methods
+#
 
          IF NONHF == 1.0
             CALL FAE 
@@ -6139,6 +6196,21 @@
          CALL T1ANEW 
          CALL T1BNEW 
 #
+#bgn_debug
+#         pardo a, i
+#          tai(a,i) = 0.0
+#          put t1a_new(a,i) =  tai(a,i)
+#          put t1a_old(a,i) =  tai(a,i)
+#        endpardo a, i
+#         pardo b, j
+#           tbj(b,j) = 0.0
+#           put t1b_new(b,j) = tbj(b,j)
+#           put t1b_old(b,j) = tbj(b,j)
+#         endpardo b, j  
+#         execute sip_barrier
+#end_debug
+#
+
 #        Calculate new two-particle amplitudes 
 #        ------------------------------------- 
 #
@@ -6219,6 +6291,21 @@
 #
          endif # kiter == 5
 #
+
+#bgn_debug
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, a1,i1
+#        REQUEST T2OLD_aa(a,i,a1,i1) i1
+#        tmp = T2OLD_aa(a,i,a1,i1)* T2OLD_aa(a,i,a1,i1)
+#        sum += tmp
+#        endpardo a, i, a1, i1
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
+#end_debug
+
          CALL MOVET1
          CALL MOVET2
 #

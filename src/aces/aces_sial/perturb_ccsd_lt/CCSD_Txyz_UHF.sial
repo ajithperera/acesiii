@@ -1939,6 +1939,19 @@
 #end_debug
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
+#bgn_debug
+     execute sip_barrier
+     sum=0.0
+     do i
+     do a
+        get Fme_a_x(i,a)
+        tmp = Fme_a_x(i,a) * Fme_a_x(i,a)
+        sum += tmp
+     enddo a
+     enddo i
+     execute print_scalar sum
+#end_debug
+
       ENDPROC FMEA_X
 #............................................................................
       PROC FMEB_X

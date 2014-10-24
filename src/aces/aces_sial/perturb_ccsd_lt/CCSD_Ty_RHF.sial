@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL CCSD_Txyz_RHF
+                           SIAL CCSD_Ty_RHF
 #                          ------------------
 #
 #
@@ -38,7 +38,7 @@
 # For the moment limit the number of perturbation to 3 but in
 # can be arbitrary. 
 #
-      index   Npert   = 1, 3 
+      index   Npert   = 1, 1
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -1005,33 +1005,33 @@
         ENDPARDO mu,nu
       execute sip_barrier
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get HBa_me_x(i,a)
-         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-          GET HBa_mi_x(i,i1)
-          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
-          sum0 +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do a1
-         GET HBa_ae_x(a,a1)
-         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
-         sum0 +=tmp
-      enddo a1
-      enddo a
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get HBa_me_x(i,a)
+#         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do i
+#      do i1
+#          GET HBa_mi_x(i,i1)
+#          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
+#          sum0 +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         GET HBa_ae_x(a,a1)
+#         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
+#         sum0 +=tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar sum0
 #end_debug
 
 
@@ -1061,6 +1061,10 @@
       execute list_to_blocks  l1a_old
       execute list_to_blocks L2old_aa
       execute list_to_blocks L2old_ab
+
+      execute list_to_blocks t1a_x
+      execute list_to_blocks T2aa_x
+      execute list_to_blocks T2ab_x
 
       execute read_list_to_blocks
       execute server_barrier
@@ -1099,15 +1103,15 @@
      ENDPARDO a, i
 
 #bgn_debug
-      execute sip_barrier 
-      sum0 = 0.0
-      do a
-      do i
-         get  t1a_old_x(a,i) 
-         tmp  = t1a_old_x(a,i) *  t1a_old_x(a,i)
-         sum0 +=tmp
-      enddo i
-      enddo a
+#      execute sip_barrier 
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get  t1a_old_x(a,i) 
+#         tmp  = t1a_old_x(a,i) *  t1a_old_x(a,i)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
 #end_debug
 
      ENDPROC IGUESS_UHF
@@ -1308,16 +1312,16 @@
             ENDDO a
       ENDPARDO a1, i, a2, i1
 #bgn_debug
-     execute sip_barrier
-     sum=0.0
-     do a
-     do a1
-     get Fae_a(a,a1)
-     tmp  = Fae_a(a,a1) * Fae_a(a,a1)
-     sum += tmp
-     enddo a1
-     enddo a
-     execute print_scalar sum
+#     execute sip_barrier
+#     sum=0.0
+#     do a
+#     do a1
+#     get Fae_a(a,a1)
+#     tmp  = Fae_a(a,a1) * Fae_a(a,a1)
+#     sum += tmp
+#     enddo a1
+#     enddo a
+#     execute print_scalar sum
 #end_debug
 
       ENDPROC FAEA
@@ -1335,7 +1339,7 @@
            get HBa_ae_x(a,a1)
            taa(a,a1)           = HBa_ae_x(a,a1)
 #bgn_debug
-           taa(a,a1) *= 1.0
+#           taa(a,a1) *= 1.0
 #end_debug
            put Fae_a_x(a,a1)  += Taa(a,a1)                       
       ENDPARDO a, a1
@@ -1350,7 +1354,7 @@
              Taa(a,a1) += T1aa(a,a1)
              Taa(a,a1) *= -0.5
 #bgn_debug
-           taa(a,a1) *= 1.0
+#           taa(a,a1) *= 1.0
 #end_debug
 
            ENDDO i 
@@ -1424,16 +1428,16 @@
             ENDDO a
       ENDPARDO a1, i, a2, i1
 #bgn_debug
-     execute sip_barrier
-     sum=0.0
-     do a
-     do a1
-     get Fae_a_x(a,a1)
-     tmp  = Fae_a_x(a,a1) * Fae_a_x(a,a1)
-     sum += tmp
-     enddo a1
-     enddo a
-     execute print_scalar sum
+#     execute sip_barrier
+#     sum=0.0
+#     do a
+#     do a1
+#     get Fae_a_x(a,a1)
+#     tmp  = Fae_a_x(a,a1) * Fae_a_x(a,a1)
+#     sum += tmp
+#     enddo a1
+#     enddo a
+#     execute print_scalar sum
 #end_debug
 
       ENDPROC FAEA_X
@@ -1517,19 +1521,6 @@
 #end_debug
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
-#bgn_debug
-     execute sip_barrier
-     sum=0.0
-     do i
-     do a
-        get Fme_a_x(i,a)
-        tmp = Fme_a_x(i,a) * Fme_a_x(i,a)
-        sum += tmp
-     enddo a
-     enddo i
-     execute print_scalar sum
-#end_debug
-
       ENDPROC FMEA_X
 #     --------------
 
@@ -1631,7 +1622,7 @@
             get HBa_mi_x(i1,i)                                    
             Tii(i1,i)          = HBa_mi_x(i1,i)
 #bgn_debug
-            Tii(i1,i) *= 1.0
+#            Tii(i1,i) *= 1.0
 #end_debug
             put Fmi_a_x(i1,i) += Tii(i1,i)                        
       ENDPARDO i1,i                                                   
@@ -1645,19 +1636,19 @@
            ENDDO a                                                        
            Tii(i1,i)*= 0.5                                             
 #bgn_debug
-           Tii(i1,i)*= 1.0
+#           Tii(i1,i)*= 1.0
 #end_debug
            put Fmi_a_x(i1,i) +=Tii(i1,i)                                    
        ENDPARDO i1,i                   
 #bgn_debug
-      execute sip_barrier
-      sum = 0.0
-      PARDO i1,i
-            get Fmi_a_x(i1,i)
-            tmp = Fmi_a_x(i1,i) * Fmi_a_x(i1,i)
-            sum += tmp
-      ENDPARDO i1,i
-      execute print_scalar sum 
+#      execute sip_barrier
+#      sum = 0.0
+#      PARDO i1,i
+#            get Fmi_a_x(i1,i)
+#            tmp = Fmi_a_x(i1,i) * Fmi_a_x(i1,i)
+#            sum += tmp
+#      ENDPARDO i1,i
+#      execute print_scalar sum 
 #end_debug
 
       ENDPROC FMIA_X
@@ -1709,9 +1700,6 @@
                   tai(a,i) -= t2ai(a,i) 
                ENDDO i1 
             ENDDO a1 
-#bgn_debug
-            tai(a,i) *= 1.0
-#end_debug
             PUT t1a_new_x(a,i) += tai(a,i) 
       ENDPARDO a, i 
 #......................look good up top
@@ -1731,9 +1719,6 @@
                DO i 
                   tai(a,i)  = taaai(a2,a,a1,i1)*L4aiai(a1,i,a2,i1) 
                   tai(a,i) *= -0.5 
-#bgn_debug
-                  tai(a,i) *= 1.0
-#end_debug
                  PUT t1a_new_x(a,i) += tai(a,i) 
                ENDDO i 
             ENDDO a 
@@ -1751,9 +1736,6 @@
                DO i 
                   tai(a,i)  = L1aiii(a1,i2,i,i1)*T2old_aa_x(a,i1,a1,i2) 
                   tai(a,i) *= -0.5 
-#bgn_debug
-                  tai(a,i) *= 1.0
-#end_debug
                  PUT t1a_new_x(a,i) += tai(a,i) 
                ENDDO i 
             ENDDO a 
@@ -1770,10 +1752,6 @@
                REQUEST Vaaai(a1,a,b,j) j 
                DO i  
                   tai(a,i)  = Vaaai(a1,a,b,j)*L1aibj(a1,i,b,j) 
-#bgn_debug
-                  tai(a,i) *= 1.0
-#end_debug
-
                  PUT t1a_new_x(a,i) += tai(a,i) 
                ENDDO i 
             ENDDO a 
@@ -1791,10 +1769,6 @@
                DO i 
                   tai(a,i)  = L1iibj(i,i1,b,j)*T2old_ab_x(a,i1,b,j) 
                   tai(a,i) *= -1.0 
-#bgn_debug
-                  tai(a,i) *= 1.0
-#end_debug
-
                  PUT t1a_new_x(a,i) += tai(a,i) 
                ENDDO i 
             ENDDO a 
@@ -1816,7 +1790,7 @@
                GET Fmi_a_X(i1,i)
                t1ai(a,i) = t1a_old(a,i1)*Fmi_a_X(i1,i)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) -= t1ai(a,i)
 
@@ -1827,7 +1801,7 @@
                GET Fme_a_X(j,b)
                t1ai(a,i) = T2old_ab(a,i,b,j)*Fme_a_X(j,b)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) += t1ai(a,i)
             ENDDO j
@@ -1837,7 +1811,7 @@
                GET Fae_a_x(a,a1)
                t1ai(a,i) = t1a_old(a1,i)*Fae_a_X(a,a1)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                tai(a,i) += t1ai(a,i)
 
@@ -1846,7 +1820,7 @@
                   GET Fme_a_X(i1,a1)
                   t1ai(a,i) = T2old_aa(a,i,a1,i1)*Fme_a_X(i1,a1)
 #bgn_debug
-               t1ai(a,i) *= 1.0
+#               t1ai(a,i) *= 1.0
 #end_debug
                   tai(a,i) += t1ai(a,i)
                ENDDO i1
@@ -1864,18 +1838,18 @@
      ENDPARDO a, i
 #
 #bgn debug
-       execute sip_barrier
-       sum = 0.0
-       DO a
-       DO i
-         get t1a_new_x(a,i)
-         tmp = t1a_new_x(a,i) * t1a_new_x(a,i)
-         sum += tmp
-       ENDDO i
-       ENDDO a
-       execute print_scalar sum
+#       execute sip_barrier
+#       sum = 0.0
+#       DO a
+#       DO i
+#         get t1a_new_x(a,i)
+#         tmp = t1a_new_x(a,i) * t1a_new_x(a,i)
+#         sum += tmp
+#         ENDDO i
+#         ENDDO a
+#       execute print_scalar sum
 #end_debug
-
+#
      ENDPROC T1ANEW 
 #    --------------
 
@@ -1969,18 +1943,18 @@
       execute sip_barrier
       delete Wminj_ab_x
 #bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
+#    execute server_barrier
+#    sum=0.0
+#     suma=0.0
+#        pardo a, i, b, j
+#        REQUEST T2NEW_AB_x(a,i,b,j) j
+#        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+#        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+#        sum += tmp
+#        endpardo a, i, b, j
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
 #end_debug
 
       ENDPROC WminjAB
@@ -2150,18 +2124,18 @@
             deallocate Laabj(a,*,b,j)
       ENDPARDO a, b, j
 #bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, b, j
+#        REQUEST T2NEW_AB_x(a,i,b,j) j
+#        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+#        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+#        sum += tmp
+#        endpardo a, i, b, j
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
 #end_debug
 
      ENDPROC T2NEWAB    
@@ -2337,21 +2311,22 @@
               ENDDO b
 #
         ENDPARDO a, i, j, nu
+
      execute sip_barrier  
      delete t1a_ax 
 #bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, b, j
+#        REQUEST T2NEW_AB_x(a,i,b,j) j
+#        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+#        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+#        sum += tmp
+#        endpardo a, i, b, j
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
 #end_debug
 
      ENDPROC AOLADDER  
@@ -2461,22 +2436,24 @@
 
            T2aibj(b,j,a,i)              = T1aibj(a,i,b,j)
            PREPARE T2new_ab_x(a,i,b,j) += T1aibj(a,i,b,j)
+#           PREPARE T2new_ab_x(b,j,a,i) += T2aibj(b,j,a,i)
+
      ENDPARDO a, b, i, j
      execute sip_barrier
      delete t1a_ax
 #bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
+#     execute server_barrier
+#     sum=0.0
+#     suma=0.0
+#        pardo a, i, b, j
+#        REQUEST T2NEW_AB_x(a,i,b,j) j
+#        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
+#        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
+#        sum += tmp
+#        endpardo a, i, b, j
+#        execute server_barrier
+#        collective suma += sum
+#        execute print_scalar suma
 #end_debug
 
      ENDPROC AOLADDER_x
@@ -3125,72 +3102,9 @@
 #    -----------
 
            CALL WMEBJAA
-#bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
-#end_debug
-
-
            CALL WMEBJAB
-#bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
-#end_debug
-
-
            CALL WMJBEAB
-#bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
-#end_debug
-
-
            CALL T2ABS2
-#bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
-#end_debug
-
 
       ENDPROC WMEBJ 
 #     -------------
@@ -3201,21 +3115,6 @@
            CALL WMEBJAB_x
            CALL WMJBEAB_x
            CALL T2ABS2_x
-#bgn_debug
-     execute server_barrier
-     sum=0.0
-     suma=0.0
-        pardo a, i, b, j
-        REQUEST T2NEW_AB_x(a,i,b,j) j
-        taibj(a,i,b,j) = T2NEW_AB_x(a,i,b,j)
-        tmp = T2NEW_AB_x(a,i,b,j) * taibj(a,i,b,j)
-        sum += tmp
-        endpardo a, i, b, j
-        execute server_barrier
-        collective suma += sum
-        execute print_scalar suma
-#end_debug
-
 
       ENDPROC WMEBJ_x
 #     ---------------
@@ -3302,16 +3201,10 @@
                 PUT t1a_new_x(a,i) = tai(a,i) 
           ENDPARDO a, i 
 #     Zero out new 2-particle amplitude arrays 
-         PARDO a, a1, i, i1
-                Taiai(a,i,a1,i1) = 0.0
-                PREPARE T2new_aa_x(a,i,a1,i1) = Taiai(a,i,a1,i1)
-          ENDPARDO a, a1, i, i1
-
           PARDO a, b, i, j 
                 Taibj(a,i,b,j) = 0.0
                 PREPARE T2new_ab_x(a,i,b,j) = Taibj(a,i,b,j) 
           ENDPARDO a, b, i, j 
-
      ENDPROC T2NEW_ZERO
 #    ------------------
      PROC UPDATET2 
@@ -5097,16 +4990,16 @@
          ENDPARDO A, I
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do a
-      do i
-         get t1a_x(a,i)
-         tmp  =  t1a_x(a,i) * t1a_x(a,i)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get t1a_x(a,i)
+#         tmp  =  t1a_x(a,i) * t1a_x(a,i)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
 #end_debug
 
          PARDO a, a1, i, i1
@@ -5337,7 +5230,7 @@
 #  
 # Get the interested perturbation componenet
 #
-       ICOUNT += 1.0
+       ICOUNT = 2.0
        execute print_scalar icount 
 
        IF ICOUNT == 1.0
@@ -5484,39 +5377,39 @@
          EXECUTE SERVER_BARRIER
 
 #bgn_debug
-    esuma   = 0.0
-    esumb   = 0.0
-    ecorraa = 0.0
-
-    PARDO a,i
-           GET t1a_old_x(a,i)
-           etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
-           esuma += etemp
-     ENDPARDO a,i
-     execute server_barrier
-     collective ecorraa += esuma
-     execute print_scalar ecorraa
-
-     ecorraa = 0.0
-     ecorrab = 0.0
-     esumaa  = 0.0
-     esumab  = 0.0
-     PARDO a, i, a1, i1
-           REQUEST T2old_aa_x(a,i,a1,i1) i1
-           etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
-           esumaa += etemp
-     ENDPARDO a, i, a1, i1
-
-     PARDO a, b, i, j
-           REQUEST T2old_ab_x(a,i,b,j) j
-           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorraa += esumaa
-     collective ecorrab += esumab
-     execute print_scalar ecorraa
-     execute print_scalar ecorrab
+#    esuma   = 0.0
+#    esumb   = 0.0
+#    ecorraa = 0.0
+#
+#    PARDO a,i
+#           GET t1a_old_x(a,i)
+#           etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
+#           esuma += etemp
+#     ENDPARDO a,i
+#     execute server_barrier
+#     collective ecorraa += esuma
+#     execute print_scalar ecorraa
+#
+#     ecorraa = 0.0
+#     ecorrab = 0.0
+#     esumaa  = 0.0
+#     esumab  = 0.0
+#     PARDO a, i, a1, i1
+#           REQUEST T2old_aa_x(a,i,a1,i1) i1
+#           etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
+#           esumaa += etemp
+#     ENDPARDO a, i, a1, i1
+#
+#     PARDO a, b, i, j
+#           REQUEST T2old_ab_x(a,i,b,j) j
+#           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorraa += esumaa
+#     collective ecorrab += esumab
+#     execute print_scalar ecorraa
+#     execute print_scalar ecorrab
 #end_debug
 
 #        Check on convergence 
@@ -5559,43 +5452,6 @@
 # T1old_aa_x, T2old_aa_x and they copied for different arrays to
 # dump them to the disk. 
 #
-#bgn_debug
-    esuma   = 0.0
-    ecorrT  = 0.0
-    ecorrD  = 0.0
-    esumb   = 0.0
-
-    PARDO a,i
-           GET t1a_old_x(a,i)
-           etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
-           esuma += etemp
-     ENDPARDO a,i
-
-     execute sip_barrier 
-     collective ecorraa += esuma
-     execute print_scalar ecorraa
-
-     ecorraa = 0.0
-     ecorrab = 0.0
-     esumaa  = 0.0
-     esumab  = 0.0
-     PARDO a, b, i, j
-           REQUEST T2old_aa_x(a,i,b,j) j
-           etemp = T2old_aa_x(a,i,b,j)*T2old_aa_x(a,i,b,j)
-           esumaa += etemp
-
-           REQUEST T2old_ab_x(a,i,b,j) j
-           etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
-           esumab += etemp
-             
-     ENDPARDO a, b, i, j
-     execute server_barrier 
-     collective ecorraa += esumaa
-     collective ecorrab += esumab
-     execute print_scalar ecorraa
-     execute print_scalar ecorrab
-#end_debug
-
          IF ICOUNT == 1.0
             CALL PUT_PERT_TX  
          ENDIF 
@@ -5678,14 +5534,14 @@
       execute blocks_to_list                T2aa_y
       execute blocks_to_list                T2ab_y
 
-      execute blocks_to_list                t1a_z
-      execute blocks_to_list                T2aa_z
-      execute blocks_to_list                T2ab_z
+#      execute blocks_to_list                t1a_z
+#      execute blocks_to_list                T2aa_z
+#      execute blocks_to_list                T2ab_z
       
       execute server_barrier
       execute sip_barrier
       execute write_blocks_to_list
       execute sip_barrier
 
-                          ENDSIAL CCSD_Txyz_RHF 
+                          ENDSIAL CCSD_Ty_RHF 
 #                        ----------------------
