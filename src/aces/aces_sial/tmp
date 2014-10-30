@@ -1,1 +1,14 @@
 rm -f make.out make.err
+../../../bin/sial ccsd/bccsd_uhf_ao_sv2_diis5.sial && cp ccsd/bccsd_uhf_ao_sv2_diis5.sio ../../../bin/sio
+input  file: ccsd/bccsd_uhf_ao_sv2_diis5.sial
+output file: ccsd/bccsd_uhf_ao_sv2_diis5.sio
+ 
+line 583, id exist.
+
+line 9778, array or scalar does not exist.
+
+line 9806, syntax1: index does not match.
+===========================================================
+=           errors found.                                 =
+=           please correct it before go to the next step. =
+===========================================================
