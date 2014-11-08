@@ -3831,13 +3831,13 @@
      PARDO mu, nu
           GET DpqA_x(mu,nu)
           TXX(mu,nu) = DpqA_x(mu,nu)
-          PUT DpqA_1(mu,nu) = DpqA_x(mu,nu) 
+          PUT DpqA_1(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
-     
+
      PARDO mu, nu
           GET DpqB_x(mu,nu)
           TXX(mu,nu) = DpqB_x(mu,nu)
-          PUT DpqB_1(mu,nu) = DpqB_x(mu,nu) 
+          PUT DpqB_1(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
 
      ENDPROC PUT_DENS_X
@@ -3848,13 +3848,13 @@
      PARDO mu, nu
           GET DpqA_x(mu,nu)
           TXX(mu,nu) = DpqA_x(mu,nu)
-          PUT DpqA_2(mu,nu) = DpqA_x(mu,nu)
+          PUT DpqA_2(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
     
      PARDO mu, nu
           GET DpqB_x(mu,nu)
           TXX(mu,nu) = DpqB_x(mu,nu)
-          PUT DpqB_2(mu,nu) = DpqB_x(mu,nu)
+          PUT DpqB_2(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
 
      ENDPROC PUT_DENS_Y
@@ -3865,13 +3865,13 @@
      PARDO mu, nu
           GET DpqA_x(mu,nu)
           TXX(mu,nu) = DpqA_x(mu,nu)
-          PUT DpqA_1(mu,nu) = DpqA_x(mu,nu)
+          PUT DpqA_3(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
     
      PARDO mu, nu
           GET DpqB_x(mu,nu)
           TXX(mu,nu) = DpqB_x(mu,nu)
-          PUT DpqB_1(mu,nu) = DpqB_x(mu,nu)
+          PUT DpqB_3(mu,nu) = TXX(mu,nu)
      ENDPARDO mu, nu
 
      ENDPROC PUT_DENS_Z
@@ -4101,6 +4101,24 @@
                CALL CHECK_AO_DENS
 
                CALL D1TRANS_x
+
+# Save the pert. density matrices
+
+               IF NCOUNT == 1.0
+                 execute print_scalar one
+                 CALL PUT_DENS_X
+                 EXECUTE SIP_BARRIER
+               ENDIF
+
+               IF NCOUNT == 2.0
+                 CALL PUT_DENS_Y
+                 EXECUTE SIP_BARRIER
+               ENDIF
+
+               IF NCOUNT == 3.0
+                 CALL PUT_DENS_Z
+                 EXECUTE SIP_BARRIER
+               ENDIF
 #
 # compute the 2nd order terms that involve 1st order response.
 #
@@ -4119,21 +4137,6 @@
 #                   CALL RESPONSE_Z
               ENDIF 
   
-              IF NCOUNT == 1.0
-                 CALL PUT_DENS_X
-                 EXECUTE SIP_BARRIER
-              ENDIF
-
-              IF NCOUNT == 2.0
-                 CALL PUT_DENS_Y
-                 EXECUTE SIP_BARRIER
-              ENDIF
-
-              IF NCOUNT == 3.0
-                 CALL PUT_DENS_Z
-                 EXECUTE SIP_BARRIER
-              ENDIF
-
               CALL DELETE_XARRAYS
  
         ENDDO NPERT

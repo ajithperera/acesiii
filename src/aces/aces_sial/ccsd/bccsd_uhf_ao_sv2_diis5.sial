@@ -505,9 +505,15 @@
      temp Tpq_b(q,q1)
      temp Tpqt_a(p,p1)
      temp Tpqt_b(q,q1)
+     temp Tpq(mu,nu)
 
      static Ca_new(mu,p)
      static Cb_new(mu,q)
+     static Fpqa(p,p1)
+     static Fpqb(q,q1)
+     local Cpq_a(p,p1)
+     local Cpq_b(q,q1)
+
      distributed Ca_int(mu,p)
      distributed Cb_int(mu,q)
      distributed Spq_a(p,p1)
@@ -522,9 +528,9 @@
      distributed Fpqb_ae(b,b1)
      distributed Fpqb_me(j,b)
      distributed Fpqb_mi(j,j1)
-
-     local Cpq_a(p,p1)
-     local Cpq_b(q,q1)
+     distributed DHF_aa(mu,nu)
+     distributed DHF_bb(mu,nu)
+     
 
 # In place transformation
  
@@ -654,6 +660,7 @@
       scalar ecrit 
       scalar ediff 
       scalar suma 
+      scalar sumb
       scalar tmp
       scalar convg
       scalar mp2_energy
@@ -5131,7 +5138,7 @@
 #
            etemp = VSqjqj(b,j,b1,j1)*T2bjbj(b,j,b1,j1) 
            etemp = 0.25*etemp 
-#          execute print_scalar etemp 
+          execute print_scalar etemp 
            esumb += etemp 
 #
      ENDPARDO b, b1, j, j1 
@@ -5156,17 +5163,17 @@
      execute sip_barrier 
 
      collective ecorraa += esuma
-    #execute print_scalar ecorraa 
+    execute print_scalar ecorraa 
 #
      collective ecorrbb += esumb 
     #execute print_scalar ecorrbb 
 #
      collective ecorrab += esumab
-    #execute print_scalar ecorrab 
+    execute print_scalar ecorrab 
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab 
-    #execute print_scalar ecorrT  
+    execute print_scalar ecorrT  
 
      if kiter > 0
             ncount1 = 0.0
@@ -8458,9 +8465,9 @@
 #     -----------------
 
       PARDO mu, nu
-            get Fpq_b(mu,nu)
+            get Fpq_a(mu,nu)
             do i
-                Tix(i,nu) = Fpq_b(mu,nu)*Ca_new(mu,i)
+                Tix(i,nu) = Fpq_a(mu,nu)*Ca_new(mu,i)
                 do i1
                    Tii(i,i1) = Tix(i,nu)*Ca_new(nu,i1)
                    PUT Fpqa_mi(i,i1) += Tii(i,i1)
@@ -8469,7 +8476,7 @@
       ENDPARDO mu,nu
 
       PARDO mu,nu
-            GET Fpq_b(mu,nu)
+            GET Fpq_a(mu,nu)
             do i
                Tix(i,nu) = Fpq_a(mu,nu)*Ca_new(mu,i)
                 do a
@@ -8510,23 +8517,171 @@
                    PUT Fpqb_me(j,b) += Tjb(j,b)
                enddo b
             enddo j
-        ENDPARDO mu,nu
+       ENDPARDO mu,nu
 
-        PARDO mu,nu
+       PARDO mu,nu
             GET Fpq_b(mu,nu) 
             do b
-               Txb(mu,b) = Fpq_a(mu,nu)*CB_new(nu,b)
+               Txb(mu,b) = Fpq_b(mu,nu)*CB_new(nu,b)
                 do b1
                    Tbb(b,b1)  = Txb(mu,b)*CB_new(mu,b1)
                    PUT Fpqb_ae(b,b1) += Tbb(b,b1)
                enddo b1
             enddo b
-        ENDPARDO mu,nu
+       ENDPARDO mu,nu
 
        execute sip_barrier
 
-       ENDPROC FORM_MO_FOCK
-#      --------------------
+       PARDO p,p1
+            do i
+                do i1
+                   GET Fpqa_mi(i,i1)
+                   Tii(i,i1)      = Fpqa_mi(i,i1)
+                   If p  == i 
+                   If p1 == i1
+                      Tii(i,i1)  = Fpqa_mi(i,i1)
+                      Fpqa(p,p1) = Tii(i,i1)
+                   Endif
+                   Endif
+                enddo i1
+            enddo i
+       ENDPARDO p,p1
+
+       PARDO p,p1
+            do a
+                do a1
+                   GET Fpqa_ae(a,a1)
+                   If p  == a
+                   If p1 == a1
+                      Taa(a,a1)  = Fpqa_ae(a,a1)
+                      Fpqa(p,p1) = Taa(a,a1)
+                   Endif 
+                   Endif 
+               enddo a1
+            enddo a
+       ENDPARDO p,p1
+
+       PARDO q,q1
+            do j
+                do j1
+                   GET Fpqb_mi(j,j1)
+                   If p  == j
+                   If p1 == j1
+                      Tjj(j,j1)  = Fpqb_mi(j,j1)
+                      Fpqb(q,q1) = Tjj(j,j1)
+                   Endif
+                   Endif
+                enddo j1
+            enddo j
+       ENDPARDO q,q1
+
+       PARDO q,q1
+            do b
+                do b1
+                   GET Fpqb_ae(b,b1)
+                   If q == b
+                   If q1 == b1
+                     Tbb(b,b1)       = Fpqb_ae(b,b1)
+                     PUT Fpqb(q,q1) += Tbb(b,b1)
+                   Endif
+                   Endif
+               enddo b1
+            enddo b
+       ENDPARDO q,q1
+
+       execute sip_barrier
+
+#bgn_debug 
+       suma = 0.0
+       do i
+       do i1
+          get Fpqa_mi(i,i1)
+          tmp = Fpqa_mi(i,i1) * Fpqa_mi(i,i1)
+          suma += tmp
+       enddo i1
+       enddo i
+       execute print_scalar suma
+       suma = 0.0
+       do a 
+       do a1
+          get Fpqa_ae(a,a1)
+          tmp = Fpqa_ae(a,a1) * Fpqa_ae(a,a1)
+          suma += tmp
+       enddo a1
+       enddo a
+       execute print_scalar suma
+       suma = 0.0
+       do a
+       do i
+          get Fpqa_me(i,a)
+          tmp = Fpqa_me(i,a) * Fpqa_me(i,a)
+          suma += tmp
+       enddo i
+       enddo a
+       execute print_scalar suma
+       sumb = 0.0
+       do j
+       do j1
+          get Fpqb_mi(j,j1)
+          tmp = Fpqb_mi(j,j1) * Fpqb_mi(j,j1)
+          sumb += tmp
+       enddo j1
+       enddo j 
+       execute print_scalar sumb
+       sumb = 0.0
+       do b 
+       do b1
+          get Fpqb_ae(b,b1)
+          tmp = Fpqb_ae(b,b1) * Fpqb_ae(b,b1)
+          sumb += tmp
+       enddo b1
+       enddo b
+       execute print_scalar sumb
+       sumb = 0.0
+       do b 
+       do j
+          get Fpqb_me(j,b)
+          tmp = Fpqb_me(j,b) * Fpqb_me(j,b)
+          suma += tmp
+       enddo j 
+       enddo b
+       execute print_scalar sumb
+#end_debug
+
+      ENDPROC FORM_MO_FOCK
+#     --------------------
+
+      PROC FORM_DENS
+#     --------------
+      PARDO mu, nu, i
+#
+            Txi(nu,i)       = ca_new(nu,i)
+            Tpq(mu,nu)      = ca_new(mu,i)*Txi(nu,i)
+            PUT DHF_aa(mu,nu) +=Tpq(mu,nu)
+#
+      ENDPARDO mu, nu, i
+#
+      PARDO mu, nu, j
+#
+            Txj(nu,j)       = cb_new(nu,j)
+            Tpq(mu,nu)      = cb_new(mu,j)*Txj(nu,j)
+            PUT DHF_bb(mu,nu) +=Tpq(mu,nu)
+#
+      ENDPARDO mu, nu, j
+
+      execute sip_barrier
+
+      DO mu
+      DO nu
+         GET              DHF_aa(mu,nu)
+         GET              DHF_bb(mu,nu)
+         oed_ovl(mu,nu) = DHF_aa(mu,nu) 
+         oed_kin(mu,nu) = DHF_bb(mu,nu) 
+      ENDDO nu
+      ENDDO mu
+
+     ENDPROC FORM_DENS
+#    -----------------
 #
 #    Perform the first two stages of the transformation in two N5 steps. 
 #
@@ -8546,14 +8701,14 @@
 #
              DO i   
 #
-                 T1xxxi(mu,nu,lambda,i)  = aoint(mu,nu,lambda,sigma)*ca(sigma,i)
+                 T1xxxi(mu,nu,lambda,i)  = aoint(mu,nu,lambda,sigma)*ca_new(sigma,i)
                  Txxxi(mu,nu,lambda,i)  += T1xxxi(mu,nu,lambda,i)  
 #
              ENDDO i   
 #
              DO j   
 #
-                 T1xxxj(mu,nu,lambda,j)  = aoint(mu,nu,lambda,sigma)*cb(sigma,j)
+                 T1xxxj(mu,nu,lambda,j)  = aoint(mu,nu,lambda,sigma)*cb_new(sigma,j)
                  Txxxj(mu,nu,lambda,j)  += T1xxxj(mu,nu,lambda,j)  
 #
              ENDDO j   
@@ -8596,7 +8751,7 @@
 #
               DO lambda
 #
-                 T1xxii(mu,nu,i1,i) = L1xxxi(mu,nu,lambda,i)*ca(lambda,i1)
+                 T1xxii(mu,nu,i1,i) = L1xxxi(mu,nu,lambda,i)*ca_new(lambda,i1)
                  Txxii(mu,nu,i1,i) += T1xxii(mu,nu,i1,i)
 #
               ENDDO lambda
@@ -8611,7 +8766,7 @@
 #
               DO lambda
 #
-                 T1xxai(mu,nu,a,i) = L1xxxi(mu,nu,lambda,i)*ca(lambda,a)
+                 T1xxai(mu,nu,a,i) = L1xxxi(mu,nu,lambda,i)*ca_new(lambda,a)
                  Txxai(mu,nu,a,i) += T1xxai(mu,nu,a,i)
 #
               ENDDO lambda
@@ -8631,7 +8786,7 @@
               Txixi(mu,i1,nu,i) = 0.0
 
               DO lambda
-                 T1xixi(mu,i1,nu,i) = L2xxxi(mu,lambda,nu,i)*ca(lambda,i1)
+                 T1xixi(mu,i1,nu,i) = L2xxxi(mu,lambda,nu,i)*ca_new(lambda,i1)
                  Txixi(mu,i1,nu,i) += T1xixi(mu,i1,nu,i)
               ENDDO lambda
 
@@ -8650,7 +8805,7 @@
               Tixxi(i1,mu,nu,i) = 0.0
 
               DO lambda
-                 T1ixxi(i1,mu,nu,i) = L3xxxi(lambda,mu,nu,i)*ca(lambda,i1)
+                 T1ixxi(i1,mu,nu,i) = L3xxxi(lambda,mu,nu,i)*ca_new(lambda,i1)
                  Tixxi(i1,mu,nu,i) += T1ixxi(i1,mu,nu,i)
               ENDDO lambda
 
@@ -8681,7 +8836,7 @@
 #
               DO lambda
 #
-                 T1xxjj(mu,nu,j1,j) = L1xxxj(mu,nu,lambda,j)*cb(lambda,j1)
+                 T1xxjj(mu,nu,j1,j) = L1xxxj(mu,nu,lambda,j)*cb_new(lambda,j1)
                  Txxjj(mu,nu,j1,j) += T1xxjj(mu,nu,j1,j)
 #
               ENDDO lambda
@@ -8696,7 +8851,7 @@
 #
               DO lambda
 #
-                 T1xxbj(mu,nu,b,j) = L1xxxj(mu,nu,lambda,j)*cb(lambda,b)
+                 T1xxbj(mu,nu,b,j) = L1xxxj(mu,nu,lambda,j)*cb_new(lambda,b)
                  Txxbj(mu,nu,b,j) += T1xxbj(mu,nu,b,j)
 #
               ENDDO lambda
@@ -8711,7 +8866,7 @@
 #
               DO lambda
 #
-                 T1xxij(mu,nu,i,j) = L1xxxj(mu,nu,lambda,j)*ca(lambda,i)
+                 T1xxij(mu,nu,i,j) = L1xxxj(mu,nu,lambda,j)*ca_new(lambda,i)
                  Txxij(mu,nu,i,j) += T1xxij(mu,nu,i,j)
 #
               ENDDO lambda
@@ -8732,7 +8887,7 @@
               Txjxj(mu,j1,nu,j) = 0.0
 
               DO lambda
-                 T1xjxj(mu,j1,nu,j) = L2xxxj(mu,lambda,nu,j)*cb(lambda,j1)
+                 T1xjxj(mu,j1,nu,j) = L2xxxj(mu,lambda,nu,j)*cb_new(lambda,j1)
                  Txjxj(mu,j1,nu,j) += T1xjxj(mu,j1,nu,j)
               ENDDO lambda
 
@@ -8743,7 +8898,7 @@
               Txixj(mu,i,nu,j) = 0.0
 
               DO lambda
-                 T1xixj(mu,i,nu,j) = L2xxxj(mu,lambda,nu,j)*ca(lambda,i)
+                 T1xixj(mu,i,nu,j) = L2xxxj(mu,lambda,nu,j)*ca_new(lambda,i)
                  Txixj(mu,i,nu,j) += T1xixj(mu,i,nu,j)
               ENDDO lambda
 
@@ -8762,7 +8917,7 @@
               Tjxxj(j1,mu,nu,j) = 0.0
 
               DO lambda
-                 T1jxxj(j1,mu,nu,j) = L3xxxj(lambda,mu,nu,j)*cb(lambda,j1)
+                 T1jxxj(j1,mu,nu,j) = L3xxxj(lambda,mu,nu,j)*cb_new(lambda,j1)
                  Tjxxj(j1,mu,nu,j) += T1jxxj(j1,mu,nu,j)
               ENDDO lambda
 
@@ -8773,7 +8928,7 @@
               Tixxj(i,mu,nu,j) = 0.0
 
               DO lambda
-                 T1ixxj(i,mu,nu,j) = L3xxxj(lambda,mu,nu,j)*ca(lambda,i)
+                 T1ixxj(i,mu,nu,j) = L3xxxj(lambda,mu,nu,j)*ca_new(lambda,i)
                  Tixxj(i,mu,nu,j) += T1ixxj(i,mu,nu,j)
               ENDDO lambda
 
@@ -8824,7 +8979,7 @@
 #
               DO nu  
 #
-                 T1xipi(mu,i,p,i1) = Lxixi(mu,i,nu,i1)*ca(nu,p)
+                 T1xipi(mu,i,p,i1) = Lxixi(mu,i,nu,i1)*ca_new(nu,p)
                  Txipi(mu,i,p,i1) += T1xipi(mu,i,p,i1)  
 #
               ENDDO nu  
@@ -8840,10 +8995,10 @@
 #
               DO nu 
 #
-                 T1xaii(mu,a,i,i1) = Lxxii(mu,nu,i,i1)*ca(nu,a)
+                 T1xaii(mu,a,i,i1) = Lxxii(mu,nu,i,i1)*ca_new(nu,a)
                  Txaii(mu,a,i,i1) += T1xaii(mu,a,i,i1)  
 #
-                 T1ixai(i,mu,a,i1) = Lixxi(i,mu,nu,i1)*ca(nu,a)
+                 T1ixai(i,mu,a,i1) = Lixxi(i,mu,nu,i1)*ca_new(nu,a)
                  Tixai(i,mu,a,i1) += T1ixai(i,mu,a,i1)  
 
               ENDDO nu 
@@ -8859,7 +9014,7 @@
 #
               DO nu  
 #
-                 T1xbii(mu,b,i,i1) = Lxxii(mu,nu,i,i1)*cb(nu,b)
+                 T1xbii(mu,b,i,i1) = Lxxii(mu,nu,i,i1)*cb_new(nu,b)
                  Txbii(mu,b,i,i1) += T1xbii(mu,b,i,i1)  
 #
               ENDDO nu  
@@ -8893,7 +9048,7 @@
 #
               DO nu  
 #
-                 T1xaai(mu,a1,a,i) = Lxxai(mu,nu,a,i)*ca(nu,a1)
+                 T1xaai(mu,a1,a,i) = Lxxai(mu,nu,a,i)*ca_new(nu,a1)
                  Txaai(mu,a1,a,i) += T1xaai(mu,a1,a,i)  
 #
               ENDDO nu  
@@ -8908,7 +9063,7 @@
 #
               DO nu  
 #
-                 T1xbai(mu,b,a,i) = Lxxai(mu,nu,a,i)*cb(nu,b)
+                 T1xbai(mu,b,a,i) = Lxxai(mu,nu,a,i)*cb_new(nu,b)
                  Txbai(mu,b,a,i) += T1xbai(mu,b,a,i)   
 #
               ENDDO nu  
@@ -8947,7 +9102,7 @@
 #
               DO nu  
 #
-                 T1xjqj(mu,j,q,j1) = Lxjxj(mu,j,nu,j1)*cb(nu,q)
+                 T1xjqj(mu,j,q,j1) = Lxjxj(mu,j,nu,j1)*cb_new(nu,q)
                  Txjqj(mu,j,q,j1) += T1xjqj(mu,j,q,j1)  
 #
               ENDDO nu  
@@ -8963,10 +9118,10 @@
 #
               DO nu 
 #
-                 T1xbjj(mu,b,j,j1) = Lxxjj(mu,nu,j,j1)*cb(nu,b)
+                 T1xbjj(mu,b,j,j1) = Lxxjj(mu,nu,j,j1)*cb_new(nu,b)
                  Txbjj(mu,b,j,j1) += T1xbjj(mu,b,j,j1)  
 #
-                 T1jxbj(j,mu,b,j1) = Ljxxj(j,mu,nu,j1)*cb(nu,b)
+                 T1jxbj(j,mu,b,j1) = Ljxxj(j,mu,nu,j1)*cb_new(nu,b)
                  Tjxbj(j,mu,b,j1) += T1jxbj(j,mu,b,j1)  
 
               ENDDO nu 
@@ -8982,7 +9137,7 @@
 #
               DO nu  
 #
-                 T1xajj(mu,a,j,j1) = Lxxjj(mu,nu,j,j1)*ca(nu,a)
+                 T1xajj(mu,a,j,j1) = Lxxjj(mu,nu,j,j1)*ca_new(nu,a)
                  Txajj(mu,a,j,j1) += T1xajj(mu,a,j,j1)  
 #
               ENDDO nu  
@@ -9016,7 +9171,7 @@
 #
               DO nu  
 #
-                 T1xbbj(mu,b1,b,j) = Lxxbj(mu,nu,b,j)*cb(nu,b1)
+                 T1xbbj(mu,b1,b,j) = Lxxbj(mu,nu,b,j)*cb_new(nu,b1)
                  Txbbj(mu,b1,b,j) += T1xbbj(mu,b1,b,j)  
 #
               ENDDO nu  
@@ -9031,7 +9186,7 @@
 #
               DO nu  
 #
-                 T1xabj(mu,a,b,j) = Lxxbj(mu,nu,b,j)*ca(nu,a)
+                 T1xabj(mu,a,b,j) = Lxxbj(mu,nu,b,j)*ca_new(nu,a)
                  Txabj(mu,a,b,j) += T1xabj(mu,a,b,j)  
 #
               ENDDO nu  
@@ -9067,7 +9222,7 @@
 #
               DO nu  
 #
-                 T1xiqj(mu,i,q,j) = Lxixj(mu,i,nu,j)*cb(nu,q)
+                 T1xiqj(mu,i,q,j) = Lxixj(mu,i,nu,j)*cb_new(nu,q)
                  Txiqj(mu,i,q,j) += T1xiqj(mu,i,q,j)  
 #
               ENDDO nu  
@@ -9082,7 +9237,7 @@
 #
               DO nu  
 #
-                 T1ixbj(i,mu,b,j) = Lixxj(i,mu,nu,j)*cb(nu,b)
+                 T1ixbj(i,mu,b,j) = Lixxj(i,mu,nu,j)*cb_new(nu,b)
                  Tixbj(i,mu,b,j) += T1ixbj(i,mu,b,j)  
 #
               ENDDO nu  
@@ -9130,7 +9285,7 @@
 #
               DO mu  
 #
-                 T1pipi(p1,i,p,i1) = Lxipi(mu,i,p,i1)*ca(mu,p1)
+                 T1pipi(p1,i,p,i1) = Lxipi(mu,i,p,i1)*ca_new(mu,p1)
                  Tpipi(p1,i,p,i1) += T1pipi(p1,i,p,i1)  
 #
               ENDDO mu  
@@ -9164,7 +9319,7 @@
 #
               DO mu  
 #
-                 T1aaii(a1,a,i,i1) = Lxaii(mu,a,i,i1)*ca(mu,a1)
+                 T1aaii(a1,a,i,i1) = Lxaii(mu,a,i,i1)*ca_new(mu,a1)
                  Taaii(a1,a,i,i1) += T1aaii(a1,a,i,i1)  
 #
               ENDDO mu  
@@ -9181,7 +9336,7 @@
 #
               DO mu  
 #
-                 T1iaai(i,a1,a,i1) = Lixai(i,mu,a,i1)*ca(mu,a1)
+                 T1iaai(i,a1,a,i1) = Lixai(i,mu,a,i1)*ca_new(mu,a1)
                  Tiaai(i,a1,a,i1) += T1iaai(i,a1,a,i1)   
 #
               ENDDO mu  
@@ -9212,7 +9367,7 @@
 #
               DO mu 
 #
-                 T1aaai(a2,a,a1,i) = L1xaai(mu,a,a1,i)*ca(mu,a2)
+                 T1aaai(a2,a,a1,i) = L1xaai(mu,a,a1,i)*ca_new(mu,a2)
                  Taaai(a2,a,a1,i) += T1aaai(a2,a,a1,i)  
 #
               ENDDO mu 
@@ -9248,7 +9403,7 @@
 #
               DO mu  
 #
-                 T1qjqj(q1,j,q,j1)      = Lxjqj(mu,j,q,j1)*cb(mu,q1)
+                 T1qjqj(q1,j,q,j1)      = Lxjqj(mu,j,q,j1)*cb_new(mu,q1)
                  Tqjqj(q1,j,q,j1)      += T1qjqj(q1,j,q,j1) 
 #
               ENDDO mu  
@@ -9282,7 +9437,7 @@
 #
               DO mu 
 #
-                 T1bbjj(b1,b,j,j1) = Lxbjj(mu,b,j,j1)*cb(mu,b1)
+                 T1bbjj(b1,b,j,j1) = Lxbjj(mu,b,j,j1)*cb_new(mu,b1)
                  Tbbjj(b1,b,j,j1) += T1bbjj(b1,b,j,j1)  
 #
               ENDDO mu  
@@ -9299,7 +9454,7 @@
 #
               DO mu  
 #
-                 T1jbbj(j,b1,b,j1) = Ljxbj(j,mu,b,j1)*cb(mu,b1)
+                 T1jbbj(j,b1,b,j1) = Ljxbj(j,mu,b,j1)*cb_new(mu,b1)
                  Tjbbj(j,b1,b,j1) += T1jbbj(j,b1,b,j1)  
 #
               ENDDO mu  
@@ -9330,7 +9485,7 @@
 #
               DO mu 
 #
-                 T1bbbj(b2,b,b1,j) = L1xbbj(mu,b,b1,j)*cb(mu,b2)
+                 T1bbbj(b2,b,b1,j) = L1xbbj(mu,b,b1,j)*cb_new(mu,b2)
                  Tbbbj(b2,b,b1,j) += T1bbbj(b2,b,b1,j)  
 #
               ENDDO mu 
@@ -9363,7 +9518,7 @@
 #
               DO mu  
 #
-                 T1bbii(b1,b,i,i1) = Lxbii(mu,b,i,i1)*cb(mu,b1)
+                 T1bbii(b1,b,i,i1) = Lxbii(mu,b,i,i1)*cb_new(mu,b1)
                  Tbbii(b1,b,i,i1) += T1bbii(b1,b,i,i1)  
 #
               ENDDO mu  
@@ -9393,7 +9548,7 @@
 #
               DO mu 
 #
-                 T1jbii(j,b,i,i1) = Lxbii(mu,b,i,i1)*cb(mu,j)
+                 T1jbii(j,b,i,i1) = Lxbii(mu,b,i,i1)*cb_new(mu,j)
                  Tjbii(j,b,i,i1) += T1jbii(j,b,i,i1)  
 #
               ENDDO mu  
@@ -9423,7 +9578,7 @@
 #
               DO mu  
 #
-                 T1bbai(b1,b,a,i) = Lxbai(mu,b,a,i)*cb(mu,b1)
+                 T1bbai(b1,b,a,i) = Lxbai(mu,b,a,i)*cb_new(mu,b1)
                  Tbbai(b1,b,a,i) += T1bbai(b1,b,a,i)  
 #
               ENDDO mu  
@@ -9453,7 +9608,7 @@
 #
               DO mu  
 #
-                 T1piqj(p,i,q,j) = Lxiqj(mu,i,q,j)*ca(mu,p)
+                 T1piqj(p,i,q,j) = Lxiqj(mu,i,q,j)*ca_new(mu,p)
                  Tpiqj(p,i,q,j) += T1piqj(p,i,q,j)  
 #
               ENDDO mu  
@@ -9483,7 +9638,7 @@
 #
               DO mu  
 #
-                 T1aajj(a1,a,j,j1) = Lxajj(mu,a,j,j1)*ca(mu,a1)
+                 T1aajj(a1,a,j,j1) = Lxajj(mu,a,j,j1)*ca_new(mu,a1)
                  Taajj(a1,a,j,j1) += T1aajj(a1,a,j,j1)  
 #
               ENDDO mu  
@@ -9513,7 +9668,7 @@
 #
               DO mu 
 #
-                 T1iabj(i,a,b,j) = Lixbj(i,mu,b,j)*ca(mu,a)
+                 T1iabj(i,a,b,j) = Lixbj(i,mu,b,j)*ca_new(mu,a)
                  Tiabj(i,a,b,j) += T1iabj(i,a,b,j)  
 #
               ENDDO mu 
@@ -9543,7 +9698,7 @@
 #
               DO mu  
 #
-                 T1aabj(a1,a,b,j) = Lxabj(mu,a,b,j)*ca(mu,a1)
+                 T1aabj(a1,a,b,j) = Lxabj(mu,a,b,j)*ca_new(mu,a1)
                  Taabj(a1,a,b,j) += T1aabj(a1,a,b,j)  
 #
               ENDDO mu  
@@ -9555,6 +9710,8 @@
            deallocate Lxabj(*,a,b,j) 
 #
      ENDPARDO a, b, j
+
+     execute server_barrier
 #
 #    ------------------------------------------------------------------------
 #
@@ -9765,7 +9922,6 @@
        ENDDO nu   
        ENDDO mu    
        endif 
-
 #
        ENDPROC BUILT_NEW_AO_FOCK
 #      -------------------------
@@ -9812,8 +9968,21 @@
       CREATE e2bj
       CREATE e3bj
       CREATE e4bj
+      CREATE e5bj
+
+      CREATE Fpq_a 
+      CREATE Fpq_b 
+      CREATE DHF_aa
+      CREATE DHF_bb
+      CREATE Fpqa_ae
+      CREATE Fpqa_me
+      CREATE Fpqa_mi
+      CREATE Fpqb_ae
+      CREATE Fpqb_me
+      CREATE Fpqb_mi
 
       execute sip_barrier
+#
 # Copy Ca/Cb to Ca_new and Cb_new
 #
       DO mu
@@ -9840,14 +10009,18 @@
       DO mu
       DO b
          Txb(mu,b) = Cb(mu,b)
-         PUT Cb_new(mu,b) = Txb(mu,b)
+         Cb_new(mu,b) = Txb(mu,b)
       ENDDO b
       ENDDO mu
        
       CALL TRAN_UHF
+      CALL FORM_DENS
+      CALL BUILT_NEW_AO_FOCK
+      CALL FORM_MO_FOCK
 #
 # Get initial second-order guess 
 # ------------------------------ 
+#
       CALL IGUESS_UHF
       EXECUTE SIP_BARRIER  
       EXECUTE SERVER_BARRIER  
@@ -9895,6 +10068,7 @@
          pinf(kiter,kptr1)  = etemp
       enddo kptr1
       enddo kiter
+
 # Start Brueckner iterations.
 
       DO BITER
@@ -10052,6 +10226,8 @@
             suma += tmp
           ENDDO j
           ENDDO b
+
+          execute print_scalar suma
 
           IF suma > ecrit
              CALL FORM_NEW_VECS

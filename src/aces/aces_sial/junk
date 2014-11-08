@@ -385,10 +385,10 @@ array table
 378,      tpq_b, 2,      q     q1 
 379,     tpqt_a, 2,      p     p1 
 380,     tpqt_b, 2,      q     q1 
-381,     ca_int, 2,     mu      p 
-382,     cb_int, 2,     mu      q 
-383,     ca_new, 2,     mu      p 
-384,     cb_new, 2,     mu      q 
+381,     ca_new, 2,     mu      p 
+382,     cb_new, 2,     mu      q 
+383,     ca_int, 2,     mu      p 
+384,     cb_int, 2,     mu      q 
 385,      spq_a, 2,      p     p1 
 386,      spq_b, 2,      q     q1 
 387,      upq_a, 2,      p     p1 

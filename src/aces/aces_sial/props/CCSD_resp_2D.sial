@@ -2678,7 +2678,7 @@
             T1iiaa(i1,i,a1,a) = 0.0
             T1aaii(a1,a,i,i1) = 0.0
             PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
-            PREPARE Dabij_aa_x(a,a1,i1,i) = T1aaii(a1,a,i,i1)
+            PREPARE Dabij_aa_x(a1,a,i,i1) = T1aaii(a1,a,i,i1)
       ENDPARDO i1,i,a1,a
 
       EXECUTE SERVER_BARRIER
@@ -2735,13 +2735,13 @@
             Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
             Tiiaa(i,i1,a,a1) *= 0.125
 #bgn_debug
-            Tiiaa(i,i1,a,a1) *=1.0
+#            Tiiaa(i,i1,a,a1) *=1.0
 #end_debug
 
 # DABIJ_X begin
           
             T1aaii(a,a1,i,i1) = L2old_aa_x(i,a,i1,a1)  
-            Taaii(a,a1,i,i1) += T1aaii(a,a1,i,i1)
+            Taaii(a,a1,i,i1)  = T1aaii(a,a1,i,i1)
             Taaii(a,a1,i,i1) *= 0.125
 #bgn_debug
             Taaii(a,a1,i,i1) *=1.0
@@ -2768,14 +2768,14 @@
                T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i)*Dii_x(i1,i2)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i1)*Dii_x(i,i2)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
@@ -2784,14 +2784,14 @@
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i)*Dii(i1,i2)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i1)*Dii(i,i2)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
@@ -2812,14 +2812,14 @@
                   T1iiaa(i,i1,a,a1)  = Vijmn_aaaa(i,i1,i2,i3)*T2iiaa_x(i2,i3,a,a1)
                   T1iiaa(i,i1,a,a1) *= 0.0625
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) *=1.0
+#                  T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                   Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
 
                   T1iiaa(i,i1,a,a1)  = Vijmn_aaaa_x(i,i1,i2,i3)*T2iiaa(i2,i3,a,a1)
                   T1iiaa(i,i1,a,a1) *= 0.0625
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) *=1.0
+#                  T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                   Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
                ENDDO i3
@@ -2843,32 +2843,36 @@
                T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a1,i1)*Daa_x(a2,a)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a,i1)*Daa_x(a2,a1)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a1,i1)*Daa(a2,a)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a,i1)*Daa(a2,a1)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
             ENDDO a2
 
+#bgn_debug
+#               Tiiaa(i,i1,a,a1) *=1.0
+#               Taaii(a,a1,i,i1) *=1.0
+#end_debug
             PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
             PREPARE Dabij_aa_x(a,a1,i,i1) += Taaii(a,a1,i,i1)
       ENDPARDO a, a1, i, i1
@@ -2947,58 +2951,66 @@
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai_x(a1,i1)
             Tiiaa(i,i1,a,a1)        *= 0.375
 #bgn_debug
-            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-            T1iiaa(i,i1,a,a1) *= 1.0
-            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#            Tiiaa(i,i1,a1,a) *= 0.0
 #end_debug
-#            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+#bgn_debug
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-            T1iiaa(i,i1,a1,a) *= 1.0
+#            T1iiaa(i,i1,a1,a) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
             T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-            T1iiaa(i1,i,a,a1) *= 1.0
+#            T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
             T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-            T1iiaa(i1,i,a1,a) *= 1.0
+#            T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
             Tiiaa(i,i1,a,a1)         = t1a_old_x(a,i)^L1ai(a1,i1)
             Tiiaa(i,i1,a,a1)        *= 0.375
 #bgn_debug
-            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-            T1iiaa(i,i1,a,a1) *= 1.0
-            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+#bgn_debug
+#            Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-            T1iiaa(i,i1,a1,a) *= 1.0
+#            T1iiaa(i,i1,a1,a) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
             T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-            T1iiaa(i1,i,a,a1) *= 1.0
+#            T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
             T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-            T1iiaa(i1,i,a1,a) *= 1.0
+#            T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3028,8 +3040,8 @@
             Liaai_x(i2,a2,a1,i1)  += Liaai_x1(i2,a2,a1,i1)
             Liaai_x(i2,a2,a1,i1) *= 2.0
 #bgn_debug
-            Liaai(i2,a2,a1,i1) *= 1.0
-            Liaai_x(i2,a2,a1,i1) *= 1.0
+#            Liaai(i2,a2,a1,i1) *= 1.0
+#            Liaai_x(i2,a2,a1,i1) *= 1.0
 #end_debug
 
             DO i3
@@ -3085,41 +3097,39 @@
 
                   Tiaia(i,a,i2,a2)         = t1a_old(a,i2)^tai(a2,i)
                   Tiaia(i,a,i2,a2)        *= 2.0
-#bgn_debug
-                  Tiaia(i,a,i2,a2)  *= 1.0
-#end_debug
                   T1iaia(i,a,i2,a2)        = T2old_aa(a,i2,a2,i)
-#bgn_debug
-                  T1iaia(i,a,i2,a2) *= 1.0
-#end_debug
                   Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
                   Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai_x(i2,a2,a1,i1)
 # What is the origin of 0.0625??
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-                  T1iiaa(i,i1,a,a1) *= 1.0
-                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+#bgn_debug
+#                  Tiiaa(i,i1,a,a1) *= 0.0
+#end_debug
+
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  T1iiaa(i,i1,a,a1) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
                   T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-                  T1iiaa(i1,i,a,a1) *= 1.0
+#                  T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                   T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-                  T1iiaa(i1,i,a1,a) *= 1.0
+#                  T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3127,14 +3137,7 @@
                   Tiaia_x(i,a,i2,a2)       = t1a_old(a,i2)^tai_x(a2,i)
                   Tiaia(i,a,i2,a2)        += Tiaia_x(i,a,i2,a2)
                   Tiaia(i,a,i2,a2)        *= 2.0
-#bgn_debug
-                  Tiaia(i,a,i2,a2) *= 1.0
-#end_debug
-
                   T1iaia(i,a,i2,a2)        = T2old_aa_x(a,i2,a2,i)
-#bgn_debug
-                  T1iaia(i,a,i2,a2) *= 1.0
-#end_debug
                   Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
 
                   Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai(i2,a2,a1,i1)
@@ -3142,28 +3145,32 @@
 
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-                  T1iiaa(i,i1,a,a1) *= 1.0
-                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+#bgn_debug
+#                  Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-                  T1iiaa(i,i1,a1,a) *= 1.0
+#                  T1iiaa(i,i1,a1,a) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
                   T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-                  T1iiaa(i1,i,a,a1) *= 1.0
+#                  T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                   T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-                  T1iiaa(i1,i,a1,a) *= 1.0
+#                  T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
                ENDDO a
@@ -3173,6 +3180,9 @@
 # Odd spin combination 
 
       PARDO j, b, a1, i1
+            Ljbai_x(j,b,a1,i1) = 0.0
+            Ljbai(j,b,a1,i1)   = 0.0
+
             GET l1b_old(j,b)
             GET t1a_old(a1,i1)
 
@@ -3227,29 +3237,27 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-               T1iiaa(i,i1,a,a1) *= 1.0
-               PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#               Tiiaa(i,i1,a1,a) *= 0.0
 #end_debug
-#               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-               T1iiaa(i,i1,a1,a) *= 1.0
+#               T1iiaa(i,i1,a1,a) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
                T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-               T1iiaa(i1,i,a,a1) *= 1.0
+#               T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-               T1iiaa(i1,i,a1,a) *= 1.0
+#               T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3257,29 +3265,27 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-               T1iiaa(i,i1,a,a1) *= 1.0
-               PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#               Tiiaa(i1,i,a1,a) *= 0.0
 #end_debug
-#               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-               T1iiaa(i,i1,a1,a) *= 1.0
+#               T1iiaa(i,i1,a1,a) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
                T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-               T1iiaa(i1,i,a,a1) *= 1.0
+#               T1iiaa(i1,i,a,a1) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-               T1iiaa(i1,i,a1,a) *= 1.0
+#               T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
             ENDDO a
@@ -3312,7 +3318,7 @@
                T1AHiiaa(i1,i,a1,a) += T2AHiiaa(i1,i,a1,a)
 #bgn_debug
 #               T1AHiiaa(i1,i,a1,a) *= 1.5
-               T1AHiiaa(i1,i,a1,a) *= 1.0
+#               T1AHiiaa(i1,i,a1,a) *= 1.0
 #end_debug
                T1iiax(i,i1,a,sigma) = T1AHiiaa(i1,i,a1,a)*ca(sigma,a1)
                Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)
@@ -3320,6 +3326,16 @@
             PREPARE Diiax_x(i,i1,a,sigma) = Tiiax(i,i1,a,sigma)
       ENDPARDO sigma, a, i, i1
       execute server_barrier
+
+#dgn_debug
+#      esum = 0.0
+#      PARDO sigma, a, i, i1
+#            request Diiax_x(i,i1,a,sigma) i
+#            tmp = Diiax_x(i,i1,a,sigma) * Diiax_x(i,i1,a,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, a, i, i1
+#      execute print_scalar esum
+#end_debug
 
       PARDO lambda, sigma, i, i1
             Tiixx(i,i1,lambda,sigma) = 0.0
@@ -3329,9 +3345,20 @@
                Tiixx(i,i1,lambda,sigma)  += T1iixx(i,i1,lambda,sigma)
             ENDDO a
             Tiixx(i,i1,lambda,sigma)         *= 4.0
+
             PREPARE Diixx_x(i,i1,lambda,sigma) += Tiixx(i,i1,lambda,sigma)
       ENDPARDO lambda, sigma, i, i1
       execute server_barrier
+
+#bgn_debug
+#      esum=0.0
+#      PARDO sigma, lambda, i, i1
+#            request Diixx_x(i,i1,lambda,sigma) i
+#            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, lambda, i, i1
+#      execute print_scalar esum
+#bgn_debug
 
       ENDPROC DIJABAA_X
 #
@@ -3367,7 +3394,7 @@
             Tijab(i,j,a,b)  = T1abij(a,b,i,j)
             Tabij(a,b,i,j) *= 0.125
 #bgn_debug
-            Tabij(a,b,i,j) *= 1.0
+#            Tabij(a,b,i,j) *= 1.0
 #end_debug
 # DABIJ_X end
 
@@ -3381,14 +3408,14 @@
                T1ijab(i,j,a,b) = Tau_ab(a,i1,b,j)*Dii_x(i,i1)
                T1ijab(i,j,a,b)*= -0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
                T1ijab(i,j,a,b) = Tau_ab_x(a,i1,b,j)*Dii(i,i1)
                T1ijab(i,j,a,b)*= -0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
@@ -3405,14 +3432,14 @@
                   T1ijab(i,j,a,b)  = Vijmn_abab(i,j,i1,j1)*T2ijab_x(i1,j1,a,b)
                   T1ijab(i,j,a,b) *= 0.125
 #bgn_debug
-                  T1ijab(i,j,a,b) *= 1.0
+#                  T1ijab(i,j,a,b) *= 1.0
 #end_debug
                   Tijab(i,j,a,b)  += T1ijab(i,j,a,b)
 
                   T1ijab(i,j,a,b)  = Vijmn_abab_x(i,j,i1,j1)*T2ijab(i1,j1,a,b)
                   T1ijab(i,j,a,b) *= 0.125
 #bgn_debug
-                  T1ijab(i,j,a,b) *= 1.0
+#                  T1ijab(i,j,a,b) *= 1.0
 #end_debug
                   Tijab(i,j,a,b)  += T1ijab(i,j,a,b)
 
@@ -3429,14 +3456,14 @@
                T1ijab(i,j,a,b) = Tau_ab(a,i,b,j1)*Djj_x(j,j1)
                T1ijab(i,j,a,b)*= -0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
                T1ijab(i,j,a,b) = Tau_ab_x(a,i,b,j1)*Djj(j,j1)
                T1ijab(i,j,a,b)*= -0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
             ENDDO j1
@@ -3451,14 +3478,14 @@
                T1ijab(i,j,a,b) = Tau_ab(a1,i,b,j)*Daa_x(a1,a)
                T1ijab(i,j,a,b)*= 0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
                T1ijab(i,j,a,b) = Tau_ab_x(a1,i,b,j)*Daa(a1,a)
                T1ijab(i,j,a,b)*= 0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
@@ -3473,14 +3500,14 @@
                T1ijab(i,j,a,b) = Tau_ab(a,i,b1,j)*Dbb_x(b1,b)
                T1ijab(i,j,a,b)*= 0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
                T1ijab(i,j,a,b) = Tau_ab_x(a,i,b1,j)*Dbb(b1,b)
                T1ijab(i,j,a,b)*= 0.125
 #bgn_debug
-               T1ijab(i,j,a,b) *= 1.0
+#               T1ijab(i,j,a,b) *= 1.0
 #end_debug
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
@@ -3543,28 +3570,28 @@
                   Tijab(i,j,a,b)  = t1a_old_x(a,i)^Lbj(b,j)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_x(b,j)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_xx1(b,j)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1a_old(a,i)^Lbj_xx2(b,j)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3628,28 +3655,28 @@
                   Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_x(a,i)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_xx1(a,i)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1b_old_x(b,j)^Lai(a,i)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
                   Tijab(i,j,a,b)  = t1b_old(b,j)^Lai_xx2(a,i)
                   Tijab(i,j,a,b) *= 0.375
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3725,11 +3752,11 @@
                   Tiaia(i,a,i1,a1)       = t1a_old(a,i1)^tai(a1,i)
                   Tiaia(i,a,i1,a1)      *= 2.0
 #bgn_debug
-                  Tiaia(i,a,i1,a1) *= 1.0
+#                  Tiaia(i,a,i1,a1) *= 1.0
 #end_debug
                   T1iaia(i,a,i1,a1)      = T2old_aa(a,i1,a1,i)
 #bgn_debug
-                  T1iaia(i,a,i1,a1) *= 1.0
+#                  T1iaia(i,a,i1,a1) *= 1.0
 #end_debug
                   Tiaia(i,a,i1,a1)      += T1iaia(i,a,i1,a1)
 
@@ -3737,7 +3764,7 @@
                   Tijab(i,j,a,b)         = Tiabj(i,a,b,j)
                   Tijab(i,j,a,b)        *= -0.0625
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3748,11 +3775,11 @@
                   Tiaia(i,a,i1,a1)      += T1iaia(i,a,i1,a1) 
                   Tiaia(i,a,i1,a1)      *= 2.0
 #bgn_debug
-                  Tiaia(i,a,i1,a1) *= 1.0
+#                  Tiaia(i,a,i1,a1) *= 1.0
 #end_debug
                   T1iaia(i,a,i1,a1)      = T2old_aa_x(a,i1,a1,i)
 #bgn_debug
-                  T1iaia(i,a,i1,a1) *= 1.0
+#                  T1iaia(i,a,i1,a1) *= 1.0
 #end_debug
                   Tiaia(i,a,i1,a1)      += T1iaia(i,a,i1,a1)
 
@@ -3760,7 +3787,7 @@
                   Tijab(i,j,a,b)         = Tiabj(i,a,b,j)
                   Tijab(i,j,a,b)        *= -0.0625
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3830,7 +3857,7 @@
                Tijab(i,j,a,b)         = Taibj(a,i,b,j)
                Tijab(i,j,a,b)        *= 0.0625 #-0.125
 #bgn_debug
-               Tijab(i,j,a,b) *= 1.0
+#               Tijab(i,j,a,b) *= 1.0
 #end_debug
                PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3838,7 +3865,7 @@
                Tijab(i,j,a,b)         = Taibj(a,i,b,j)
                Tijab(i,j,a,b)        *= 0.0625 #-0.125
 #bgn_debug
-               Tijab(i,j,a,b) *= 1.0
+#               Tijab(i,j,a,b) *= 1.0
 #end_debug
                PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
             ENDDO a 
@@ -3912,18 +3939,18 @@
                   Tjbjb(j,b,j1,b1)       = t1b_old(b,j1)^tbj(b1,j)
                   Tjbjb(j,b,j1,b1)      *= 2.0
 #bgn_debug
-                  Tjbjb(j,b,j1,b1) *= 1.0
+#                  Tjbjb(j,b,j1,b1) *= 1.0
 #end_debug
                   T1jbjb(j,b,j1,b1)      = T2old_bb(b,j1,b1,j)
 #bgn_debug
-                  T1jbjb(j,b,j1,b1) *= 1.0
+#                  T1jbjb(j,b,j1,b1) *= 1.0
 #end_debug
                   Tjbjb(j,b,j1,b1)      += T1jbjb(j,b,j1,b1)
                   Tjbai(j,b,a,i)         = Tjbjb(j,b,j1,b1)*Ljbai_x(j1,b1,a,i)
                   Tijab(i,j,a,b)         = Tjbai(j,b,a,i)
                   Tijab(i,j,a,b)        *= -0.0625 #-0.125
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -3932,18 +3959,18 @@
                   Tjbjb(j,b,j1,b1)      += T1jbjb(j,b,j1,b1)
                   Tjbjb(j,b,j1,b1)      *= 2.0
 #bgn_debug
-                  Tjbjb(j,b,j1,b1) *= 1.0
+#                  Tjbjb(j,b,j1,b1) *= 1.0
 #end_debug
                   T1jbjb(j,b,j1,b1)      = T2old_bb_x(b,j1,b1,j)
 #bgn_debug
-                  T1jbjb(j,b,j1,b1) *= 1.0
+#                  T1jbjb(j,b,j1,b1) *= 1.0
 #end_debug
                   Tjbjb(j,b,j1,b1)      += T1jbjb(j,b,j1,b1)
                   Tjbai(j,b,a,i)         = Tjbjb(j,b,j1,b1)*Ljbai(j1,b1,a,i)
                   Tijab(i,j,a,b)         = Tjbai(j,b,a,i)
                   Tijab(i,j,a,b)        *= -0.0625 #-0.125
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO b 
@@ -4012,7 +4039,7 @@
                Tijab(i,j,a,b)      = Taibj(a,i,b,j)
                Tijab(i,j,a,b)     *= 0.0625 #-0.125
 #bgn_debug
-               Tijab(i,j,a,b) *= 1.0
+#               Tijab(i,j,a,b) *= 1.0
 #end_debug
                PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
               
@@ -4020,7 +4047,7 @@
                Tijab(i,j,a,b)      = Taibj(a,i,b,j)
                Tijab(i,j,a,b)     *= 0.0625 #-0.125
 #bgn_debug
-               Tijab(i,j,a,b) *= 1.0
+#               Tijab(i,j,a,b) *= 1.0
 #end_debug
                PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
             ENDDO b
@@ -4071,7 +4098,7 @@
                   Taibj(a,i1,b1,j)      = t1a_old(a,i1)^t1b_old(b1,j)
                   Taibj(a,i1,b1,j)      *= 2.0 
 #bgn_debug
-                  Taibj(a,i1,b1,j) *= 1.0
+#                  Taibj(a,i1,b1,j) *= 1.0
 #                  Taibj(a,i1,b1,j)      += T2old_ab(a,i1,b1,j)
 #end_debug
                   Taibj(a,i1,b1,j)      += T2old_ab(a,i1,b1,j)
@@ -4079,7 +4106,7 @@
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi_x(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -4088,14 +4115,14 @@
                   Taibj(a,i1,b1,j)       += Taibj_x(a,i1,b1,j)
                   Taibj(a,i1,b1,j)       *= 2.0
 #bgn_debug
-                  Taibj(a,i1,b1,j) *= 1.0
+#                  Taibj(a,i1,b1,j) *= 1.0
 #                  Taibj(a,i1,b1,j)       += T2old_ab_x(a,i1,b1,j)
 #end_debug
                   Taibj(a,i1,b1,j)       += T2old_ab_x(a,i1,b1,j)
                   Tijab(i,j,a,b)         = Taibj(a,i1,b1,j)*Lbibi(b,i1,b1,i)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO j
@@ -4138,7 +4165,7 @@
                   Taibj(a1,i,b,j1)       = t1a_old(a1,i)^t1b_old(b,j1)
                   Taibj(a1,i,b,j1)      *= 2.0
 #bgn_debug
-                  Taibj(a1,i,b,j1) *= 1.0
+#                  Taibj(a1,i,b,j1) *= 1.0
 #                  Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
 #end_debug
                   Taibj(a1,i,b,j1)      += T2old_ab(a1,i,b,j1)
@@ -4146,7 +4173,7 @@
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj_x(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
 
@@ -4155,7 +4182,7 @@
                   Taibj(a1,i,b,j1)      += Taibj_x(a1,i,b,j1) 
                   Taibj(a1,i,b,j1)      *= 2.0
 #bgn_debug
-                  Taibj(a1,i,b,j1) *= 1.0
+#                  Taibj(a1,i,b,j1) *= 1.0
 #                  Taibj(a1,i,b,j1)      += T2old_ab_x(a1,i,b,j1)
 #end_debug
                   Taibj(a1,i,b,j1)      += T2old_ab_x(a1,i,b,j1)
@@ -4163,7 +4190,7 @@
                   Tijab(i,j,a,b)         = Taibj(a1,i,b,j1)*Lajaj(a,j1,a1,j)
                   Tijab(i,j,a,b)        *= 0.0625 #-0.125  
 #bgn_debug
-                  Tijab(i,j,a,b) *= 1.0
+#                  Tijab(i,j,a,b) *= 1.0
 #end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO i
@@ -4196,7 +4223,7 @@
                TAHijab(i,j1,a,b1) += T1AHijab(i,j1,a,b1) 
 #bgn_debug              
 #               TAHijab(i,j1,a,b1) *= -0.5
-               TAHijab(i,j1,a,b1) *= 1.0
+#               TAHijab(i,j1,a,b1) *= 1.0
 #end_debug
               
                T1ijax(i,j1,a,sigma) = TAHijab(i,j1,a,b1)*cb(sigma,b1)
@@ -4374,6 +4401,10 @@
                T1jjbb(j,j1,b,b1)*= -0.125
                Tjjbb(j,j1,b,b1) += T1jjbb(j,j1,b,b1)
             ENDDO b2
+#bgn_debug
+#              Tjjbb(j,j1,b,b1) *= 1.0
+#              Tbbjj(b,b1,j,j1) *= 1.0
+#end_debug
             PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
             PREPARE Dabij_bb_x(b,b1,j,j1) += Tbbjj(b,b1,j,j1)
       ENDPARDO b, b1, j, j1
@@ -4409,7 +4440,6 @@
 
                Tbj(b1,j)       = L1bb(b1,b2)*t1b_old_x(b2,j)
                L1bj_x(b1,j)   += Tbj(b1,j)
-
                Tbj(b1,j)      = L1bb_x(b1,b2)*t1b_old(b2,j)
                L1bj_x(b1,j) += Tbj(b1,j)
             ENDDO b2
@@ -4422,32 +4452,62 @@
                DO j1
                   Tjjbb(j,j1,b,b1)         = t1b_old_x(b,j)^L1bj(b1,j1)
                   Tjjbb(j,j1,b,b1)        *= 0.375
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
                   PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j,j1,b1,b)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j1,j,b,b1)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 
                   Tjjbb(j,j1,b,b1)         = t1b_old(b,j)^L1bj_x(b1,j1)
                   Tjjbb(j,j1,b,b1)        *= 0.375
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j,j1,b1,b)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j1,j,b,b1)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
                   PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 
                ENDDO j1
@@ -4525,6 +4585,10 @@
                   Tjjbb(j,j1,b,b1)         = Tjbbj(j,b,b1,j1)
 
                   Tjjbb(j,j1,b,b1)        *= -0.0625
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1)
@@ -4533,9 +4597,17 @@
 
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j1,j,b,b1)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 
                   Tjbjb(j,b,j2,b2)         = t1b_old(b,j2)^tbj_x(b2,j)
@@ -4549,23 +4621,42 @@
                   Tjjbb(j,j1,b,b1)         = Tjbbj(j,b,b1,j1)
 
                   Tjjbb(j,j1,b,b1)        *= -0.0625
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                   T1jjbb(j,j1,b1,b)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j,j1,b1,b)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 
                   T1jjbb(j1,j,b,b1)        = Tjjbb(j,j1,b,b1)
                   T1jjbb(j1,j,b,b1)       *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                   PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                   T1jjbb(j1,j,b1,b)        = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
                   PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
                ENDDO b
             ENDDO j
       ENDPARDO j2, b2, b1, j1
 # Odd spin combination
       PARDO i, a, b1, j1
+
+            Liabj_x(i,a,b1,j1) = 0.0
+            Liabj(i,a,b1,j1)   = 0.0
+
             GET l1a_old(i,a)
             GET t1b_old(b1,j1)
             GET l1a_old_x(i,a)
@@ -4613,45 +4704,76 @@
                Liabj_x(i,a,b1,j1) += Tiabj(i,a,b1,j1)
             ENDDO a1
             ENDDO i1
-            Tbjai(b1,j1,a,i) = Liabj(i,a,b1,j1)
-            Tbjai_x(b1,j1,a,i) = Liabj_x(i,a,b1,j1)
+#            Tbjai(b1,j1,a,i) = Liabj(i,a,b1,j1)
+#            Tbjai_x(b1,j1,a,i) = Liabj_x(i,a,b1,j1)
             DO j
             DO b
                REQUEST T2old_ab(a,i,b,j) b
                REQUEST T2old_ab_x(a,i,b,j) b
 
-               Tbjbj(b1,j1,b,j)      = Tbjai(b1,j1,a,i)*T2old_ab_x(a,i,b,j)
+               Tbjbj(b1,j1,b,j)      = Liabj(i,a,b1,j1)*T2old_ab_x(a,i,b,j)
                Tjjbb(j,j1,b,b1)      = Tbjbj(b1,j1,b,j)
 
                Tjjbb(j,j1,b,b1)     *= 0.0625
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                T1jjbb(j,j1,b1,b)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j,j1,b1,b)    *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 
                T1jjbb(j1,j,b,b1)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j1,j,b,b1)    *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                T1jjbb(j1,j,b1,b)     = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
                PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
 
-               Tbjbj(b1,j1,b,j)      = Tbjai_x(b1,j1,a,i)*T2old_ab(a,i,b,j)
+               Tbjbj(b1,j1,b,j)      = Liabj_x(i,a,b1,j1)*T2old_ab(a,i,b,j)
                Tjjbb(j,j1,b,b1)      = Tbjbj(b1,j1,b,j)
 
                Tjjbb(j,j1,b,b1)     *= 0.0625
+#bgn_debug
+#                  Tjjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
 
                T1jjbb(j,j1,b1,b)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j,j1,b1,b)    *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j,j1,b1,b) += T1jjbb(j,j1,b1,b)
 
                T1jjbb(j1,j,b,b1)     = Tjjbb(j,j1,b,b1)
                T1jjbb(j1,j,b,b1)    *= -1.0
+#bgn_debug
+#                  T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j1,j,b,b1) += T1jjbb(j1,j,b,b1)
 
                T1jjbb(j1,j,b1,b)     = Tjjbb(j,j1,b,b1)
+#bgn_debug
+#               T1jjbb(j1,j,b1,b) *= 0.0
+#end_debug
+
                PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
             ENDDO b
             ENDDO j
@@ -4682,7 +4804,7 @@
                TAHjjbb(j1,j,b1,b) += T1AHjjbb(j1,j,b1,b)
 #bgn_debug
 #               TAH1jjbb(j,j1,b,b1) *= -1.5
-               TAHjjbb(j,j1,b,b1) *= 1.0
+#               TAHjjbb(j,j1,b,b1) *= 1.0
 #end_debug
                T1jjbx(j,j1,b,sigma) = TAHjjbb(j,j1,b,b1)*cb(sigma,b1)
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)
@@ -4690,7 +4812,17 @@
             PREPARE Djjbx_x(j,j1,b,sigma) = Tjjbx(j,j1,b,sigma)
       ENDPARDO b, sigma, j, j1
       execute server_barrier
-
+#bgn_debug
+#      suma = 0.0
+#      PARDO b, sigma, j, j1
+#               REQUEST Djjbx_x(j,j1,b,sigma) j
+#               tmp =  Djjbx_x(j,j1,b,sigma) * Djjbx_x(j,j1,b,sigma)
+#               suma += tmp
+#
+#      ENDPARDO b, sigma, j, j1
+#      execute print_scalar suma 
+#end_debug
+      
       PARDO lambda, sigma, j, j1
             Tjjxx(j,j1,lambda,sigma) = 0.0
             DO b
@@ -4699,9 +4831,22 @@
                Tjjxx(j,j1,lambda,sigma)  += T1jjxx(j,j1,lambda,sigma)
             ENDDO b
           Tjjxx(j,j1,lambda,sigma)         *= 4.0
+#bgn_debug
+#          Tjjxx(j,j1,lambda,sigma)         *= 1.0
+#end_debug
           PREPARE Djjxx_x(j,j1,lambda,sigma) += Tjjxx(j,j1,lambda,sigma)
       ENDPARDO lambda, sigma, j, j1
       execute server_barrier
+
+#bgn_debug
+#      suma = 0.0
+#      PARDO lambda, sigma, j, j1
+#               REQUEST Djjxx_x(j,j1,lambda,sigma) j
+#               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
+#               suma += tmp
+#      ENDPARDO lambda, sigma, j, j1
+#      execute print_scalar suma
+#end_debug
 
       ENDPROC DIJABBB_X
 #     -----------------
@@ -5056,7 +5201,7 @@
                Tiixx(i2,i3,mu,nu)  += T1iixx(i2,i3,mu,nu)
             ENDDO i1
             Tiixx(i2,i3,mu,nu)         *= 0.25
-            PREPARE Diixx_x(i2,i3,mu,nu) += Tiixx(i2,i3,mu,nu)
+            PREPARE Diixx_x(i2,i3,mu,nu) = Tiixx(i2,i3,mu,nu)
       ENDPARDO nu, i2, i3, mu
       execute server_barrier
       ENDPROC DIJKLAAAA_X
@@ -5163,7 +5308,7 @@
                T1ijxx(i1,j1,mu,nu) = Dxjij_x(mu,j,i1,j1)*cb(nu,j)
                Tijxx(i1,j1,mu,nu) += T1ijxx(i1,j1,mu,nu)
             ENDDO j
-            PREPARE Dijxx_x(i1,j1,mu,nu) += Tijxx(i1,j1,mu,nu)
+            PREPARE Dijxx_x(i1,j1,mu,nu) = Tijxx(i1,j1,mu,nu)
       ENDPARDO i1, nu, j1, mu
       execute server_barrier
 # Done backtransformation 
@@ -5276,7 +5421,7 @@
                Tjjxx(j2,j3,mu,nu)  += T1jjxx(j2,j3,mu,nu)
             ENDDO j1
             Tjjxx(j2,j3,mu,nu)         *= 0.25
-            PREPARE Djjxx_x(j2,j3,mu,nu) += Tjjxx(j2,j3,mu,nu)
+            PREPARE Djjxx_x(j2,j3,mu,nu) = Tjjxx(j2,j3,mu,nu)
       ENDPARDO nu, j2, j3, mu
       execute server_barrier
 
@@ -9018,9 +9163,11 @@
             TAHbabi(b1,a,b,i) += T1AHbabi(b1,a,b,i)
 
             DO mu
-               if property == 10.0
-                  TAHbabi(b1,a,b,i) *= 0.0
-               endif 
+#bgn_debug
+#               if property == 10.0
+#                  TAHbabi(b1,a,b,i) *= 0.0
+#               endif 
+#end_debug
 
                Txabi(mu,a,b,i)      = TAHbabi(b1,a,b,i)*cb(mu,b1)
                PREPARE Dxabi_x(mu,a,b,i) += Txabi(mu,a,b,i)
@@ -9247,10 +9394,11 @@
             TAHabaj(a,b,a1,j)+= T1AHabaj(a,b,a1,j)
 
             DO mu
-
-               if property == 10.0
-                  TAHabaj(a,b,a1,j) *= 0.0
-               endif 
+#bgn_debug
+#               if property == 10.0
+#                  TAHabaj(a,b,a1,j) *= 0.0
+#               endif 
+#end_debug
 
                Txbaj(mu,b,a1,j)      = TAHabaj(a,b,a1,j)*ca(mu,a)
                PREPARE Dxbaj_x(mu,b,a1,j) += Txbaj(mu,b,a1,j)
@@ -9750,7 +9898,6 @@
             PREPARE Dijka_aaaa_x(i,i1,i2,a) = Tiiia(i,i1,i2,a)
             PREPARE Dakij_aaaa_x(a,i,i1,i2) = Taiii(a,i,i1,i2)
       ENDPARDO i, i1, i2, a
-
       EXECUTE SERVER_BARRIER 
 
       PARDO i, i1, i2, a
@@ -9987,6 +10134,11 @@
             PREPARE Dakij_bbbb_x(b,j,j1,j2) = Tbjjj(b,j,j1,j2) 
       ENDPARDO j, j1, j2, b
       
+      PARDO j, j1, j2, sigma
+            Tjjjx(j,j1,j2,sigma) = 0.0
+             PREPARE Djjjx_x(j,j1,j2,sigma) = Tjjjx(j,j1,j2,sigma)
+      ENDPARDO j, j1, j2, sigma
+
       EXECUTE SERVER_BARRIER
 
       PARDO j, j1, j2, b
@@ -10050,7 +10202,7 @@
 
                T1bjjj(b,j,j1,j2) = L2old_bb(j,b1,j1,b)*t1b_old_x(b1,j2)
                T1bjjj(b,j,j1,j2)*= -0.125
-               T1bjjj(b,j,j1,j2) += T1bjjj(b,j,j1,j2)
+               Tbjjj(b,j,j1,j2) += T1bjjj(b,j,j1,j2)
 
                T1bjjj(b,j,j1,j2) = L2old_bb_x(j,b1,j1,b)*t1b_old(b1,j2)
                T1bjjj(b,j,j1,j2)*= -0.125
@@ -10114,8 +10266,6 @@
 #               TAHjjjb(j,j1,j2,b) *= -1.5
                TAHjjjb(j,j1,j2,b) *= 1.0
 #end_debug
-               Tjjjb(j,j1,j2,b) *=  0.5
-
                Tjjjx(j,j1,j2,sigma)      = TAHjjjb(j,j1,j2,b)*cb(sigma,b)
                PREPARE Djjjx_x(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma)
             ENDDO sigma
@@ -10133,6 +10283,9 @@
             ENDDO j2
 
             Tjjxx(j,j1,lambda,sigma)         *= 8.0
+#bgn_debug
+#            Tjjxx(j,j1,lambda,sigma)         *= 1.0
+#end_debug
             PREPARE Djjxx_x(j,j1,lambda,sigma) += Tjjxx(j,j1,lambda,sigma)
       ENDPARDO j, j1, lambda, sigma
       execute server_barrier
@@ -10147,7 +10300,6 @@
             PREPARE Dijka_abab_x(i,j,i1,b) = Tijib(i,j,i1,b)
             PREPARE Dakij_baba_x(b,i,j,i1) = Tbiji(b,i,j,i1) 
       ENDPARDO i, j, i1, b
-
       EXECUTE SERVER_BARRIER
      
       PARDO i, j, i1, b
@@ -10343,7 +10495,6 @@
             PREPARE Dijka_baba_x(j,i,j1,a) = Tjija(j,i,j1,a)
             PREPARE Dakij_abab_x(a,j,i,j1) = Tajij(a,j,i,j1)
       ENDPARDO j, i, j1, a
-
       EXECUTE SERVER_BARRIER
 
       PARDO j, i, j1, a
@@ -11430,7 +11581,25 @@
       D2SO_XX = 0.0
       D2SO_YX = 0.0
       D2SO_ZX = 0.0
-      property = 10.0
+
+#bgn_debug
+      esum=0.0
+      PARDO sigma, lambda, i, i1
+            request Diixx_x(i,i1,lambda,sigma) i
+            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+            esum += tmp
+      ENDPARDO sigma, lambda, i, i1
+      execute print_scalar esum
+
+      suma = 0.0
+      PARDO lambda, sigma, j, j1
+               REQUEST Djjxx_x(j,j1,lambda,sigma) j
+               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
+               suma += tmp
+      ENDPARDO lambda, sigma, j, j1
+      execute print_scalar suma
+#end_debug
+
 
        PARDO mu, nu, lambda, sigma
 #
@@ -11536,7 +11705,7 @@
                   T1xxxx(mu,nu,lambda,sigma) *= -3.0
                endif 
 
-               TSxxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -11820,8 +11989,8 @@
                REQUEST LAO_bb(j,lambda,j1,sigma) j1
                Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -11945,6 +12114,24 @@
       D2SO_YY = 0.0
       D2SO_ZY = 0.0
 
+#bgn_debug
+      esum=0.0
+      PARDO sigma, lambda, i, i1
+            request Diixx_x(i,i1,lambda,sigma) i
+            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+            esum += tmp
+      ENDPARDO sigma, lambda, i, i1
+      execute print_scalar esum
+
+      suma = 0.0
+      PARDO lambda, sigma, j, j1
+               REQUEST Djjxx_x(j,j1,lambda,sigma) j
+               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
+               suma += tmp
+      ENDPARDO lambda, sigma, j, j1
+      execute print_scalar suma
+#end_debug
+
        PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
@@ -12006,7 +12193,6 @@
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(nu,lambda)^DHFB(mu,sigma)
             T1xxxx(mu,nu,lambda,sigma)*= -1.5
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-
 #
 #           Fully transform Diixx
 #           ---------------------
@@ -12097,7 +12283,7 @@
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
                If property == 10.0
-                  T1xxxx(mu,nu,lambda,sigma) *= 1.5
+                  T1xxxx(mu,nu,lambda,sigma) *= 3.0
                endif
 
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
@@ -12254,7 +12440,7 @@
                Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
                Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
 
-               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
@@ -12281,7 +12467,7 @@
                Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 
-               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
@@ -12309,8 +12495,9 @@
                REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
                Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12334,8 +12521,9 @@
                REQUEST LAO_bb(j,lambda,j1,sigma) j1
                Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma)= Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)= Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12354,29 +12542,28 @@
             ENDDO j1
             ENDDO j
 
-            IF  property == 10.0
-
-# ABAB spin case 
+# ABAB spin-case
 
             DO i
             DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j 
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               REQUEST TAO_ab(mu,i,nu,j)        j
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j
                Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  *= 4.0
+               TASxxxx(lambda,sigma,mu,nu) *= 4.0
+  
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
-               ENDIF 
+               ENDIF
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
-
-               T1xxxx(mu,nu,lambda,sigma) *= 4.0 
 
                If property == 10.0
                   T1xxxx(mu,nu,lambda,sigma) *= 0.0
@@ -12392,8 +12579,11 @@
                REQUEST LAO_ab(i,lambda,j,sigma) j
                Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  *= 4.0
+               TASxxxx(lambda,sigma,mu,nu) *= 4.0
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12404,8 +12594,6 @@
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
 
-               T1xxxx(mu,nu,lambda,sigma) *= 4.0
-
                If property == 10.0
                   T1xxxx(mu,nu,lambda,sigma) *= 0.0
                endif
@@ -12414,8 +12602,6 @@
             ENDDO j
             ENDDO i
       
-            ENDIF
-
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
@@ -12794,7 +12980,7 @@
                Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
                Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
 
-               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
@@ -12821,7 +13007,7 @@
                Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 
-               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
@@ -12849,8 +13035,8 @@
                REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
                Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12874,8 +13060,8 @@
                REQUEST LAO_bb(j,lambda,j1,sigma) j1
                Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12903,7 +13089,7 @@
                Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -12930,8 +13116,8 @@
                REQUEST LAO_ab(i,lambda,j,sigma) j
                Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
@@ -13361,15 +13547,15 @@
       esum *= 0.25 # to match aces 
       execute print_scalar esum 
 #
-      esum = 0.0 
-      PARDO i, j, a, b  
+#      esum = 0.0 
+#      PARDO i, j, a, b  
 #
-            REQUEST Dijab_ab(i,j,a,b) a  
-            etemp = Dijab_ab(i,j,a,b)*Dijab_ab(i,j,a,b)
-            esum += etemp
+#            REQUEST Dijab_ab(i,j,a,b) a  
+#            etemp = Dijab_ab(i,j,a,b)*Dijab_ab(i,j,a,b)
+#            esum += etemp
 #            
-      ENDPARDO i, j, a, b 
-      execute print_scalar esum 
+#      ENDPARDO i, j, a, b 
+#      execute print_scalar esum 
 #
       ENDPROC S2DIJAB 
 #
@@ -13402,19 +13588,19 @@
 #      esum *= 0.25 # to match aces
       execute print_scalar esum
 #
-      esum = 0.0
-      PARDO i, j, a, b
+#      esum = 0.0
+#      PARDO i, j, a, b
 #
-            REQUEST Dijab_ab_x(i,j,a,b) a
+#            REQUEST Dijab_ab_x(i,j,a,b) a
 #            execute dump_amp Dijab_ab_x(i,j,a,b)
-            etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
-            esum += etemp
+#            etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
+#            esum += etemp
 #
-      ENDPARDO i, j, a, b
+#      ENDPARDO i, j, a, b
 #bgn_debug
-     esum *= 1.0
+#     esum *= 1.0
 #end_debug
-      execute print_scalar esum
+#      execute print_scalar esum
 #
       ENDPROC S2DIJAB_X
 
@@ -14086,9 +14272,9 @@
 # polarizablities)
 
          if do_gten == 1.00
-            property = 20.0
+            property = 10.0
             beta_is_minus = 0.0
-            ASYM = 0.0
+            ASYM = 1.0
 #bgn_debug
 #         property = 30.0
 #         beta_is_minus = 100.0
@@ -14097,7 +14283,7 @@
 
          execute print_scalar property
 
-         if property == 20.0
+         if property == 10.0
             CALL GET_2P_SPIN_ORBIT 
          endif
 #bgn_debug
@@ -14169,7 +14355,7 @@
              Z_COMP = 0.0
 
              NCOUNT += 1.0
-#             NCOUNT = 3.0
+#             NCOUNT = 2.0
              execute print_scalar Ncount
 
              IF NCOUNT == 1.0
@@ -14264,19 +14450,19 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-             CALL S2DIJKL_X 
+#             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-             CALL S2DIBJA_X 
+#             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-             CALL S2DIJKA_X 
+#             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
@@ -14286,7 +14472,7 @@
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-             CALL S2ABCI_X 
+#             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions
@@ -14317,6 +14503,7 @@
 #end_debug
 
           IF PROPERTY == 10.0
+          execute print_scalar D2SO_XX
 
           DO XYZ 
              DO XYZ1
