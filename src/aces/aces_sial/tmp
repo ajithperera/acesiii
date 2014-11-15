@@ -1,126 +1,19 @@
 rm -f make.out make.err
-../../../bin/sial ccsd/bccsd_uhf_ao_sv2_diis5.sial && cp ccsd/bccsd_uhf_ao_sv2_diis5.sio ../../../bin/sio
-input  file: ccsd/bccsd_uhf_ao_sv2_diis5.sial
-output file: ccsd/bccsd_uhf_ao_sv2_diis5.sio
- Variable.getidtype(number) = 59
-Variable.getidtype(arrayindex[arrayid][i]) = 60
+../../../bin/sial props/CCSD_resp_asym_1D.sial && cp props/CCSD_resp_asym_1D.sio ../../../bin/sio
+input  file: props/CCSD_resp_asym_1D.sial
+output file: props/CCSD_resp_asym_1D.sio
+ Variable.getidtype(number) = 60
+Variable.getidtype(arrayindex[arrayid][i]) = 59
 
-line 8539, !!! index types do not match.
-Variable.getidtype(number) = 59
-Variable.getidtype(arrayindex[arrayid][i]) = 60
-
-line 8550, !!! index types do not match.
-Variable.getidtype(number) = 59
-Variable.getidtype(arrayindex[arrayid][i]) = 60
-
-line 8561, !!! index types do not match.
+line 3306, !!! index types do not match.
 Variable.getidtype(number) = 60
 Variable.getidtype(arrayindex[arrayid][i]) = 59
 
-line 8572, !!! index types do not match.
-
-line 8576,  nested pardo loop is not allowed.
+line 3320, !!! index types do not match.
 Variable.getidtype(number) = 60
 Variable.getidtype(arrayindex[arrayid][i]) = 59
 
-line 8582, !!! index types do not match.
-
-line 8587,  nested pardo loop is not allowed.
-Variable.getidtype(number) = 60
-Variable.getidtype(arrayindex[arrayid][i]) = 59
-
-line 8593, !!! index types do not match.
-
-line 8655, endpardo is missing.
-form_mo_fock
-
-line 8655, syntax2: index does not match.
-
-line 8655, syntax2: index does not match.
-
-line 8655, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 8658, endproc is missing.
-
-line 8658, proc name does not match.
-
-line 8658, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 8687, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 8692, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 8950, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 8958, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 9262, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 9268, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 9722, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 9726, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 9728, call: index can not be found.
-
-line 9730, call: index can not be found.
-
-line 9732, call: index can not be found.
-
-line 9734, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 9738, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 9931, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 9934, @@@  unexpected char, ignored till end of line.
-Unexpected char: proc
-   'proc' $$$ unexpected char
-line 9940, array or scalar does not exist.
-
-line 9947, @@@  unexpected char, ignored till end of line.
-Unexpected char: =
-   '=' $$$ unexpected char
-line 9948, array or scalar does not exist.
-
-line 9950, index number does not match.
-
-line 9950, @@@  unexpected char, ignored till end of line.
-Unexpected char: id
-   'i1' ### unexpected char
-line 9951, index number does not match.
-
-line 9951, @@@  unexpected char, ignored till end of line.
-Unexpected char: id
-   'i' ### unexpected char
-line 9954, @@@  unexpected char, ignored till end of line.
-Unexpected char: endproc
-   'endproc' $$$ unexpected char
-line 10044, call: index can not be found.
-
-line 10045, call: index can not be found.
-
-line 10046, call: index can not be found.
-
-line 10048, call: index can not be found.
-
-line 10264, call: index can not be found.
-
-line 10265, call: index can not be found.
+line 3334, !!! index types do not match.
 ===========================================================
 =           errors found.                                 =
 =           please correct it before go to the next step. =

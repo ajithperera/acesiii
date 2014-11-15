@@ -5183,7 +5183,7 @@
                Tiiii(i,i1,i2,i3)  -= T1iiii(i,i1,i2,i3)
 #bgn_debug
 #               Tiiii(i,i1,i2,i3) *= 1.5
-               Tiiii(i,i1,i2,i3) *= 1.0
+#               Tiiii(i,i1,i2,i3) *= 1.0
 #end_debug
 
                T1xiii(mu,i1,i2,i3) = Tiiii(i,i1,i2,i3)*ca(mu,i)
@@ -5291,7 +5291,7 @@
                Tijij(i,j,i1,j1) = DAHijkl_ab_x(i,j,i1,j1)
 #bgn_debug               
 #               Tijij(i,j,i1,j1) *= -0.5
-               Tijij(i,j,i1,j1) *=  1.0
+#               Tijij(i,j,i1,j1) *=  1.0
 #end_debug
 
                T1xjij(mu,j,i1,j1) = Tijij(i,j,i1,j1)*ca(mu,i)
@@ -5403,7 +5403,7 @@
 
 #bgn_debug
 #               Tjjjj(j,j1,j2,j3) *= -1.5
-               Tjjjj(j,j1,j2,j3) *=  1.0
+#               Tjjjj(j,j1,j2,j3) *=  1.0
 #end_debug
 
                T1xjjj(mu,j1,j2,j3) = Tjjjj(j,j1,j2,j3)*cb(mu,j)
@@ -8758,7 +8758,7 @@
                TAHaaai(a,a1,a2,i)+=  T1AHaaai(a,a1,a2,i)
 #bgn_debug
 #               TAHaaai(a,a1,a2,i) *= 1.5
-               TAHaaai(a,a1,a2,i) *= 1.0
+#               TAHaaai(a,a1,a2,i) *= 1.0
 #end_debug
                Txaai(mu,a1,a2,i)      = TAHaaai(a,a1,a2,i)*ca(mu,a)
                PREPARE Dxaai_x(mu,a1,a2,i) += Txaai(mu,a1,a2,i)
@@ -8949,7 +8949,7 @@
                TAHbbbj(b,b1,b2,j)+= T1AHbbbj(b,b1,b2,j)
 #bgn_debug
 #               TAHbbbj(b,b1,b2,j) *= -1.5
-               TAHbbbj(b,b1,b2,j) *= 1.0
+#               TAHbbbj(b,b1,b2,j) *= 1.0
 #end_debug
                Txbbj(mu,b1,b2,j)      = TAHbbbj(b,b1,b2,j)*cb(mu,b)
                PREPARE Dxbbj_x(mu,b1,b2,j) += Txbbj(mu,b1,b2,j)
@@ -9163,11 +9163,6 @@
             TAHbabi(b1,a,b,i) += T1AHbabi(b1,a,b,i)
 
             DO mu
-#bgn_debug
-#               if property == 10.0
-#                  TAHbabi(b1,a,b,i) *= 0.0
-#               endif 
-#end_debug
 
                Txabi(mu,a,b,i)      = TAHbabi(b1,a,b,i)*cb(mu,b1)
                PREPARE Dxabi_x(mu,a,b,i) += Txabi(mu,a,b,i)
@@ -10059,8 +10054,6 @@
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
            PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
-           execute dump_amp Tiiia(i,i1,i2,a)
-           execute dump_amp Taiii(a,i,i1,i2) 
            PREPARE Dakij_aaaa_x(a,i,i1,i2) += Taiii(a,i,i1,i2)
 #end_debug
 #                                                                   ++
@@ -10079,10 +10072,10 @@
                 T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2) 
                 TAHiiia(i,i1,i2,a) += T1AHiiia(i,i1,i2,a)
 
-                execute dump_amp TAHiiia(i,i1,i2,a)
 #bgn_debug
+#                execute dump_amp TAHiiia(i,i1,i2,a)
 #               TAHiiia(i,i1,i2,a)  *= 1.5
-               TAHiiia(i,i1,i2,a)  *= 1.0
+#               TAHiiia(i,i1,i2,a)  *= 1.0
 #end_debug
                Tiiix(i,i1,i2,sigma)      = TAHiiia(i,i1,i2,a)*ca(sigma,a)
                PREPARE Diiix_x(i,i1,i2,sigma) += Tiiix(i,i1,i2,sigma)
@@ -10264,7 +10257,7 @@
                TAHjjjb(j,j1,j2,b) += T1AHjjjb(j,j1,j2,b) 
 #bgn_debug
 #               TAHjjjb(j,j1,j2,b) *= -1.5
-               TAHjjjb(j,j1,j2,b) *= 1.0
+#               TAHjjjb(j,j1,j2,b) *= 1.0
 #end_debug
                Tjjjx(j,j1,j2,sigma)      = TAHjjjb(j,j1,j2,b)*cb(sigma,b)
                PREPARE Djjjx_x(j,j1,j2,sigma) += Tjjjx(j,j1,j2,sigma)
@@ -10450,7 +10443,7 @@
                TAHijib(i,j,i1,b) += T1AHijib(i,j,i1,b)
 #bgn_debug                  
 #               TAHijib(i,j,i1,b) *= -0.5
-               TAHijib(i,j,i1,b) *= 1.0
+#               TAHijib(i,j,i1,b) *= 1.0
 #end_debug
                Tijix(i,j,i1,sigma)      = TAHijib(i,j,i1,b)*cb(sigma,b)
                PREPARE Dijix_x(i,j,i1,sigma) += Tijix(i,j,i1,sigma)
@@ -10643,7 +10636,7 @@
                TAHjija(j,i,j1,a) += T1AHjija(j,i,j1,a)
 #bgn_debug               
 #               TAHjija(j,i,j1,a)  *= 0.5
-               TAHjija(j,i,j1,a)  *= 1.0
+#               TAHjija(j,i,j1,a)  *= 1.0
 #end_debug
                Tjijx(j,i,j1,sigma)      = TAHjija(j,i,j1,a)*ca(sigma,a)
                PREPARE Djijx_x(j,i,j1,sigma) += Tjijx(j,i,j1,sigma)
@@ -11583,21 +11576,21 @@
       D2SO_ZX = 0.0
 
 #bgn_debug
-      esum=0.0
-      PARDO sigma, lambda, i, i1
-            request Diixx_x(i,i1,lambda,sigma) i
-            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
-            esum += tmp
-      ENDPARDO sigma, lambda, i, i1
-      execute print_scalar esum
-
-      suma = 0.0
-      PARDO lambda, sigma, j, j1
-               REQUEST Djjxx_x(j,j1,lambda,sigma) j
-               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
-               suma += tmp
-      ENDPARDO lambda, sigma, j, j1
-      execute print_scalar suma
+#      esum=0.0
+#      PARDO sigma, lambda, i, i1
+#            request Diixx_x(i,i1,lambda,sigma) i
+#            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, lambda, i, i1
+#      execute print_scalar esum
+#
+#      suma = 0.0
+#      PARDO lambda, sigma, j, j1
+#               REQUEST Djjxx_x(j,j1,lambda,sigma) j
+#               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
+#               suma += tmp
+#      ENDPARDO lambda, sigma, j, j1
+#      execute print_scalar suma
 #end_debug
 
 
@@ -11909,13 +11902,15 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE 
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -11936,13 +11931,15 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma) *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu)*= -0.5
                ELSE 
                   TASxxxx(lambda,sigma,mu,nu)*=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
@@ -11965,13 +11962,15 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma) *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu)*= -0.5
                ELSE 
                   TASxxxx(lambda,sigma,mu,nu)*=  0.5
                ENDIF
+
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu) 
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
@@ -11990,13 +11989,15 @@
                Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
                TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12019,9 +12020,7 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  *= 4.0 
-               TASxxxx(lambda,sigma,mu,nu) *= 4.0 
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
                IF ASYM == 1.0
@@ -12029,9 +12028,12 @@
                ELSE 
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
+                 
+               T1xxxx(mu,nu,lambda,sigma)  *= 4.0
 
                If property == 10.0  
                   T1xxxx(mu,nu,lambda,sigma) *= 0.0
@@ -12049,24 +12051,26 @@
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  *= 4.0
-               TASxxxx(lambda,sigma,mu,nu) *= 4.0
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma) = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma) += TAHxxxx(mu,nu,lambda,sigma)
 
+                  T1xxxx(mu,nu,lambda,sigma) *= 4.0
+
                If property == 10.0  
                   T1xxxx(mu,nu,lambda,sigma) *= 0.0
                Endif 
-
+                  
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
             ENDDO i
@@ -12079,7 +12083,9 @@
 #
 
             tmp = AO_2SOI_X(mu,lambda,nu,sigma)*T1xxxx(mu,lambda,nu,sigma)
+#bgn_debug
 #            execute dump_amp AO_2SOI_X(mu,lambda,nu,sigma)
+#end_debug
             D2SO_PX += tmp
 
             tmp = AO_2SOI_Y(mu,lambda,nu,sigma)*T1xxxx(mu,lambda,nu,sigma)
@@ -12115,21 +12121,21 @@
       D2SO_ZY = 0.0
 
 #bgn_debug
-      esum=0.0
-      PARDO sigma, lambda, i, i1
-            request Diixx_x(i,i1,lambda,sigma) i
-            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
-            esum += tmp
-      ENDPARDO sigma, lambda, i, i1
-      execute print_scalar esum
-
-      suma = 0.0
-      PARDO lambda, sigma, j, j1
-               REQUEST Djjxx_x(j,j1,lambda,sigma) j
-               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
-               suma += tmp
-      ENDPARDO lambda, sigma, j, j1
-      execute print_scalar suma
+#      esum=0.0
+#      PARDO sigma, lambda, i, i1
+#            request Diixx_x(i,i1,lambda,sigma) i
+#            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, lambda, i, i1
+#      execute print_scalar esum
+#
+#      suma = 0.0
+#      PARDO lambda, sigma, j, j1
+#               REQUEST Djjxx_x(j,j1,lambda,sigma) j
+#               tmp =  Djjxx_x(j,j1,lambda,sigma) * Djjxx_x(j,j1,lambda,sigma)
+#               suma += tmp
+#      ENDPARDO lambda, sigma, j, j1
+#      execute print_scalar suma
 #end_debug
 
        PARDO mu, nu, lambda, sigma
@@ -12441,13 +12447,16 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12468,13 +12477,16 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12497,13 +12509,16 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12523,13 +12538,16 @@
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)= Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)= TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12551,19 +12569,21 @@
                Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
                TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  *= 4.0
-               TASxxxx(lambda,sigma,mu,nu) *= 4.0
-  
+               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
+
+               T1xxxx(mu,nu,lambda,sigma)  *= 4.0
 
                If property == 10.0
                   T1xxxx(mu,nu,lambda,sigma) *= 0.0
@@ -12580,16 +12600,19 @@
                Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
                TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *= 4.0
                TASxxxx(lambda,sigma,mu,nu) *= 4.0
 
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -12981,13 +13004,16 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13008,13 +13034,16 @@
                Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
 
                TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13061,13 +13090,16 @@
                Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
                Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
                TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13089,13 +13121,16 @@
                Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
                T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)  = T1xxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13117,13 +13152,16 @@
                Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
                Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
                TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
+
                TSxxxx(mu,nu,lambda,sigma)  *=  0.5
+
                IF ASYM == 1.0
                   TASxxxx(lambda,sigma,mu,nu) *= -0.5
                ELSE
                   TASxxxx(lambda,sigma,mu,nu) *=  0.5
                ENDIF 
+
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                TAHxxxx(mu,nu,lambda,sigma)  = TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  += TAHxxxx(mu,nu,lambda,sigma)
@@ -13610,7 +13648,7 @@
       PARDO i, i1, a, a1
 #
             REQUEST Dibja_aaaa_x(i,a,i1,a1) a
-            execute dump_amp Dibja_aaaa_x(i,a,i1,a1) 
+#            execute dump_amp Dibja_aaaa_x(i,a,i1,a1) 
             etemp = Dibja_aaaa_x(i,a,i1,a1)*Dibja_aaaa_x(i,a,i1,a1)
             esum += etemp
 #
@@ -14300,6 +14338,12 @@
             GET DpqB_x(mu,lambda)
             GET DHFA(nu,sigma)
             GET DHFB(nu,sigma)
+            IF mu < nu
+            IF lambda < sigma
+  
+               execute dump_block AO_2SOI_X(mu, nu, lambda, sigma)
+            ENDIF
+            ENDIF 
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFA(nu,sigma)
             T1xxxx(mu,nu,lambda,sigma)*= 3.0
@@ -14355,7 +14399,7 @@
              Z_COMP = 0.0
 
              NCOUNT += 1.0
-#             NCOUNT = 2.0
+#             NCOUNT = 3.0
              execute print_scalar Ncount
 
              IF NCOUNT == 1.0
@@ -14503,7 +14547,18 @@
 #end_debug
 
           IF PROPERTY == 10.0
-          execute print_scalar D2SO_XX
+
+# Need to check this sign change.
+
+          D2SO_XX *= -1.0
+          D2SO_XY *= -1.0
+          D2SO_XZ *= -1.0
+          D2SO_YX *= -1.0
+          D2SO_YY *= -1.0
+          D2SO_ZZ *= -1.0
+          D2SO_ZX *= -1.0
+          D2SO_ZY *= -1.0
+#          D2SO_ZZ *= -1.0
 
           DO XYZ 
              DO XYZ1

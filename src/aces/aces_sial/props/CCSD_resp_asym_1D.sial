@@ -92,30 +92,45 @@
       temp Tpq (mu,nu)
       temp TKin (mu,nu)
       temp Tdshld (mu,nu)
+      temp T1xi(mu,i)
+      temp T1xj(mu,j)
+#      temp Txi (mu,i)
+      temp T1ii(i,i1)
+      temp T1jj(j,j1)
+      temp Tii (i,i1)
+      temp T1xa(mu,a)
+      temp T1xb(mu,b)
+      temp Txa (mu,a)
+      temp T1aa(a,a1)
+#      temp T1bb(b,b1)
+      temp Taa (a,a1)
+      temp T1ia(i,a)
+      temp T1jb(j,b)
+      temp Tia (i,a)
 
       temp Tpq_x(mu,nu)
 
-      temp Taa (a,a1)
+#      temp Taa (a,a1)
       temp TaaT (a,a1)
       temp TaaT1(a,a1)
-      temp T1aa(a,a1)
+#      temp T1aa(a,a1)
       temp T1aaT(a,a1)
       temp Tbb (b,b1)
       temp TbbT(b,b1)
       temp TbbT1(b,b1)
       temp T1bb(b,b1)
       temp T1bbT(b,b1)
-      temp Tii (i,i1)
+#      temp Tii (i,i1)
       temp TiiT(i,i1)
       temp TiiT1(i,i1)
 
-      temp T1ii(i,i1)
+#      temp T1ii(i,i1)
       temp T1iiT(i,i1)
       temp Tjj (j,j1)
       temp TjjT (j,j1)
       temp T1jjT (j,j1)
       temp TjjT1 (j,j1)
-      temp T1jj(j,j1)
+#      temp T1jj(j,j1)
       temp Tai(a,i)
       temp TaiT(a,i)
 
@@ -124,7 +139,7 @@
       temp Tbj1(b,j)
       temp TbjT(b,j)
 
-      temp Tia(i,a) 
+#      temp Tia(i,a) 
       temp Tjb(j,b) 
 
       distributed Dij_a(i,i1)
@@ -253,6 +268,38 @@
       distributed Doldai_a_x(a,i)
       distributed Doldai_b_x(b,j)
 
+      distributed SOX_OO_A(i,i1)
+      distributed SOY_OO_A(i,i1)
+      distributed SOZ_OO_A(i,i1)
+
+      distributed SOX_VV_A(a,a1)
+      distributed SOY_VV_A(a,a1)
+      distributed SOZ_VV_A(a,a1)
+
+      distributed SOX_OV_A(i,a)
+      distributed SOY_OV_A(i,a)
+      distributed SOZ_OV_A(i,a)
+
+      distributed SOX_VO_A(a,i)
+      distributed SOY_VO_A(a,i)
+      distributed SOZ_VO_A(a,i)
+
+      distributed SOX_OO_B(j,j1)
+      distributed SOY_OO_B(j,j1)
+      distributed SOZ_OO_B(j,j1)
+
+      distributed SOX_VV_B(b,b1)
+      distributed SOY_VV_B(b,b1)
+      distributed SOZ_VV_B(b,b1)
+
+      distributed SOX_OV_B(j,b)
+      distributed SOY_OV_B(j,b)
+      distributed SOZ_OV_B(j,b)
+
+      distributed SOX_VO_B(b,j)
+      distributed SOY_VO_B(b,j)
+      distributed SOZ_VO_B(b,j)
+
       served T2old_aa(a,i,a1,i1)
       served T2old_bb(b,j,b1,j1)
       served T2old_ab(a,i,b,j)
@@ -287,7 +334,7 @@
       TEMP Taibj(a1,i,b,j1)
       TEMP tqppq(q,p,p1,q1)
       TEMP Tix(i,mu)
-      TEMP Txa(mu,a)
+#      TEMP Txa(mu,a)
       TEMP Tjx(j,mu)
       TEMP Txb(mu,b)
 
@@ -549,8 +596,40 @@
       CREATE T1L1_OO_B_x
       CREATE T2L2_OO_A_x
       CREATE T2L2_OO_B_x
-     
+
       CREATE DTMP
+
+      CREATE SOX_OO_A
+      CREATE SOY_OO_A
+      CREATE SOZ_OO_A
+
+      CREATE SOX_VV_A
+      CREATE SOY_VV_A
+      CREATE SOZ_VV_A
+
+      CREATE SOX_OV_A
+      CREATE SOY_OV_A
+      CREATE SOZ_OV_A
+
+      CREATE SOX_VO_A
+      CREATE SOY_VO_A
+      CREATE SOZ_VO_A
+
+      CREATE SOX_OO_B
+      CREATE SOY_OO_B
+      CREATE SOZ_OO_B
+
+      CREATE SOX_VV_B
+      CREATE SOY_VV_B
+      CREATE SOZ_VV_B
+
+      CREATE SOX_OV_B
+      CREATE SOY_OV_B
+      CREATE SOZ_OV_B
+
+      CREATE SOX_VO_B
+      CREATE SOY_VO_B
+      CREATE SOZ_VO_B
 
       EXECUTE  SERVER_BARRIER
 
@@ -622,6 +701,39 @@
       DELETE T1L1_OO_B_x
       DELETE T2L2_OO_A_x
       DELETE T2L2_OO_B_x
+
+      DELETE SOX_OO_A
+      DELETE SOY_OO_A
+      DELETE SOZ_OO_A
+
+      DELETE SOX_VV_A
+      DELETE SOY_VV_A
+      DELETE SOZ_VV_A
+
+      DELETE SOX_OV_A
+      DELETE SOY_OV_A
+      DELETE SOZ_OV_A
+
+      DELETE SOX_VO_A
+      DELETE SOY_VO_A
+      DELETE SOZ_VO_A
+
+      DELETE SOX_OO_B
+      DELETE SOY_OO_B
+      DELETE SOZ_OO_B
+
+      DELETE SOX_VV_B
+      DELETE SOY_VV_B
+      DELETE SOZ_VV_B
+
+      DELETE SOX_OV_B
+      DELETE SOY_OV_B
+      DELETE SOZ_OV_B
+
+      DELETE SOX_VO_B
+      DELETE SOY_VO_B
+      DELETE SOZ_VO_B
+
 
       DELETE DTMP
 
@@ -2277,7 +2389,7 @@
               tai (a,i)  = l1a_old_x(i,a)
               tai (a,i) *= -1.0
               tai (a,i)  += t1a_old_x(a,i)
-
+              tai(a,i) *= 0.5
               PUT  Doldai_a_x(a,i) += tai (a,i)
       ENDPARDO  a, i
       EXECUTE  SIP_BARRIER
@@ -2329,22 +2441,22 @@
       EXECUTE  SIP_BARRIER
       
 #debug_bgn
-#           sumb = 0.0
+           sumb = 0.0
 #           sumbb = 0.0
-#           pardo b, j
+           pardo b, j
 #           pardo j, j1
-#               GET Doldai_b_x(b,j)
+               GET Doldai_b_x(b,j)
 #                get T1L1_OO_B(j,j1) 
 #                get T2L2_OO_B(j,j1) 
 #               execute dump_amp  Doldai_b_x(b,j) 
 #               execute dump_amp   T1L1_OO_B (j,j1) 
 #               execute dump_amp   T2L2_OO_B (j,j1) 
 #                
-#                sum = Doldai_b_x(b,j)*Doldai_b_x(b,j)
+                sum = Doldai_b_x(b,j)*Doldai_b_x(b,j)
 #                GET T2L2_OO_B (j,j1)
 #                sum = T2L2_OO_B (j,j1)*T2L2_OO_B (j,j1)
-#                sumb += sum
-#           endpardo b, j
+                sumb += sum
+           endpardo b, j
 #           endpardo j, j1
 #           execute sip_barrier
 #           collective sumbb += sumb
@@ -2453,6 +2565,7 @@
                tbj (b,j ) = l1b_old_x(j,b)
                tbj (b,j ) *= -1.0
                tbj (b,j)  += t1b_old_x(b,j)
+               tbj(b,j)  *= 0.5
 
                PUT  Doldai_b_x(b,j) += tbj (b,j)
       ENDPARDO  b, j
@@ -2900,7 +3013,6 @@
                Jxi(mu,i)  = Doldai_a_x(a,i)*ca(mu,a)
                DO nu
                   Ixx(mu,nu)  = Jxi(mu,i)*ca(nu,i)
-                  IXX(mu,nu) *= 0.5
 #bgn_debug  
                   Ixx(mu,nu) *= 1.0
 #end_debug
@@ -2925,7 +3037,6 @@
                Jxj(mu,j)  = Doldai_b_x(b,j)*cb(mu,b)
                DO nu
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
-                  IXX(mu,nu) *= 0.5
 #bgn_debug  
                   Ixx(mu,nu) *= 1.0
 #end_debug
@@ -3015,6 +3126,579 @@
       ENDPROC D1TRANS_x
 #     ------------------
 
+      PROC SO2AO_TRANS_ALPHA
+#     ----------------------
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO i
+               T1xi(mu,i)  = Hbx(mu,nu) * Ca(nu,i)
+               Txi (mu,i)  = T1xi(mu,i)
+            DO i1
+               Tii(i1,i)  = Txi (mu,i) * Ca(mu,i1)
+               PUT SOX_OO_A(i1,i) += Tii (i1,i)
+            ENDDO i1
+            ENDDO i
+            
+            DO i
+               T1xi(mu,i)  = Hby(mu,nu) * Ca(nu,i)
+               Txi (mu,i)  = T1xi(mu,i)
+            DO i1
+               Tii(i1,i)  = Txi (mu,i) * Ca(mu,i1)
+               PUT SOY_OO_A(i1,i) += Tii (i1,i)
+            ENDDO i1
+            ENDDO i
+
+            DO i
+               T1xi(mu,i)  = Hbz(mu,nu) * Ca(nu,i)
+               Txi (mu,i)  = T1xi(mu,i)
+            DO i1
+               Tii(i1,i)  = Txi (mu,i) * Ca(mu,i1)
+               PUT SOZ_OO_A(i1,i) += Tii (i1,i)
+            ENDDO i1
+            ENDDO i
+       
+      ENDPARDO mu, nu
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO a
+               T1xa(mu,a) = Hbx(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO a1
+               Taa(a1,a)  = Txa (mu,a) * Ca(mu,a1)
+               PUT SOX_VV_A(a1,a) += Taa (a1,a)
+            ENDDO a1
+            ENDDO a
+
+            DO a
+               T1xa(mu,a) = Hby(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO a1
+               Taa(a1,a)  = Txa (mu,a) * Ca(mu,a1)
+               PUT SOY_VV_A(a1,a) += Taa (a1,a)
+            ENDDO a1
+            ENDDO a
+
+            DO a
+               T1xa(mu,a) = Hbz(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO a1
+               Taa(a1,a)  = Txa (mu,a) * Ca(mu,a1)
+               PUT SOZ_VV_A(a1,a) += Taa (a1,a)
+            ENDDO a1
+            ENDDO a
+      ENDPARDO mu, nu
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO a
+               T1xa(mu,a) = Hbx(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO i
+               Tia(i,a)  = Txa (mu,a) * Ca(mu,i)
+               Tai (a,i) = Tia(i,a)
+               Tai (a,i) *= -1.0
+               PUT SOX_OV_A(i,a) += Tia (i,a)
+               PUT SOX_VO_A(a,i) += Tai (a,i)
+            ENDDO i
+            ENDDO a
+
+            DO a
+               T1xa(mu,a) = Hby(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO i
+               Tia(i,a)  = Txa (mu,a) * Ca(mu,i)
+               Tai (a,i)  = Tia(i,a)
+               Tai (a,i) *= -1.0
+               PUT SOY_OV_A(i,a) += Tia (i,a)
+               PUT SOY_VO_A(a,i) += Tai (a,i)
+            ENDDO i
+            ENDDO a
+
+           DO a
+               T1xa(mu,a) = HbZ(mu,nu) * Ca(nu,a)
+               Txa (mu,a) = T1xa(mu,a)
+            DO i
+               Tia(i,a)  = Txa (mu,a) * Ca(mu,i)
+               Tia (i,a) = Tia(i,a)
+               Tai (a,i) = Tia(i,a)
+               Tai (a,i) *= -1.0
+               PUT SOZ_OV_A(i,a) += Tia (i,a)
+               PUT SOZ_VO_A(a,i) += Tai (a,i)
+            ENDDO i
+            ENDDO a
+
+      ENDPARDO mu, nu
+      execute sip_barrier 
+
+      ENDPROC SO2AO_TRANS_ALPHA
+#     -------------------------
+
+      PROC SO2AO_TRANS_BETA
+#     ----------------------
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO j
+               T1xj(mu,j) = Hbx(mu,nu) * Cb(nu,j)
+               Txj (mu,j) = T1xj(mu,j)
+            DO j1
+               Tjj(j1,j)  = Txj (mu,j) * Cb(mu,j1)
+               PUT SOX_OO_B(j1,j) += Tjj (j1,j)
+            ENDDO j1
+            ENDDO j 
+
+            DO j
+               T1xj(mu,j) = Hby(mu,nu) * Cb(nu,j)
+               Txj (mu,j) = T1xj(mu,j)
+            DO j1
+               Tjj(j1,j)  = Txj (mu,j) * Cb(mu,j1)
+               PUT SOY_OO_B(j1,j) += Tjj (j1,j)
+            ENDDO j1
+            ENDDO j
+       
+            DO j
+               T1xj(mu,j) = Hbz(mu,nu) * Cb(nu,j)
+               Txj (mu,j) = T1xj(mu,j)
+            DO j1
+               Tjj(j1,j)  = Txj (mu,j) * Cb(mu,j1)
+               PUT SOZ_OO_B(j1,j) += Tjj (j1,j)
+            ENDDO j1
+            ENDDO j
+
+      ENDPARDO mu,nu
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO b
+               Txb(mu,b) = Hbx(mu,nu) * Cb(nu,b)
+            DO b1
+               Tbb(b1,b)  = Txb (mu,b) * Cb(mu,b1)
+               PUT SOX_VV_B(b1,b) += Tbb (b1,b)
+            ENDDO b1
+            ENDDO b
+
+            DO b
+               Txb(mu,b) = Hby(mu,nu) * Cb(nu,b)
+            DO b1
+               Tbb(b1,b)  = Txb (mu,b) * Cb(mu,b1)
+               PUT SOY_VV_B(b1,b) += Tbb (b1,b)
+            ENDDO b1
+            ENDDO b
+
+            DO b
+               Txb(mu,b) = Hbz(mu,nu) * Cb(nu,b)
+            DO b1
+               Tbb(b1,b)  = Txb (mu,b) * Cb(mu,b1)
+               PUT SOZ_VV_B(b1,b) += Tbb (b1,b)
+            ENDDO b1
+            ENDDO b
+ 
+      ENDPARDO mu, nu
+
+      PARDO mu, nu
+
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
+
+            DO b
+               Txb(mu,b) = Hbx(mu,nu) * Cb(nu,b)
+            DO j
+               Tjb(j,b)   = Txb (mu,b) * Cb(mu,j)
+               Tbj (b,j)  = Tjb(j,b)
+               Tbj (b,j) *= -1.0
+               PUT SOX_OV_B(j,b) += Tjb (j,b)
+               PUT SOX_VO_B(b,j) += Tbj (b,j)
+            ENDDO j
+            ENDDO b
+
+            DO b
+               Txb(mu,b) = Hby(mu,nu) * Cb(nu,b)
+            DO j
+               Tjb(j,b)   = Txb (mu,b) * Cb(mu,j)
+               Tbj (b,j)  = Tjb(j,b)
+               Tbj (b,j) *= -1.0
+               PUT SOY_OV_B(j,b) += Tjb (j,b)
+               PUT SOY_VO_B(b,j) += Tbj (b,j)
+            ENDDO j
+            ENDDO b
+
+            DO b
+               Txb(mu,b) = HbZ(mu,nu) * Cb(nu,b)
+            DO j
+               Tjb(j,b)   = Txb (mu,b) * Cb(mu,j)
+               Tbj (b,j)  = Tjb(j,b)
+               Tbj (b,j) *= -1.0
+               PUT SOZ_OV_B(j,b) = Tjb (j,b)
+               PUT SOZ_VO_B(b,j) = Tbj (b,j)
+            ENDDO j
+            ENDDO b
+      ENDPARDO mu, nu
+      execute sip_barrier 
+
+      ENDPROC SO2AO_TRANS_BETA
+#     ------------------------
+
+      PROC CCSD_MO_RESPONSE_X
+#     -----------------------
+     
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
+
+      PARDO i, i1
+            GET SOX_OO_A(i,i1)
+            GET SOY_OO_A(i,i1)
+            GET SOZ_OO_A(i,i1)
+
+            GET DiJ_A_X(i,i1)
+            XX  = SOX_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AXX += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AYY += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AZZ += XX
+      ENDPARDO i, i1
+
+      PARDO a, a1
+            GET SOX_VV_A(a,a1)
+            GET SOY_VV_A(a,a1)
+            GET SOZ_VV_A(a,a1)
+
+            GET Dab_A_X(a,a1)
+            XX  = SOX_VV_A(a,a1) * Dab_A_X(a,a1)
+           AXX += XX
+            XX  = SOY_VV_A(a,a1) * Dab_A_X(a,a1)
+           AYY += XX
+            XX  = SOZ_VV_A(a,a1) * Dab_A_X(a,a1)
+           AZZ += XX
+      ENDPARDO a, a1
+
+      PARDO i, a
+            GET SOX_VO_A(a,i)
+            GET SOY_VO_A(a,i)
+            GET SOZ_VO_A(a,i)
+
+            GET Doldai_a_X(a,i)
+            Tai(a,i) = Doldai_a_X(a,i)
+            XX  =  SOX_VO_A(a,i) * Tai(a,i)
+            XX *= 2.0
+           AXX += XX
+            XX  =  SOY_VO_A(a,i) * Tai(a,i)
+            XX *= 2.0
+           AYY += XX
+            XX  =  SOZ_VO_A(a,i) * Tai(a,i)
+            XX *= 2.0
+           AZZ += Xx
+
+      ENDPARDO i, a
+
+      PARDO j, j1
+            GET SOX_OO_B(j,j1)
+            GET SOY_OO_B(j,j1)
+            GET SOZ_OO_B(j,j1)
+
+            GET DiJ_B_X(j,j1)
+            XX  = SOX_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AXX -= XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AYY -= XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AZZ -= XX
+      ENDPARDO j, j1
+
+      PARDO b, b1
+            GET SOX_VV_B(b,b1)
+            GET SOY_VV_B(b,b1)
+            GET SOZ_VV_B(b,b1)
+
+            GET Dab_B_X(b,b1)
+
+            XX  = SOX_VV_B(b,b1) * Dab_B_X(b,b1)
+           AXX -= XX
+            XX  = SOY_VV_B(b,b1) * Dab_B_X(b,b1)
+           AYY -= XX
+            XX  = SOZ_VV_B(b,b1) * Dab_B_X(b,b1)
+           AZZ -= XX
+      ENDPARDO b, b1
+
+      PARDO j, b
+            GET SOX_VO_B(b,j)
+            GET SOY_VO_B(b,j)
+            GET SOZ_VO_B(b,j)
+
+            GET Doldai_B_X(b,j)
+            tbj(b,j) = Doldai_B_X(b,j)
+            XX  = SOX_VO_B(b,j) * tbj(b,j) 
+            XX *= 2.0
+           AXX -= XX
+            XX  = SOY_VO_B(b,j) * tbj(b,j)
+            XX *= 2.0
+           AYY -= XX
+            XX  = SOZ_VO_B(b,j) * tbj(b,j)
+            XX *= 2.0
+           AZZ -= XX
+
+      ENDPARDO j, b
+
+      execute sip_barrier
+      collective PXX +=Axx
+      execute print_scalar Pxx
+
+      execute sip_barrier
+      collective PXY +=Ayy
+      execute print_scalar Pxy
+
+      execute sip_barrier
+      collective PXZ +=Azz
+      execute print_scalar Pxz
+     
+      ENDPROC CCSD_MO_RESPONSE_X
+#     --------------------------
+
+      PROC CCSD_MO_RESPONSE_Y
+#     -----------------------
+     
+      PARDO i, i1
+            GET SOX_OO_A(i,i1)
+            GET SOY_OO_A(i,i1)
+            GET SOZ_OO_A(i,i1)
+
+            GET DiJ_A_X(i,i1)
+            XX  = SOX_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AXX += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AYY += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AZZ += XX
+      ENDPARDO i, i1
+
+      PARDO a, a1
+            GET SOX_VV_A(a,a1)
+            GET SOY_VV_A(a,a1)
+            GET SOZ_VV_A(a,a1)
+
+            GET Dab_A_X(a,a1)
+            XX  = SOX_VV_A(a,a1) * Dab_A_X(a,a1)
+           AXX += XX
+            XX  = SOY_VV_A(a,a1) * Dab_A_X(a,a1)
+           AYY += YY
+            ZZ  = SOZ_VV_A(a,a1) * Dab_A_X(a,a1)
+           AZZ += ZZ
+      ENDPARDO a, a1
+
+      PARDO i, a
+            GET SOX_OV_A(i,a)
+            GET SOY_OV_A(i,a)
+            GET SOZ_OV_A(i,a)
+
+            GET Doldai_a_X(a,i)
+            tia(i,a) = Doldai_a_X(a,i)
+            XX  = SOX_OV_A(i,a) * tia(i,a)
+           AXX += XX
+            XX  = SOY_OV_A(i,a) * tia(i,a)
+           AYY += YY
+            XX  = SOY_OV_A(i,a) * tia(i,a)
+           AZZ += ZZ
+
+      ENDPARDO i, a
+
+      PARDO j, j1
+            GET SOX_OO_B(j,j1)
+            GET SOY_OO_B(j,j1)
+            GET SOZ_OO_B(j,j1)
+
+            GET DiJ_B_X(j,j1)
+            XX  = SOX_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AXX += XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AYY += XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AZZ += XX
+      ENDPARDO j, j1
+
+      PARDO b, b1
+            GET SOX_VV_B(b,b1)
+            GET SOY_VV_B(b,b1)
+            GET SOZ_VV_B(b,b1)
+
+            GET Dab_B_X(b,b1)
+
+            XX  = SOX_VV_B(b,b1) * Dab_B_X(b,b1)
+           AXX -= XX
+            XX  = SOY_VV_B(b,b1) * Dab_B_X(b,b1)
+           AYY -= XX
+            XX  = SOZ_VV_B(b,b1) * Dab_B_X(b,b1)
+           AZZ -= XX
+      ENDPARDO b, b1
+
+      PARDO j, b
+            GET SOX_OV_B(j,b)
+            GET SOY_OV_B(j,b)
+            GET SOZ_OV_B(j,b)
+
+            GET Doldai_B_X(b,j)
+            tjb(j,b) = Doldai_B_X(b,j)
+            XX  = SOX_OV_B(j,b) * tjb(j,b)
+           AXX -= XX
+            XX  = SOY_OV_B(j,b) * tjb(j,b)
+           AYY -= XX
+            XX  = SOZ_OV_B(j,b) * tjb(j,b)
+           AZZ -= XX
+
+      ENDPARDO j, b
+
+      execute sip_barrier
+      collective PYX +=Axx
+      execute print_scalar Pxx
+
+      execute sip_barrier
+      collective PYY +=Ayy
+      execute print_scalar Pxy
+
+      execute sip_barrier
+      collective PYZ +=Azz
+      execute print_scalar Pxz
+     
+      ENDPROC CCSD_MO_RESPONSE_Y
+#     --------------------------
+
+      PROC CCSD_MO_RESPONSE_Z
+#     ------------------------
+     
+      PARDO i, i1
+            GET SOX_OO_A(i,i1)
+            GET SOY_OO_A(i,i1)
+            GET SOZ_OO_A(i,i1)
+
+            GET DiJ_A_X(i,i1)
+            XX  = SOX_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AXX += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AYY += XX
+            XX =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
+           AZZ += XX
+      ENDPARDO i, i1
+
+      PARDO a, a1
+            GET SOX_VV_A(a,a1)
+            GET SOY_VV_A(a,a1)
+            GET SOZ_VV_A(a,a1)
+
+            GET Dab_A_X(a,a1)
+            XX  = SOX_VV_A(a,a1) * Dab_A_X(a,a1)
+           AXX += XX
+            XX  = SOY_VV_A(a,a1) * Dab_A_X(a,a1)
+           AYY += YY
+            ZZ  = SOZ_VV_A(a,a1) * Dab_A_X(a,a1)
+           AZZ += ZZ
+      ENDPARDO a, a1
+
+      PARDO i, a
+            GET SOX_OV_A(i,a)
+            GET SOY_OV_A(i,a)
+            GET SOZ_OV_A(i,a)
+
+            GET Doldai_a_X(a,i)
+            tia(i,a) =  Doldai_a_X(a,i)
+
+            XX  = SOX_OV_A(i,a) * tia(i,a)
+           AXX += XX
+            XX  = SOY_OV_A(i,a) * tia(i,a)
+           AYY += YY
+            XX  = SOY_OV_A(i,a) * tia(i,a)
+           AZZ += ZZ
+
+      ENDPARDO i, a
+
+      PARDO j, j1
+            GET SOX_OO_B(j,j1)
+            GET SOY_OO_B(j,j1)
+            GET SOZ_OO_B(j,j1)
+
+            GET DiJ_B_X(j,j1)
+            XX  = SOX_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AXX += XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AYY += XX
+            XX =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
+           AZZ += XX
+      ENDPARDO j, j1
+
+      PARDO b, b1
+            GET SOX_VV_B(b,b1)
+            GET SOY_VV_B(b,b1)
+            GET SOZ_VV_B(b,b1)
+
+            GET Dab_B_X(b,b1)
+
+            XX  = SOX_VV_B(b,b1) * Dab_B_X(b,b1)
+           AXX -= XX
+            XX  = SOY_VV_B(b,b1) * Dab_B_X(b,b1)
+           AYY -= XX
+            XX  = SOZ_VV_B(b,b1) * Dab_B_X(b,b1)
+           AZZ -= XX
+      ENDPARDO b, b1
+
+      PARDO j, b
+            GET SOX_OV_B(j,b)
+            GET SOY_OV_B(j,b)
+            GET SOZ_OV_B(j,b)
+
+            GET Doldai_B_X(b,j)
+            tjb(j,b) = Doldai_B_X(b,j)
+            XX  = SOX_OV_B(j,b) * tjb(j,b)
+           AXX -= XX
+            XX  = SOY_OV_B(j,b) * tjb(j,b)
+           AYY -= XX
+            XX  = SOZ_OV_B(j,b) * tjb(j,b)
+           AZZ -= XX
+
+      ENDPARDO j, b
+
+      execute sip_barrier
+      collective Pzx +=Axx
+      execute print_scalar Pxx
+
+      execute sip_barrier
+      collective Pzy +=Ayy
+      execute print_scalar Pxy
+
+      execute sip_barrier
+      collective Pzz +=Azz
+      execute print_scalar Pxz
+     
+      ENDPROC CCSD_MO_RESPONSE_Z
+#     --------------------------
+
       PROC CCSD_RESPONSE_X
 #     --------------------
 
@@ -3037,7 +3721,6 @@
             get HBz(mu,nu)
 
             Dccsd_x(mu,nu)   = DpqA_x(mu,nu)
-            execute dump_amp DpqA_x(mu,nu)
             IF SPIN_DEN == 1.0
                DpqB_x(mu,nu)  *= -1.0
                Dccsd_x(mu,nu) += DpqB_x(mu,nu)
@@ -3086,7 +3769,7 @@
       PBVV = 0.0
       PAOV = 0.0
       PBOV = 0.0
-  
+ 
       PARDO i, i1
             GET Dij_a_x(i,i1)
             GET Hba_mi_x(i,i1)
@@ -3366,6 +4049,17 @@
          ENDPARDO mu,nu
 
          execute sip_barrier
+#bgn_debug
+#     do mu
+#     do nu
+#        get HBx(mu,nu)
+#        if rank == 0.0
+#           execute dump_amp hbx(mu,nu)
+#        endif
+#     enddo nu
+#     enddo mu
+#end_debug
+    
 #
        ENDPROC get_HBXYZ_Spin_orbit
 #      --------------------------
@@ -4101,6 +4795,10 @@
                CALL CHECK_AO_DENS
 
                CALL D1TRANS_x
+#bgn_debug
+               CALL SO2AO_TRANS_ALPHA
+               CALL SO2AO_TRANS_BETA
+#end_debug
 
 # Save the pert. density matrices
 
@@ -4124,17 +4822,26 @@
 #
               IF NCOUNT == 1.0
                   CALL CCSD_RESPONSE_X
-#                   CALL RESPONSE_X
+#bgn_debug
+#                  CALL CCSD_MO_RESPONSE_X
+#                  CALL RESPONSE_X
+#end_debu
               ENDIF 
 
               IF NCOUNT == 2.0
                   CALL CCSD_RESPONSE_Y
-#                   CALL RESPONSE_Y
+#bgn_debug
+#                  CALL CCSD_MO_RESPONSE_Y
+#                  CALL RESPONSE_Y
+#end_debug
               ENDIF 
 
               IF NCOUNT == 3.0
                   CALL CCSD_RESPONSE_Z
-#                   CALL RESPONSE_Z
+#bgn_debug
+#                  CALL CCSD_MO_RESPONSE_Z
+#                  CALL RESPONSE_Z
+#end_debug
               ENDIF 
   
               CALL DELETE_XARRAYS

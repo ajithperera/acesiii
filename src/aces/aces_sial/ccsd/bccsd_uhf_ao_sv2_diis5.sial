@@ -13,7 +13,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL CCSD_UHF_SV1
+                           SIAL BCCSD_UHF_SV1
 #
 #
 # Status of served update: mimimize prepare/request 
@@ -506,11 +506,26 @@
      temp Tpqt_a(p,p1)
      temp Tpqt_b(q,q1)
      temp Tpq(mu,nu)
+     temp Tijij(i,j,i1,j1)
+     temp Tabab(a,b,a1,b1)
+     temp tpp(a,a1)
+     temp t1pp(i,i1)
+     temp t3ai(a,i)
+     temp tqq(b,b1)
+     temp t1qq(j,j1)
+     temp t3bj(b,j)
 
      static Ca_new(mu,p)
      static Cb_new(mu,q)
      static Fpqa(p,p1)
      static Fpqb(q,q1)
+     static DFock_a(p,p1)
+     static DFock_b(q,q1)
+     static FSpqa_ae(a,a1)
+     static FSpqb_ae(b,b1)
+     static FSpqa_mi(i,i1)
+     static FSpqb_mi(j,j1)
+
      local Cpq_a(p,p1)
      local Cpq_b(q,q1)
 
@@ -522,15 +537,31 @@
      distributed Upq_b(q,q1)
      distributed Fpq_a(mu,nu)
      distributed Fpq_b(mu,nu)
+     distributed Denai(a,i)
+     distributed Denbj(b,j)
+
      distributed Fpqa_ae(a,a1)
      distributed Fpqa_me(i,a)
      distributed Fpqa_mi(i,i1)
      distributed Fpqb_ae(b,b1)
      distributed Fpqb_me(j,b)
      distributed Fpqb_mi(j,j1)
+
+     Static FMO_a(p,p1)
+     Static FMO_b(q,q1)
+
+
+     static Fpqa_noD_ae(a,a1)
+     static Fpqa_noD_mi(i,i1)
+     static Fpqb_noD_ae(b,b1)
+     static Fpqb_noD_mi(j,j1)
+
      distributed DHF_aa(mu,nu)
      distributed DHF_bb(mu,nu)
-     
+ 
+     served Fpqrs_aa(p,p1,p2,p3)
+     served Fpqrs_bb(q,q1,q2,q3)
+     served Fpqrs_ab(p,q,p1,q1)
 
 # In place transformation
  
@@ -946,7 +977,9 @@
            REQUEST VSpipi(a,i,a1,i1) i1  
 #
            Taiai(a,i,a1,i1)            = VSpipi(a,i,a1,i1)
-           execute energy_denominator    Taiai 
+#           execute energy_denominator    Taiai 
+
+           execute apply_den4 Fpqrs_aa  Taiai 
            PREPARE T2old_aa(a,i,a1,i1) = Taiai(a,i,a1,i1)  
            PREPARE D0aiai(a,i,a1,i1) = Taiai(a,i,a1,i1)  
 #
@@ -957,7 +990,10 @@
            REQUEST VSqjqj(b,j,b1,j1) j1  
 #
            Tbjbj(b,j,b1,j1)            = VSqjqj(b,j,b1,j1)  
-           execute energy_denominator    Tbjbj 
+
+#           execute energy_denominator    Tbjbj 
+
+           execute apply_den4 Fpqrs_bb  Tbjbj
            PREPARE T2old_bb(b,j,b1,j1) = Tbjbj(b,j,b1,j1)  
            PREPARE D0bjbj(b,j,b1,j1) = Tbjbj(b,j,b1,j1)  
 #
@@ -968,7 +1004,10 @@
            REQUEST Vpiqj(a,i,b,j) j  
 #
            Taibj(a,i,b,j)            = Vpiqj(a,i,b,j)
-           execute energy_denominator  Taibj 
+
+#           execute energy_denominator  Taibj 
+
+           execute apply_den4 Fpqrs_aa  Taibj
            PREPARE T2old_ab(a,i,b,j) = Taibj(a,i,b,j)  
            PREPARE D0aibj(a,i,b,j) = Taibj(a,i,b,j)  
 #
@@ -1193,8 +1232,7 @@
 #     ----------
 #
       PARDO a,a1
-           get Fpqa_ae(a,a1)
-           taa(a,a1)         = Fpqa_ae(a,a1)
+           taa(a,a1)         = Fpqa_noD_ae(a,a1)
            put Fae_a(a,a1)  += Taa(a,a1)
       ENDPARDO a, a1
 
@@ -1309,8 +1347,7 @@
 #     ----------
 #
       PARDO b,b1
-           get Fpqb_ae(b,b1)
-           tbb(b,b1)        = Fpqb_ae(b,b1)
+           tbb(b,b1)        = Fpqb_noD_ae(b,b1)
            put Fae_b(b,b1) += tbb(b,b1)
       ENDPARDO b, b1
 
@@ -1436,7 +1473,6 @@
 #     ----------
 #
       PARDO i,a
-          get Fpqa_me(i,a)
           Tia(i,a)        =  Fpqa_me(i,a)
           put Fme_a(i,a) +=Tia(i,a)
       ENDPARDO i,a
@@ -1484,7 +1520,6 @@
 #     ----------
 #
       PARDO j,b
-          get Fpqb_me(j,b)
           Tjb(j,b)        = Fpqb_me(j,b)
           put Fme_b(j,b) +=Tjb(j,b)
       ENDPARDO j,b
@@ -1543,8 +1578,7 @@
 #     ----------
 #
       PARDO i1,i
-            get Fpqa_mi(i1,i)
-            Tii(i1,i)        = Fpqa_mi(i1,i)
+            Tii(i1,i)        = Fpqa_noD_mi(i1,i)
             put Fmi_a(i1,i) += Tii(i1,i)
       ENDPARDO i1,i
 
@@ -1622,8 +1656,7 @@
 #     ----------
 
        PARDO j1,j
-            get Fpqb_mi(j1,j)
-            tjj(j1,j)        = Fpqb_mi(j1,j)
+            tjj(j1,j)        = Fpqb_noD_mi(j1,j)
             put Fmi_b(j1,j) += Tjj(j1,j)
       ENDPARDO j1,j
 
@@ -1898,7 +1931,6 @@
       ENDPARDO b, j, i1  
 
       PARDO a, i
-           get Fpqa_me(i,a)
            tai(a,i)            = Fpqa_me(i,a)
            PUT t1a_new(a,i) += tai(a,i)
       ENDPARDO a, i
@@ -2100,7 +2132,6 @@
       ENDPARDO a, i, j1  
 
       PARDO b, j
-           get Fpqb_me(j,b)
            tbj(b,j)            = Fpqb_me(j,b)
            PUT t1b_new(b,j) += tbj(b,j)
       ENDPARDO b, j
@@ -5255,7 +5286,9 @@
             REQUEST                    T2new_aa(a,i,a1,i1) a
             Taiai(a,i,a1,i1)         = T2new_aa(a,i,a1,i1)
             T1aiai(a,i,a1,i1)        = T2old_aa(a,i,a1,i1)
-            execute energy_denominator Taiai
+#            execute energy_denominator Taiai
+
+            execute apply_den4 Fpqrs_aa Taiai
             t1aiai(a,i,a1,i1) -= taiai(a,i,a1,i1)
             t1aiai(a,i,a1,i1) *= -1.0
 #
@@ -5288,7 +5321,9 @@
             REQUEST                    T2new_bb(b,j,b1,j1) b 
             Tbjbj(b,j,b1,j1)         = T2new_bb(b,j,b1,j1)
             T1bjbj(b,j,b1,j1)        = T2old_bb(b,j,b1,j1)
-            execute energy_denominator Tbjbj
+#            execute energy_denominator Tbjbj
+
+            execute apply_den4 Fpqrs_bb Tbjbj
             T1bjbj(b,j,b1,j1) -= tbjbj(b,j,b1,j1)
             T1bjbj(b,j,b1,j1) *= -1.0
 #
@@ -5320,7 +5355,10 @@
             REQUEST                    T2new_ab(a,i,b,j) b 
             Taibj(a,i,b,j)           = T2new_ab(a,i,b,j)
             T1aibj(a,i,b,j)          = T2old_ab(a,i,b,j)
-            execute energy_denominator Taibj
+#            execute energy_denominator Taibj
+
+            execute apply_den4 Fpqrs_ab Tbjbj
+
             T1aibj(a,i,b,j) -= Taibj(a,i,b,j)
             T1aibj(a,i,b,j) *= -1.0
 #
@@ -5351,7 +5389,10 @@
 #
             REQUEST                    T2new_aa(a,i,a1,i1) a 
             Taiai(a,i,a1,i1)         = T2new_aa(a,i,a1,i1)
-            execute energy_denominator Taiai
+
+#            execute energy_denominator Taiai
+
+            execute apply_den4 Fpqrs_aa Taiai
             PREPARE T2old_aa(a,i,a1,i1)  = Taiai(a,i,a1,i1)
       ENDPARDO a, a1, i, i1
 #
@@ -5359,7 +5400,10 @@
 #
             REQUEST                    T2new_bb(b,j,b1,j1) b 
             Tbjbj(b,j,b1,j1)         = T2new_bb(b,j,b1,j1)
-            execute energy_denominator Tbjbj
+
+#            execute energy_denominator Tbjbj
+
+            execute apply_den4 Fpqrs_bb Tbjbj
             PREPARE T2old_bb(b,j,b1,j1)  = Tbjbj(b,j,b1,j1)
 #
       ENDPARDO b, b1, j, j1
@@ -5368,7 +5412,10 @@
 #
             REQUEST                    T2new_ab(a,i,b,j) a
             Taibj(a,i,b,j)           = T2new_ab(a,i,b,j)
-            execute energy_denominator Taibj
+
+#            execute energy_denominator Taibj
+
+            execute apply_den4 Fpqrs_ab Taibj
             PREPARE T2old_ab(a,i,b,j)    = Taibj(a,i,b,j)
 #
       ENDPARDO b, a, j, i
@@ -5389,7 +5436,10 @@
             GET                t1a_old(a,i) 
             tai(a,i)         = t1a_new(a,i) 
             t1ai(a,i)        = t1a_old(a,i) 
-            execute energy_denominator tai 
+#            execute energy_denominator tai 
+
+            execute apply_den2 Tai Denai
+
             PUT t1a_old(a,i) = tai(a,i) 
             tai(a,i)        -= t1ai(a,i) 
 #
@@ -5421,7 +5471,10 @@
             GET                t1b_old(b,j) 
             tbj(b,j)         = t1b_new(b,j) 
             t1bj(b,j)        = t1b_old(b,j) 
-            execute energy_denominator tbj
+#            execute energy_denominator tbj
+
+            execute apply_den2 tbj Denbj
+
             PUT t1b_old(b,j) = tbj(b,j) 
             tbj(b,j)        -= t1bj(b,j) 
 #
@@ -8503,7 +8556,7 @@
                 Tjx(j,nu) = Fpq_b(mu,nu)*CB_new(mu,j)
                 do j1
                    Tjj(j,j1) = Tjx(j,nu)*CB_new(nu,j1)
-                   PUT Fpqb_mi(j,j1) += Tjj(j,j1)
+                    PUT Fpqb_mi(j,j1) += Tjj(j,j1)
                 enddo j1
             enddo j
        ENDPARDO mu,nu
@@ -8531,71 +8584,202 @@
        ENDPARDO mu,nu
 
        execute sip_barrier
+       execute print_scalar one
 
-       PARDO p,p1
-            do i
-                do i1
-                   GET Fpqa_mi(i,i1)
-                   Tii(i,i1)      = Fpqa_mi(i,i1)
-                   If p  == i 
-                   If p1 == i1
-                      Tii(i,i1)  = Fpqa_mi(i,i1)
-                      Fpqa(p,p1) = Tii(i,i1)
-                   Endif
-                   Endif
-                enddo i1
-            enddo i
-       ENDPARDO p,p1
+       DO i
+       DO i1
+          GET  Fpqa_mi(i,i1)
+          FMO_a(i,i1) = Fpqa_mi(i,i1)
+       ENDDO i1
+       ENDDO i
 
-       PARDO p,p1
-            do a
-                do a1
-                   GET Fpqa_ae(a,a1)
-                   If p  == a
-                   If p1 == a1
-                      Taa(a,a1)  = Fpqa_ae(a,a1)
-                      Fpqa(p,p1) = Taa(a,a1)
-                   Endif 
-                   Endif 
-               enddo a1
-            enddo a
-       ENDPARDO p,p1
+       DO a
+       DO a1
+          GET Fpqa_ae(a,a1)
+          FMO_a(a,a1) = Fpqa_ae(a,a1)
+       ENDDO a1
+       ENDDO a
 
-       PARDO q,q1
-            do j
-                do j1
-                   GET Fpqb_mi(j,j1)
-                   If p  == j
-                   If p1 == j1
-                      Tjj(j,j1)  = Fpqb_mi(j,j1)
-                      Fpqb(q,q1) = Tjj(j,j1)
-                   Endif
-                   Endif
-                enddo j1
-            enddo j
-       ENDPARDO q,q1
+       DO j
+       DO j1
+          GET Fpqb_mi(j,j1)
+          FMO_b(j,j1) = Fpqb_mi(j,j1)
+       ENDDO j1
+       ENDDO j
 
-       PARDO q,q1
-            do b
-                do b1
-                   GET Fpqb_ae(b,b1)
-                   If q == b
-                   If q1 == b1
-                     Tbb(b,b1)       = Fpqb_ae(b,b1)
-                     PUT Fpqb(q,q1) += Tbb(b,b1)
-                   Endif
-                   Endif
-               enddo b1
-            enddo b
-       ENDPARDO q,q1
+       DO b
+       DO b1
+          GET Fpqb_ae(b,b1)
+          FMO_b(b,b1) = Fpqb_ae(b,b1)
+       ENDDO b1
+       ENDDO b
+       execute print_scalar one
+
+       execute return_diagonal FMO_a DFock_a
+       execute return_diagonal FMO_b DFock_b
+       execute sip_barrier
+
+       PARDO a, i
+             DO a1
+                if a == a1
+             DO i1
+                if i == i1
+
+                   tpp(a,a1)    = DFock_a(a,a1)
+                   tpp(a,a1)   *= -1.0
+
+                   t1pp(i,i1)   = DFock_a(i,i1)
+
+                   t2ai(a1,i)  = 1.0
+                   T1ai(a,i)   = tpp(a,a1)* t2ai(a1,i)
+
+                   t2ai(a,i1)  = 1.0
+                   T3ai(a,i)   = t2ai(a,i1)*t1pp(i,i1)
+
+                   Tai(a,i)     = T1ai(a,i)
+                   Tai(a,i)    += T3ai(a,i)
+
+                   PUT Denai(a,i) = Tai(a,i)
+
+                endif
+             ENDDO i1
+                endif
+             ENDDO a1
+       ENDPARDO a, i
+
+       PARDO b, j
+             DO b1
+                if b == b1
+             DO j1
+                if j == j1
+
+                   tqq(b,b1)    = DFock_b(b,b1)
+                   tqq(b,b1)   *= -1.0
+
+                   t1qq(j,j1)   = DFock_b(j,j1)
+
+                   t2bj(b1,j)  = 1.0
+                   T1bj(b,j)   = tqq(b,b1)* t2bj(b1,j)
+
+                   t2bj(b,j1)  = 1.0
+                   T3bj(b,j)   = t2bj(b,j1)*t1qq(j,j1)
+
+                   Tbj(b,j)     = T1bj(b,j)
+                   Tbj(b,j)    += T3bj(b,j)
+
+                   PUT Denbj(b,j) = Tbj(b,j)
+
+                endif
+             ENDDO j1
+                endif
+             ENDDO b1 
+       ENDPARDO b, j
+       execute print_scalar one
+
+       execute sip_barrier
+# Create a 4-dimensional arrays of Fock elements. This seems to 
+# be the best way to produce denominator arrays.
+ 
+       PARDO i, i1, i2, i3
+             GET Fpqa_mi(i,i1)
+             GET Fpqa_mi(i2,i3)
+             Tii(i2,i3) = Fpqa_mi(i2,i3)
+             Tiiii(i,i2,i1,i3) = Fpqa_mi(i,i1)^Tii(i2,i3)
+             PREPARE Fpqrs_aa(i,i2,i1,i3) = Tiiii(i,i2,i1,i3)
+       ENDPARDO i, i1, i2, i3
+
+       execute print_scalar one
+       PARDO a, a1, a2, a3
+             GET Fpqa_ae(a,a1) 
+             GET Fpqa_ae(a2,a3)
+             Taa(a2,a3) = Fpqa_ae(a2,a3)
+             Taaaa(a,a2,a1,a3) = Fpqa_ae(a,a1)^Taa(a2,a3)
+             PREPARE Fpqrs_aa(a,a2,a1,a3) = Taaaa(a,a2,a1,a3)
+       ENDPARDO a, a1, a2, a3
+       execute print_scalar one
+
+       PARDO j, j1, j2, j3
+             GET Fpqb_mi(j,j1)
+             GET Fpqb_mi(j2,j3)
+             Tjj(j2,j3) = Fpqb_mi(j2,j3)
+             Tjjjj(j,j2,j1,j3) = Fpqb_mi(j,j1)^Tjj(j2,j3)
+             PREPARE Fpqrs_bb(j,j2,j1,j3) = Tjjjj(j,j2,j1,j3) 
+       ENDPARDO j, j1, j2, j3
+       execute print_scalar one
+
+       PARDO b, b1, b2, b3
+             GET Fpqb_ae(b,b1)
+             GET Fpqb_ae(b2,b3)
+             Tbb(b2,b3) = Fpqb_ae(b2,b3)
+             Tbbbb(b,b2,b1,b3) = Fpqb_ae(b,b1)^Tbb(b2,b3)
+             PREPARE Fpqrs_bb(b,b2,b1,b3) = Tbbbb(b,b2,b1,b3)
+       ENDPARDO b, b1, b2, b3
+       execute print_scalar one
+
+       PARDO i, i1, j, j1
+             GET Fpqa_mi(i,i1) 
+             GET Fpqb_mi(j,j1)
+             Tjj(j,j1) =  Fpqb_mi(j,j1)
+             Tijij(i,j,i1,j1) = Fpqa_mi(i,i1)^Tjj(j,j1)
+             PREPARE Fpqrs_ab(i,j,i1,j1) = Tijij(i,j,i1,j1)
+       ENDPARDO i, i1, j, j1
+       execute print_scalar one
+
+       PARDO a, a1, b, b1
+             GET Fpqa_ae(a,a1)
+             GET Fpqb_ae(b,b1)
+             Tbb(b,b1) = Fpqb_ae(b,b1)
+             Tabab(a,b,a1,b1) = Fpqa_ae(a,a1)^Tbb(b,b1) 
+             PREPARE Fpqrs_ab(a,b,a1,b1) = Tabab(a,b,a1,b1)
+       ENDPARDO a, a1, b, b1
+       execute print_scalar one
+
+       EXECUTE SERVER_BARRIER
+
+# Remove the off-diganol OO, VV elements of Fpqrs and the diagonals
+# of Fpq_mi, Fpq_ae. 
+
+       EXECUTE RETURN_DIAGONAL4 Fpqrs_aa
+       EXECUTE RETURN_DIAGONAL4 Fpqrs_bb
+       EXECUTE RETURN_DIAGONAL4 Fpqrs_ab
+
+       PARDO i, i1
+          GET Fpqa_mi(i,i1)
+          Tii(i,i1) = Fpqa_mi(i,i1)
+          FSpqa_mi(i,i1) = Tii(i,i1)
+       ENDPARDO i, i1
+ 
+       PARDO j, j1
+             GET Fpqb_mi(j,j1)
+             Tjj(j,j1) = Fpqb_mi(j,j1)
+             FSpqb_mi(j,j1) = Tjj(j,j1)
+       ENDPARDO j, j1
+
+       PARDO a, a1
+              GET Fpqa_ae(a,a1)
+              Taa(a,a1) = Fpqa_ae(a,a1)
+              FSpqa_ae(a,a1) = Taa(a,a1)
+       ENDPARDO a, a1
+
+       PARDO b, b1
+              GET Fpqb_ae(b,b1)
+              Taa(a,a1) = Fpqb_ae(b,b1)
+              FSpqb_ae(b,b1) = Tbb(b,b1)
+       ENDPARDO b, b1
 
        execute sip_barrier
 
+       EXECUTE REMOVE_DIAGONAL FSpqa_mi Fpqa_noD_mi
+       EXECUTE REMOVE_DIAGONAL FSpqb_mi Fpqb_noD_mi
+       EXECUTE REMOVE_DIAGONAL FSpqa_ae Fpqa_noD_ae
+       EXECUTE REMOVE_DIAGONAL FSpqb_ae Fpqb_noD_ae
+       
+       EXECUTE SERVER_BARRIER
+#
 #bgn_debug 
        suma = 0.0
        do i
        do i1
-          get Fpqa_mi(i,i1)
           tmp = Fpqa_mi(i,i1) * Fpqa_mi(i,i1)
           suma += tmp
        enddo i1
@@ -8604,7 +8788,6 @@
        suma = 0.0
        do a 
        do a1
-          get Fpqa_ae(a,a1)
           tmp = Fpqa_ae(a,a1) * Fpqa_ae(a,a1)
           suma += tmp
        enddo a1
@@ -8613,7 +8796,6 @@
        suma = 0.0
        do a
        do i
-          get Fpqa_me(i,a)
           tmp = Fpqa_me(i,a) * Fpqa_me(i,a)
           suma += tmp
        enddo i
@@ -8622,7 +8804,6 @@
        sumb = 0.0
        do j
        do j1
-          get Fpqb_mi(j,j1)
           tmp = Fpqb_mi(j,j1) * Fpqb_mi(j,j1)
           sumb += tmp
        enddo j1
@@ -8631,7 +8812,6 @@
        sumb = 0.0
        do b 
        do b1
-          get Fpqb_ae(b,b1)
           tmp = Fpqb_ae(b,b1) * Fpqb_ae(b,b1)
           sumb += tmp
        enddo b1
@@ -8640,7 +8820,6 @@
        sumb = 0.0
        do b 
        do j
-          get Fpqb_me(j,b)
           tmp = Fpqb_me(j,b) * Fpqb_me(j,b)
           suma += tmp
        enddo j 
@@ -9974,13 +10153,16 @@
       CREATE Fpq_b 
       CREATE DHF_aa
       CREATE DHF_bb
-      CREATE Fpqa_ae
-      CREATE Fpqa_me
-      CREATE Fpqa_mi
-      CREATE Fpqb_ae
-      CREATE Fpqb_me
-      CREATE Fpqb_mi
 
+      CREATE Fpqa_mi
+      CREATE Fpqb_mi
+      CREATE Fpqa_ae
+      CREATE Fpqb_ae
+      CREATE Fpqa_me
+      CREATE Fpqb_me
+
+      CREATE Denai
+      CREATE Denbj
       execute sip_barrier
 #
 # Copy Ca/Cb to Ca_new and Cb_new
@@ -10016,7 +10198,9 @@
       CALL TRAN_UHF
       CALL FORM_DENS
       CALL BUILT_NEW_AO_FOCK
+      execute print_scalar one
       CALL FORM_MO_FOCK
+      execute print_scalar one
 #
 # Get initial second-order guess 
 # ------------------------------ 
@@ -10326,7 +10510,7 @@
       execute write_blocks_to_list
       execute sip_barrier
 #
-                           ENDSIAL CCSD_UHF_SV1    
+                           ENDSIAL BCCSD_UHF_SV1    
 #
 # EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 
 #
