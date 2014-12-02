@@ -1374,7 +1374,26 @@
        ENDDO nu   
        ENDDO mu    
        endif 
-
+#bgn_debug
+       if rank==0.0
+#       esuma = 0.0
+#       esumb = 0.0
+       DO mu
+       DO nu
+          get Fpq_a(mu,nu)
+          get Fpq_b(mu,nu)
+          execute dump_amp Fpq_a(mu,nu)
+#          etemp  = Fpq_a(mu,nu) * Fpq_a(mu,nu)
+#          esuma += etemp
+#          etemp  = Fpq_b(mu,nu) * Fpq_b(mu,nu)
+#          esumb += etemp
+       ENDDO nu
+       ENDDO mu
+#       execute print_scalar esuma
+#       execute print_scalar esumb
+       endif
+#end_debug
+#  
 #
        ENDPROC FOCK_MATRIX_FAST   
 #      ------------------------ 
@@ -1459,6 +1478,21 @@
           PUT Qxx(mu,nu) = Txx(mu,nu)  
 #
        ENDPARDO mu, nu  
+#bgn_debug 
+#      esum=0
+#      if rank==0.0
+#      do mu
+#      do nu
+#         get  Qxx(mu,nu)
+#         etemp = Qxx(mu,nu) * Qxx(mu,nu)
+#         esum += etemp
+#      enddo nu
+#      enddo mu
+#      endif 
+#      execute print_scalar esum
+#end_debug
+        
+
 #
       #execute print_scalar scfeneg
        ENDPROC OVER_HALF 

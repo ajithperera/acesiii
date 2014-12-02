@@ -11602,15 +11602,15 @@
             REQUEST AO_2SOI_Y(mu, nu, lambda, sigma) sigma
             REQUEST AO_2SOI_Z(mu, nu, lambda, sigma) sigma
 
-            GET DHFa(mu,lambda)
-            GET DHFa(nu,sigma)
-            GET DHFa(mu,sigma)
-            GET DHFa(nu,lambda)
+            GET DHFA(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
 #
-            GET DHFb(mu,lambda)
-            GET DHFb(nu,sigma)
-            GET DHFb(mu,sigma)
-            GET DHFb(nu,lambda)
+            GET DHFB(mu,lambda)
+            GET DHFB(nu,sigma)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
 #
             GET DpqA_x(mu,lambda)
             GET DpqA_x(nu,sigma)
@@ -11661,6 +11661,9 @@
             DO i
 #
                Tixxx(i,nu,lambda,sigma) = 0.0
+#bgn_debug
+#               Txxxx(mu,nu,lambda,sigma) = 0.0
+#end_debug
 #
                DO i1
                   REQUEST Diixx_x(i,i1,lambda,sigma) i1
@@ -12205,6 +12208,9 @@
             DO i
 #
                Tixxx(i,nu,lambda,sigma) = 0.0
+#bgn_debug
+#              Txxxx(mu,nu,lambda,sigma) = 0.0
+#end_debug
 #
                DO i1
                   REQUEST Diixx_x(i,i1,lambda,sigma) i1
@@ -12737,7 +12743,9 @@
             DO i
 #
                Tixxx(i,nu,lambda,sigma) = 0.0
-#
+#bgn_debug
+#              Txxxx(mu,nu,lambda,sigma) = 0.0
+#end_debug
                DO i1
                   REQUEST Diixx_x(i,i1,lambda,sigma) i1
                   T1ixxx(i,nu,lambda,sigma) = Diixx_x(i,i1,lambda,sigma)*ca(nu,i1) 
@@ -14338,12 +14346,8 @@
             GET DpqB_x(mu,lambda)
             GET DHFA(nu,sigma)
             GET DHFB(nu,sigma)
-            IF mu < nu
-            IF lambda < sigma
   
-               execute dump_block AO_2SOI_X(mu, nu, lambda, sigma)
-            ENDIF
-            ENDIF 
+               execute dump_amp AO_2SOI_X(mu, nu, lambda, sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFA(nu,sigma)
             T1xxxx(mu,nu,lambda,sigma)*= 3.0
@@ -14724,6 +14728,9 @@
       execute list_to_blocks L2aa_z
       execute list_to_blocks L2ab_z
       execute list_to_blocks L2bb_z
+
+      execute list_to_blocks Dpqa
+      execute list_to_blocks Dpqb
       
       execute list_to_blocks Dpqa_x 
       execute list_to_blocks Dpqb_x 

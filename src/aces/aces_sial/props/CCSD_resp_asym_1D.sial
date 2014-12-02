@@ -5197,6 +5197,9 @@
       execute list_to_blocks L2ab_z
       execute list_to_blocks L2bb_z
 
+      execute blocks_to_list DpqA
+      execute blocks_to_list DpqB
+
       execute blocks_to_list DpqA_1
       execute blocks_to_list DpqB_1
 

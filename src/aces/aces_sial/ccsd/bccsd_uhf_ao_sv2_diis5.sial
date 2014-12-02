@@ -1,4 +1,4 @@
-
+)
 #  Copyright (c) 2003-2010 University of Florida
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -32,8 +32,8 @@
 #
       index kiter    = 1, cc_iter   
       index jiter    = 1, cc_iter
-#      index biter    = 1, cc_iter
-      index biter    = 1, 1
+      index biter    = 1, cc_iter
+#      index biter    = 1, 1
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
@@ -496,8 +496,11 @@
 # B-CCSD related definitions.
   
      temp Txa(mu,a)
+     temp Txat(mu,a)
      temp Txb(mu,b)
      temp Tix(i,mu)
+     temp Tixt(i,mu)
+     temp Txit(mu,i)
      temp Tjx(j,mu)
      temp Tax(a,mu)
      temp Tbx(b,mu)
@@ -514,6 +517,10 @@
      temp tqq(b,b1)
      temp t1qq(j,j1)
      temp t3bj(b,j)
+     temp Txpt(mu,p)
+     temp Txp(mu,p)
+     temp Txqt(mu,q)
+     temp Txq(mu,q)
 
      static Ca_new(mu,p)
      static Cb_new(mu,q)
@@ -525,20 +532,20 @@
      static FSpqb_ae(b,b1)
      static FSpqa_mi(i,i1)
      static FSpqb_mi(j,j1)
-
-     local Cpq_a(p,p1)
-     local Cpq_b(q,q1)
+     static Cpq_a(p,p1)
+     static Cpq_b(q,q1)
 
      distributed Ca_int(mu,p)
      distributed Cb_int(mu,q)
-     distributed Spq_a(p,p1)
-     distributed Spq_b(q,q1)
+     distributed Ca_new_int(mu,p)
+     distributed Cb_new_int(mu,q)
+     distributed Upqt_a(p,p1)
+     distributed Upqt_b(q,q1)
      distributed Upq_a(p,p1)
      distributed Upq_b(q,q1)
      distributed Fpq_a(mu,nu)
      distributed Fpq_b(mu,nu)
-     distributed Denai(a,i)
-     distributed Denbj(b,j)
+     distributed Ovlp(mu,nu)
 
      distributed Fpqa_ae(a,a1)
      distributed Fpqa_me(i,a)
@@ -546,22 +553,38 @@
      distributed Fpqb_ae(b,b1)
      distributed Fpqb_me(j,b)
      distributed Fpqb_mi(j,j1)
+     distributed Denai(a,i)
+     distributed Denbj(b,j)
 
      Static FMO_a(p,p1)
      Static FMO_b(q,q1)
-
 
      static Fpqa_noD_ae(a,a1)
      static Fpqa_noD_mi(i,i1)
      static Fpqb_noD_ae(b,b1)
      static Fpqb_noD_mi(j,j1)
+     static Spq_a(p,p1)
+     static Spq_b(q,q1)
 
+     distributed Spq_a_int(p,p1)
+     distributed Spq_b_int(q,q1)
      distributed DHF_aa(mu,nu)
      distributed DHF_bb(mu,nu)
  
-     served Fpqrs_aa(p,p1,p2,p3)
-     served Fpqrs_bb(q,q1,q2,q3)
-     served Fpqrs_ab(p,q,p1,q1)
+     scalar enhfa
+     scalar ecorrnha
+     scalar enhfb
+     scalar ecorrnhb
+     scalar energy
+     scalar nrepulsion 
+
+#B-CCSD debuggin
+     Temp Tpxt(p,mu)
+     distributed OVC_T(p,mu)
+     distributed OVC(p,p1)
+     temp Tppt(p,p1)
+     temp Tpp1(p,p1)
+     temp Tqqt(q,q1)
 
 # In place transformation
  
@@ -597,6 +620,7 @@
 # ------------------------
 #
       temp Txx(mu,nu)
+      temp T1xx(mu,nu)
       temp T1xjxj(mu,j1,lambda,j)
       temp T1xxjj(mu,nu,j1,j)
       temp T1jxxj(j1,nu,lambda,j)
@@ -977,9 +1001,9 @@
            REQUEST VSpipi(a,i,a1,i1) i1  
 #
            Taiai(a,i,a1,i1)            = VSpipi(a,i,a1,i1)
-#           execute energy_denominator    Taiai 
+           execute energy_denominator    Taiai 
 
-           execute apply_den4 Fpqrs_aa  Taiai 
+#           execute fock_denominator_dynamic  Taiai 
            PREPARE T2old_aa(a,i,a1,i1) = Taiai(a,i,a1,i1)  
            PREPARE D0aiai(a,i,a1,i1) = Taiai(a,i,a1,i1)  
 #
@@ -991,9 +1015,9 @@
 #
            Tbjbj(b,j,b1,j1)            = VSqjqj(b,j,b1,j1)  
 
-#           execute energy_denominator    Tbjbj 
+           execute energy_denominator    Tbjbj 
 
-           execute apply_den4 Fpqrs_bb  Tbjbj
+#           execute fock_denominator_dynamic  Tbjbj
            PREPARE T2old_bb(b,j,b1,j1) = Tbjbj(b,j,b1,j1)  
            PREPARE D0bjbj(b,j,b1,j1) = Tbjbj(b,j,b1,j1)  
 #
@@ -1005,9 +1029,9 @@
 #
            Taibj(a,i,b,j)            = Vpiqj(a,i,b,j)
 
-#           execute energy_denominator  Taibj 
+           execute energy_denominator  Taibj 
 
-           execute apply_den4 Fpqrs_aa  Taibj
+#           execute fock_denominator_dynamic  Taibj
            PREPARE T2old_ab(a,i,b,j) = Taibj(a,i,b,j)  
            PREPARE D0aibj(a,i,b,j) = Taibj(a,i,b,j)  
 #
@@ -5125,6 +5149,7 @@
 #
      esuma   = 0.0 
      ecorraa = 0.0 
+    
      PARDO a, a1, i, i1 
 #
            REQUEST VSpipi(a,i,a1,i1) i1  
@@ -5169,7 +5194,6 @@
 #
            etemp = VSqjqj(b,j,b1,j1)*T2bjbj(b,j,b1,j1) 
            etemp = 0.25*etemp 
-          execute print_scalar etemp 
            esumb += etemp 
 #
      ENDPARDO b, b1, j, j1 
@@ -5191,19 +5215,46 @@
 #
      ENDPARDO a, b, i, j 
 
+     enhfa    = 0.0
+     ecorrnha = 0.0
+     PARDO a, i
+           GET t1a_old(a,i)
+           GET Fpqa_me(i,a)
+           etemp = t1a_old(a,i) * Fpqa_me(i,a)
+           enhfa +=  etemp
+     ENDPARDO a, i
+
+     enhfb    = 0.0
+     ecorrnhb = 0.0
+     PARDO b, j
+           GET t1b_old(b,j)
+           GET Fpqb_me(j,b)
+           etemp = t1b_old(b,j) * Fpqb_me(j,b)
+           enhfb +=  etemp
+     ENDPARDO b, j
+
      execute sip_barrier 
 
      collective ecorraa += esuma
     execute print_scalar ecorraa 
-#
+
      collective ecorrbb += esumb 
-    #execute print_scalar ecorrbb 
-#
+    execute print_scalar ecorrbb 
+
      collective ecorrab += esumab
     execute print_scalar ecorrab 
+
+     collective ecorrnha += enhfa
+    execute print_scalar ecorrnha
+
+     collective ecorrnhb += enhfb
+    execute print_scalar ecorrnhb
 #
      ecorrT  = ecorraa + ecorrbb
      ecorrT += ecorrab 
+     ecorrT += ecorrnha
+     ecorrT += ecorrnhb
+    
     execute print_scalar ecorrT  
 
      if kiter > 0
@@ -5286,9 +5337,9 @@
             REQUEST                    T2new_aa(a,i,a1,i1) a
             Taiai(a,i,a1,i1)         = T2new_aa(a,i,a1,i1)
             T1aiai(a,i,a1,i1)        = T2old_aa(a,i,a1,i1)
-#            execute energy_denominator Taiai
+            execute energy_denominator Taiai
 
-            execute apply_den4 Fpqrs_aa Taiai
+#            execute fock_denominator_dynamic Taiai
             t1aiai(a,i,a1,i1) -= taiai(a,i,a1,i1)
             t1aiai(a,i,a1,i1) *= -1.0
 #
@@ -5321,9 +5372,9 @@
             REQUEST                    T2new_bb(b,j,b1,j1) b 
             Tbjbj(b,j,b1,j1)         = T2new_bb(b,j,b1,j1)
             T1bjbj(b,j,b1,j1)        = T2old_bb(b,j,b1,j1)
-#            execute energy_denominator Tbjbj
+            execute energy_denominator Tbjbj
 
-            execute apply_den4 Fpqrs_bb Tbjbj
+#            execute fock_denominator_dynamic Tbjbj
             T1bjbj(b,j,b1,j1) -= tbjbj(b,j,b1,j1)
             T1bjbj(b,j,b1,j1) *= -1.0
 #
@@ -5355,10 +5406,9 @@
             REQUEST                    T2new_ab(a,i,b,j) b 
             Taibj(a,i,b,j)           = T2new_ab(a,i,b,j)
             T1aibj(a,i,b,j)          = T2old_ab(a,i,b,j)
-#            execute energy_denominator Taibj
+            execute energy_denominator Taibj
 
-            execute apply_den4 Fpqrs_ab Tbjbj
-
+#            execute fock_denominator_dynamic Taibj
             T1aibj(a,i,b,j) -= Taibj(a,i,b,j)
             T1aibj(a,i,b,j) *= -1.0
 #
@@ -5389,10 +5439,9 @@
 #
             REQUEST                    T2new_aa(a,i,a1,i1) a 
             Taiai(a,i,a1,i1)         = T2new_aa(a,i,a1,i1)
+            execute energy_denominator Taiai
 
-#            execute energy_denominator Taiai
-
-            execute apply_den4 Fpqrs_aa Taiai
+#            execute fock_denominator_dynamic Taiai 
             PREPARE T2old_aa(a,i,a1,i1)  = Taiai(a,i,a1,i1)
       ENDPARDO a, a1, i, i1
 #
@@ -5400,10 +5449,9 @@
 #
             REQUEST                    T2new_bb(b,j,b1,j1) b 
             Tbjbj(b,j,b1,j1)         = T2new_bb(b,j,b1,j1)
+            execute energy_denominator Tbjbj
+#            execute fock_denominator_dynamic Tbjbj
 
-#            execute energy_denominator Tbjbj
-
-            execute apply_den4 Fpqrs_bb Tbjbj
             PREPARE T2old_bb(b,j,b1,j1)  = Tbjbj(b,j,b1,j1)
 #
       ENDPARDO b, b1, j, j1
@@ -5412,10 +5460,9 @@
 #
             REQUEST                    T2new_ab(a,i,b,j) a
             Taibj(a,i,b,j)           = T2new_ab(a,i,b,j)
+            execute energy_denominator Taibj
+#            execute fock_denominator_dynamic Taibj
 
-#            execute energy_denominator Taibj
-
-            execute apply_den4 Fpqrs_ab Taibj
             PREPARE T2old_ab(a,i,b,j)    = Taibj(a,i,b,j)
 #
       ENDPARDO b, a, j, i
@@ -5429,9 +5476,10 @@
 #
       PROC UPDATET1 
 #     ------------- 
-#
+
       PARDO a, i 
 #
+            GET                Denai(a,i)
             GET                t1a_new(a,i) 
             GET                t1a_old(a,i) 
             tai(a,i)         = t1a_new(a,i) 
@@ -5467,6 +5515,7 @@
 #
       PARDO b, j 
 #
+            GET                Denbj(b,j)
             GET                t1b_new(b,j) 
             GET                t1b_old(b,j) 
             tbj(b,j)         = t1b_new(b,j) 
@@ -8300,9 +8349,9 @@
 
         DO i
            GET T1a_old(a,i)
-           Txa(mu,a)  = T1a_old(a,i) * Ca(mu,i)
+           Txa(mu,a)  = T1a_old(a,i) * Ca_new(mu,i)
            Txa(mu,a) *= -1.0
-           Txa(mu,a) += Ca(mu,a)
+           Txa(mu,a) += Ca_new(mu,a)
            PUT Ca_int(mu,a) += Txa(mu,a)
          ENDDO i
 
@@ -8312,8 +8361,8 @@
 
         DO a
            GET T1a_old(a,i)
-           Txi(mu,i)  = T1a_old(a,i) * Ca(mu,a)
-           Txi(mu,i) += Ca(mu,i)
+           Txi(mu,i)  = T1a_old(a,i) * Ca_new(mu,a)
+           Txi(mu,i) += Ca_new(mu,i)
            PUT Ca_int(mu,i) += Txi(mu,i)
         ENDDO a
 
@@ -8323,9 +8372,9 @@
 
         DO j
            GET T1b_old(b,j)
-           Txb(mu,b)  = T1b_old(b,j) * Cb(mu,j)
+           Txb(mu,b)  = T1b_old(b,j) * Cb_new(mu,j)
            Txb(mu,b) *= -1.0
-           Txb(mu,b) += Cb(mu,b)
+           Txb(mu,b) += Cb_new(mu,b)
            PUT Cb_int(mu,b) += Txb(mu,b)
          ENDDO j
 
@@ -8335,13 +8384,46 @@
 
         DO b
            GET T1b_old(b,j)
-           Txj(mu,j)  = T1b_old(b,j) * Cb(mu,b)
-           Txj(mu,j) += Cb(mu,j)
+           Txj(mu,j)  = T1b_old(b,j) * Cb_new(mu,b)
+           Txj(mu,j) += Cb_new(mu,j)
            PUT Cb_int(mu,j) += Txj(mu,j)
         ENDDO b
 
      ENDPARDO j, mu
-
+#bgn_debug
+       suma=0
+       do mu
+       do a
+         get Ca_int(mu,a)
+         tmp = Ca_int(mu,a) * Ca_int(mu,a)
+         suma += tmp
+       enddo a
+       enddo mu
+       do mu
+       do i
+         get Ca_int(mu,i)
+         tmp = Ca_int(mu,i) * Ca_int(mu,i)
+         suma += tmp
+       enddo i
+       enddo mu
+       execute print_scalar suma
+       suma=0.0
+       do mu
+       do b
+         get  Cb_int(mu,b)
+         tmp = Cb_int(mu,b) * Cb_int(mu,b)
+         suma += tmp
+       enddo b
+       enddo mu
+       do mu
+       do j
+         get Cb_int(mu,j)
+         tmp = Cb_int(mu,j) * Cb_int(mu,j)
+         suma += tmp
+       enddo j
+       enddo mu
+       execute print_scalar suma
+#end_debug
      execute sip_barrier 
 
      ENDPROC FORM_NEW_VECS
@@ -8351,171 +8433,368 @@
 #    ------------------
 # Alpha spin
 #
-       PARDO i, i1
-          DO lambda
+       PARDO lambda, nu
+          GET OVLP(lambda,nu) 
+          DO i
              GET Ca_int(lambda,i)
-             Tix(i,nu) = Ca_int(lambda,i) * oed_ovl(lambda,nu)
-           DO nu
+             Tix(i,nu) = Ca_int(lambda,i) * OVLP(lambda,nu)
+           DO i1
              GET Ca_int(nu,i1)
              Tii(i,i1) = Tix(i,nu) * Ca_int(nu,i1)
-             PUT Spq_a(i,i1) += Tii(i,i1)
-          ENDDO  nu
-          ENDDO lambda
+             PUT Spq_a_int(i,i1) += Tii(i,i1)
+          ENDDO i1
+          ENDDO i
 
-       ENDPARDO i, i1
+       ENDPARDO lambda, nu
 #
-       PARDO i, a
-          DO lambda
+       PARDO lambda, nu
+          GET OVLP(lambda,nu) 
+          DO i
              GET Ca_int(lambda,i)
-             Tix(i,nu) = Ca_int(lambda,i) * oed_ovl(lambda,nu)
-           DO nu
+             Tix(i,nu) = Ca_int(lambda,i) * OVLP(lambda,nu)
+           DO a
              GET Ca_int(nu,a)
              Tia(i,a) = Tix(i,nu) * Ca_int(nu,a)
-             PUT Spq_a(i,a) += Tia(i,a)
-             Tai(a,i) = Tia(i,a)
-             PUT Spq_a(a,i) += Tai(a,i)
-          ENDDO  nu
-          ENDDO lambda
- 
-       ENDPARDO i, a
+             PUT spq_a_int(i,a) += Tia(i,a)
+             Tai(a,i)    = Tia(i,a)
+             PUT Spq_a_int(a,i) += Tai(a,i)
+          ENDDO a
+          ENDDO i
+
+       ENDPARDO lambda, nu
 #
-       PARDO a, a1
-          DO lambda
+       PARDO lambda, nu
+          GET OVLP(lambda,nu) 
+          DO a
              GET Ca_int(lambda,a)
-             Tax(a,nu) = Ca_int(lambda,a) * oed_ovl(lambda,nu)
-           DO nu
+             Tax(a,nu) = Ca_int(lambda,a) * OVLP(lambda,nu)
+           DO a1
              GET Ca_int(nu,a1)
              Taa(a,a1) = Tax(a,nu) * Ca_int(nu,a1)
-             PUT Spq_a(a,a1) += Taa(a,a1)
-          ENDDO  nu
-          ENDDO lambda
+             PUT Spq_a_int(a,a1) += Taa(a,a1)
+          ENDDO a1
+          ENDDO a
 
-       ENDPARDO a, a1
+       ENDPARDO  lambda, nu
 
 # Beta spin
 
-       PARDO j, j1
-          DO lambda
+       PARDO lambda, nu
+          GET OVLP(lambda,nu) 
+          DO j
              GET Cb_int(lambda,j)
-             Tjx(j,nu) = Cb_int(lambda,j) * oed_ovl(lambda,nu)
-           DO nu
+             Tjx(j,nu) = Cb_int(lambda,j) * OVLP(lambda,nu)
+           DO j1
              GET Cb_int(nu,j1)
              Tjj(j,j1) = Tjx(j,nu) * Cb_int(nu,j1)
-             PUT Spq_b(j,j1) += Tjj(j,j1)
-          ENDDO  nu
+             PUT Spq_b_int(j,j1) += Tjj(j,j1)
+          ENDDO j1
+          ENDDO j
 
-          ENDDO lambda
-
-       ENDPARDO j, j1
+       ENDPARDO lambda, nu
 #
-       PARDO j,b 
-          DO lambda
+       PARDO lambda, nu
+          GET OVLP(lambda,nu) 
+          DO j
              GET Cb_int(lambda,j)
-             Tjx(j,nu) = Cb_int(lambda,j) * oed_ovl(lambda,nu)
-           DO nu
+             Tjx(j,nu) = Cb_int(lambda,j) * OVLP(lambda,nu)
+           DO b
              GET Cb_int(nu,b)
              Tjb(j,b) = Tjx(j,nu) * Cb_int(nu,b)
-             PUT SPQ_b(j,b) += Tjb(j,b)
-             Tbj(b,j) = Tjb(j,b)
-             PUT Spq_b(b,j) += Tbj(b,j)
-          ENDDO  nu
-          ENDDO lambda
+             PUT Spq_b_int(j,b) += Tjb(j,b)
+             Tbj(b,j)    = Tjb(j,b)
+             PUT Spq_b_int(b,j) += Tbj(b,j)
+          ENDDO  b
+          ENDDO  j
 
-       ENDPARDO j, b
+       ENDPARDO lambda, nu
 #
-       PARDO b, b1
-          DO lambda
+       PARDO lambda, nu
+          DO b
              GET Cb_int(lambda,b)
-             Tbx(b,nu) = Cb_int(lambda,b) * oed_ovl(lambda,nu)
-           DO nu
-             GET Cb_int(nu,b1)
+             Tbx(b,nu) = Cb_int(lambda,b) * OVLP(lambda,nu)
+           DO b1
+             GET  Cb_int(nu,b1)
              Tbb(b,b1) = Tbx(b,nu) * Cb_int(nu,b1)
-             PUT Spq_b(b,b1) += Tbb(b,b1)
-          ENDDO  nu
-          ENDDO lambda
+             PUT Spq_b_int(b,b1) += Tbb(b,b1)
+          ENDDO  b1
+          ENDDO  b
 
-       ENDPARDO b, b1
+       ENDPARDO lambda, nu
+       execute sip_barrier
 
-       execute server_barrier
-#
+       DO p
+       DO p1
+          GET Spq_a_int(p,p1)
+          Tppt(p,p1)  = Spq_a_int(p,p1)
+          Spq_a(p,p1) = Tppt(p,p1) 
+       ENDDO p1
+       ENDDO p
+
+       DO q
+       DO q1
+             GET Spq_b_int(q,q1)
+             Tqqt(q,q1)  = Spq_b_int(q,q1)
+             Spq_b(q,q1) = Tqqt(q,q1) 
+       ENDDO q1
+       ENDDO q
+
+# initialize the the Cpq_{a,b} arrays reserved for the diagonals.
+
+       DO p
+       DO p1
+          Tppt(p,p1) = 0.0
+          Cpq_a(p,p1) = Tppt(p,p1)
+       ENDDO p1
+       ENDDO p
+
+       DO q
+       DO q1
+          Tqqt(q,q1) = 0.0
+          Cpq_b(q,q1) = Tqqt(q,q1)
+       ENDDO q1
+       ENDDO q
+
+#bgn_debug
+      suma=0
+      do p 
+      do p1
+         tmp = Spq_a(p,p1) * Spq_a(p,p1)
+         suma += tmp
+      enddo p1
+      enddo p
+      execute print_scalar suma
+      suma=0
+      do q
+      do q1
+         tmp = Spq_b(q,q1) * Spq_b(q,q1)
+         suma += tmp
+      enddo q1
+      enddo q
+      execute print_scalar suma
+#end_debug
+
        execute eig_sr_inv Spq_a Cpq_a
        execute eig_sr_inv Spq_b Cpq_b
-#
+       execute sip_barrier 
+
+#bgn_debug
+       if rank == 0.0
+       suma=0
+       do p 
+       do p1
+	  tmp = Cpq_a(p,p1) * Cpq_a(p,p1)
+        suma += tmp
+       enddo p1
+       enddo p
+       execute print_scalar suma
+       suma=0
+       do p 
+       do p1
+         execute dump_amp  Spq_a(p,p1)
+         tmp = Spq_a(p,p1) * Spq_a(p,p1)
+         suma += tmp
+       enddo p1
+       enddo p
+       execute print_scalar suma
+       endif 
+#end_debug
+
+# Do the symmetric orthogonalization. 
+     
        PARDO p, p1
-
-          DO p2  
-             GET Spq_a(p,p2)
-             Tpqt_a(p,p1) = Spq_a(p,p2) * Cpq_a(p2,p1)
-             Tpq_a(p,p1) += Tpqt_a(p,p1)
+          DO p2
+             Tpqt_a(p,p1)      = Cpq_a(p2,p) * Spq_a(p2,p1)
+             PUT Upqt_a(p,p1) += Tpqt_a(p,p1) 
           ENDDO p2
-
-             PUT Upq_a(p,p1) = Tpq_a(p,p1)
        ENDPARDO p, p1
-              
+
        PARDO q, q1
-
           DO q2  
-             GET Spq_b(q,q2)
-             Tpqt_b(q,q1) = Spq_b(q,q2) * Cpq_b(q2,q1)
-             Tpq_b(q,q1) += Tpqt_b(q,q1) 
+             Tpqt_b(q,q1)      = Cpq_b(q2,q) * Spq_b(q2,q1)
+             PUT Upqt_b(q,q1) += Tpqt_b(q,q1) 
           ENDDO q2
-
-             PUT Upq_b(q,q1) = Tpq_b(q,q1)
        ENDPARDO q, q1
-             
-       execute server_barrier
+       execute sip_barrier
+
+       PARDO p, p1
+          DO p2  
+             GET Upqt_a(p,p2)
+             Tpqt_a(p,p1)     =  Upqt_a(p,p2) * Cpq_a(p2,p1)
+             PUT Upq_a(p,p1) += Tpqt_a(p,p1)
+          ENDDO p2
+       ENDPARDO p, p1
+
+       PARDO q, q1
+          DO q2  
+             GET Upqt_b(q,q2)
+             Tpqt_b(q,q1)      =  Upqt_b(q,q2) * Cpq_b(q2,q1)
+             PUT Upq_b(q,q1)  += Tpqt_b(q,q1) 
+          ENDDO q2
+       ENDPARDO q, q1
+       execute sip_barrier
+
+#bgn_debug
+       suma = 0.0
+       DO p
+       DO p1
+           GET Upq_a(p,p1)
+           tmp =  Upq_a(p,p1) *  Upq_a(p,p1)
+           suma += tmp
+       ENDDO p1
+       ENDDO p
+       execute print_scalar suma
+       suma = 0.0
+       do q
+       do q1
+          GET  Upq_b(q,q1)
+          tmp =  Upq_b(q,q1) *  Upq_b(q,q1)
+          suma += tmp
+       enddo q1
+       enddo q
+       execute print_scalar suma
+#end_debug
 
 # Transform the MO vectors to orthogonal basis.
 
-     PARDO i, mu
-      
-        DO i1
-           GET Ca_int(mu,i1)
-           GET Upq_a(i1,i)
-           Txi(mu,i) = Ca_int(mu,i1) *  Upq_a(i1,i)
-           PUT Ca_new(mu,i) += Txi(mu,i)
-        ENDDO i1
-     ENDPARDO i, mu
+     PARDO p, mu
+          Txp(mu,p) = 0.0
+        DO p1
+           GET Upq_a(p1,p)
+           GET Ca_int(mu,p1)
+           Txpt(mu,p) = Ca_int(mu,p1) *  Upq_a(p1,p)
+           Txp(mu,p) += Txpt(mu,p)
+        ENDDO p1
+           PUT Ca_new_int(mu,p) = Txp(mu,p)
+     ENDPARDO p, mu
        
-     PARDO a, mu
+     PARDO q, mu
+           Txq(mu,q) = 0.0
+        DO q1
+           GET Cb_int(mu,q1)
+           GET Upq_b(q1,q)
+           Txqt(mu,q) = Cb_int(mu,q1) *  Upq_b(q1,q)
+           Txq(mu,q) += Txqt(mu,q)
+        ENDDO q1
+           PUT Cb_new_int(mu,q) =  Txq(mu,q) 
+     ENDPARDO q, mu
 
-        DO a1
-           GET Ca_int(mu,a)
-           GET Upq_a(a,a1)
-           Txa(mu,a1)  = Ca_int(mu,a) * Upq_a(a,a1)
-           PUT Ca_new(mu,a) += Txa(mu,a1)
-         ENDDO a1
-
-     ENDPARDO a, mu
-
-    PARDO j, mu
-
-        DO j1
-           GET Cb_int(mu,j1)
-           GET Upq_b(j1,j)
-           Txj(mu,j) = Cb_int(mu,j1) *  Upq_b(j1,j)
-           PUT Cb_new(mu,j) += Txj(mu,j)
-        ENDDO j1
-     ENDPARDO j, mu
-
-     PARDO b, mu
-
-        DO b1
-           GET Cb_int(mu,b)
-           GET Upq_b(b,b1)
-           Txb(mu,b1)  = Cb_int(mu,b) * Upq_b(b,b1)
-           PUT Cb_new(mu,b) += Txb(mu,b1)
-         ENDDO b1
-
-     ENDPARDO b, mu
-    
      execute sip_barrier
 
+     DO mu
+     DO p
+        GET Ca_new_int(mu,p)
+        Txp(mu,p) = Ca_new_int(mu,p)
+        Ca_new(mu,p) = Txp(mu,p)
+     ENDDO p
+     ENDDO mu
+
+     DO mu
+     DO q
+        GET Cb_new_int(mu,q)
+        Txq(mu,q) = Cb_new_int(mu,q)
+        Cb_new(mu,q) = Txq(mu,q)
+     ENDDO q
+     ENDDO mu
+
+#bgn_debug
+       if rank==0.0
+       suma=0
+       do mu
+       do p
+         execute dump_amp Ca_new(mu,p)
+         tmp = Ca_new(mu,p) * Ca_new(mu,p)
+         suma += tmp
+       enddo p
+       enddo mu
+       execute print_scalar suma
+       suma=0
+       do mu
+       do q 
+         tmp = Cb_new(mu,q) * Cb_new(mu,q)
+         suma += tmp
+       enddo q
+       enddo mu
+       execute print_scalar suma
+       endif
+
+# Check the orthonaormality of NEW Vectors C^tSC =1
+#       create OVC_T
+#       create OVC
+#       execute sip_barrier
+#       do mu
+#       do p 
+#          Tpx(p,mu) = 0.0
+#          Do nu
+#             GET OVLP(nu,mu)
+#             Tpxt(p,mu) = Ca_new(nu,p) * OVLP(nu,mu)
+#              Tpx(p,mu) += Tpxt(p,mu)
+#          enddo nu 
+#          PUT OVC_T(p,mu) = Tpx(p,mu)
+#       enddo p
+#       enddo mu
+#       execute sip_barrier
+#
+#       do p
+#       do p1
+#          Tpp1(p,p1) = 0.0
+#          do mu
+#             GET OVC_T(p,mu)
+#             Tppt(p,p1)  = OVC_T(p,mu) * Ca_new(mu,p1)
+#            Tpp1(p,p1) +=  Tppt(p,p1)
+#          enddo mu
+#          PUT OVC(p,p1) =  Tpp1(p,p1)
+#       enddo p1
+#      enddo p
+#      execute sip_barrier
+#      esum = 0.0
+#      if rank==0.0
+#      do p 
+#      do p1
+#         get  OVC(p,p1) 
+#         etemp = OVC(p,p1) * OVC(p,p1)
+#         esum += etemp
+#      enddo p1
+#      enddo p
+#      execute print_scalar esum
+#      endif 
+#end_debug
+    
      ENDPROC NORM_NEW_VECS
 #    ---------------------
 
       PROC FORM_MO_FOCK
 #     -----------------
+      PARDO i, i1
+            Tii(i,i1) = 0.0
+            PUT Fpqa_mi(i,i1) = Tii(i,i1)
+      ENDPARDO i, i1
+
+      PARDO i, a
+            Tia(i,a) = 0.0
+            PUT Fpqa_me(i,a) = Tia(i,a)
+      ENDPARDO i, a
+
+      PARDO a, a1
+            Taa(a,a1) = 0.0
+            PUT Fpqa_ae(a,a1) = Taa(a,a1)
+      ENDPARDO a, a1
+
+      PARDO j, j1
+            Tjj(j,j1) = 0.0
+            PUT Fpqb_mi(j,j1) = Tjj(j,j1)
+      ENDPARDO j, j1
+
+      PARDO j, b
+            Tjb(j,b) = 0.0
+            PUT Fpqb_me(j,b) = Tjb(j,b)
+      ENDPARDO j, b 
+
+      PARDO b, b1
+            Tbb(b,b1) = 0.0
+            PUT Fpqb_ae(b,b1) = Tbb(b,b1)
+      ENDPARDO b, b1
+      execute sip_barrier
 
       PARDO mu, nu
             get Fpq_a(mu,nu)
@@ -8586,6 +8865,60 @@
        execute sip_barrier
        execute print_scalar one
 
+#bgn_debug
+       esuma = 0.0
+       esumb = 0.0
+       if rank == 0.0
+       do i
+       do i1
+          get Fpqa_mi(i,i1)
+#          execute dump_amp Fpqa_mi(i,i1)
+          etemp = Fpqa_mi(i,i1) * Fpqa_mi(i,i1)
+          esuma += etemp
+       enddo i1
+       enddo i
+       do a
+       do a1 
+          get Fpqa_ae(a,a1)
+          etemp = Fpqa_ae(a,a1) * Fpqa_ae(a,a1)
+          esuma += etemp
+       enddo a1
+       enddo a
+       do a
+       do i 
+          get Fpqa_me(i,a)
+          etemp = Fpqa_me(i,a) *  Fpqa_me(i,a)
+          esuma += etemp
+          esuma += etemp
+       enddo i
+       enddo a
+       do j
+       do j1
+          get Fpqb_mi(j,j1)
+          etemp = Fpqb_mi(j,j1) * Fpqb_mi(j,j1)
+          esumb += etemp
+       enddo j1
+       enddo j
+       do b
+       do b1
+          get Fpqb_ae(b,b1)
+          etemp =  Fpqb_ae(b,b1) *  Fpqb_ae(b,b1)
+          esumb += etemp
+       enddo b1
+       enddo b
+       do b
+       do j
+          get Fpqb_me(j,b)
+          etemp = Fpqb_me(j,b) *  Fpqb_me(j,b)
+          esumb += etemp
+          esumb += etemp
+       enddo j
+       enddo b
+       execute print_scalar esuma
+       execute print_scalar esumb
+       endif
+#end_debug
+
        DO i
        DO i1
           GET  Fpqa_mi(i,i1)
@@ -8613,13 +8946,57 @@
           FMO_b(b,b1) = Fpqb_ae(b,b1)
        ENDDO b1
        ENDDO b
-       execute print_scalar one
 
+# initialize the the two static arrays reserved for the diagonals.
+   
+       DO p
+       DO p1
+          Tppt(p,p1) = 0.0
+          Dfock_a(p,p1) = Tppt(p,p1)
+       ENDDO p1
+       ENDDO p
+   
+       DO q
+       DO q1
+          Tqqt(q,q1) = 0.0
+          Dfock_b(q,q1) = Tqqt(q,q1)
+       ENDDO q1
+       ENDDO q
+
+       execute sip_barrier
        execute return_diagonal FMO_a DFock_a
        execute return_diagonal FMO_b DFock_b
-       execute sip_barrier
 
-       PARDO a, i
+#bgn_debug
+       esuma = 0.0
+       esumb = 0.0
+       if rank == 0.0
+       do p
+       do p1
+#          execute dump_amp DFock_a(p,p1)
+          etemp = FMO_a(p,p1) * FMO_a(p,p1)
+          esuma += etemp
+       enddo p1
+       enddo p
+       do q
+       do q1
+#          execute dump_amp DFock_b(q,q1)
+          etemp = FMO_b(q,q1) * FMO_b(q,q1)
+          esumb += etemp
+       enddo q1
+       enddo q
+       execute print_scalar esuma
+       execute print_scalar esumb
+       endif
+#end_debug
+
+# Copy the diagonal elements of the new Fock matrix to epsilon 
+# common blocks.
+
+      execute init_fockdiags DFock_a  DFock_b  
+#      execute sip_barrier
+
+      PARDO a, i
              DO a1
                 if a == a1
              DO i1
@@ -8663,7 +9040,7 @@
 
                    t2bj(b,j1)  = 1.0
                    T3bj(b,j)   = t2bj(b,j1)*t1qq(j,j1)
-
+ 
                    Tbj(b,j)     = T1bj(b,j)
                    Tbj(b,j)    += T3bj(b,j)
 
@@ -8674,74 +9051,8 @@
                 endif
              ENDDO b1 
        ENDPARDO b, j
-       execute print_scalar one
-
-       execute sip_barrier
-# Create a 4-dimensional arrays of Fock elements. This seems to 
-# be the best way to produce denominator arrays.
- 
-       PARDO i, i1, i2, i3
-             GET Fpqa_mi(i,i1)
-             GET Fpqa_mi(i2,i3)
-             Tii(i2,i3) = Fpqa_mi(i2,i3)
-             Tiiii(i,i2,i1,i3) = Fpqa_mi(i,i1)^Tii(i2,i3)
-             PREPARE Fpqrs_aa(i,i2,i1,i3) = Tiiii(i,i2,i1,i3)
-       ENDPARDO i, i1, i2, i3
-
-       execute print_scalar one
-       PARDO a, a1, a2, a3
-             GET Fpqa_ae(a,a1) 
-             GET Fpqa_ae(a2,a3)
-             Taa(a2,a3) = Fpqa_ae(a2,a3)
-             Taaaa(a,a2,a1,a3) = Fpqa_ae(a,a1)^Taa(a2,a3)
-             PREPARE Fpqrs_aa(a,a2,a1,a3) = Taaaa(a,a2,a1,a3)
-       ENDPARDO a, a1, a2, a3
-       execute print_scalar one
-
-       PARDO j, j1, j2, j3
-             GET Fpqb_mi(j,j1)
-             GET Fpqb_mi(j2,j3)
-             Tjj(j2,j3) = Fpqb_mi(j2,j3)
-             Tjjjj(j,j2,j1,j3) = Fpqb_mi(j,j1)^Tjj(j2,j3)
-             PREPARE Fpqrs_bb(j,j2,j1,j3) = Tjjjj(j,j2,j1,j3) 
-       ENDPARDO j, j1, j2, j3
-       execute print_scalar one
-
-       PARDO b, b1, b2, b3
-             GET Fpqb_ae(b,b1)
-             GET Fpqb_ae(b2,b3)
-             Tbb(b2,b3) = Fpqb_ae(b2,b3)
-             Tbbbb(b,b2,b1,b3) = Fpqb_ae(b,b1)^Tbb(b2,b3)
-             PREPARE Fpqrs_bb(b,b2,b1,b3) = Tbbbb(b,b2,b1,b3)
-       ENDPARDO b, b1, b2, b3
-       execute print_scalar one
-
-       PARDO i, i1, j, j1
-             GET Fpqa_mi(i,i1) 
-             GET Fpqb_mi(j,j1)
-             Tjj(j,j1) =  Fpqb_mi(j,j1)
-             Tijij(i,j,i1,j1) = Fpqa_mi(i,i1)^Tjj(j,j1)
-             PREPARE Fpqrs_ab(i,j,i1,j1) = Tijij(i,j,i1,j1)
-       ENDPARDO i, i1, j, j1
-       execute print_scalar one
-
-       PARDO a, a1, b, b1
-             GET Fpqa_ae(a,a1)
-             GET Fpqb_ae(b,b1)
-             Tbb(b,b1) = Fpqb_ae(b,b1)
-             Tabab(a,b,a1,b1) = Fpqa_ae(a,a1)^Tbb(b,b1) 
-             PREPARE Fpqrs_ab(a,b,a1,b1) = Tabab(a,b,a1,b1)
-       ENDPARDO a, a1, b, b1
-       execute print_scalar one
-
-       EXECUTE SERVER_BARRIER
-
-# Remove the off-diganol OO, VV elements of Fpqrs and the diagonals
-# of Fpq_mi, Fpq_ae. 
-
-       EXECUTE RETURN_DIAGONAL4 Fpqrs_aa
-       EXECUTE RETURN_DIAGONAL4 Fpqrs_bb
-       EXECUTE RETURN_DIAGONAL4 Fpqrs_ab
+#
+# Remove diagonals from the OO and VV block of the Fock matrices. 
 
        PARDO i, i1
           GET Fpqa_mi(i,i1)
@@ -8750,21 +9061,21 @@
        ENDPARDO i, i1
  
        PARDO j, j1
-             GET Fpqb_mi(j,j1)
-             Tjj(j,j1) = Fpqb_mi(j,j1)
-             FSpqb_mi(j,j1) = Tjj(j,j1)
+          GET Fpqb_mi(j,j1)
+          Tjj(j,j1) = Fpqb_mi(j,j1)
+          FSpqb_mi(j,j1) = Tjj(j,j1)
        ENDPARDO j, j1
 
        PARDO a, a1
-              GET Fpqa_ae(a,a1)
-              Taa(a,a1) = Fpqa_ae(a,a1)
-              FSpqa_ae(a,a1) = Taa(a,a1)
+          GET Fpqa_ae(a,a1)
+          Taa(a,a1) = Fpqa_ae(a,a1)
+          FSpqa_ae(a,a1) = Taa(a,a1)
        ENDPARDO a, a1
 
        PARDO b, b1
-              GET Fpqb_ae(b,b1)
-              Taa(a,a1) = Fpqb_ae(b,b1)
-              FSpqb_ae(b,b1) = Tbb(b,b1)
+          GET Fpqb_ae(b,b1)
+          Tbb(b,b1) = Fpqb_ae(b,b1)
+          FSpqb_ae(b,b1) = Tbb(b,b1)
        ENDPARDO b, b1
 
        execute sip_barrier
@@ -8774,12 +9085,12 @@
        EXECUTE REMOVE_DIAGONAL FSpqa_ae Fpqa_noD_ae
        EXECUTE REMOVE_DIAGONAL FSpqb_ae Fpqb_noD_ae
        
-       EXECUTE SERVER_BARRIER
-#
+       execute print_scalar one
 #bgn_debug 
        suma = 0.0
        do i
        do i1
+          GET Fpqa_mi(i,i1)
           tmp = Fpqa_mi(i,i1) * Fpqa_mi(i,i1)
           suma += tmp
        enddo i1
@@ -8788,6 +9099,7 @@
        suma = 0.0
        do a 
        do a1
+          GET Fpqa_ae(a,a1)
           tmp = Fpqa_ae(a,a1) * Fpqa_ae(a,a1)
           suma += tmp
        enddo a1
@@ -8796,6 +9108,7 @@
        suma = 0.0
        do a
        do i
+          GET  Fpqa_me(i,a)
           tmp = Fpqa_me(i,a) * Fpqa_me(i,a)
           suma += tmp
        enddo i
@@ -8804,6 +9117,7 @@
        sumb = 0.0
        do j
        do j1
+          GET Fpqb_mi(j,j1)
           tmp = Fpqb_mi(j,j1) * Fpqb_mi(j,j1)
           sumb += tmp
        enddo j1
@@ -8812,6 +9126,7 @@
        sumb = 0.0
        do b 
        do b1
+          GET Fpqb_ae(b,b1)
           tmp = Fpqb_ae(b,b1) * Fpqb_ae(b,b1)
           sumb += tmp
        enddo b1
@@ -8820,18 +9135,27 @@
        sumb = 0.0
        do b 
        do j
+          GET Fpqb_me(j,b)
           tmp = Fpqb_me(j,b) * Fpqb_me(j,b)
-          suma += tmp
+          sumb += tmp
        enddo j 
        enddo b
        execute print_scalar sumb
 #end_debug
 
       ENDPROC FORM_MO_FOCK
-#     --------------------
+#     ---------------------
 
       PROC FORM_DENS
 #     --------------
+
+      PARDO mu, nu
+            Tpq(mu,nu)  = 0.0
+            PUT DHF_aa(mu,nu) = Tpq(mu,nu)
+            PUT DHF_bb(mu,nu) = Tpq(mu,nu)
+      ENDPARDO mu, nu
+      execute sip_barrier
+
       PARDO mu, nu, i
 #
             Txi(nu,i)       = ca_new(nu,i)
@@ -8849,6 +9173,26 @@
       ENDPARDO mu, nu, j
 
       execute sip_barrier
+
+#bgn_debug
+      if rank == 0.0
+      esuma = 0.0
+      esumb = 0.0
+      do mu
+      do nu 
+         get DHF_aa(mu,nu)
+#         execute dump_amp DHF_aa(mu,nu)
+         etemp = DHF_aa(mu,nu) * DHF_aa(mu,nu)
+         esuma += etemp
+         get DHF_bb(mu,nu)
+         etemp = DHF_bb(mu,nu) * DHF_bb(mu,nu)
+         esumb += etemp
+      enddo nu
+      enddo mu
+      execute print_scalar esuma
+      execute print_scalar esumb
+      endif 
+#end_debug
 
       DO mu
       DO nu
@@ -9444,6 +9788,19 @@
 #
 #    ------------------------------------------------------------------------
 #
+
+     PARDO a,a1,a2,i
+         Taaai(a,a1,a2,i) = 0.0
+         PREPARE VSaaai(a2,a,a1,i) = Taaai(a,a1,a2,i)
+     ENDPARDO a,a1,a2,i
+
+     PARDO b2,b,b1,j
+         Tbbbj(b2,b,b1,j) = 0.0
+         PREPARE VSbbbj(b2,b,b1,j)  = Tbbbj(b2,b,b1,j)
+     ENDPARDO b2,b,b1,j
+
+     execute server_barrier
+#
      PARDO p, i, i1
 #
            allocate Lxipi(*,i,p,i1) 
@@ -9884,8 +10241,7 @@
 #
               PREPARE Vaabj(a1,a,b,j) = Taabj(a1,a,b,j)
 #
-           ENDDO a1 
-#
+           ENDDO a1
            deallocate Lxabj(*,a,b,j) 
 #
      ENDPARDO a, b, j
@@ -9930,6 +10286,8 @@
           Txx(mu,nu)        = 0.0
           Fockrohf_a(mu,nu) = Txx(mu,nu)
           Fockrohf_b(mu,nu) = Txx(mu,nu)
+          Fpq_a(mu,nu)      = Txx(mu,nu)
+          Fpq_b(mu,nu)      = Txx(mu,nu)
        ENDDO nu
        ENDDO mu 
 
@@ -10101,14 +10459,83 @@
        ENDDO nu   
        ENDDO mu    
        endif 
-#
+
+       execute sip_barrier
+
+#bgn_debug
+       if rank==0.0
+       esuma = 0.0
+       esumb = 0.0
+       DO mu
+       DO nu
+          get Fpq_a(mu,nu)
+          get Fpq_b(mu,nu)
+          execute dump_amp Fpq_a(mu,nu)
+          etemp  = Fpq_a(mu,nu) * Fpq_a(mu,nu)
+          esuma += etemp
+          etemp  = Fpq_b(mu,nu) * Fpq_b(mu,nu)
+          esumb += etemp
+       ENDDO nu
+       ENDDO mu
+       execute print_scalar esuma
+       execute print_scalar esumb
+       endif 
+#end_debug
+#   
        ENDPROC BUILT_NEW_AO_FOCK
 #      -------------------------
+
+       PROC HF_ENERGY
+#      --------------
+#
+#      The HF energy is computed from the HF density (DHFa(b)) and the
+#      Fock matrix (Fpq_a(b)).
+#      ---------------------------------------------------------------
+#
+       energy = 0.0
+       esum   = 0.0
+       if rank == 0.0
+       DO mu
+       DO nu
+#
+             GET Fpq_a(mu,nu)
+             GET Fpq_b(mu,nu)
+             GET DHF_aa(mu,nu)
+             GET DHF_bb(mu,nu)
+#
+             Txx(mu,nu)   = 0.0
+             execute return_h1 txx
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_a(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHF_aa(mu,nu)
+             esum        += etemp
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_b(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHF_bb(mu,nu)
+             esum        += etemp
+#
+       ENDDO nu
+       ENDDO mu
+       endif
+
+       execute sip_barrier
+
+       esum *= 0.5
+       collective energy += esum
+#
+       execute print_scalar energy
+#
+       ENDPROC HF_ENERGY
+#      -----------------
 #
 # BEGIN MAIN PROGRAM
 # ------------------
 #
-      ecrit = cc_conv
+      ecrit = 0.001
       one = 1.0
       two = 2.0
       five  = 5.0
@@ -10160,9 +10587,10 @@
       CREATE Fpqb_ae
       CREATE Fpqa_me
       CREATE Fpqb_me
-
       CREATE Denai
       CREATE Denbj
+      CREATE OVLP
+
       execute sip_barrier
 #
 # Copy Ca/Cb to Ca_new and Cb_new
@@ -10194,10 +10622,20 @@
          Cb_new(mu,b) = Txb(mu,b)
       ENDDO b
       ENDDO mu
-       
+
+# Save the befor the BUILT_NEW_AO_FOCK is called.
+
+      PARDO mu, nu
+           Txx(mu,nu)      = OED_OVL(mu,nu)
+           PUT OVLP(mu,nu) = Txx(mu,nu) 
+      ENDPARDO mu, nu
+
+      execute sip_barrier 
+           
       CALL TRAN_UHF
       CALL FORM_DENS
       CALL BUILT_NEW_AO_FOCK
+      CALL HF_ENERGY
       execute print_scalar one
       CALL FORM_MO_FOCK
       execute print_scalar one
@@ -10205,57 +10643,65 @@
 # Get initial second-order guess 
 # ------------------------------ 
 #
-      CALL IGUESS_UHF
-      EXECUTE SIP_BARRIER  
-      EXECUTE SERVER_BARRIER  
+#      CALL IGUESS_UHF
+#      EXECUTE SIP_BARRIER  
+#      EXECUTE SERVER_BARRIER  
 #
 # Calculate the second-order energy 
 # --------------------------------- 
-      CALL ENERGY_NEW 
-
-      do kiter
-      do kptr1
-         etemp = 0.0
-         pinf(kiter,kptr1)  = etemp
-      enddo kptr1
-      enddo kiter
-
-        do jiter
-           ncount2 = 0.0
-         DO kptr1
-            ncount2 += 1.0
-            if ncount2 == two
-               etemp              = ecorrT
-               etemp             += scfeneg
-               tpinf(jiter,kptr1) = etemp
-               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
-            endif
-         ENDDO kptr1
-        enddo jiter
-
-        do jiter
-           ncount2 = 0.0
-         DO kptr1
-            ncount2 += 1.0
-            if ncount2 == one
-               tpinf(jiter,kptr1) = ecorrT
-               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
-            endif
-         ENDDO kptr1
-        enddo jiter
-
-        execute print_rel_info six pinf
-
-      do kiter
-      do kptr1
-         etemp = 0.0
-         pinf(kiter,kptr1)  = etemp
-      enddo kptr1
-      enddo kiter
-
+#      CALL ENERGY_NEW 
+#
+#      do kiter
+#      do kptr1
+#         etemp = 0.0
+#         pinf(kiter,kptr1)  = etemp
+#      enddo kptr1
+#      enddo kiter
+#
+#        do jiter
+#           ncount2 = 0.0
+#         DO kptr1
+#            ncount2 += 1.0
+#            if ncount2 == two
+#               etemp              = ecorrT
+#               etemp             += scfeneg
+#               tpinf(jiter,kptr1) = etemp
+#               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
+#            endif
+#         ENDDO kptr1
+#        enddo jiter
+#
+#        do jiter
+#           ncount2 = 0.0
+#         DO kptr1
+#            ncount2 += 1.0
+#            if ncount2 == one
+#               tpinf(jiter,kptr1) = ecorrT
+#               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
+#            endif
+#         ENDDO kptr1
+#        enddo jiter
+#
+#        execute print_rel_info six pinf
+#
+#      do kiter
+#      do kptr1
+#         etemp = 0.0
+#         pinf(kiter,kptr1)  = etemp
+#      enddo kptr1
+#      enddo kiter
+#
 # Start Brueckner iterations.
 
       DO BITER
+
+      CALL IGUESS_UHF
+      EXECUTE SIP_BARRIER
+      EXECUTE SERVER_BARRIER
+#
+# Calculate the second-order energy
+# ---------------------------------
+      CALL ENERGY_NEW
 
 # Start CC iterations
 # ---------------- 
@@ -10370,16 +10816,16 @@
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
-               exit # kiter 
                CONVG = 1.0
+               exit # kiter 
             ENDIF
          ENDIF   
 #
          IF ecorrT > eold 
             ediff = ecorrT - eold  
             IF ediff < ecrit 
-               exit # kiter 
                CONVG = 1.0
+               exit # kiter 
             ENDIF
          ENDIF   
 #
@@ -10390,7 +10836,21 @@
 #
       ENDDO KITER 
 
+      execute print_scalar convg 
       IF CONVG == 1.0
+         ecrit = 0.000001
+
+         CREATE Ca_int
+         CREATE Cb_int
+         CREATE Spq_a_int
+         CREATE Spq_b_int
+         CREATE Ca_new_int
+         CREATE Cb_new_int
+         CREATE Upqt_a
+         CREATE Upqt_b
+         CREATE Upq_a
+         CREATE Upq_b
+         execute sip_barrier
 
 # Check the norm of the T1 vector
 
@@ -10417,7 +10877,9 @@
              CALL FORM_NEW_VECS
              CALL NORM_NEW_VECS
              CALL TRAN_UHF
+             CALL FORM_DENS
              CALL BUILT_NEW_AO_FOCK
+             CALL HF_ENERGY
              CALL FORM_MO_FOCK
           ELSE
               execute print_scalar one
@@ -10425,6 +10887,18 @@
 
        ENDIF 
 
+       DELETE Ca_int
+       DELETE Cb_int
+       DELETE Spq_a_int
+       DELETE Spq_b_int
+       DELETE Ca_new_int
+       DELETE Cb_new_int
+       DELETE Upqt_a
+       DELETE Upqt_b
+       DELETE Upq_a
+       DELETE Upq_b
+
+       EXECUTE SERVER_BARRIER
       ENDDO BITER
 #
       totenerg  = ecorrT  
