@@ -408,6 +408,11 @@ c Note that above is not used in printing anything?
      *             1,n1,1,n2)
         endif
 
+       if (scalar_table(sind) .eq. 717) then
+          call print_dipole_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+        endif
+
       endif
 c................... END_prakash......................................       
 
@@ -1991,11 +1996,38 @@ c          enddo
       End
 c................END Prakash...............................    
 
+c...............................................................
+      subroutine print_dipole_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      double precision array1(a1:a2,b1:b2),sval
+      ival = sval
+
+       if (me .eq. 0)then
+           write(*,*) "What is the ival"
+
+C Write the DIPOLE file; Ajith Perera, 12/2014.
+
+         if (ival .eq. 717) then
+            open (unit=80,file='DIPOL',status='unknown',
+     &            form="formatted")
+            write(6,"(a)") ' Archiving Dipole moments'
+            rewind(80)
+            write(80,"(3F20.10)") array1(1,1), array1(2,2),
+     &                            array1(3,3)
+            close(80)
+         endif
+
+       endif
+       Return
+       end
+C----------------------------------------------------------
+
       subroutine print_lccd_cinfo(array1,sval,a1,a2,b1,b2) 
 
-c---------------------------------------------------------------------------
-c
-c 
 c---------------------------------------------------------------------------
 
       implicit none

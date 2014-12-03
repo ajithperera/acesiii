@@ -28,6 +28,9 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index jatom    = 1, natoms
+      index   xyz    = 1,3
+      index   xyz1   = 1,3
 #
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
@@ -322,6 +325,7 @@
       temp dy4(mu,nu,lambda,sigma)
       temp dz4(mu,nu,lambda,sigma)
       static pinf(kiter,kptr1)
+      static DIPOLE_MOMS(XYZ,XYZ)
       temp tpinf(kiter,kptr1)
       static Spq(mu,nu) 
       scalar one
@@ -378,7 +382,7 @@
       local Lbbii(b1,b,i,i1) 
       local Lxajj(mu,a,j,j1) 
       local Laajj(a1,a,j,j1) 
-      local Lixbj(i,mu,b,j) 
+      local Lixbj(i,mu,b,j)
       local Liabj(i,a,b,j) 
       local Liixb(i,i1,mu,b) 
       local Liibb(i,i1,b1,b) 
@@ -418,6 +422,27 @@
       distributed e3bj(b,j)
       distributed e4bj(b,j)
       distributed e5bj(b,j)
+
+      distributed Hx(mu,nu)
+      distributed Hy(mu,nu)
+      distributed Hz(mu,nu)
+
+      scalar  tmpnuc
+      scalar  dipnucx
+      scalar  dipnucy
+      scalar  dipnucz
+      scalar  three
+      scalar  PRINT_FLAG
+
+      scalar XX
+      scalar YY
+      scalar ZZ
+      scalar AXX
+      scalar AYY
+      scalar AZZ
+      scalar Px
+      scalar Py
+      scalar Pz
 #
       scalar b11
       scalar b12
@@ -4509,7 +4534,6 @@
      ENDPARDO b, j
 #
      execute sip_barrier
-#
 #    4 --> 3
 #    ---------------------------------------------------
 #
@@ -4562,6 +4586,79 @@
 #
      ENDPROC MOVE4
 #    -------------
+
+     PROC GET_XYZ_DIPOLE
+#    -------------------
+      CREATE HX
+      CREATE HY
+      CREATE HZ
+      execute sip_barrier
+
+      PARDO mu, nu
+         EXECUTE return_x Tpq(mu,nu)
+         PUT  Hx(mu,nu) = Tpq(mu,nu)
+
+         EXECUTE return_y Tpq(mu,nu)
+         PUT  Hy(mu,nu) = Tpq(mu,nu)
+
+         EXECUTE return_z Tpq(mu,nu)
+         PUT  Hz(mu,nu) = Tpq(mu,nu)
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+      ENDPROC GET_XYZ_DiPOLE
+#     ----------------------
+    PROC CMP_DIPOLEMS
+#     -----------------
+# Finally contract with the derivative integrals
+# ----------------------------------------------
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Px =0.0
+      Py =0.0
+      Pz =0.0
+
+      PARDO mu, nu
+         GET            P2A_ao(mu,nu)
+         GET            P2B_ao(mu,nu)
+         GET            DHFA(mu,nu)
+         GET            DHFB(mu,nu)
+
+         GET Hx(mu,nu)
+         GET Hy(mu,nu)
+         GET Hz(mu,nu)
+
+         Tpq(mu,nu)   = DHFA(mu,nu)
+         Tpq(mu,nu)  += DHFB(mu,nu)
+         Tpq(mu,nu)  += P2A_ao(mu,nu)
+         Tpq(mu,nu)  += P2B_ao(mu,nu)
+
+         XX   = Tpq(mu,nu)*Hx(mu,nu)
+         Axx += XX
+
+         YY  = Tpq(mu,nu)*Hy(mu,nu)
+         Ayy += YY
+
+         ZZ  = Tpq(mu,nu)*Hz(mu,nu)
+         Azz += ZZ
+      ENDPARDO mu, nu
+
+      execute sip_barrier
+      collective Px +=Axx
+      execute print_scalar Px
+
+      collective Py +=Ayy
+      execute print_scalar Py
+
+      collective Pz +=Azz
+      execute print_scalar Pz
+
+      ENDPROC CMP_DIPOLEMS
+#     --------------------
 #
 ############################################################################## 
 #
@@ -4576,6 +4673,7 @@
       one = 1.0 
       two = 2.0 
       six = 6.0 
+      three = 3.0
       seven = 7.0 
       eleven = 11.0 
       CALL TRAN_UHF 
@@ -4664,6 +4762,7 @@
 #
       call WHFDENS
       execute sip_barrier 
+#
 #
 # First compute the occupied-occupied block of the density correction
 # ------------------------------------------------------------------- 
@@ -6073,7 +6172,6 @@
 #
       ENDPARDO b, j  
 #
-# Done backtransform Ppq --> P2_ao Wpq --> W2_ao  
 # ----------------------------------------------  
       execute sip_barrier 
       delete Paiold_bb  
@@ -6095,6 +6193,65 @@
 #
       CALL D1TRANS
       CALL S1TRANS
+
+      CALL GET_XYZ_DIPOLE
+      CALL CMP_DIPOLEMS
+
+      tmpnuc = 0.0
+      DO jatom
+         tmpnuc = tmpnuc + 1.0
+      ENDDO jatom
+
+      dipnucx = tmpnuc
+      dipnucy = dipnucx
+      dipnucz = dipnucy
+
+      EXECUTE  NUC_DIPOLE_MOMENT  ONE    dipnucx
+      EXECUTE  NUC_DIPOLE_MOMENT  TWO    dipnucy
+      EXECUTE  NUC_DIPOLE_MOMENT  THREE  dipnucz
+
+      Px *= -1.0
+      Py *= -1.0
+      Pz *= -1.0
+      Px += dipnucx
+      Py += dipnucy
+      Pz += dipnucz   
+
+      EXECUTE  PRINT_SCALAR  PX
+      EXECUTE  PRINT_SCALAR  PY
+      EXECUTE  PRINT_SCALAR  PZ
+
+      DO XYZ
+         IF XYZ == 1
+            DO XYZ1
+               IF XYZ1  == 1
+                  DIPOLE_MOMS(XYZ,XYZ1) = PX
+               ENDIF
+            ENDDO XYZ1
+         ENDIF
+
+         IF XYZ == 2
+            DO XYZ1
+               IF XYZ1  == 2
+                  DIPOLE_MOMS(XYZ,XYZ1) = PY
+               ENDIF
+            ENDDO XYZ1
+         ENDIF
+
+         IF XYZ == 3
+            DO XYZ1
+               IF XYZ1  == 3
+                  DIPOLE_MOMS(XYZ,XYZ1) = PZ
+               ENDIF
+            ENDDO XYZ1
+         ENDIF
+
+      ENDDO XYZ
+
+      PRINT_FLAG = 717.0
+      EXECUTE PRINT_REL_INFO PRINT_FLAG DIPOLE_MOMS
+
+#
 #
 # Contract the 'two-particle' contributions
 # -----------------------------------------

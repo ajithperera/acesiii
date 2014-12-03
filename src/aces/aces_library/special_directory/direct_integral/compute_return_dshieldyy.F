@@ -237,13 +237,13 @@ C
 #endif
       enddo !loop over centers
 
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVL0
       Write(6,*) "The <mu| Dsh_yy |nu > integral matrix"
       do b = db1, db2
          Write(6,*)
          Write(6, "(5(1x,F15.10))") (out_dsh_yy(a,b), a=da1, da2)
       enddo
-C#endif
+#endif
 
       return
       end

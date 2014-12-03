@@ -170,12 +170,16 @@ c-------------------------------------------------------------------------
       include 'interpreter.h'
 
       integer a1,a2,b1,b2
-      integer i1,i2,j1,j2
+      integer i1,i2,j1,j2,m,n
       double precision x(a1:a2,b1:b2)
       double precision y(i1:i2,j1:j2)
 
       integer i,j,k,l 
       double precision val, div
+#ifdef _DEBUG_LVL0
+      Write(6,"(a)") "The Denominator array"
+      write(6, "(6(1x,F10.7))") ((y(m,n), m=i1,i2),n=i2,j2)
+#endif 
 
       do i = i1, i2 
       do j = j1, j2 

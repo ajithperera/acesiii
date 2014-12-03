@@ -12,7 +12,7 @@ C  GNU General Public License for more details.
 
 C  The GNU General Public License is included in this distribution
 C  in the file COPYRIGHT.
-      subroutine fock_denominator(array_table, narray_table, 
+      subroutine fock_denominator_dynamic(array_table, narray_table, 
      *                      index_table,
      *                      nindex_table, segment_table, nsegment_table,
      *                      block_map_table, nblock_map_table,
@@ -20,7 +20,8 @@ C  in the file COPYRIGHT.
      *                      address_table, op)
 c--------------------------------------------------------------------------
 c   Divides each sample of the block V(a,i,b,j) given by the array argument 
-c   by the denominator
+c   by the denominator. Different from the Fock denominator in the sense 
+C   that Fock eigenvalues do not need to be at fixed initial value.
 c       eps = fock(i)+fock(j)-fock(a)-fock(b)
 c--------------------------------------------------------------------------
 
@@ -45,17 +46,22 @@ c--------------------------------------------------------------------------
       integer*8 address_table(narray_table)
 
       integer i, j, k
-      integer array, index, nindex, ierr
+      integer source, index, nindex, ierr
+      integer source_type
+      integer nindex_source
       integer block, blkndx, seg
       integer find_current_block
       integer*8 indblk, get_block_index
+      integer*8 isource, itarget
       integer stack
       
       integer comm
 
-      integer val1(mx_array_index), val2(mx_array_index)
+      integer sval1(mx_array_index), sval2(mx_array_index)
+      integer tval1(mx_array_index), tval2(mx_array_index)
       integer type(mx_array_index)
-      integer na1, na2, ni1, ni2
+      integer n(mx_array_index),ind(mx_array_index)
+      integer na1, na2, ni1, ni2, total 
       integer*8 addr, get_index_from_base
 
       double precision x(1)
@@ -75,83 +81,108 @@ c---------------------------------------------------------------------------
 c   Find the indices of the array block.
 c---------------------------------------------------------------------------
        
-      array = op(c_result_array)
-      nindex = array_table(c_nindex, array)
-      do i = 1, nindex
-         index = array_table(c_index_array1+i-1,array)
-         type(i) = index_table(c_index_type, index)
-         seg = index_table(c_current_seg,index)
-
-c-------------------------------------------------------------------------
-c   Get segment ranges.
-c-------------------------------------------------------------------------
-
-         call get_index_segment(index, seg, segment_table,
-     *                             nsegment_table, index_table,
-     *                             nindex_table, val1(i), val2(i))
-      enddo
-
+      source = op(c_result_array)
 c---------------------------------------------------------------------------
-c   Get array data address.
+c   Look up source's address.
 c---------------------------------------------------------------------------
 
-      if (array_table(c_array_type,array) .eq. static_array) then
-         addr = address_table(array)
+      if (array_table(c_array_type,source) .eq. static_array) then
+         addr = address_table(source)
          indblk = get_index_from_base(addr, x, 2)
       else
-         block = find_current_block(array, array_table(1,array),
-     *                             index_table, nindex_table,
-     *                             segment_table, nsegment_table,
-     *                             block_map_table, blkndx)
+         block  = find_current_block(source, array_table(1,source),
+     *                                index_table, nindex_table,
+     *                                segment_table, nsegment_table,
+     *                                block_map_table, blkndx)
 
-         stack = array_table(c_array_stack,array)
-         indblk = get_block_index(array, block, stack,
-     *                            blkndx, x, .true.)
+         stack = array_table(c_array_stack,source)
+         isource = get_block_index(source, block, stack, 
+     *                              blkndx, x, .true.)
       endif 
 
-      if (nindex .eq. 4) then
-         call fock_divide4(x(indblk), val1(1),val2(1),type(1),
-     *                   val1(2),val2(2),type(2),
-     *                   val1(3),val2(3),type(3),
-     *                   val1(4),val2(4),type(4), 
-     *                   focka,fockb)
-      else if (nindex .eq. 2) then
-         if (array_table(c_array_type,array) .eq. static_array) then
-            na1 = array_table(c_index_range1, array)
-            na2 = array_table(c_index_range2,array)
-            ni1 = array_table(c_index_range1+1,array)
-            ni2 = array_table(c_index_range2+1,array)
-         else
-            na1 = val1(1)
-            na2 = val2(1)
-            ni1 = val1(2)
-            ni2 = val2(2)
-         endif 
+c   Check the dimensions of arrays.
+c--------------------------------------------------------------------------
 
-         call fock_divide2(x(indblk), val1(1),val2(1),type(1),
-     *                    na1, na2,
-     *                    val1(2),val2(2),type(2),ni1,ni2,
-     *                    focka,fockb)    
-      else
-         print *,'Error in energy_denominator: Result array ',
-     *      'must have either 4 or 2 indices.'
-         print *,'array ',array,' has ',nindex,' indices.'
+      source_type = array_table(c_array_type, source)
+      nindex_source = array_table(c_nindex, source)
+
+      if (.not.(nindex_source .ne. 4 .or. nindex_source .ne. 2)) then
+         print *,'Error: Source array dimension in'
+         print *,' fock_denominator_dynamic must be 4.'
+         print *,'Source array has ',nindex_source,' indices.'
          call abort_job()
       endif
+
+c-------------------------------------------------------------------------
+c   Get segment ranges of the array source.
+c-------------------------------------------------------------------------
+
+      do i = 1, nindex_source
+         ind(i)  = array_table(c_index_array1+i-1,source)
+         n(i)    = index_table(c_index_size, ind(i))  ! pick up length of index
+         type(i) = index_table(c_index_type, ind(i))
+         seg     = index_table(c_current_seg,ind(i))
+         call get_index_segment(ind(i), seg, segment_table,
+     *                          nsegment_table, index_table,
+     *                          nindex_table, sval1(i), sval2(i))
+
+      enddo
+#ifdef _DEBUG_LVL0
+      total = 26
+      write(*,"(a)") "The Fock Diagonal arrays"
+      write(*,"(6(1X,F12.7))") (epsilon(i), i=1, total)
+      write(*,"(6(1X,F12.7))") (epsilonb(i), i=1, total)
+      write(*,"(6(1X,i4))") (type(i), i=1,4)
+#endif 
+
+C-------------------------------------------------------------------------
+      if (nindex_source .eq. 4) then
+
+         call apply_fock_denominator4(x(isource),
+     *                                sval1(1),sval2(1),type(1),
+     *                                sval1(2),sval2(2),type(2),
+     *                                sval1(3),sval2(3),type(3),
+     *                                sval1(4),sval2(4),type(4),
+     *                                epsilon,epsilonb)
+
+      elseif (nindex_source .eq. 2) then
+
+            if (array_table(c_array_type,source) .eq. static_array) then
+                na1 = array_table(c_index_range1, source)
+                na2 = array_table(c_index_range2,source)
+                ni1 = array_table(c_index_range1+1,source)
+                ni2 = array_table(c_index_range2+1,source)
+            else
+                na1 = sval1(1)
+                na2 = sval2(1)
+                ni1 = sval1(2)
+                ni2 = sval2(2)
+            endif 
+
+         call apply_fock_denominator2(x(indblk),
+     *                                na1,na2,type(1),
+     *                                ni1,ni2,type(2),
+     *                                epsilon,epsilonb)
+
+      endif 
       
       return
       end
+C-------------------------------------------------------------------------
 
-      subroutine fock_divide4(x, a1,a2,atype,
-     *                      i1,i2,itype,b1,b2,btype,
-     *                      j1,j2, jtype, epsilon, epsilonb)
+      subroutine apply_fock_denominator4(x,
+     *                                   a1,a2,atype,
+     *                                   i1,i2,itype,
+     *                                   b1,b2,btype,
+     *                                   j1,j2,jtype,
+     *                                   epsilon,epsilonb)
       implicit none
       include 'interpreter.h'
 
       integer a1,a2,b1,b2,i1,i2,j1,j2
       integer atype, itype, btype, jtype
-      double precision x(a1:a2,i1:i2,b1:b2,j1:j2)
 
+      double precision x(a1:a2,i1:i2,b1:b2,j1:j2)
       double precision epsilon(*), epsilonb(*)
 
       integer a,b,i,j
@@ -184,24 +215,20 @@ c---------------------------------------------------------------------------
          endif
          val =  x(a,i,b,j)
          eps = epsi + epsj - epsa - epsb
-C#ifdef DEBUG
-         Write(6,"(a,F12.6)") "The denominator", eps
-C#endif
          if (eps .ne. 0.0) x(a,i,b,j) = val/eps
       enddo
       enddo
       enddo
       enddo
-
+  
       return
       end
 
-      subroutine fock_divide2(x, a1,a2,atype,na1,na2,i1,i2,itype,
-     *                       ni1,ni2,epsilon, epsilonb)
+      subroutine apply_fock_denominator2(x,na1,na2,atype,
+     *                       ni1,ni2,itype,epsilon, epsilonb)
       implicit none
       include 'interpreter.h'
 
-      integer a1,a2,i1,i2
       integer atype, itype
       integer na1, na2, ni1, ni2
       double precision x(na1:na2,ni1:ni2)
@@ -212,17 +239,17 @@ C#endif
       double precision eps, epsa, epsi
       double precision val
 
-      if (atype .ne. itype) then 
-         write(6,*) ' Error in fock_divide2: atype .ne. itype ' 
-      endif 
+      if (atype .ne. itype) then
+         write(6,*) ' Error in fock_divide2: atype .ne. itype '
+      endif
 
-      do i = i1, i2
+      do i = ni1, ni2
          if (itype .eq. mobindex) then
             epsi = epsilonb(i)
          else
             epsi = epsilon(i)
          endif
-      do a = a1,a2
+      do a = na1,na2
          if (atype .eq. mobindex) then
             epsa = epsilonb(a)
          else
@@ -231,9 +258,10 @@ C#endif
          val =  x(a,i)
          eps = epsi - epsa
          if (eps .ne. 0.0) x(a,i) = val/eps
-         if (eps .eq. 0.0) x(a,i) = 0.0d0  
+         if (eps .eq. 0.0) x(a,i) = 0.0d0
       enddo
       enddo
 
       return
       end
+

@@ -659,7 +659,10 @@ C
        call output (HBUF, 1, NRX, 1, NRX, NRX, NRX, 1)
 #endif
 C
+      
+      LUSUM = 66
       WRITE(LUOUT,1000)
+      WRITE(LUSUM,1000)
 1000  FORMAT(T22,'Normal Coordinate Analysis')
 C
       IF (RAMAN) THEN 
@@ -669,6 +672,13 @@ C
           WRITE(LUOUT,2222)
           WRITE(LUOUT,2003)
           WRITE(LUOUT,2222)
+
+          WRITE(LUSUM,2222)
+          WRITE(LUSUM,2001)
+          WRITE(LUSUM,2002)
+          WRITE(LUSUM,2222)
+          WRITE(LUSUM,2003)
+          WRITE(LUSUM,2222)
 C
 2001  FORMAT(T2,' Irreducible',T18,' Harmonic ',T34,' Infrared ',
      &T48,'Raman', T63, 'Depolarization',T80,' Type ')
@@ -684,6 +694,13 @@ C
           WRITE(LUOUT,1111)
           WRITE(LUOUT,3003)
           WRITE(LUOUT,1111)
+
+          WRITE(LUSUM,1111)
+          WRITE(LUSUM,3001)
+          WRITE(LUSUM,3002)
+          WRITE(LUSUM,1111)
+          WRITE(LUSUM,3003)
+          WRITE(LUSUM,1111)
 C
 3001  FORMAT(T4,' Irreducible',T24,' Harmonic ',T39,' Infrared ',
      &T55,' Type ')
@@ -698,10 +715,16 @@ C
              WRITE(LUOUT,4000)IRREP(I),H(I,I),FLAG(I),
      &                        HINT(I),RINT(I), RDPL(I), 
      &                        TYPE(I)
+
+             WRITE(LUSUM,4000)IRREP(I),H(I,I),FLAG(I),
+     &                        HINT(I),RINT(I), RDPL(I), 
+     &                        TYPE(I)
 4000  FORMAT(T7,A4,T15,F10.4,A1,T30,F10.4,T45,F10.4,T60,F10.4,T75,A11)
 C
          ELSE
              WRITE(LUOUT,4005)IRREP(I),H(I,I),FLAG(I),HINT(I),TYPE(I)
+             WRITE(LUSUM,4005)IRREP(I),H(I,I),FLAG(I),HINT(I),TYPE(I)
+
  4005 FORMAT(T7,A4,T24,F10.4,A1,T39,F10.4,T55,A11)
 C
          ENDIF
@@ -710,8 +733,10 @@ C
 C
       IF (RAMAN) THEN
           WRITE(LUOUT,2222)
+          WRITE(LUSUM,2222)
       ELSE
           WRITE(LUOUT,1111)
+          WRITE(LUSUM,1111)
       ENDIF
 C
 1111   FORMAT(64('-'))
@@ -1194,6 +1219,9 @@ c     (Obviously we cannot use this matrix afterward.)
          h(i,1) = h(i,i)
       end do
       call dputrec(20,'JOBARC','FORCECON',NRX,h)
+
+      WRITE(LUOUT, *) 
+      WRITE(LUSUM, *) 
 
       WRITE(LUOUT,9901)
       WRITE(66,9901)

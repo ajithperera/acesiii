@@ -178,7 +178,8 @@ C Ajith Perera, SOI instructions
      &         compute_dshield_zybatch
 
       external write_vecs2jarc, compute_kin_batch
-      external antihermitize_pqrs 
+      external antihermitize_pqrs, fock_denominator_dynamic,
+     &         init_fockdiags
 c -------------------------------------------------------------------
 c Prakash Instructions needed for delta integraks
 c -------------------------------------------------------------------
@@ -740,6 +741,10 @@ c-------------------------------------------------------------------
       dummy = load_user_sub('antihermitize_pqrs'//char(0), 
      &                       antihermitize_pqrs)
       call set_upgrade_flag(dummy)
+
+      dummy = load_user_sub('init_fockdiags'//char(0),init_fockdiags)
+      dummy = load_user_sub('fock_denominator_dynamic'//char(0),
+     &                        fock_denominator_dynamic)
 c
 c-----------------------------------------------------------------------
 c Prakash instructions for delta integrals

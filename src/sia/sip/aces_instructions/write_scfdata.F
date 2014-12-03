@@ -26,6 +26,7 @@ c            1    CA
 c            2    CB  
 c            3    FOCK_A   
 c            4    FOCK_B   
+c            5    DIPOLE MOMENTS (for finite difference IR intensities)
 c--------------------------------------------------------------------------
 
       implicit none
@@ -203,6 +204,19 @@ c
             enddo  
             enddo  
          endif 
+
+C Write the DIPOLE file; Ajith Perera, 12/2014.
+
+         if (ival .eq. 5) then 
+            open (unit=80,file='DIPOL',status='unknown',
+     &            form="formatted")
+            write(6,"(a)") ' Archiving Dipole moments' 
+            rewind(80)
+            write(80,"(3F20.10)") psect(1,1), psect(2,2), 
+     &                            psect(3,3)
+         endif 
+C 
+   
       endif 
 c 
 c------------------------------------------------------------------------

@@ -207,13 +207,13 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
 
        if (dbg) write(6,*) " Finished Ly angular mom. integral comp."
 
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVL0
       Write(6,*) "The <mu| L_y |nu > integral matrix"
       do b = db1, db2
          Write(6,*)
          Write(6, "(5(1x,F15.10))") (out_ly(a,b), a=da1, da2)
       enddo
-C#endif
+#endif
 
       return
       end

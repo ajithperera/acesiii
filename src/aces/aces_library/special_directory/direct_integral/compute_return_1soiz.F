@@ -201,7 +201,7 @@ CSSS      Write(6,"((a,2(1x,i4)))") "m, n :", m, n
        if (dbg) write(6,*) " Finished spin-orbit L0 integral comp."
 
 #ifdef _DEBUG_LVL0
-      Write(6,*) "The <mu| L_z |nu > integral matrix"
+      Write(6,*) "The <mu| SOI_Z |nu > integral matrix"
       do b = 1, Nbasis
       Write(6,*)
          Write(6, "(5(1x,F15.10))") (SOI_L0(a,b), a=1, nbasis)
