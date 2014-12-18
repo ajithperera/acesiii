@@ -32,11 +32,12 @@
 #
       index kiter    = 1, cc_iter   
       index jiter    = 1, cc_iter
-      index biter    = 1, cc_iter
-#      index biter    = 1, 1
+#      index biter    = 1, cc_iter
+      index biter    = 1, 2
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index   atoms  = 1, natoms
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -575,8 +576,11 @@
      scalar ecorrnha
      scalar enhfb
      scalar ecorrnhb
-     scalar energy
+     scalar SD_energy
      scalar nrepulsion 
+     scalar BIT_COUNT
+     scalar CC_CYCLE
+     scalar vnn
 
 #B-CCSD debuggin
      Temp Tpxt(p,mu)
@@ -782,7 +786,7 @@
        served e3bjbj(b,j,b1,j1)  
        served e4bjbj(b,j,b1,j1)  
        served e5bjbj(b,j,b1,j1)  
-#
+
        served e1aibj(a,i,b,j)  
        served e2aibj(a,i,b,j)  
        served e3aibj(a,i,b,j)  
@@ -996,19 +1000,41 @@
 # 
 #    ------------------------------------------------------------------------ 
 #
+     suma = 0.0
+     sumb = 0.0
+     
      PARDO a, a1, i, i1 
 #
            REQUEST VSpipi(a,i,a1,i1) i1  
 #
            Taiai(a,i,a1,i1)            = VSpipi(a,i,a1,i1)
+#           execute fock_denominator_dynamic  Taiai 
+
            execute energy_denominator    Taiai 
 
-#           execute fock_denominator_dynamic  Taiai 
            PREPARE T2old_aa(a,i,a1,i1) = Taiai(a,i,a1,i1)  
            PREPARE D0aiai(a,i,a1,i1) = Taiai(a,i,a1,i1)  
 #
      ENDPARDO a, a1, i, i1  
-#
+#bgn_debug
+     execute server_barrier
+#     collective sumb += suma
+#    sumb *= 0.25
+#    execute print_scalar sumb
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1 
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1 
+     execute sip_barrier 
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+#end_debug
+          
      PARDO b, b1, j, j1 
 #
            REQUEST VSqjqj(b,j,b1,j1) j1  
@@ -1037,21 +1063,40 @@
 #
      ENDPARDO a, b, i, j 
 #
+
      PARDO a, i
 #
-           tai(a,i) = 0.0
-           PUT t1a_old(a,i) = tai(a,i)
-           PUT D0ai(a,i) = tai(a,i)
+        tai(a,i) = 0.0
+        PUT t1a_old(a,i) = tai(a,i)
+        PUT D0ai(a,i) = tai(a,i)
 #
      ENDPARDO a, i
 #
      PARDO b, j
 #
-           tbj(b,j) = 0.0
-           PUT t1b_old(b,j) = tbj(b,j)
-           PUT D0bj(b,j) = tbj(b,j)
+        tbj(b,j) = 0.0
+        PUT t1b_old(b,j) = tbj(b,j)
+        PUT D0bj(b,j) = tbj(b,j)
 #
      ENDPARDO b, j
+
+#bgn_debug
+     execute server_barrier
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+#end_debug
+
+
 #
 #    ------------------------------------------------------------------------ 
 # 
@@ -1059,6 +1104,72 @@
 # 
 #    ------------------------------------------------------------------------ 
 #
+     PROC IBGUESS_UHF  
+# 
+#    ------------------------------------------------------------------------ 
+#
+#bgn_debug
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+#end_debug
+
+     PARDO a, a1, i, i1 
+#
+           REQUEST T2old_aa(a,i,a1,i1) i1  
+#
+           Taiai(a,i,a1,i1)          = T2old_aa(a,i,a1,i1)
+           PREPARE D0aiai(a,i,a1,i1) = Taiai(a,i,a1,i1)  
+#
+     ENDPARDO a, a1, i, i1  
+          
+     PARDO b, b1, j, j1 
+#
+           REQUEST T2old_bb(b,j,b1,j1) j1
+#
+           Tbjbj(b,j,b1,j1)          = T2old_bb(b,j,b1,j1)
+           PREPARE D0bjbj(b,j,b1,j1) = Tbjbj(b,j,b1,j1)  
+#
+     ENDPARDO b, b1, j, j1 
+#
+     PARDO a, b, i, j 
+#
+           REQUEST  T2old_ab(a,i,b,j) j
+#
+           Taibj(a,i,b,j)          = T2old_ab(a,i,b,j)
+           PREPARE D0aibj(a,i,b,j) = Taibj(a,i,b,j)  
+#
+     ENDPARDO a, b, i, j 
+#
+
+     PARDO a, i
+#
+        GET t1a_old(a,i)
+        tai(a,i)      = t1a_old(a,i)
+        PUT D0ai(a,i) = tai(a,i)
+#
+     ENDPARDO a, i
+#
+     PARDO b, j
+#
+        GET t1b_old(b,j)
+        tbj(b,j)      = t1b_old(b,j)
+        PUT D0bj(b,j) = tbj(b,j)
+#
+     ENDPARDO b, j
+
+     ENDPROC IBGUESS_UHF 
+#    -------------------
+
       PROC TAUAA 
 #     ----------
 #
@@ -1256,10 +1367,26 @@
 #     ----------
 #
       PARDO a,a1
-           taa(a,a1)         = Fpqa_noD_ae(a,a1)
-           put Fae_a(a,a1)  += Taa(a,a1)
+           Taa(a,a1)         = Fpqa_noD_ae(a,a1)
+           PUT Fae_a(a,a1)   = Taa(a,a1)
       ENDPARDO a, a1
 
+      PARDO a,a1
+            Taa(a,a1) = 0.0
+
+            DO i
+               GET T1a_old(a,i)
+               GET Fpqa_me(i,a1)
+
+               Tai(a,i)    = T1a_old(a,i)
+               T1aa(a,a1)  = Tai(a,i) * Fpqa_me(i,a1)
+               Taa(a,a1)  += T1aa(a,a1)
+               Taa(a,a1)  *= -0.5
+            ENDDO i
+      
+           PUT Fae_a(a,a1)  += Taa(a,a1)
+      ENDPARDO a,a1
+   
       PARDO a, a2, i
 #
                allocate LWaiai(a2,i,a,*)
@@ -1372,8 +1499,23 @@
 #
       PARDO b,b1
            tbb(b,b1)        = Fpqb_noD_ae(b,b1)
-           put Fae_b(b,b1) += tbb(b,b1)
+           PUT Fae_b(b,b1)  = tbb(b,b1)
       ENDPARDO b, b1
+
+      PARDO b,b1
+            Tbb(b,b1) = 0.0
+            DO j
+               GET T1b_old(b,j)
+               GET Fpqb_me(j,b1)
+
+               Tbj(b,j)    = T1b_old(b,j)
+               T1bb(b,b1)  = Tbj(b,j) * Fpqb_me(j,b1)
+               Tbb(b,b1)  += T1bb(b,b1)
+               Tbb(b,b1)  *= -0.5
+            ENDDO j
+      
+           PUT Fae_b(b,b1)  += Tbb(b,b1)
+      ENDPARDO b,b1
 
       PARDO b, b2, j
 #
@@ -1497,8 +1639,9 @@
 #     ----------
 #
       PARDO i,a
-          Tia(i,a)        =  Fpqa_me(i,a)
-          put Fme_a(i,a) +=Tia(i,a)
+          GET  Fpqa_me(i,a)
+          Tia(i,a)        = Fpqa_me(i,a)
+          PUT Fme_a(i,a)  = Tia(i,a)
       ENDPARDO i,a
 
       PARDO i, a 
@@ -1529,7 +1672,7 @@
             ENDDO b 
             ENDDO j 
 #
-            PUT Fme_a(i,a) = Tme_a(i,a) 
+            PUT Fme_a(i,a) += Tme_a(i,a) 
 #
       ENDPARDO i, a 
 # 
@@ -1544,8 +1687,9 @@
 #     ----------
 #
       PARDO j,b
+          GET Fpqb_me(j,b)
           Tjb(j,b)        = Fpqb_me(j,b)
-          put Fme_b(j,b) +=Tjb(j,b)
+          PUT Fme_b(j,b)  = Tjb(j,b)
       ENDPARDO j,b
 
       PARDO j, b 
@@ -1576,7 +1720,7 @@
             ENDDO a 
             ENDDO i 
 #
-            PUT Fme_b(j,b) = Tme_b(j,b) 
+            PUT Fme_b(j,b) += Tme_b(j,b) 
 #
       ENDPARDO j, b 
 # 
@@ -1603,9 +1747,24 @@
 #
       PARDO i1,i
             Tii(i1,i)        = Fpqa_noD_mi(i1,i)
-            put Fmi_a(i1,i) += Tii(i1,i)
+            PUT Fmi_a(i1,i)  = Tii(i1,i)
       ENDPARDO i1,i
 
+      PARDO i1,i
+            Tii(i1,i) = 0.0
+            DO a
+               GET T1a_old(a,i)
+               GET Fpqa_me(i1,a)
+
+               T1ii(i1,i) = T1a_old(a,i) * Fpqa_me(i1,a)
+               Tii(i1,i) += T1ii(i1,i)
+            ENDDO a
+         
+            Tii(i1,i)*= 0.5
+            PUT Fmi_a(i1,i)  += Tii(i1,i)
+       
+      ENDPARDO i1,i
+               
       PARDO i1, i, a, i2
 #
             REQUEST VSpipi(a,i2,i,i1) i1  
@@ -1681,10 +1840,24 @@
 
        PARDO j1,j
             tjj(j1,j)        = Fpqb_noD_mi(j1,j)
-            put Fmi_b(j1,j) += Tjj(j1,j)
+            PUT Fmi_b(j1,j)  = Tjj(j1,j)
       ENDPARDO j1,j
 
-#
+      PARDO j1,j
+            Tjj(j1,j) = 0.0
+            DO b
+               GET T1b_old(b,j)
+               GET Fpqb_me(j1,b)
+
+               T1jj(j1,j) = T1b_old(b,j) * Fpqb_me(j1,b)
+               Tjj(j1,j) += T1jj(j1,j)
+            ENDDO b
+         
+            Tjj(j1,j) *= 0.5
+            PUT Fmi_b(j1,j)  += Tjj(j1,j)
+       
+      ENDPARDO j1,j
+               
       PARDO j1, j, b, j2
 #
             REQUEST VSqjqj(b,j2,j,j1) j1  
@@ -1770,7 +1943,7 @@
 #
       PROC T1ANEW 
 #     -----------
-#
+
       PARDO a, i 
 #
             tai(a,i) = 0.0 
@@ -1955,7 +2128,9 @@
       ENDPARDO b, j, i1  
 
       PARDO a, i
-           tai(a,i)            = Fpqa_me(i,a)
+           GET Fpqa_me(i,a) 
+           tai(a,i)          = Fpqa_me(i,a)
+           tia(i,a)          = tai(a,i)
            PUT t1a_new(a,i) += tai(a,i)
       ENDPARDO a, i
 #
@@ -2156,7 +2331,8 @@
       ENDPARDO a, i, j1  
 
       PARDO b, j
-           tbj(b,j)            = Fpqb_me(j,b)
+           GET Fpqb_me(j,b) 
+           tbj(b,j)          = Fpqb_me(j,b)
            PUT t1b_new(b,j) += tbj(b,j)
       ENDPARDO b, j
 #
@@ -3053,7 +3229,7 @@
 #
               DO a  
 #
-                 Txiai(lambda,i,a1,i1) = LLaiai(a,i,a1,i1)*ca(lambda,a)
+                 Txiai(lambda,i,a1,i1) = LLaiai(a,i,a1,i1)*ca_new(lambda,a)
                  Zaa(lambda,i,a1,i1)  += Txiai(lambda,i,a1,i1) 
 #
               ENDDO a 
@@ -3086,7 +3262,7 @@
 #
               DO b  
 #
-                 Txjbj(lambda,j,b1,j1) = LLbjbj(b,j,b1,j1)*cb(lambda,b)
+                 Txjbj(lambda,j,b1,j1) = LLbjbj(b,j,b1,j1)*cb_new(lambda,b)
                  Zbb(lambda,j,b1,j1)  += Txjbj(lambda,j,b1,j1) 
 #
               ENDDO b 
@@ -3116,7 +3292,7 @@
 #
               DO a  
 #
-                 Txibj(lambda,i,b,j) = LLaibj(a,i,b,j)*ca(lambda,a)
+                 Txibj(lambda,i,b,j) = LLaibj(a,i,b,j)*ca_new(lambda,a)
                  Zab(lambda,i,b,j)  += Txibj(lambda,i,b,j) 
 #
               ENDDO a 
@@ -3147,7 +3323,7 @@
 #
               DO a1 
 #
-                 Txixi(lambda,i,sigma,i1) = Lxiai(lambda,i,a1,i1)*ca(sigma,a1)
+                 Txixi(lambda,i,sigma,i1) = Lxiai(lambda,i,a1,i1)*ca_new(sigma,a1)
                  ZZaa(lambda,i,sigma,i1) += Txixi(lambda,i,sigma,i1)  
 #
               ENDDO a1 
@@ -3177,7 +3353,7 @@
 #
               DO b1 
 #
-                 Txjxj(lambda,j,sigma,j1) = Lxjbj(lambda,j,b1,j1)*cb(sigma,b1)
+                 Txjxj(lambda,j,sigma,j1) = Lxjbj(lambda,j,b1,j1)*cb_new(sigma,b1)
                  ZZbb(lambda,j,sigma,j1) += Txjxj(lambda,j,sigma,j1)  
 #
               ENDDO b1 
@@ -3207,7 +3383,7 @@
 #
               DO b 
 #
-                 Txixj(lambda,i,sigma,j) = Lxibj(lambda,i,b,j)*cb(sigma,b)
+                 Txixj(lambda,i,sigma,j) = Lxibj(lambda,i,b,j)*cb_new(sigma,b)
                  ZZab(lambda,i,sigma,j) += Txixj(lambda,i,sigma,j)  
 #
               ENDDO b 
@@ -3314,7 +3490,7 @@
            DO i  
 #
               GET          t1a_old(a,i) 
-              t1px(a,mu) = t1a_old(a,i)*ca(mu,i) 
+              t1px(a,mu) = t1a_old(a,i)*ca_new(mu,i) 
               tpx(a,mu) += t1px(a,mu) 
 #
            ENDDO i  
@@ -3330,7 +3506,7 @@
            DO j  
 #
               GET          t1b_old(b,j) 
-              t1qx(b,mu) = t1b_old(b,j)*cb(mu,j) 
+              t1qx(b,mu) = t1b_old(b,j)*cb_new(mu,j) 
               tqx(b,mu) += t1qx(b,mu) 
 #
            ENDDO j  
@@ -3358,12 +3534,12 @@
               DO mu   
 #
                  REQUEST              T2AO_aa(mu,i,nu,i1) i1 
-                 Taixi(a,i,nu,i1)   = T2AO_aa(mu,i,nu,i1)*ca(mu,a)
+                 Taixi(a,i,nu,i1)   = T2AO_aa(mu,i,nu,i1)*ca_new(mu,a)
                  TXaiai(a,i,nu,i1) += Taixi(a,i,nu,i1)   
 #
               ENDDO mu   
 #
-              TYaiai(a,i,a1,i1)  = TXaiai(a,i,nu,i1)*ca(nu,a1)
+              TYaiai(a,i,a1,i1)  = TXaiai(a,i,nu,i1)*ca_new(nu,a1)
               TYaiai(a,i,a1,i1) *= 0.5  
               T1aiai(a,i,a1,i1) += TYaiai(a,i,a1,i1)
 #
@@ -3394,12 +3570,12 @@
               DO mu   
 #
                  REQUEST              T2AO_bb(mu,j,nu,j1) j1 
-                 Tbjxj(b,j,nu,j1)   = T2AO_bb(mu,j,nu,j1)*cb(mu,b)
+                 Tbjxj(b,j,nu,j1)   = T2AO_bb(mu,j,nu,j1)*cb_new(mu,b)
                  TXbjbj(b,j,nu,j1) += Tbjxj(b,j,nu,j1)   
 #
               ENDDO mu   
 #
-              TYbjbj(b,j,b1,j1)  = TXbjbj(b,j,nu,j1)*cb(nu,b1)
+              TYbjbj(b,j,b1,j1)  = TXbjbj(b,j,nu,j1)*cb_new(nu,b1)
               TYbjbj(b,j,b1,j1) *= 0.5  
               T1bjbj(b,j,b1,j1) += TYbjbj(b,j,b1,j1)
 #
@@ -3431,7 +3607,7 @@
 #
                  REQUEST             T2AO_ab(mu,i,nu,j) j 
                  GET                 t1a_ax(a,mu) 
-                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca(mu,a)
+                 Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*ca_new(mu,a)
                  TXaibj(a,i,nu,j) += Taixj(a,i,nu,j)   
 #
                  Taixj(a,i,nu,j)   = T2AO_ab(mu,i,nu,j)*t1a_ax(a,mu)
@@ -3439,13 +3615,13 @@
 #
               ENDDO mu   
 #
-              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*cb(nu,b)
+              TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*cb_new(nu,b)
               T1aibj(a,i,b,j) += TYaibj(a,i,b,j)
 #
               TYaibj(a,i,b,j)  = TXaibj(a,i,nu,j)*t1b_bx(b,nu)
               T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
 #
-              TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*cb(nu,b)
+              TYaibj(a,i,b,j)  = TZaibj(a,i,nu,j)*cb_new(nu,b)
               T1aibj(a,i,b,j) -= TYaibj(a,i,b,j)
 #
            ENDDO nu  
@@ -5149,7 +5325,25 @@
 #
      esuma   = 0.0 
      ecorraa = 0.0 
-    
+     suma    = 0.0
+     sumb    = 0.0
+
+#bgn_debug
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     sumb= 0.0
+#end_debug
+
      PARDO a, a1, i, i1 
 #
            REQUEST VSpipi(a,i,a1,i1) i1  
@@ -5272,13 +5466,13 @@
             ncount1 = ncount1 + 1.0
             if ncount1 == two
                etemp = ecorrT
-               etemp+= scfeneg
+               etemp+= sd_energy
                tpinf(kiter,kptr1) = etemp
                pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
             endif
          ENDDO kptr1
 
-         execute print_rel_info five pinf
+#         execute print_rel_info five pinf
       endif
 
 # 
@@ -6142,8 +6336,8 @@
 #
      c1 = Tb11 
      c2 = Tb22 
-    #execute print_scalar c1 
-    #execute print_scalar c2 
+    execute print_scalar c1 
+    execute print_scalar c2 
 #
 #    Done computing the c-vector. 
 #    ---------------------------- 
@@ -6154,6 +6348,36 @@
 #    Form T2old_aa. 
 #    -------------- 
 #
+#bgn_debug
+     EXECUTE SERVER_BARRIER
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST d0aiai(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = d0aiai(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST d1aiai(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = d1aiai(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+#end_debug
+
+
+
      PARDO a, i, a1, i1
 #
 #          REQUEST/GET amplitude data from all 2 previous iterations.
@@ -8591,7 +8815,6 @@
        suma=0
        do p 
        do p1
-         execute dump_amp  Spq_a(p,p1)
          tmp = Spq_a(p,p1) * Spq_a(p,p1)
          suma += tmp
        enddo p1
@@ -8604,14 +8827,14 @@
      
        PARDO p, p1
           DO p2
-             Tpqt_a(p,p1)      = Cpq_a(p2,p) * Spq_a(p2,p1)
+             Tpqt_a(p,p1)      = Cpq_a(p,p2) * Spq_a(p2,p1)
              PUT Upqt_a(p,p1) += Tpqt_a(p,p1) 
           ENDDO p2
        ENDPARDO p, p1
 
        PARDO q, q1
           DO q2  
-             Tpqt_b(q,q1)      = Cpq_b(q2,q) * Spq_b(q2,q1)
+             Tpqt_b(q,q1)      = Cpq_b(q,q2) * Spq_b(q2,q1)
              PUT Upqt_b(q,q1) += Tpqt_b(q,q1) 
           ENDDO q2
        ENDPARDO q, q1
@@ -8620,7 +8843,7 @@
        PARDO p, p1
           DO p2  
              GET Upqt_a(p,p2)
-             Tpqt_a(p,p1)     =  Upqt_a(p,p2) * Cpq_a(p2,p1)
+             Tpqt_a(p,p1)     =  Upqt_a(p,p2) * Cpq_a(p1,p2)
              PUT Upq_a(p,p1) += Tpqt_a(p,p1)
           ENDDO p2
        ENDPARDO p, p1
@@ -8628,17 +8851,19 @@
        PARDO q, q1
           DO q2  
              GET Upqt_b(q,q2)
-             Tpqt_b(q,q1)      =  Upqt_b(q,q2) * Cpq_b(q2,q1)
+             Tpqt_b(q,q1)      =  Upqt_b(q,q2) * Cpq_b(q1,q2)
              PUT Upq_b(q,q1)  += Tpqt_b(q,q1) 
           ENDDO q2
        ENDPARDO q, q1
        execute sip_barrier
 
 #bgn_debug
+       if rank == 0.0
        suma = 0.0
        DO p
        DO p1
            GET Upq_a(p,p1)
+           execute dump_amp  Upq_a(p,p1)
            tmp =  Upq_a(p,p1) *  Upq_a(p,p1)
            suma += tmp
        ENDDO p1
@@ -8653,6 +8878,7 @@
        enddo q1
        enddo q
        execute print_scalar suma
+       endif 
 #end_debug
 
 # Transform the MO vectors to orthogonal basis.
@@ -8994,7 +9220,7 @@
 # common blocks.
 
       execute init_fockdiags DFock_a  DFock_b  
-#      execute sip_barrier
+      execute sip_barrier
 
       PARDO a, i
              DO a1
@@ -9078,12 +9304,84 @@
           FSpqb_ae(b,b1) = Tbb(b,b1)
        ENDPARDO b, b1
 
+# Initialize the Fpq{a,b}_noD Static arrays
+
+       DO i
+       DO i1
+          Tii(i,i1) = 0.0
+          Fpqa_noD_mi(i,i1) = Tii(i,i1)
+       ENDDO i1
+       ENDDO i
+
+       DO j
+       DO j1
+          Tjj(j,j1) = 0.0
+          Fpqb_noD_mi(j,j1) = Tjj(j,j1)
+       ENDDO j1
+       ENDDO j
+
+       DO a
+       DO a1
+          Taa(a,a1) = 0.0
+          Fpqa_noD_ae(a,a1) = Taa(a,a1)
+       ENDDO a1
+       ENDDO a
+
+       DO b
+       DO b1
+          Tbb(b,b1) = 0.0
+          Fpqb_noD_ae(b,b1) = Tbb(b,b1)
+       ENDDO b1
+       ENDDO b
+
        execute sip_barrier
 
        EXECUTE REMOVE_DIAGONAL FSpqa_mi Fpqa_noD_mi
        EXECUTE REMOVE_DIAGONAL FSpqb_mi Fpqb_noD_mi
        EXECUTE REMOVE_DIAGONAL FSpqa_ae Fpqa_noD_ae
        EXECUTE REMOVE_DIAGONAL FSpqb_ae Fpqb_noD_ae
+
+#bgn_debug
+#       DO i
+#       DO i1
+#          Tii(i,i1) = 0.0
+#          Fpqa_noD_mi(i,i1) = Tii(i,i1)
+#       ENDDO i1
+#       ENDDO i
+#
+#       DO j
+#       DO j1
+#          Tjj(j,j1) = 0.0
+#          Fpqb_noD_mi(j,j1) = Tjj(j,j1)
+#       ENDDO j1
+#       ENDDO j
+#
+#       DO a
+#       DO a1
+#          Taa(a,a1) = 0.0
+#          Fpqa_noD_ae(a,a1) = Taa(a,a1)
+#       ENDDO a1
+#       ENDDO a
+#
+#       DO b
+#       DO b1
+#          Tbb(b,b1) = 0.0
+#          Fpqb_noD_ae(b,b1) = Tbb(b,b1)
+#       ENDDO b1
+#       ENDDO b
+#       do a
+#       do i
+#          tia(i,a) = 0.0
+#          Fpqa_me(i,a) = tia(i,a)
+#       enddo i
+#       enddo a
+#       do b
+#       do j
+#          tjb(j,b) = 0.0
+#          Fpqb_me(j,b) = tjb(j,b)
+#       enddo j
+#       enddo b
+#end_debug
        
        execute print_scalar one
 #bgn_debug 
@@ -9790,14 +10088,21 @@
 #
 
      PARDO a,a1,a2,i
-         Taaai(a,a1,a2,i) = 0.0
+
+         Taaai(a,a1,a2,i)  = 0.0
          PREPARE VSaaai(a2,a,a1,i) = Taaai(a,a1,a2,i)
+
      ENDPARDO a,a1,a2,i
 
      PARDO b2,b,b1,j
-         Tbbbj(b2,b,b1,j) = 0.0
+         Tbbbj(b2,b,b1,j)  = 0.0
          PREPARE VSbbbj(b2,b,b1,j)  = Tbbbj(b2,b,b1,j)
      ENDPARDO b2,b,b1,j
+
+     PARDO a,b,i,j
+           Tiabj(i,a,b,j) = 0.0
+           PREPARE Viabj(i,a,b,j) = Tiabj(i,a,b,j)
+     ENDPARDO a,b,i,j
 
      execute server_barrier
 #
@@ -10492,8 +10797,9 @@
 #      Fock matrix (Fpq_a(b)).
 #      ---------------------------------------------------------------
 #
-       energy = 0.0
-       esum   = 0.0
+       sd_energy = 0.0
+       esum      = 0.0
+
        if rank == 0.0
        DO mu
        DO nu
@@ -10525,9 +10831,17 @@
        execute sip_barrier
 
        esum *= 0.5
-       collective energy += esum
+       collective sd_energy += esum
+
+       Vnn = 0.0
+       DO atoms
+         VNN += 1.0
+       ENDDO atoms
+       execute v_nuc_nuc vnn
+       sd_energy += vnn
 #
-       execute print_scalar energy
+       execute print_scalar  vnn
+       execute print_scalar sd_energy
 #
        ENDPROC HF_ENERGY
 #      -----------------
@@ -10693,19 +11007,34 @@
 #
 # Start Brueckner iterations.
 
+      BIT_COUNT = 0.0
       DO BITER
 
-      CALL IGUESS_UHF
+      BIT_COUNT += 1.0
+      CALL T2NEW_ZERO
+
+      IF BIT_COUNT == 1.0
+         CALL IGUESS_UHF
+      ELSE
+         CALL IBGUESS_UHF
+      ENDIF
+
       EXECUTE SIP_BARRIER
       EXECUTE SERVER_BARRIER
 #
 # Calculate the second-order energy
 # ---------------------------------
+
       CALL ENERGY_NEW
 
 # Start CC iterations
 # ---------------- 
+      CC_CYCLE = 0.0
+
       DO KITER 
+
+         CC_CYCLE = CC_CYCLE + 1
+         EXECUTE PRINT_SCALAR CC_CYCLE
 #
 #        Form Tau and Taup 
 #        ----------------- 
@@ -10735,7 +11064,44 @@
 #        Calculate new one-particle amplitudes 
 #        ------------------------------------- 
 #
+#bgn_debug
+         suma = 0.0
+         do a
+         do i
+            get t1a_old(a,i)
+            tai(a,i) = t1a_old(a,i)
+            tmp = tai(a,i) * tai(a,i)
+            suma += tmp
+         enddo i
+         enddo a
+         execute print_scalar suma
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+#end_debug
+
          CALL T1ANEW 
+#bgn_debug
+         suma = 0.0
+         do a
+         do i
+            get t1a_new(a,i)
+            tai(a,i) = t1a_new(a,i)
+            tmp = tai(a,i) * tai(a,i)
+            suma += tmp
+         enddo i
+         enddo a
+         execute print_scalar suma
+#end_debug
          CALL T1BNEW 
 #
 #        Calculate new two-particle amplitudes 
@@ -10749,7 +11115,22 @@
          CALL AOLADDER 
          CALL WAEBF  
          CALL WMEBJ 
-#
+#bgn_debug
+     EXECUTE SERVER_BARRIER   
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2new_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2new_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     sumb= 0.0
+#end_debug
 #        Wait for all to finish 
 #        ---------------------- 
          EXECUTE SIP_BARRIER   
@@ -10762,19 +11143,66 @@
          DELETE Fmi_a 
          DELETE Fmi_b 
          CALL UPDATET1 
+#bgn_debug
+         suma = 0.0
+         do a
+         do i
+            get t1a_old(a,i)
+            tai(a,i) = t1a_old(a,i)
+            tmp = tai(a,i) * tai(a,i)
+            suma += tmp
+         enddo i
+         enddo a
+         execute print_scalar suma
+#end_debug
          CALL UPDATET2 
+
+#bgn_debug
+     EXECUTE SERVER_BARRIER
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     sumb= 0.0
+#end_debug
 #
          EXECUTE SIP_BARRIER   
          EXECUTE SERVER_BARRIER   
          CALL ENERGY_NEW 
          EXECUTE SIP_BARRIER  
          EXECUTE SERVER_BARRIER   
+#bgn_debug
+     EXECUTE SERVER_BARRIER
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     sumb= 0.0
+#end_debug
+
 #
          if kiter == 2
 #
 #           Get uptated amplitudes based on DIIS procedure.
 #           -----------------------------------------------
 #
+            execute print_scalar seven
             CALL DIIS1
 #
          endif # kiter == 2
@@ -10806,6 +11234,44 @@
             CALL MOVE4
 #
          endif # kiter == 5
+
+#bgn_debug
+     EXECUTE SERVER_BARRIER
+     suma = 0.0
+     do a
+     do i
+        get t1a_old(a,i)
+        tai(a,i) = t1a_old(a,i)
+        tmp = tai(a,i) * tai(a,i)
+       suma += tmp
+     enddo i
+     enddo a
+     execute print_scalar suma
+     suma = 0.0
+     sumb = 0.0
+     PARDO a, a1, i, i1
+         REQUEST T2old_aa(a,i,a1,i1) i1
+         Taiai(a,i,a1,i1) = T2old_aa(a,i,a1,i1)
+         tmp = Taiai(a,i,a1,i1) * Taiai(a,i,a1,i1)
+         suma += tmp
+     ENDPARDO a, a1, i, i1
+     execute sip_barrier
+     collective sumb += suma
+     sumb *= 0.25
+     execute print_scalar sumb
+     sumb = 0.0
+     suma = 0.0
+     PARDO a, b, i, j
+           REQUEST  T2old_ab(a,i,b,j) j
+           Taibj(a,i,b,j)  = T2old_ab(a,i,b,j)
+           tmp = Taibj(a,i,b,j) * Taibj(a,i,b,j)
+           suma += tmp
+     ENDPARDO a, b, i, j
+     execute sip_barrier
+     collective sumb += suma
+     execute print_scalar sumb
+#end_debug
+
 #
          CALL MOVET1
          CALL MOVET2
@@ -10836,7 +11302,12 @@
 #
       ENDDO KITER 
 
+      totenerg  = ecorrT  
+      totenerg += sd_energy
+      execute print_rel_info seven pinf
+
       execute print_scalar convg 
+
       IF CONVG == 1.0
          ecrit = 0.000001
 
@@ -10876,6 +11347,38 @@
           IF suma > ecrit
              CALL FORM_NEW_VECS
              CALL NORM_NEW_VECS
+#bgn_debug
+#
+# Copy Ca/Cb to Ca_new and Cb_new
+#
+#      DO mu
+#      DO i
+#         Txi(mu,i) = Ca(mu,i)
+#         Ca_new(mu,i) = Txi(mu,i)
+#      ENDDO i
+#      ENDDO mu
+#
+#      DO mu
+#      DO a
+#         Txa(mu,a) = Ca(mu,a)
+#         Ca_new(mu,a) = Txa(mu,a)
+#      ENDDO a
+#      ENDDO mu
+#
+#      DO mu
+#      DO j
+#         Txj(mu,j) = Cb(mu,j)
+#         Cb_new(mu,j) = Txj(mu,j)
+#      ENDDO j
+#      ENDDO mu
+#
+#      DO mu
+#      DO b
+#         Txb(mu,b) = Cb(mu,b)
+#         Cb_new(mu,b) = Txb(mu,b)
+#      ENDDO b
+#      ENDDO mu
+#end_debug
              CALL TRAN_UHF
              CALL FORM_DENS
              CALL BUILT_NEW_AO_FOCK
@@ -10899,11 +11402,8 @@
        DELETE Upq_b
 
        EXECUTE SERVER_BARRIER
+
       ENDDO BITER
-#
-      totenerg  = ecorrT  
-      totenerg += scfeneg  
-      execute print_rel_info seven pinf
 #
 # Write amplitudes to file
 # ------------------------
