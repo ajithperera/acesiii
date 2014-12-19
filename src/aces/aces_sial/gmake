@@ -1,0 +1,20 @@
+rm -f make.out make.err
+../../../bin/sial ccsd/bccsd_rhf_ao_sv1_diis5.sial && cp ccsd/bccsd_rhf_ao_sv1_diis5.sio ../../../bin/sio
+input  file: ccsd/bccsd_rhf_ao_sv1_diis5.sial
+output file: ccsd/bccsd_rhf_ao_sv1_diis5.sio
+ 
+line 5008, call: index can not be found.
+
+line 5009, call: index can not be found.
+
+line 5089, call: index can not be found.
+
+line 5280, call: index can not be found.
+
+line 5282, call: index can not be found.
+
+line 5283, call: index can not be found.
+===========================================================
+=           errors found.                                 =
+=           please correct it before go to the next step. =
+===========================================================

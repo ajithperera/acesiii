@@ -12,7 +12,7 @@
 #
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
-                           SIAL CCSD_RHF_SV1
+                           SIAL BCCSD_RHF_SV1
 #
 #-------------------------------------------------------------------------------
 #
@@ -24,6 +24,10 @@
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
+      index   atoms  = 1, natoms 
+#      index biter    = 1, cc_iter
+      index biter    = 1, 2
+  
 #
       aoindex mu     = 1, norb 
       aoindex nu     = 1, norb
@@ -135,7 +139,7 @@
 # Declare temporary arrays 
 # ------------------------ 
 #
-      temp Txxxi(mu,nu,lambda,i)
+#      temp Txxxi(mu,nu,lambda,i)
       temp Txxxj(mu,nu,lambda,j)
       temp T1xixi(mu,i,nu,i1)
       temp Txiix(mu,i,i1,nu)
@@ -453,6 +457,132 @@
      distributed Wminj_aa(i2,i,i3,i1) 
      distributed Wminj_bb(j2,j,j3,j1) 
      distributed Wminj_ab(i2,i,j3,j1) 
+
+# B-CCSD related definitions.
+ 
+     temp Txa(mu,a)
+     temp Txat(mu,a)
+     temp Txb(mu,b)
+     temp Tix(i,mu)
+     temp Tixt(i,mu)
+     temp Txit(mu,i)
+     temp Tax(a,mu)
+     temp Tpq_a(p,p1)
+     temp Tpqt_a(p,p1)
+     temp Tpq(mu,nu)
+     temp tpp(a,a1)
+     temp t1pp(i,i1)
+     temp t3ai(a,i)
+     temp Txpt(mu,p)
+     temp Txp(mu,p)
+     temp Txx(mu,nu)
+     temp T1xx(mu,nu)
+
+     static Ca_new(mu,p)
+     static Fpqa(p,p1)
+     static DFock_a(p,p1)
+     static DFock_b(p,p1)
+     static FSpqa_ae(a,a1)
+     static FSpqa_mi(i,i1)
+     static Cpq_a(p,p1)
+
+     distributed Ca_int(mu,p)
+     distributed Ca_new_int(mu,p)
+     distributed Upqt_a(p,p1)
+     distributed Upq_a(p,p1)
+     distributed Fpq_a(mu,nu)
+     distributed Fpq_b(mu,nu)
+     distributed Ovlp(mu,nu)
+
+     distributed Fpqa_ae(a,a1)
+     distributed Fpqa_me(i,a)
+     distributed Fpqa_mi(i,i1)
+     distributed Denai(a,i)
+
+     Static FMO_a(p,p1)
+
+     static Fpqa_noD_ae(a,a1)
+     static Fpqa_noD_mi(i,i1)
+     static Spq_a(p,p1)
+
+     distributed Spq_a_int(p,p1)
+     distributed DHF_aa(mu,nu)
+     distributed DHF_bb(mu,nu)
+
+     scalar enhfa
+     scalar ecorrnha
+     scalar enhfb
+     scalar ecorrnhb
+     scalar energy
+     scalar SD_energy
+     scalar nrepulsion
+     scalar BIT_COUNT
+     scalar CC_CYCLE
+     scalar vnn
+     scalar rank
+     scalar convg
+
+#B-CCSD debuggin
+     Temp Tpxt(p,mu)
+     distributed OVC_T(p,mu)
+     distributed OVC(p,p1)
+     temp Tppt(p,p1)
+     temp Tpp1(p,p1)
+     scalar tmp
+     scalar suma
+
+# In place transformation
+
+     served Vxxxi(mu,nu,lambda,i)
+     served Vxixi(mu,i1,lambda,i)
+     served Vxxii(mu,nu,i1,i)
+     served Vixxi(i1,nu,lambda,i)
+     served Vxipi(mu,i,p,i1)
+#     served VSpipi(p1,i,p,i1)
+     served Vixai(i,mu,a,i1)
+     served Vxaii(mu,a,i,i1)
+#     served Viaai(i,a1,a,i1)
+#     served Vaaii(a,a1,i,i1)
+     served Vxaai(mu,a1,a,i)
+     served Vxxai(mu,nu,a,i)
+     served VSaaai(a2,a,a1,i)
+
+     served Vxxxj(mu,nu,lambda,j)
+     served Vxjxj(mu,j1,lambda,j)
+     served Vxxjj(mu,nu,j1,j)
+     served Vjxxj(j1,nu,lambda,j)
+     served Vxjqj(mu,j,q,j1)
+     served VSqjqj(q1,j,q,j1)
+     served Vjxbj(j,mu,b,j1)
+     served Vxbjj(mu,b,j,j1)
+     served Vjbbj(j,b1,b,j1)
+     served Vbbjj(b,b1,j,j1)
+     served Vxbbj(mu,b1,b,j)
+     served Vxxbj(mu,nu,b,j)
+     served VSbbbj(b2,b,b1,j)
+
+     served Vxbii(mu,b,i,i1)
+     served Vbbii(b,b1,i,i1)
+     served Vjbii(j,b,i,i1)
+     served Vxbai(mu,b,a,i)
+
+     served Vxixj(mu,i,nu,j)
+     served Vxiqj(mu,i,q,j)
+#     served Vpiqj(p,i,q,j)
+     served Vxajj(mu,a,j,j1)
+     served Vaajj(a,a1,j,j1)
+     served Vxabj(mu,a,b,j)
+     served Vxxij(mu,nu,i,j)
+     served Vixxj(i,mu,nu,j)
+     served Vixbj(i,mu,b,j)
+     served Viabj(i,a,b,j)
+
+     local Lxaai(mu,a1,a,i)
+     local Lxxai(mu,nu,a,i)
+     local Txxxi(mu,nu,lambda,i)
+     temp T1xxxi(mu,nu,lambda,i)
+     temp T1xaai(mu,a1,a,i)
+     temp T1xipi(mu,i,p,i1)
 #
 # Declare scalars 
 # --------------- 
@@ -714,8 +844,31 @@
 #    ------------------------------------------------------------------------ 
 # 
      ENDPROC IGUESS_UHF 
-# 
-#    ------------------------------------------------------------------------ 
+#    ------------------
+
+    PROC IBGUESS_UHF
+#   -----------------
+
+     PARDO a, b, i, j
+#
+           REQUEST  T2old_ab(a,i,b,j) j
+#
+           Taibj(a,i,b,j)          = T2old_ab(a,i,b,j)
+           PREPARE D0aibj(a,i,b,j) = Taibj(a,i,b,j)
+#
+     ENDPARDO a, b, i, j
+#
+
+     PARDO a, i
+#
+        GET t1a_old(a,i)
+        tai(a,i)      = t1a_old(a,i)
+        PUT D0ai(a,i) = tai(a,i)
+#
+     ENDPARDO a, i
+
+    ENDPROC IBGUESS_UHF
+#   -------------------
 #
       PROC TAUAA 
 #     ----------
@@ -846,6 +999,27 @@
 #
       PROC FAEA
 #     ----------
+
+      PARDO a,a1
+           Taa(a,a1)         = Fpqa_noD_ae(a,a1)
+           PUT Fae_a(a,a1)   = Taa(a,a1)
+      ENDPARDO a, a1
+
+      PARDO a,a1
+            Taa(a,a1) = 0.0
+
+            DO i
+               GET T1a_old(a,i)
+               GET Fpqa_me(i,a1)
+
+               Tai(a,i)    = T1a_old(a,i)
+               T1aa(a,a1)  = Tai(a,i) * Fpqa_me(i,a1)
+               Taa(a,a1)  += T1aa(a,a1)
+               Taa(a,a1)  *= -0.5
+            ENDDO i
+
+           PUT Fae_a(a,a1)  += Taa(a,a1)
+      ENDPARDO a,a1
 #
       PARDO a, a2, i
 #     
@@ -1015,6 +1189,12 @@
       PROC FMEA
 #     ----------
 #
+      PARDO i,a
+          GET  Fpqa_me(i,a)
+          Tia(i,a)        = Fpqa_me(i,a)
+          PUT Fme_a(i,a)  = Tia(i,a)
+      ENDPARDO i,a
+
       PARDO i, a 
 #
             Tme_a(i,a) = 0.0
@@ -1057,6 +1237,26 @@
       PROC FMIA
 #     ----------
 #
+      PARDO i1,i
+            Tii(i1,i)        = Fpqa_noD_mi(i1,i)
+            PUT Fmi_a(i1,i)  = Tii(i1,i)
+      ENDPARDO i1,i
+
+      PARDO i1,i
+            Tii(i1,i) = 0.0
+            DO a
+               GET T1a_old(a,i)
+               GET Fpqa_me(i1,a)
+
+               T1ii(i1,i) = T1a_old(a,i) * Fpqa_me(i1,a)
+               Tii(i1,i) += T1ii(i1,i)
+            ENDDO a
+
+            Tii(i1,i)*= 0.5
+            PUT Fmi_a(i1,i)  += Tii(i1,i)
+
+      ENDPARDO i1,i
+
       PARDO i1, i, a, i2
 #
             REQUEST VSpipi(a,i2,i,i1) i1  
@@ -1319,6 +1519,13 @@
             deallocate L1iibj(*,i1,b,j)
 #
       ENDPARDO b, j, i1
+
+      PARDO a, i
+           GET Fpqa_me(i,a)
+           tai(a,i)          = Fpqa_me(i,a)
+           tia(i,a)          = tai(a,i)
+           PUT t1a_new(a,i) += tai(a,i)
+      ENDPARDO a, i
 #
       ENDPROC T1ANEW 
 #     --------------
@@ -4134,152 +4341,972 @@
 
 #    endproc do_checkpoint
 
+    PROC TRAN_TRAN2
+#
+#    ------------------------------------------------------------------------
+#
+     PARDO mu, nu, lambda
+#
+          allocate Txxxi(mu,nu,lambda,*)
+#
+          DO sigma
+#
+             compute_integrals            aoint(mu,nu,lambda,sigma)
+#
+             DO i
+#
+                 T1xxxi(mu,nu,lambda,i)  = aoint(mu,nu,lambda,sigma)*ca(sigma,i)
+                 Txxxi(mu,nu,lambda,i)  += T1xxxi(mu,nu,lambda,i)
+#
+             ENDDO i
+#
+          ENDDO sigma
+
+          DO i
+             T1xxxi(mu,nu,lambda,i)         = Txxxi(mu,nu,lambda,i)
+             PREPARE Vxxxi(mu,nu,lambda,i)  = T1xxxi(mu,nu,lambda,i)
+
+           DO i1
+#
+              Txxii(mu,nu,i1,i)          = Txxxi(mu,nu,lambda,i)*ca(lambda,i1)
+              PREPARE Vxxii(mu,nu,i1,i) += Txxii(mu,nu,i1,i)
+              Txixi(mu,i1,lambda,i)      = Txxxi(mu,nu,lambda,i)*ca(nu,i1)
+              PREPARE Vxixi(mu,i1,lambda,i) += Txixi(mu,i1,lambda,i)
+              Tixxi(i1,nu,lambda,i)      = Txxxi(mu,nu,lambda,i)*ca(mu,i1)
+              PREPARE Vixxi(i1,nu,lambda,i) += Tixxi(i1,nu,lambda,i)
+#
+           ENDDO i1
+           ENDDO i
+#
+          deallocate Txxxi(mu,nu,lambda,*)
+#
+     ENDPARDO mu, nu, lambda
+     execute server_barrier
+     execute server_barrier
+#
+#    ------------------------------------------------------------------------
+#
+     PARDO mu, nu, i
+#
+        ALLOCATE Lxxai(mu,nu,*,i)
+#
+        DO lambda
+           REQUEST Vxxxi(mu,nu,lambda,i) i
+
+           DO a
+              Txxai(mu,nu,a,i) = Vxxxi(mu,nu,lambda,i)*ca(lambda,a)
+              Lxxai(mu,nu,a,i) += Txxai(mu,nu,a,i)
+           ENDDO a
+
+        ENDDO lambda
+#
+        DO a
+           PREPARE Vxxai(mu,nu,a,i) = Lxxai(mu,nu,a,i)
+        ENDDO a
+
+        DEALLOCATE Lxxai(mu,nu,*,i)
+#
+     ENDPARDO mu, nu, i
+#
+#    ------------------------------------------------------------------------
+#
+     execute server_barrier
+     destroy Vxxxi
+#
+#    ------------------------------------------------------------------------
+#
+     ENDPROC TRAN_TRAN2
+#
+#    ------------------------------------------------------------------------
+#
+#    ------------------------------------------------------------------------
+#
+#    Perform the third N5 stage of the transformation.
+#
+     PROC TRAN_TRAN3
+#
+#    ------------------------------------------------------------------------
+#
+     PARDO mu, i, p, i1
+           Txipi(mu,i,p,i1)          = 0.0
+           PREPARE Vxipi(mu,i,p,i1)  = Txipi(mu,i,p,i1)
+     ENDPARDO mu, i,p, i1
+
+     PARDO mu, a ,p, i1
+           Txaii(mu,a,i,i1)          = 0.0
+           Tixai(i,mu,a,i1)          = 0.0
+           PREPARE Vxaii(mu,a,i,i1)  = Txaii(mu,a,i,i1)
+           PREPARE Vixai(i,mu,a,i1)  = Tixai(i,mu,a,i1)
+     ENDPARDO mu, a ,p, i1
+
+     EXECUTE SERVER_BARRIER
+
+     PARDO mu, nu, i, i1
+#
+           REQUEST Vxixi(mu,i,nu,i1) i1
+           REQUEST Vxxii(mu,nu,i,i1) i1
+           REQUEST Vixxi(i,mu,nu,i1) i1
+#
+           DO p
+#
+              Txipi(mu,i,p,i1)          = Vxixi(mu,i,nu,i1)*ca(nu,p)
+              PREPARE Vxipi(mu,i,p,i1) += Txipi(mu,i,p,i1)
+#
+           ENDDO p
+#
+           DO a
+#
+              Txaii(mu,a,i,i1)          = Vxxii(mu,nu,i,i1)*ca(nu,a)
+              Tixai(i,mu,a,i1)          = Vixxi(i,mu,nu,i1)*ca(nu,a)
+#
+              PREPARE Vxaii(mu,a,i,i1) += Txaii(mu,a,i,i1)
+              PREPARE Vixai(i,mu,a,i1) += Tixai(i,mu,a,i1)
+#
+           ENDDO a
+#
+     ENDPARDO mu, nu, i, i1
+#
+#    ------------------------------------------------------------------------
+#
+     PARDO mu, a, i
+#
+        ALLOCATE Lxaai(mu,*,a,i)
+
+        DO nu
+           REQUEST Vxxai(mu,nu,a,i) i
+#
+           DO a1
+#
+              T1xaai(mu,a1,a,i)          = Vxxai(mu,nu,a,i)*ca(nu,a1)
+              Lxaai(mu,a1,a,i) += T1xaai(mu,a1,a,i)
+#
+           ENDDO a1
+        ENDDO nu
+#
+        DO a1
+           PREPARE Vxaai(mu,a1,a,i) = Lxaai(mu,a1,a,i)
+        ENDDO a1
+
+        DEALLOCATE Lxaai(mu,*,a,i)
+     ENDPARDO mu, a, i
+#
+#    ------------------------------------------------------------------------
+#
+     execute server_barrier
+     destroy Vxxai
+#
+     ENDPROC TRAN_TRAN3
+#
+#    ------------------------------------------------------------------------
+#
+#    ------------------------------------------------------------------------
+#
+     PROC TRAN_TRAN4
+#
+#    ------------------------------------------------------------------------
+#
+     PARDO p, p1, i, i1
+           Tpipi(p1,i,p,i1)          = 0.0
+           PREPARE Vpiqj(p1,i,p,i1)  = Tpipi(p1,i,p,i1)
+           PREPARE VSpipi(p1,i,p,i1) = Tpipi(p1,i,p,i1)
+     ENDPARDO p, p1, i, i1
+
+     PARDO a1, a, i, i1
+           Taaii(a1,a,i,i1)          = 0.0
+           PREPARE Vaaii(a1,a,i,i1)  = Taaii(a1,a,i,i1)
+           PREPARE Viaai(i,a1,a,i1)  = Tiaai(i,a1,a,i1)
+     ENDPARDO a1, a, i, i1
+
+     PARDO a, a1, a2, i
+           T1aaai(a1,a,a2,i)          = 0.0
+           PREPARE VSaaai(a2,a,a1,i)  = T1aaai(a2,a,a1,i)
+     ENDPARDO a, a1, a2, i
+
+     EXECUTE SERVER_BARRIER
+
+     PARDO mu, p, i, i1
+#
+           REQUEST             Vxipi(mu,i,p,i1) i1
+           REQUEST             Vxipi(mu,i1,p,i) i
+           Txipi(mu,i,p,i1)  = Vxipi(mu,i,p,i1)
+           T1xipi(mu,i,p,i1) = Vxipi(mu,i1,p,i)
+           Txipi(mu,i,p,i1) -= T1xipi(mu,i,p,i1)
+#
+           DO p1
+#
+              Tpipi(p1,i,p,i1)          = Vxipi(mu,i,p,i1)*ca(mu,p1)
+              PREPARE Vpiqj(p1,i,p,i1) += Tpipi(p1,i,p,i1)
+#
+           ENDDO p1
+#
+           DO p1
+#
+              Tpipi(p1,i,p,i1)           = Txipi(mu,i,p,i1)*ca(mu,p1)
+              PREPARE VSpipi(p1,i,p,i1) += Tpipi(p1,i,p,i1)
+#
+           ENDDO p1
+#
+     ENDPARDO mu, p, i, i1
+#
+     PARDO mu, a, i, i1
+           REQUEST Vxaii(mu,a,i,i1) i1
+           REQUEST Vixai(i,mu,a,i1) i1
+#
+           DO a1
+#
+              Taaii(a1,a,i,i1)          = Vxaii(mu,a,i,i1)*ca(mu,a1)
+              PREPARE Vaaii(a1,a,i,i1) += Taaii(a1,a,i,i1)
+#
+           ENDDO a1
+#
+           DO a1
+#
+              Tiaai(i,a1,a,i1)          = Vixai(i,mu,a,i1)*ca(mu,a1)
+              PREPARE Viaai(i,a1,a,i1) += Tiaai(i,a1,a,i1)
+#
+           ENDDO a1
+#
+     ENDPARDO mu, a, i, i1
+#
+     PARDO a, a1, i
+#
+        ALLOCATE Laaai(*,a,a1,i)
+
+        DO mu
+           REQUEST Vxaai(mu,a,a1,i) i
+#
+           DO a2
+#
+              T1aaai(a2,a,a1,i)          = Vxaai(mu,a,a1,i)*ca(mu,a2)
+              Laaai(a2,a,a1,i)          += T1aaai(a2,a,a1,i)
+#
+           ENDDO a2
+        ENDDO mu
+#
+        DO a2
+           T1aaai(a1,a,a2,i)          = Laaai(a2,a,a1,i)
+           PREPARE VSaaai(a2,a,a1,i)  = Laaai(a2,a,a1,i)
+          #T1aaai(a1,a,a2,i)         *= -1.0
+          #PREPARE VSaaai(a1,a,a2,i) += T1aaai(a1,a,a2,i)
+        ENDDO a2
+
+        DEALLOCATE Laaai(*,a,a1,i)
+
+     ENDPARDO a, a1, i
+#
+#    ------------------------------------------------------------------------
+#
+     ENDPROC TRAN_TRAN4
+#
+#    ------------------------------------------------------------------------
+#
+#    ------------------------------------------------------------------------
+#
+     PROC TRAN_RHF
+#
+         CALL TRAN_TRAN2     # --> performs the first two stages of the
+                             #     two-electron integral transformation.
+         CALL TRAN_TRAN3     # --> performs the third stage
+                             #     two-electron integral transformation.
+         CALL TRAN_TRAN4     # --> performs the fourth stage of the
+                             #     two-electron integral transformation.
+#
+     ENDPROC TRAN_RHF
+# --------------------------------------------------------------------------
+
      PROC FORM_NEW_VECS
 #    ------------------
-# Generate the MO basis MO vectors.
-#     
-     CREATE Ca_MO_OO
-     CREATE Ca_MO_VV
-     CREATE Ca_MO_VO
-     CREATE Ca_MO_OV
-     CREATE Cb_MO_OO
-     CREATE Cb_MO_VV
-     CREATE Cb_MO_VO
-     CREATE Cb_MO_OV
+#
+# Do the T1 rotations of MO vectors (OO and VV) blocks
+#
+     PARDO a, mu
 
-     PARDO mu 
         DO i
-        DO i1
+           GET T1a_old(a,i)
+           Txa(mu,a)  = T1a_old(a,i) * Ca_new(mu,i)
+           Txa(mu,a) *= -1.0
+           Txa(mu,a) += Ca_new(mu,a)
+           PUT Ca_int(mu,a) += Txa(mu,a)
+         ENDDO i
 
-         Tii(i,i1) = Ca(mu,i) * Ca(mu, i1)
-         PUT Ca_MO_OO(i,i1) += Tii(i,i1)
-         
-        ENDDO i1
-        ENDDO i
-     ENDPARDO mu
+     ENDPARDO a, mu
 
-     PARDO mu 
-        DO j
-        DO j1
+     PARDO i, mu
 
-         Tjj(j,j1) = Cb(mu,j) * Cb(mu, j1)
-         PUT Cb_MO_OO(i,i1) += Tjj(j,j1)
-         
-        ENDDO j1
-        ENDDO j
-     PARDO mu
+        DO a
+           GET T1a_old(a,i)
+           Txi(mu,i)  = T1a_old(a,i) * Ca_new(mu,a)
+           Txi(mu,i) += Ca_new(mu,i)
+           PUT Ca_int(mu,i) += Txi(mu,i)
+        ENDDO a
 
-     PARDO mu, a, a1
+     ENDPARDO i, mu
 
-         Taa(a,a1) = Ca(mu,a) * Ca(mu, a1)
-         PUT Ca_MO_VV(a,a1) += Taa(a,a1)
+#bgn_debug
+       suma=0
+       do mu
+       do a
+         get Ca_int(mu,a)
+         tmp = Ca_int(mu,a) * Ca_int(mu,a)
+         suma += tmp
+       enddo a
+       enddo mu
+       do mu
+       do i
+         get Ca_int(mu,i)
+         tmp = Ca_int(mu,i) * Ca_int(mu,i)
+         suma += tmp
+       enddo i
+       enddo mu
+       execute print_scalar suma
+#end_debug
+     execute sip_barrier
 
-     ENDPARDO mu, a, a1
+     ENDPROC FORM_NEW_VECS
+#    ---------------------
 
-     PARDO mu, b, b1
+     PROC NORM_NEW_VECS
+#    ------------------
+# Alpha spin
+#
+       PARDO lambda, nu
+          GET OVLP(lambda,nu)
+          DO i
+             GET Ca_int(lambda,i)
+             Tix(i,nu) = Ca_int(lambda,i) * OVLP(lambda,nu)
+           DO i1
+             GET Ca_int(nu,i1)
+             Tii(i,i1) = Tix(i,nu) * Ca_int(nu,i1)
+             PUT Spq_a_int(i,i1) += Tii(i,i1)
+          ENDDO i1
+          ENDDO i
 
-         Tbb(b,b1) = Cb(mu,b) * Cb(mu, b1)
-         PUT Cb_MO_VV(b,b1) += Tbb(b,b1)
+       ENDPARDO lambda, nu
+#
+       PARDO lambda, nu
+          GET OVLP(lambda,nu)
+          DO i
+             GET Ca_int(lambda,i)
+             Tix(i,nu) = Ca_int(lambda,i) * OVLP(lambda,nu)
+           DO a
+             GET Ca_int(nu,a)
+             Tia(i,a) = Tix(i,nu) * Ca_int(nu,a)
+             PUT spq_a_int(i,a) += Tia(i,a)
+             Tai(a,i)    = Tia(i,a)
+             PUT Spq_a_int(a,i) += Tai(a,i)
+          ENDDO a
+          ENDDO i
 
-     ENDPARDO mu, b, b1
+       ENDPARDO lambda, nu
+#
+       PARDO lambda, nu
+          GET OVLP(lambda,nu)
+          DO a
+             GET Ca_int(lambda,a)
+             Tax(a,nu) = Ca_int(lambda,a) * OVLP(lambda,nu)
+           DO a1
+             GET Ca_int(nu,a1)
+             Taa(a,a1) = Tax(a,nu) * Ca_int(nu,a1)
+             PUT Spq_a_int(a,a1) += Taa(a,a1)
+          ENDDO a1
+          ENDDO a
 
-     PARDO mu, a
-        DO i
+       ENDPARDO  lambda, nu
 
-         Tia(i,a) = Ca(mu,i) * Ca(mu, a)
-         Tai(a,i) = Tia(i,a)
-         PUT Ca_MO_OV(i,a) += Tia(i,a)
-         PUT Ca_MO_VO(a,i) += Tai(a,i)
-         
-        ENDDO i
-     ENDPARDO mu, a
+       execute sip_barrier
 
-     PARDO mu, b
-        DO j
+       DO p
+       DO p1
+          GET Spq_a_int(p,p1)
+          Tppt(p,p1)  = Spq_a_int(p,p1)
+          Spq_a(p,p1) = Tppt(p,p1)
+       ENDDO p1
+       ENDDO p
 
-         Tjb(j,b) = Cb(mu,j) * Ca(mu, b)
-         Tbj(b,j) = Tjb(j,b))
-         PUT Cb_MO_OV(j,b) += Tjb(j,b)
-         PUT Cb_MO_VO(b,j) += Tbj(b,j)
+# initialize the the Cpq_{a} arrays reserved for the diagonals.
 
-        ENDDO j
-     ENDPARDO mu, b
+       DO p
+       DO p1
+          Tppt(p,p1) = 0.0
+          Cpq_a(p,p1) = Tppt(p,p1)
+       ENDDO p1
+       ENDDO p
+
+#bgn_debug
+      suma=0
+      do p
+      do p1
+         tmp = Spq_a(p,p1) * Spq_a(p,p1)
+         suma += tmp
+      enddo p1
+      enddo p
+      execute print_scalar suma
+#end_debug
+
+       execute eig_sr_inv Spq_a Cpq_a
+       execute sip_barrier
+
+#bgn_debug
+       if rank == 0.0
+       suma=0
+       do p
+       do p1
+          tmp = Cpq_a(p,p1) * Cpq_a(p,p1)
+        suma += tmp
+       enddo p1
+       enddo p
+       execute print_scalar suma
+       suma=0
+       do p
+       do p1
+         tmp = Spq_a(p,p1) * Spq_a(p,p1)
+         suma += tmp
+       enddo p1
+       enddo p
+       execute print_scalar suma
+       endif
+#end_debug
+
+# Do the symmetric orthogonalization.
+
+      PARDO p, p1
+          DO p2
+             Tpqt_a(p,p1)      = Cpq_a(p,p2) * Spq_a(p2,p1)
+             PUT Upqt_a(p,p1) += Tpqt_a(p,p1)
+          ENDDO p2
+       ENDPARDO p, p1
+
+       execute sip_barrier
+
+       PARDO p, p1
+          DO p2
+             GET Upqt_a(p,p2)
+             Tpqt_a(p,p1)     =  Upqt_a(p,p2) * Cpq_a(p1,p2)
+             PUT Upq_a(p,p1) += Tpqt_a(p,p1)
+          ENDDO p2
+       ENDPARDO p, p1
+
+       execute sip_barrier
+
+#bgn_debug
+       if rank == 0.0
+       suma = 0.0
+       DO p
+       DO p1
+           GET Upq_a(p,p1)
+           execute dump_amp  Upq_a(p,p1)
+           tmp =  Upq_a(p,p1) *  Upq_a(p,p1)
+           suma += tmp
+       ENDDO p1
+       ENDDO p
+       execute print_scalar suma
+       endif
+#end_debug
+
+# Transform the MO vectors to orthogonal basis.
+
+     PARDO p, mu
+          Txp(mu,p) = 0.0
+        DO p1
+           GET Upq_a(p1,p)
+           GET Ca_int(mu,p1)
+           Txpt(mu,p) = Ca_int(mu,p1) *  Upq_a(p1,p)
+           Txp(mu,p) += Txpt(mu,p)
+        ENDDO p1
+           PUT Ca_new_int(mu,p) = Txp(mu,p)
+     ENDPARDO p, mu
 
      execute sip_barrier
 
-# Do the T1 rotations of MO vectors (OO and VV) blocks
+     DO mu
+     DO p
+        GET Ca_new_int(mu,p)
+        Txp(mu,p) = Ca_new_int(mu,p)
+        Ca_new(mu,p) = Txp(mu,p)
+     ENDDO p
+     ENDDO mu
 
-     PARDO a, i1
-           GET T1old_ai(a,i1)
+    ENDPROC NORM_NEW_VECS
+#    ---------------------
 
-        DO i
-           GET Ca_MO_OO(i,i1)
-           Tai(a,i1)  = T1old_ai(a,i) * Ca_MO_OO(i,i1)
-           PUT Ca_new_VO(a,i1) += Tai(a,i1)
+      PROC FORM_MO_FOCK
+#     -----------------
+      PARDO i, i1
+            Tii(i,i1) = 0.0
+            PUT Fpqa_mi(i,i1) = Tii(i,i1)
+      ENDPARDO i, i1
 
-         ENDDO i
+      PARDO i, a
+            Tia(i,a) = 0.0
+            PUT Fpqa_me(i,a) = Tia(i,a)
+      ENDPARDO i, a
 
-         DO a1
-              GET Ca_MO_OV(i1,a1)
-              Taa(a,a1) = T1old_ai(a,i1) * Ca_MO_OV(i1,a1)
-              PUT Ca_new_VV(a,a1) += Taa(a,a1)
+      PARDO a, a1
+            Taa(a,a1) = 0.0
+            PUT Fpqa_ae(a,a1) = Taa(a,a1)
+      ENDPARDO a, a1
 
-         ENDDO a1
-     ENDPARD a, i1
+      execute sip_barrier
 
-     PARDO a, i
+      PARDO mu, nu
+            get Fpq_a(mu,nu)
+            do i
+                Tix(i,nu) = Fpq_a(mu,nu)*Ca_new(mu,i)
+                do i1
+                   Tii(i,i1) = Tix(i,nu)*Ca_new(nu,i1)
+                   PUT Fpqa_mi(i,i1) += Tii(i,i1)
+                enddo i1
+            enddo i
+      ENDPARDO mu,nu
 
-        GET T1old_ai(a,i)
+      PARDO mu,nu
+            GET Fpq_a(mu,nu)
+            do i
+               Tix(i,nu) = Fpq_a(mu,nu)*Ca_new(mu,i)
+                do a
+                   Tia(i,a)  = Tix(i,nu)*Ca_new(nu,a)
+                   PUT Fpqa_me(i,a) += Tia(i,a)
+               enddo a
+            enddo i
+       ENDPARDO mu,nu
 
-        DO a1
-           GET Ca_MO_VV(a,a1)
-           Tia(i,a1) =  Ca_MO_VV(a,a1) * T1old_ai(a,i)
-           PUT Ca_new_OV(i,a1) += Tia(i,a1)
+       PARDO mu,nu
+            GET Fpq_a(mu,nu)
+            do a
+               Txa(nu,a) = Fpq_a(mu,nu)*Ca_new(mu,a)
+                do a1
+                   Taa(a,a1)  = Txa(nu,a)*Ca_new(nu,a1)
+                   PUT Fpqa_ae(a,a1) += Taa(a,a1)
+               enddo a1
+            enddo a
+       ENDPARDO mu,nu
+       execute print_scalar one
 
-        ENDDO a1
- 
-        DO i1
-           GET Ca_MO_VO(a,i1)
-           Tii(i,i1) = T1old_ai(a,i) * Ca_MO_VO(a,i1)
-           PUT Ca_new_OO(i,i1) += Tii(i,i1)
-          
-        ENDDO i1
-     ENDPARDO a, i
+#bgn_debug
+       esuma = 0.0
+       esumb = 0.0
+       if rank == 0.0
+       do i
+       do i1
+          get Fpqa_mi(i,i1)
+#          execute dump_amp Fpqa_mi(i,i1)
+          etemp = Fpqa_mi(i,i1) * Fpqa_mi(i,i1)
+          esuma += etemp
+       enddo i1
+       enddo i
+       do a
+       do a1
+          get Fpqa_ae(a,a1)
+          etemp = Fpqa_ae(a,a1) * Fpqa_ae(a,a1)
+          esuma += etemp
+       enddo a1
+       enddo a
+       do a
+       do i
+          get Fpqa_me(i,a)
+          etemp = Fpqa_me(i,a) *  Fpqa_me(i,a)
+          esuma += etemp
+          esuma += etemp
+       enddo i
+       enddo a
+       execute print_scalar esuma
+       endif
+#end_debug
 
-     PARDO b, j1
-        DO j
+       DO i
+       DO i1
+          GET  Fpqa_mi(i,i1)
+          FMO_a(i,i1) = Fpqa_mi(i,i1)
+       ENDDO i1
+       ENDDO i
 
-           GET T1old_bj(b,j1)
-           GET Cb_MO_OO(j,j1)
-           Tbj(b,j1)  = T1old_bj(b,j) * Cb_MO_OO(j,j1)
-           PUT Cb_new_VO(b,j1) += Tbj(b,j1)
+       DO a
+       DO a1
+          GET Fpqa_ae(a,a1)
+          FMO_a(a,a1) = Fpqa_ae(a,a1)
+       ENDDO a1
+       ENDDO a
 
-        ENDDO j
-      
+# initialize the the two static arrays reserved for the diagonals.
 
-     PARDO b, b1
-        DO j 
+       DO p
+       DO p1
+          Tppt(p,p1) = 0.0
+          Dfock_a(p,p1) = Tppt(p,p1)
+          Dfock_b(p,p1) = Tppt(p,p1)
+       ENDDO p1
+       ENDDO p
 
-           GET T1old_bj(b,j)
-           GET Cb_MO_vO(b1,j)
-           Tbb(b,b1)  = T1old_bj(b,j) * Cb_MO_VO(b1,j)
-           PUT Cb_new_VV(b,b1) += Tbb(b,b1)
+       execute sip_barrier
+       execute return_diagonal FMO_a DFock_a
+       execute return_diagonal FMO_a DFock_b
 
-        ENDDO j
-     ENDPARD b, b1
+#bgn_debug
+       esuma = 0.0
+       esumb = 0.0
+       if rank == 0.0
+       do p
+       do p1
+#          execute dump_amp DFock_a(p,p1)
+          etemp = FMO_a(p,p1) * FMO_a(p,p1)
+          esuma += etemp
+       enddo p1
+       enddo p
+       endif 
+#end_debug
 
+# Copy the diagonal elements of the new Fock matrix to epsilon
+# common blocks.
 
+      execute init_fockdiags DFock_a  DFock_b
 
-         
-     PROC FORM_NEW_VECS
-#    ------------------
+      execute sip_barrier
+      PARDO a, i
+             DO a1
+                if a == a1
+             DO i1
+                if i == i1
 
-# ---------------------------------------------------------------------------------
+                   tpp(a,a1)    = DFock_a(a,a1)
+                   tpp(a,a1)   *= -1.0
+
+                   t1pp(i,i1)   = DFock_a(i,i1)
+
+                   t2ai(a1,i)  = 1.0
+                   T1ai(a,i)   = tpp(a,a1)* t2ai(a1,i)
+
+                   t2ai(a,i1)  = 1.0
+                   T3ai(a,i)   = t2ai(a,i1)*t1pp(i,i1)
+
+                   Tai(a,i)     = T1ai(a,i)
+                   Tai(a,i)    += T3ai(a,i)
+
+                   PUT Denai(a,i) = Tai(a,i)
+
+                endif
+             ENDDO i1
+                endif
+             ENDDO a1
+       ENDPARDO a, i
+
+#Remove diagonals from the OO and VV block of the Fock matrices.
+
+       PARDO i, i1
+          GET Fpqa_mi(i,i1)
+          Tii(i,i1) = Fpqa_mi(i,i1)
+          FSpqa_mi(i,i1) = Tii(i,i1)
+       ENDPARDO i, i1
+
+       PARDO a, a1
+          GET Fpqa_ae(a,a1)
+          Taa(a,a1) = Fpqa_ae(a,a1)
+          FSpqa_ae(a,a1) = Taa(a,a1)
+       ENDPARDO a, a1
+
+       DO i
+       DO i1
+          Tii(i,i1) = 0.0
+          Fpqa_noD_mi(i,i1) = Tii(i,i1)
+       ENDDO i1
+       ENDDO i
+
+       DO a
+       DO a1
+          Taa(a,a1) = 0.0
+          Fpqa_noD_ae(a,a1) = Taa(a,a1)
+       ENDDO a1
+       ENDDO a
+
+       execute sip_barrier
+
+       EXECUTE REMOVE_DIAGONAL FSpqa_mi Fpqa_noD_mi
+       EXECUTE REMOVE_DIAGONAL FSpqa_ae Fpqa_noD_ae
+
+      ENDPROC FORM_MO_FOCK
+#     ---------------------
+
+      PROC FORM_DENS
+#     --------------
+
+      PARDO mu, nu
+            Tpq(mu,nu)  = 0.0
+            PUT DHF_aa(mu,nu) = Tpq(mu,nu)
+            PUT DHF_bb(mu,nu) = Tpq(mu,nu)
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+      PARDO mu, nu, i
 #
-# ---------------------------------------------------------------------------------
-# 
-# BEGIN MAIN PROGRAM 
-# ------------------ 
+            Txi(nu,i)       = ca_new(nu,i)
+            Tpq(mu,nu)      = ca_new(mu,i)*Txi(nu,i)
+            PUT DHF_aa(mu,nu) +=Tpq(mu,nu)
+            PUT DHF_bb(mu,nu) +=Tpq(mu,nu)
+#
+      ENDPARDO mu, nu, i
+#
+      execute sip_barrier
+
+      DO mu
+      DO nu
+         GET              DHF_aa(mu,nu)
+         oed_ovl(mu,nu) = DHF_aa(mu,nu)
+         oed_kin(mu,nu) = DHF_bb(mu,nu)
+      ENDDO nu
+      ENDDO mu
+
+     ENDPROC FORM_DENS
+#    -----------------
+
+       PROC BUILT_NEW_AO_FOCK
+#      ----------------------
+#
+#      The complete Fock matrix is constructed. Eight fold symmetry of the
+#      two-electron integrals is incorporated.
+#      ------------------------------------------------------------------
+#
+#      Put the density into local arrays
+#      ---------------------------------
+#
+#      Initialize the Fock matrix to the bare 1-electron hamiltonian.
+#      --------------------------------------------------------------
+#
+       execute sip_barrier
+       DO mu
+       DO nu
+#
+          Txx(mu,nu)        = 0.0
+          Fockrohf_a(mu,nu) = Txx(mu,nu)
+          Fockrohf_b(mu,nu) = Txx(mu,nu)
+       ENDDO nu
+       ENDDO mu
+
+       execute sip_barrier
+#
+#      Add contributions containing two-particle integral contributions.
+#      -----------------------------------------------------------------
+#
+############# CLASS 6  ############
+##  Do four-center part (mu nu |la si)->(mu nu |si la ),(nu mu|la si),(nu mu|si la)
+##                      (la si |mu nu),(si la |mu nu),(la si |nu mu),(si la |nu mu)
+##
+        PARDO mu, nu, lambda, sigma
+##
+                 WHERE mu      < nu
+                 WHERE lambda  < sigma
+                 WHERE mu     < lambda
+                 WHERE nu     != sigma
+                 WHERE nu     != lambda
+                 WHERE mu     != sigma
+##
+                    execute compute_ubatch1 aoint(mu,nu,lambda,sigma)
+##
+        ENDPARDO mu, nu, lambda, sigma
+##
+#
+############ CLASS 3  ############
+#  Do two-center part (mu mu |mu nu)->(mu nu |mu mu ),(mu mu|nu mu),(nu mu|mu mu)
+#  Do three-center part (mu mu |nu lambda)->(mu mu |lambda nu ),(nu lambda|mu mu),(lambda nu|mu mu)
+#
+       PARDO mu, nu, lambda, sigma
+#
+          WHERE mu == nu
+          WHERE lambda  < sigma
+#
+                execute compute_ubatch2 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+############ CLASS 5  ############
+###################  CLASS A ##############
+#  Do three-center part (mu nu |mu la)->(mu nu |la mu ),(nu mu|mu la),(nu mu|la mu)
+#                       (mu la |mu nu),(la mu |mu nu ),(mu la |nu mu),(la mu |nu mu)
+#
+#
+       PARDO mu, nu, lambda, sigma
+                WHERE nu < sigma
+                WHERE mu < nu
+                WHERE lambda < sigma
+                WHERE mu==lambda
+#
+                   execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+
+###################  CLASS B ##############
+#  Do three-center part (mu nu |mu la)->(mu nu |la mu ),(nu mu|mu la),(nu mu|la mu)
+#                       (mu la |mu nu),(la mu |mu nu ),(mu la |nu mu),(la mu |nu mu)
+#
+      PARDO mu, nu, lambda, sigma
+                WHERE mu < nu
+                WHERE lambda < sigma
+                WHERE mu < sigma
+                WHERE nu == lambda
+#
+                   execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+#
+###################  CLASS C ##############
+#  Do three-center part (mu nu |mu la)->(mu nu |la mu ),(nu mu|mu la),(nu mu|la mu)
+#                       (mu la |mu nu),(la mu |mu nu ),(mu la |nu mu),(la mu |nu mu)
+#
+       PARDO mu, nu, lambda, sigma
+                WHERE mu < nu
+                WHERE lambda < sigma
+                WHERE mu < lambda
+                WHERE nu == sigma
+#
+                   execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+############ CLASS 4  ############
+#  Do two-center part (mu nu |mu nu)->(mu nu |nu mu ),(nu mu|mu nu),(nu mu|nu mu)
+#
+       PARDO mu, nu, lambda, sigma
+                WHERE mu < nu
+                WHERE lambda < sigma
+                WHERE nu == sigma
+                WHERE mu == lambda
+#
+                   execute compute_ubatch8 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+#
+############ CLASS 2  ############
+#  Do two-center part (mu mu |nu nu)->(nu nu |mu mu )
+#
+       PARDO mu, nu, lambda, sigma
+#
+             WHERE mu < lambda
+             WHERE mu == nu
+             WHERE lambda == sigma
+#
+                   execute compute_ubatch7 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+############ END CLASS 2  ############
+#
+#
+############ CLASS 1  ############
+#  Do one-center part (mu mu |mu mu)
+#
+       PARDO mu, nu, lambda, sigma
+             WHERE nu == mu
+             WHERE sigma == mu
+             WHERE lambda == mu
+#
+                   execute compute_ubatch6 aoint(mu,nu,lambda,sigma)
+#
+       ENDPARDO mu, nu, lambda, sigma
+#
+       execute sip_barrier
+#     
+       DO mu
+       DO nu
+#
+          Txx(mu,nu)        = Fockrohf_a(mu,nu)
+          PUT Fpq_a(mu,nu) += Txx(mu,nu)
+#     
+       ENDDO nu
+       ENDDO mu
+#
+       DO mu
+       DO nu
+#
+          Txx(mu,nu)        = Fockrohf_b(mu,nu)
+          PUT Fpq_b(mu,nu) += Txx(mu,nu)
+#     
+       ENDDO nu
+       ENDDO mu
+
+       execute sip_barrier
+
+       execute get_my_rank rank
+       if rank == 0.0
+       DO mu   
+       DO nu  
+#
+            #Txx(mu,nu)        = oed_nai(mu,nu)
+            #Txx(mu,nu)       += oed_kin(mu,nu)
+            Txx(mu,nu) = 0.0
+            execute return_h1 txx
+#
+             PUT Fpq_a(mu,nu) += Txx(mu,nu)
+             PUT Fpq_b(mu,nu) += Txx(mu,nu)
+#
+       ENDDO nu  
+       ENDDO mu   
+       endif
+#
+       ENDPROC BUILT_NEW_AO_FOCK
+#      -------------------------
+
+       PROC HF_ENERGY
+#      --------------
+#
+#      The HF energy is computed from the HF density (DHFa(b)) and the
+#      Fock matrix (Fpq_a(b)).
+#      ---------------------------------------------------------------
+#
+       energy = 0.0
+       esum = 0.0
+
+       execute get_my_rank rank
+       if rank == 0.0
+
+          DO mu
+          DO nu
+#
+             GET Fpq_a(mu,nu)
+             GET Fpq_b(mu,nu)
+             GET DHF_aa(mu,nu)
+             GET DHF_bb(mu,nu)
+#
+             Txx(mu,nu)   = 0.0
+             execute return_h1 txx
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_a(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHF_aa(mu,nu)
+             esum        += etemp
+#
+             T1xx(mu,nu)  = Txx(mu,nu)
+             T1xx(mu,nu) += Fpq_b(mu,nu)
+#
+             etemp        = T1xx(mu,nu)*DHF_bb(mu,nu)
+             esum        += etemp
+#
+          ENDDO nu
+          ENDDO mu
+
+       endif
+
+       execute sip_barrier
+
+       esum *= 0.5
+       collective sd_energy += esum
+
+       Vnn = 0.0
+       DO atoms
+         VNN += 1.0
+       ENDDO atoms
+
+       execute v_nuc_nuc vnn
+       sd_energy += vnn
+#
+       execute print_scalar  vnn
+       execute print_scalar sd_energy
+#
+       ENDPROC HF_ENERGY
+#      -----------------
+
+#  Main program 
+# --------------
 #
       ecrit = cc_conv  
       one = 1.0
@@ -4308,80 +5335,135 @@
       CREATE e3ai
       CREATE e4ai
       CREATE e5ai
+
+      CREATE Fpq_a
+      CREATE DHF_aa
+
+      CREATE Fpqa_mi
+      CREATE Fpqa_ae
+      CREATE Fpqa_me
+      CREATE Denai
+      CREATE OVLP
 #
-      EXECUTE SIP_BARRIER  
+# Copy Ca to Ca_new 
+#
+      DO mu
+      DO i
+         Txi(mu,i) = Ca(mu,i)
+         Ca_new(mu,i) = Txi(mu,i)
+      ENDDO i
+      ENDDO mu
+
+      DO mu
+      DO a
+         Txa(mu,a) = Ca(mu,a)
+         Ca_new(mu,a) = Txa(mu,a)
+      ENDDO a
+      ENDDO mu
+
+# Save the befor the BUILT_NEW_AO_FOCK is called.
+
+      PARDO mu, nu
+           Txx(mu,nu)      = OED_OVL(mu,nu)
+           PUT OVLP(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu, nu
+
+      execute sip_barrier
+
+      CALL TRAN_RHF
+      CALL FORM_DENS
+      CALL BUILT_NEW_AO_FOCK
+      CALL HF_ENERGY
+      CALL FORM_MO_FOCK
+#
+#      EXECUTE SIP_BARRIER  
 #
 # Get initial second-order guess 
 # ------------------------------ 
-      CALL IGUESS_UHF
-      EXECUTE SIP_BARRIER  
-      EXECUTE SERVER_BARRIER  
+#      CALL IGUESS_UHF
+#      EXECUTE SIP_BARRIER  
+#      EXECUTE SERVER_BARRIER  
 #
-      PARDO a, i, b, j 
-            REQUEST                     T2old_ab(a,i,b,j) a 
-            REQUEST                     T2old_ab(a,j,b,i) a 
-            taiai(a,i,b,j)            = T2old_ab(a,i,b,j) 
-            t1aiai(a,i,b,j)           = T2old_ab(a,j,b,i) 
-            taiai(a,i,b,j)           -= t1aiai(a,i,b,j) 
-            PREPARE T2old_aa(a,i,b,j) = taiai(a,i,b,j) 
-      ENDPARDO a, i, b, j 
+#      PARDO a, i, b, j 
+#            REQUEST                     T2old_ab(a,i,b,j) a 
+#            REQUEST                     T2old_ab(a,j,b,i) a 
+#            taiai(a,i,b,j)            = T2old_ab(a,i,b,j) 
+#            t1aiai(a,i,b,j)           = T2old_ab(a,j,b,i) 
+#            taiai(a,i,b,j)           -= t1aiai(a,i,b,j) 
+#            PREPARE T2old_aa(a,i,b,j) = taiai(a,i,b,j) 
+#      ENDPARDO a, i, b, j 
 #
-      EXECUTE SERVER_BARRIER  
+#      EXECUTE SERVER_BARRIER  
 #
 # Calculate the second-order energy 
 # --------------------------------- 
-      CALL ENERGY_NEW 
-
-      do kiter
-      do kptr1
-         etemp = 0.0
-         pinf(kiter,kptr1)  = etemp
-      enddo kptr1
-      enddo kiter
-
-        do jiter
-           ncount2 = 0.0
-         DO kptr1
-            ncount2 += 1.0
-            if ncount2 == two
-               etemp              = ecorrab
-               etemp             += scfeneg
-               tpinf(jiter,kptr1) = etemp
-               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
-            endif
-         ENDDO kptr1
-        enddo jiter
-
-        do jiter
-           ncount2 = 0.0
-         DO kptr1
-            ncount2 += 1.0
-            if ncount2 == one
-               tpinf(jiter,kptr1) = ecorrab
-               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
-            endif
-         ENDDO kptr1
-        enddo jiter
-
-        execute print_rel_info six pinf
-
-      do kiter
-      do kptr1
-         etemp = 0.0
-         pinf(kiter,kptr1)  = etemp
-      enddo kptr1
-      enddo kiter
-# Start Brueckner iterations. 
-
-      DO BITER 
-
-         CALL BUILD_FOCK
+#      CALL ENERGY_NEW 
 #
-# Start CC iterations
+#      do kiter
+#      do kptr1
+#         etemp = 0.0
+#         pinf(kiter,kptr1)  = etemp
+#      enddo kptr1
+#      enddo kiter
+#
+#        do jiter
+#           ncount2 = 0.0
+#         DO kptr1
+#            ncount2 += 1.0
+#            if ncount2 == two
+#               etemp              = ecorrab
+#               etemp             += scfeneg
+#               tpinf(jiter,kptr1) = etemp
+#               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
+#            endif
+#         ENDDO kptr1
+#        enddo jiter
+#
+#        do jiter
+#           ncount2 = 0.0
+#         DO kptr1
+#            ncount2 += 1.0
+#            if ncount2 == one
+#               tpinf(jiter,kptr1) = ecorrab
+#               pinf(jiter,kptr1)  = tpinf(jiter,kptr1)
+#            endif
+#         ENDDO kptr1
+#        enddo jiter
+#
+#        execute print_rel_info six pinf
+#
+#      do kiter
+#      do kptr1
+#         etemp = 0.0
+#         pinf(kiter,kptr1)  = etemp
+#      enddo kptr1
+#      enddo kiter
+#
+# Start iterations
 # ---------------- 
-      DO KITER 
 
-      EXECUTE SERVER_BARRIER  
+      BIT_COUNT = 0.0
+
+      DO BITER
+
+      BIT_COUNT += 1.0
+
+      CALL T2NEW_ZERO
+
+      IF BIT_COUNT == 1.0
+         CALL IGUESS_UHF
+      ELSE
+         CALL IBGUESS_UHF
+      ENDIF
+
+      EXECUTE SERVER_BARRIER
+#
+      CC_CYCLE = 0.0
+      CALL ENERGY_NEW
+
+# The standard CC iterations starts here
+
+      DO KITER 
 #
       PARDO a, i, b, j 
             REQUEST                     T2old_ab(a,i,b,j) a 
@@ -4391,7 +5473,7 @@
             taiai(a,i,b,j)           -= t1aiai(a,i,b,j) 
             PREPARE T2old_aa(a,i,b,j) = taiai(a,i,b,j) 
       ENDPARDO a, i, b, j 
-#
+ 
       EXECUTE SERVER_BARRIER  
 #
 #        Form Tau and Taup 
@@ -4504,21 +5586,19 @@
 #        Check on convergence 
 #        -------------------- 
 #
-         CONVG = 0.0
-
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
-               exit # kiter 
                CONVG = 1.0
+               exit # kiter 
             ENDIF
          ENDIF   
 #
          IF ecorrT > eold 
             ediff = ecorrT - eold  
             IF ediff < ecrit 
-               exit # kiter 
                CONVG = 1.0
+               exit # kiter 
             ENDIF
          ENDIF   
 #
@@ -4532,8 +5612,21 @@
          #endif
 #
       ENDDO KITER 
+#
+      execute sip_barrier 
+      totenerg  = ecorrT  
+      totenerg += sd_energy
+      execute print_rel_info seven pinf 
 
       IF CONVG == 1.0
+         ecrit = 0.000001
+
+         CREATE Ca_int
+         CREATE Spq_a_int
+         CREATE Ca_new_int
+         CREATE Upqt_a
+         CREATE Upq_a
+         execute sip_barrier
 
 # Check the norm of the T1 vector
 
@@ -4546,33 +5639,31 @@
          ENDDO i
          ENDDO a
 
-         DO b
-         DO j
-            GET T1b_old(b,j)
-            tmp  = T1b_old(b,j) * T1b_old(b,j)
-            suma += tmp
-          ENDDO j
-          ENDDO b
+         execute print_scalar suma
 
-          IF suma > ecrit 
-            
-             CALL FORM_NEW_VECS
-             CALL NORM_NEW_VECS
-             CALL FORM_NEW_MOINTS
-          ELES
-   
+         IF suma > ecrit
+            CALL FORM_NEW_VECS
+            CALL NORM_NEW_VECS
+            CALL TRAN_RHF
+            CALL FORM_DENS
+            CALL BUILT_NEW_AO_FOCK
+            CALL HF_ENERGY
+            CALL FORM_MO_FOCK
+          ELSE
               execute print_scalar one
-          ENDIF 
-             
+          ENDIF
+
+       ENDIF
+
+       DELETE Ca_int
+       DELETE Spq_a_int
+       DELETE Ca_new_int
+       DELETE Upqt_a
+       DELETE Upq_a
+
+       EXECUTE SERVER_BARRIER
 
       ENDDO BITER
-    
-#
-      execute sip_barrier 
-      totenerg  = ecorrT  
-      totenerg += scfeneg  
-     #execute print_scalar totenerg  
-      execute print_rel_info seven pinf 
 #
 # Write amplitudes to file
 # ------------------------
@@ -4608,7 +5699,7 @@
       execute write_blocks_to_list
       execute sip_barrier
 #
-                           ENDSIAL CCSD_RHF_SV1    
+                           ENDSIAL BCCSD_RHF_SV1    
 #
 # EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 
 #

@@ -23,7 +23,7 @@
 # T2NEW    --> DONE  
 # WAEBF    --> DONE  
 # WMINJ    --> DONE  
-# WMEBJ    --> ALMOST DONE  
+# inWMEBJ    --> ALMOST DONE  
 # T2AAS2   --> ALMOST DONE  #
 # BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 #
@@ -510,8 +510,6 @@
      temp Tpqt_a(p,p1)
      temp Tpqt_b(q,q1)
      temp Tpq(mu,nu)
-     temp Tijij(i,j,i1,j1)
-     temp Tabab(a,b,a1,b1)
      temp tpp(a,a1)
      temp t1pp(i,i1)
      temp t3ai(a,i)
