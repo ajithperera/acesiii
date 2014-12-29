@@ -437,6 +437,36 @@
       temp tdd(d1,d2) 
       temp t1dd(d1,d2) 
       local BB(kdiis,kdiis) 
+
+# Variables for dynamic damping
+
+      DISTRIBUTED DHFA_M(mu,nu)
+      DISTRIBUTED DHFB_M(mu,nu)
+      DISTRIBUTED FpqA_M(mu,nu)
+      DISTRIBUTED FpqB_M(mu,nu)
+      DISTRIBUTED DHFa_DMP(mu,nu)
+      DISTRIBUTED DHFb_DMP(mu,nu)
+
+      Temp TXX_a(mu,nu)
+      Temp TXX_b(mu,nu)
+
+      scalar e1m_tmp 
+      scalar e1p_tmp 
+      scalar e2m11_tmp 
+      scalar e2p11_tmp 
+      scalar e2p12_tmp 
+      scalar e1m
+      scalar e1p
+      scalar e211m
+      scalar e211p
+      scalar e212
+      scalar damp_denom
+      scalar damp_numra
+      scalar X
+      scalar MX
+      scalar D_damp
+      scalar Max_D_diff 
+      scalar D_damp_thres
 #
 # ---------------------------------------------------------------------------- 
 #
@@ -3099,11 +3129,199 @@
             CALL DIISN_A 
            #CALL DIISN_B 
        ENDPROC DIISN 
+#      -------------
 #
-# ---------------------------------------------------------------------------- 
+       PROC APPLY_DYNAMIC_DAMP
+#      -----------------------
+
+# First SCF iteration, simply save the density and Fock matrix. 
+
+         IF PCOUNT == 1.0
+
+            DO mu
+            DO nu
+               GET  DHFa(mu,nu)
+               GET  DHFb(mu,nu)
+               GET  Fpq_a(mu,nu)
+               GET  Fpq_b(mu,nu)
+
+               PUT DHFA_M(mu,nu) = DHFa(mu,nu) 
+               PUT DHFB_M(mu,nu) = DHFb(mu,nu) 
+
+               PUT FpqA_M(mu,nu) = Fpq_a(mu,nu) 
+               PUT DHFB_M(mu,nu) = Fpq_b(mu,nu) 
+               
+            ENDDO nu
+            ENDDO mu
+
+         ELSE 
+
+            execute get_my_rank rank
+            IF rank == 0.0
+
+            DO mu
+            DO nu
+
+# The Density and the Fock matrix of previous iteration
+
+               GET DHFA_M(mu,nu) 
+               GET DHFB_M(mu,nu) 
+               GET FpqA_M(mu,nu) 
+               GET DHFB_M(mu,nu)
+
+# The Density and the Fock matrix of current iteration
+
+               GET Fpq_a(mu,nu)
+               GET Fpq_b(mu,nu)
+               GET DHFa(mu,nu)
+               GET DHFb(mu,nu)
 #
-#  
-# ---------------------------------------------------------------------------- 
+               Txx(mu,nu)   = 0.0
+               execute return_h1 txx
+#
+               T1xx(mu,nu)  = Txx(mu,nu)
+
+               etemp        = T1xx(mu,nu)*DHFa_M(mu,nu)
+               e1m_tmp      += etemp
+               etemp        = T1xx(mu,nu)*DHFb_M(mu,nu)
+               e1m_tmp      += etemp
+
+               etemp        = T1xx(mu,nu)*DHFa(mu,nu)
+               e1p_tmp      += etemp
+               etemp        = T1xx(mu,nu)*DHFb(mu,nu)
+               e1p_tmp      += etemp
+
+               T1xx(mu,nu)  = Fpqa_M(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFa_M(mu,nu)
+               e2m11_tmp   += etemp
+               T1xx(mu,nu)  = Fpqb_M(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFb_M(mu,nu)
+               e2m11_tmp   += etemp
+               e2m11_tmp   *= 0.5
+
+               T1xx(mu,nu)  = Fpq_a(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFa(mu,nu)
+               e2p11_tmp   += etemp
+               T1xx(mu,nu)  = Fpq_b(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFb(mu,nu)
+               e2p11_tmp   += etemp
+               e2p11_tmp   *= 0.5
+
+               T1xx(mu,nu)  = Fpqa_M(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFa(mu,nu)
+               e2p12_tmp   += etemp
+               T1xx(mu,nu)  = Fpqb_M(mu,nu)
+               etemp        = T1xx(mu,nu)*DHFb(mu,nu)
+               e2p12_tmp   += etemp
+               e2p12_tmp   *= 0.5
+
+#
+           ENDDO nu
+           ENDDO mu
+
+           ENDIF 
+
+      ENDIF 
+      execute sip_barrier
+
+      collective e1m   += e1m_tmp
+      collective e1p   += e1p_tmp
+      collective e211m += e2m11_tmp
+      collective e211p += e2p11_tmp
+      collective e212  += e2p12_tmp
+
+      execute sip_barrier
+      
+      e211m *= 2.0
+      e211p *= 2.0
+      e212  *= 4.0
+
+      damp_denom  = e1m
+      damp_denom -= e1p
+      damp_denom += e212
+      damp_denom -= e211m
+
+      damp_numra  = e212 
+      damp_numra -= e211m
+      damp_numra -= e211p
+      damp_numra  = 1.0/damp_numra
+
+      X   = damp_denom 
+      X  *= damp_numra
+      
+      damp_numra *= -1.0
+      IF damp_numra > 0.0
+         X = 1.0
+      ELSE
+
+      MX  = 1.0
+      MX -= X
+
+#  Finally, the damped density.
+
+      DO mu
+      DO nu
+
+         TXX_a(mu,nu) = 0.0
+         TXX_b(mu,nu) = 0.0
+
+         GET DHFA_M(mu,nu) 
+         GET DHFB_M(mu,nu) 
+
+         GET DHFa(mu,nu)
+         GET DHFb(mu,nu)
+         
+         Txx(mu,nu)    = DHFa(mu,nu)
+         Txx(mu,nu)   *= X
+         T1xx(mu,nu)   = DHFa_M(mu,nu)
+         T1xx(mu,nu)  *= MX
+         TXX_a(mu,nu) += T1xx(mu,nu)
+
+         Txx(mu,nu)    = DHFb(mu,nu)
+         Txx(mu,nu)   *= X
+         T1xx(mu,nu)   = DHFb_M(mu,nu)
+         T1xx(mu,nu)  *= MX
+         TXX_b(mu,nu) += Txx(mu,nu)
+        
+         PUT DHFa_DMP(mu,nu) = TXX_a(mu,nu)
+         PUT DHFb_DMP(mu,nu) = TXX_b(mu,nu)
+      ENDDO nu
+      ENDDO mu
+      execute sip_barrier
+
+      ENDIF
+
+# Copy the Damped density to curret density arrays and update the density 
+# and Fock matrices of the previous iteration. 
+
+
+      DO mu
+      DO nu
+         GET DHFa_DMP(mu,nu) 
+         GET DHFb_DMP(mu,nu) 
+
+         GET Fpq_a(mu,nu) 
+         GET Fpq_b(mu,nu) 
+        
+         TXX(mu,nu) = DHFa_DMP(mu,nu)
+         PUT DHFa(mu,nu) = TXX(mu,nu)
+         PUT DHFa_M(mu,nu) = TXX(mu,nu)
+
+         TXX(mu,nu) = DHFb_DMP(mu,nu)
+         PUT DHFb(mu,nu) = TXX(mu,nu)
+         PUT DHFb_M(mu,nu) = TXX(mu,nu)
+
+         TXX(mu,nu) = Fpq_a(mu,nu)
+         PUT Fpqa_M(mu,nu) = TXX(mu,nu)
+         TXX(mu,nu) = Fpq_b(mu,nu)
+         PUT FPqb_M(mu,nu) = TXX(mu,nu)
+
+      ENDDO nu
+      ENDDO mu
+
+      ENDPROC APPLY_DYNAMIC_DAMP
+#     --------------------------
+#
 #
 ############################################################################## 
 #
@@ -3409,13 +3627,68 @@
 
          CALL FOCK_MATRIX_FAST   
          execute sip_barrier 
+        
+# DO the dynamic damping (CPL, 67, 348, 1979). Test the density difference
+# is above a predermined threshold and the number of iterations less than a
+# preset values. Then only do the dynamic damping. After the denisty 
+# difference is below the threshold, start DIIS. 
+
+         D_DAMP = 0.0
+         DO mu
+         DO nu
 #
+#           Alpha component
+#           ---------------
+#
+            GET           DHFa_old(mu,nu)
+            GET           DHFa(mu,nu)
+#
+            Txx(mu,nu)  = DHFa(mu,nu)
+            Txx(mu,nu) -= DHFa_old(mu,nu)
+            execute check_dconf Txx donea 
+#
+#           Beta component
+#           --------------
+#
+            GET           DHFb_old(mu,nu)
+            GET           DHFb(mu,nu)
+#
+            Txx(mu,nu)  = DHFb(mu,nu)
+            Txx(mu,nu) -= DHFb_old(mu,nu)
+            execute check_dconf Txx doneb 
+         ENDDO nu
+         ENDDO mu
+
+         IF DONEA >= DONEB
+            MAX_D_Diff = DONEA
+         ENDIF 
+
+         IF DONEB > DONEA
+            MAX_D_Diff = DONEB
+         ENDIF
+
+         IF PCOUNT < 8.0
+            IF MAX_D_Diff >= D_DAMP_THRES
+               CALL APPLY_DYNAMIC_DAMP
+               D_DAMP = 1.0
+            ENDIF
+         ENDIF 
+         execute sip_barrier 
+#
+# Set up the DIIS start when the dynamic damping stops.
+#
+         IF D_DAMP == 0.0
+            DIIS_START = PCOUNT
+          ENDIF 
+   
          CALL HF_ENERGY 
          energy2 = energy 
          execute sip_barrier
 #
-#        Compute the DIIS  
-#        ------------------ 
+#        Compute the DIIS when dynamic damping is finished.
+#        -------------------------------------------------
+
+         If D_DAMP == 0.0 
 
          if diis_count < diis_end 
 
@@ -3467,6 +3740,7 @@
          endif 
 
          endif # diis_end 
+         endif # dynamic damping 
 #
          execute sip_barrier
 #

@@ -579,6 +579,7 @@
      scalar BIT_COUNT
      scalar CC_CYCLE
      scalar vnn
+     scalar bcc_tol
 
 #B-CCSD debuggin
      Temp Tpxt(p,mu)
@@ -10848,6 +10849,9 @@
 # ------------------
 #
       ecrit = 0.001
+      bcc_tol = bcc_conv
+      execute print_scalar bcc_tol
+
       one = 1.0
       two = 2.0
       five  = 5.0

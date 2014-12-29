@@ -37,6 +37,10 @@
       aoindex nu     = 1, norb
       aoindex lambda = 1, norb
       aoindex sigma  = 1, norb
+      index   jatom  = 1, natoms 
+      index   xyz    = 1,3
+      index   xyz1   = 1,3
+
 #
       moaindex i = baocc, eaocc
       moaindex i1= baocc, eaocc
@@ -330,8 +334,32 @@
      local Lxxaj(mu,nu,a1,j) 
      local Lxxbj(mu,nu,b2,j) 
      local Lxxbi(mu,nu,b,i) 
-#
-#    ------------------------------------------------------------------------
+
+# The dipole moments for IR intensities, Ajith 05/2014.
+
+     distributed Hx(mu,nu)
+     distributed Hy(mu,nu)
+     distributed Hz(mu,nu)
+     static DIPOLE_MOMS(XYZ,XYZ)
+
+     scalar  tmpnuc
+     scalar  dipnucx
+     scalar  dipnucy
+     scalar  dipnucz
+     scalar  one
+     scalar  two
+     scalar  three
+
+     scalar XX
+     scalar YY
+     scalar ZZ
+     scalar AXX
+     scalar AYY
+     scalar AZZ
+     scalar Px
+     scalar Py
+     scalar Pz
+     scalar PRINT_FLAG
 #
 # Declare temporary arrays
 # ------------------------
@@ -5618,6 +5646,81 @@
 #
       ENDPROC PDCONT 
 #     -------------- 
+
+      PROC GET_XYZ_DIPOLE
+#     -------------------
+      CREATE HX
+      CREATE HY
+      CREATE HZ
+      execute sip_barrier
+
+      PARDO mu, nu
+         EXECUTE return_x Tpq(mu,nu)
+         PUT  Hx(mu,nu) = Tpq(mu,nu)
+
+         EXECUTE return_y Tpq(mu,nu)
+         PUT  Hy(mu,nu) = Tpq(mu,nu)
+
+         EXECUTE return_z Tpq(mu,nu)
+         PUT  Hz(mu,nu) = Tpq(mu,nu)
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+      ENDPROC GET_XYZ_DiPOLE
+#     ----------------------
+
+      PROC CMP_DIPOLEMS
+#    ------------------
+# Finally contract with the derivative integrals
+# ----------------------------------------------
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Px =0.0
+      Py =0.0
+      Pz =0.0
+
+      PARDO mu, nu
+
+         GET DpqA(mu,nu)
+         GET DpqB(mu,nu)
+         GET DHFA(mu,nu)
+         GET DHFB(mu,nu)
+
+         GET Hx(mu,nu)
+         GET Hy(mu,nu)
+         GET Hz(mu,nu)
+
+         Tpq(mu,nu)  = DHFA(mu,nu)
+         Tpq(mu,nu) += DHFA(mu,nu)
+         Tpq(mu,nu) += DpqA(mu,nu)
+         Tpq(mu,nu) += DpqB(mu,nu)
+
+         XX   = Tpq(mu,nu)*Hx(mu,nu)
+         Axx += XX
+
+         YY  = Tpq(mu,nu)*Hy(mu,nu)
+         Ayy += YY
+
+         ZZ  = Tpq(mu,nu)*Hz(mu,nu)
+         Azz += ZZ
+      ENDPARDO mu, nu
+
+      execute sip_barrier
+      collective Px +=Axx
+      execute print_scalar Px
+
+      collective Py +=Ayy
+      execute print_scalar Py
+
+      collective Pz +=Azz
+      execute print_scalar Pz
+
+      ENDPROC CMP_DIPOLEMS
+#     --------------------
 #
       PROC S2DIJ 
 #
@@ -5962,6 +6065,68 @@
 # ------------------------------------------- 
          CALL D1TRANS
          execute sip_barrier 
+
+         one   = 1.0
+         two   = 2.0
+         three = 3.0
+
+         CALL GET_XYZ_DIPOLE
+         CALL CMP_DIPOLEMS
+
+         tmpnuc = 0.0
+         DO jatom
+            tmpnuc = tmpnuc + 1.0
+         ENDDO jatom
+
+         dipnucx = tmpnuc
+         dipnucy = dipnucx
+         dipnucz = dipnucy
+
+         EXECUTE  NUC_DIPOLE_MOMENT  ONE    dipnucx
+         EXECUTE  NUC_DIPOLE_MOMENT  TWO    dipnucy
+         EXECUTE  NUC_DIPOLE_MOMENT  THREE  dipnucz
+
+         Px *= -1.0
+         Py *= -1.0
+         Pz *= -1.0
+         Px += dipnucx
+         Py += dipnucy
+         Pz += dipnucz
+
+         EXECUTE  PRINT_SCALAR  PX
+         EXECUTE  PRINT_SCALAR  PY
+         EXECUTE  PRINT_SCALAR  PZ
+
+         DO XYZ
+            IF XYZ == 1
+               DO XYZ1
+                  IF XYZ1  == 1
+                     DIPOLE_MOMS(XYZ,XYZ1) = PX
+                  ENDIF
+               ENDDO XYZ1
+            ENDIF
+
+            IF XYZ == 2
+               DO XYZ1
+                  IF XYZ1  == 2
+                     DIPOLE_MOMS(XYZ,XYZ1) = PY
+                  ENDIF
+               ENDDO XYZ1
+            ENDIF
+
+            IF XYZ == 3
+               DO XYZ1
+                  IF XYZ1  == 3
+                     DIPOLE_MOMS(XYZ,XYZ1) = PZ
+                  ENDIF
+               ENDDO XYZ1
+            ENDIF
+
+         ENDDO XYZ
+
+         PRINT_FLAG = 717.0
+         EXECUTE PRINT_REL_INFO  PRINT_FLAG DIPOLE_MOMS
+#
 #
 # Finally contract with the integral derivatives to get the contribution 
 # to the gradient. 
