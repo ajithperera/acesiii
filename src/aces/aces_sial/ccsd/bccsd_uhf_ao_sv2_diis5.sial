@@ -32,8 +32,8 @@
 #
       index kiter    = 1, cc_iter   
       index jiter    = 1, cc_iter
-#      index biter    = 1, cc_iter
-      index biter    = 1, 2
+      index biter    = 1, cc_iter
+#      index biter    = 1, 5
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
@@ -580,6 +580,21 @@
      scalar CC_CYCLE
      scalar vnn
      scalar bcc_tol
+     scalar cc_tol
+     scalar mtwo
+     scalar mtwo_ten
+     scalar bcc_maxcyc
+     scalar cc_maxcyc
+     scalar t1amax
+     scalar t1bmax
+     scalar t1max 
+     scalar t1sqr
+     scalar t1max_old
+     scalar t1max_def
+     scalar rel_t1_chng
+     scalar ptone
+     scalar recip_t1max
+     scalar relax_bcc_tol
 
 #B-CCSD debuggin
      Temp Tpxt(p,mu)
@@ -5449,8 +5464,11 @@
      ecorrT += ecorrnhb
     
     execute print_scalar ecorrT  
+    totenerg  = ecorrT
+    totenerg += sd_energy
+    execute print_scalar totenerg
 
-     if kiter > 0
+    if kiter > 0
             ncount1 = 0.0
          DO kptr1
             ncount1 = ncount1 + 1.0
@@ -5466,6 +5484,7 @@
             if ncount1 == two
                etemp = ecorrT
                etemp+= sd_energy
+               execute print_scalar etemp
                tpinf(kiter,kptr1) = etemp
                pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
             endif
@@ -10844,19 +10863,97 @@
 #
        ENDPROC HF_ENERGY
 #      -----------------
+
+       PROC GET_T1_STATS
+#      -----------------
+         suma = 0.0
+         sumb = 0.0
+
+         DO a
+         DO i
+            GET T1a_old(a,i)
+            Tai(a,i) = T1a_old(a,i)
+            tmp  = T1a_old(a,i) * T1a_old(a,i)
+            suma += tmp
+            EXECUTE CHECK_DCONF Tai T1AMAX
+         ENDDO i
+         ENDDO a
+
+         DO b
+         DO j
+            GET T1b_old(b,j)
+            Tbj(b,j) = T1b_old(b,j)
+            tmp  = T1b_old(b,j) * T1b_old(b,j)
+            sumb += tmp
+            EXECUTE CHECK_DCONF Tbj T1BMAX
+          ENDDO j
+          ENDDO b
+          execute print_scalar T1AMAX
+          execute print_scalar T1BMAX
+
+          IF T1AMAX >= T1BMAX
+             T1MAX = T1AMAX
+          ELSE
+             T1MAX = T1BMAX
+          ENDIF
+        
+          IF SUMA >= SUMB
+             T1SQR = SUMA
+          ELSE
+             T1SQR = SUMB
+          ENDIF 
+
+          IF CC_CYCLE == 1.0
+             T1MAX_OLD = T1MAX
+          ELSE
+             T1MAX_DEF    = T1MAX
+             T1MAX_DEF   -= T1MAX_OLD
+             T1MAX_OLD    = T1MAX
+             RECIP_T1MAX  = 1.0 / T1MAX
+             REL_T1_CHNG  = T1MAX_DEF
+             REL_T1_CHNG *= RECIP_T1MAX
+          ENDIF 
+
+          execute print_scalar T1MAX
+          execute print_scalar REL_T1_CHNG
+          execute print_scalar T1SQR
+
+       ENDPROC GET_T1_STATS
+#      -----------------
 #
 # BEGIN MAIN PROGRAM
 # ------------------
 #
-      ecrit = 0.001
+      cc_tol  = cc_conv
       bcc_tol = bcc_conv
+      ecrit   = cc_conv
+      ptone   = 0.01
+      
+      relax_bcc_tol  = bcc_tol
+      relax_bcc_tol *= 100.00
+
       execute print_scalar bcc_tol
+
+# For Brueckner iterations set the initial CC convergence tolerance
+# to Brueckner tollernace. As the iterations procceeds, the CC 
+# tolarence will get decreased until it reach the desired value.
+      
+      bcc_maxcyc = 0.0
+      cc_maxcyc  = 0.0
+
+      do kiter 
+         bcc_maxcyc += 1.0
+         cc_maxcyc  += 1.0
+      enddo kiter
 
       one = 1.0
       two = 2.0
-      five  = 5.0
-      six   = 6.0
-      seven = 7.0
+
+      mtwo      = -2.0
+      mtwo_ten  = -20.0
+      five      = 5.0
+      six       = 6.0
+      seven     = 7.0
 #
 # create transformed integrals from lists
 # -------------------------------------
@@ -11281,6 +11378,22 @@
 #        Check on convergence 
 #        -------------------- 
 #
+# For Breuckner iterations, lets also look at the maximum changes of
+# the largest T1 amplitude. This logic can be used to lessen the 
+# convegence requiremnts of CC iteration at the initial cycles. Here
+# RELAX_BCC_TOL is 100 times the Breuckner tolerane.
+
+         CALL GET_T1_STATS 
+
+#         IF CC_CYCLE > 2.0
+            IF REL_T1_CHNG < PTONE
+               IF T1MAX >= RELAX_BCC_TOL
+                  CONVG = 1.0
+                  EXIT
+               ENDIF 
+            ENDIF
+#         ENDIF 
+
          IF ecorrT < eold 
             ediff = eold - ecorrT 
             IF ediff < ecrit 
@@ -11297,6 +11410,14 @@
             ENDIF
          ENDIF   
 #
+# If for some reason the CC iterations do not converge within 
+# the allotted number of iterations, say so to the user. 
+
+         IF CC_CYCLE == CC_MAXCYC
+            execute print_scalar one
+            execute print_rel_info mtwo_ten pinf
+         ENDIF
+#
 #        Reset eold --> enew 
 #        ------------------- 
 #
@@ -11308,10 +11429,12 @@
       totenerg += sd_energy
       execute print_rel_info seven pinf
 
-      execute print_scalar convg 
+      execute print_scalar  totenerg 
 
       IF CONVG == 1.0
-         ecrit = 0.000001
+
+# Decrease the CC convergence tollerance by factor of until it 
+# reach its default value.
 
          CREATE Ca_int
          CREATE Cb_int
@@ -11325,28 +11448,16 @@
          CREATE Upq_b
          execute sip_barrier
 
-# Check the norm of the T1 vector
+# Check the largest element of the T1 vector
 
-         suma = 0.0
-         DO a
-         DO i
-            GET T1a_old(a,i)
-            tmp  = T1a_old(a,i) * T1a_old(a,i)
-            suma += tmp
-         ENDDO i
-         ENDDO a
+         CALL GET_T1_STATS
 
-         DO b
-         DO j
-            GET T1b_old(b,j)
-            tmp  = T1b_old(b,j) * T1b_old(b,j)
-            suma += tmp
-          ENDDO j
-          ENDDO b
+         execute print_scalar T1MAX
 
-          execute print_scalar suma
+         IF T1MAX > bcc_tol
 
-          IF suma > ecrit
+# The Breuckner iterations have not converged, continue rotatting.
+
              CALL FORM_NEW_VECS
              CALL NORM_NEW_VECS
 #bgn_debug
@@ -11386,8 +11497,22 @@
              CALL BUILT_NEW_AO_FOCK
              CALL HF_ENERGY
              CALL FORM_MO_FOCK
+
           ELSE
+             
+# The Breuckner iterations have converged, exit the Breuckner loop.
+           
+             EXIT
+
+          ENDIF 
+#
+# If the following condition is satisfied, then Breuckner iterations
+# have not converged withing the alloted number of cycles. So, say
+# that to the the user.
+
+          IF BIT_COUNT == BCC_MAXCYC
               execute print_scalar one
+              execute print_rel_info mtwo_ten pinf 
           ENDIF
 
        ENDIF 
@@ -11451,6 +11576,7 @@
 
       etemp = 26.0
       execute print_rel_info etemp pinf
+
       esum = 0.0
       DO a
       DO i
@@ -11465,6 +11591,7 @@
       etemp = 27.0
       esum = 0.0
       execute print_rel_info etemp pinf
+
       DO b
       DO j
          GET t1b_old(b,j)
