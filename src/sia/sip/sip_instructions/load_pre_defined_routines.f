@@ -180,6 +180,8 @@ C Ajith Perera, SOI instructions
       external write_vecs2jarc, compute_kin_batch
       external antihermitize_pqrs, fock_denominator_dynamic,
      &         init_fockdiags
+      external level_shift, return_occupation
+      external get_init_occupation, mult_array_byc
 c -------------------------------------------------------------------
 c Prakash Instructions needed for delta integraks
 c -------------------------------------------------------------------
@@ -737,6 +739,17 @@ c-------------------------------------------------------------------
      
       dummy = load_user_sub('write_vecs2jarc'//char(0), 
      &                       write_vecs2jarc)
+
+      dummy = load_user_sub('level_shift'//char(0),level_shift)
+
+      dummy = load_user_sub('return_occupation'//char(0),
+     &                       return_occupation)
+
+      dummy = load_user_sub('get_init_occupation'//char(0),
+     &                       get_init_occupation)
+
+      dummy = load_user_sub('mult_array_byc'//char(0),
+     &                       mult_array_byc)
 
       dummy = load_user_sub('antihermitize_pqrs'//char(0), 
      &                       antihermitize_pqrs)

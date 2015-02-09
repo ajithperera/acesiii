@@ -1,0 +1,422 @@
+input  file: src/aces/aces_sial/scf/scf_uhf.sial
+output file: src/aces/aces_sial/scf/scf_uhf.sio
+    No compilation errors
+
+array table
+================
+0,          c, 2, aoindex moindex 
+1,         ca, 2, aoindex moaindex 
+2,         cb, 2, aoindex mobindex 
+3,    scfeneg, 0.000000
+4,   totenerg, 0.000000
+5,          e, 2, aoindex moindex 
+6,         ea, 2, aoindex moaindex 
+7,         eb, 2, aoindex mobindex 
+8,     fock_a, 2, moaindex moaindex 
+9,     fock_b, 2, mobindex mobindex 
+10,    oed_nai, 2, aoindex aoindex 
+11,    oed_kin, 2, aoindex aoindex 
+12,    oed_ovl, 2, aoindex aoindex 
+13,       damp, 0.000000
+14,    cc_conv, 0.000000
+15,   scf_conv, 0.000000
+16, fockrohf_a, 2, aoindex aoindex 
+17, fockrohf_b, 2, aoindex aoindex 
+18,  stabvalue, 0.000000
+19,    eom_tol, 0.000000
+20,  eom_roots, 0.000000
+21,     excite, 0.000000
+22, polarizability, 0.000000
+23,   a_tensor, 0.000000
+24,   g_tensor, 0.000000
+25,   d_tensor, 0.000000
+26,   bcc_conv, 0.000000
+27,      guess, 0.000000
+28,   lshft_a1, 0.000000
+29,   lshft_b1, 0.000000
+30,  damp_type, 0.000000
+31,   damp_tol, 0.000000
+32,       dhfa, 2,     mu     nu 
+33,       dhfb, 2,     mu     nu 
+34,      idhfa, 2,     mu     nu 
+35,      idhfb, 2,     mu     nu 
+36,   dhfa_old, 2,     mu     nu 
+37,   dhfb_old, 2,     mu     nu 
+38,      fpq_a, 2,     mu     nu 
+39,      fpq_b, 2,     mu     nu 
+40,     ftpq_a, 2,     mu     nu 
+41,     ftpq_b, 2,     mu     nu 
+42,      cbt_a, 2,     mu      p 
+43,      cbt_b, 2,     mu      q 
+44,     pnew_a, 2,     mu     nu 
+45,     pnew_b, 2,     mu     nu 
+46,     pold_a, 2,     mu     nu 
+47,     pold_b, 2,     mu     nu 
+48,   dflags11, 2, iiter1 jjter1 
+49,   dflags12, 2, iiter1 jjter2 
+50,        ixi, 2,     mu      i 
+51,       i1xi, 2,     mu      i 
+52,        ixj, 2,     mu      j 
+53,       i1xj, 2,     mu      j 
+54,        tpq, 2,     mu     nu 
+55,       t1pq, 2,     mu     nu 
+56,        txi, 2,     mu      i 
+57,       t1xi, 2,     mu      i 
+58,        txj, 2,     mu      j 
+59,       t1xj, 2,     mu      j 
+60,        txx, 2,     mu     nu 
+61,       taxx, 2,     mu     nu 
+62,       tbxx, 2,     mu     nu 
+63,       t1xx, 2,     mu     nu 
+64,       t2xx, 2,     mu     nu 
+65,       t3xx, 2,     mu     nu 
+66,       t4xx, 2,     mu     nu 
+67,       t5xx, 2,     mu     nu 
+68,       t6xx, 2,     mu     nu 
+69,       t7xx, 2,     mu     nu 
+70,       t8xx, 2,     mu     nu 
+71,       t9xx, 2,     mu     nu 
+72,      t10xx, 2,     mu     nu 
+73,      t11xx, 2,     mu     nu 
+74,      t12xx, 2,     mu     nu 
+75,      t13xx, 2,     mu     nu 
+76,      t14xx, 2,     mu     nu 
+77,      t15xx, 2,     mu     nu 
+78,      t16xx, 2,     mu     nu 
+79,      t17xx, 2,     mu     nu 
+80,      t18xx, 2,     mu     nu 
+81,      t19xx, 2,     mu     nu 
+82,      t20xx, 2,     mu     nu 
+83,      t21xx, 2,     mu     nu 
+84,      t22xx, 2,     mu     nu 
+85,        tii, 2,      i     i1 
+86,       t1ii, 2,      i     i1 
+87,        tjj, 2,      j     j1 
+88,       t1jj, 2,      j     j1 
+89,        txp, 2,     mu      p 
+90,       t1xp, 2,     mu      p 
+91,        tpp, 2,      p     p1 
+92,       t1pp, 2,      p     p1 
+93,        txq, 2,     mu      q 
+94,       t1xq, 2,     mu      q 
+95,        tqq, 2,      q     q1 
+96,       t1qq, 2,      q     q1 
+97,        taa, 2,      a     a1 
+98,        tbb, 2,      b     b1 
+99,        tia, 2,      i      a 
+100,        tjb, 2,      j      b 
+101,        txa, 2,     mu      a 
+102,        txb, 2,     mu      b 
+103,        tix, 2,      i     mu 
+104,        tjx, 2,      j     mu 
+105,        jxi, 2,     mu     i1 
+106,        jxj, 2,     mu     j1 
+107,        ixa, 2,     mu     a1 
+108,        ixb, 2,     mu     b1 
+109,        ixx, 2,     mu     nu 
+110,       i1xx, 2,     nu     mu 
+111,        ixp, 2,     mu      p 
+112,        jxq, 2,     mu      q 
+113,      aoint, 4,     mu     nu lambda  sigma 
+114,     fspq_a, 2,     mu     nu 
+115,     fspq_b, 2,     mu     nu 
+116,       atom, 2,  katom  jatom 
+117,      tatom, 2,  katom  jatom 
+118,        qxx, 2,     mu     nu 
+119,        fta, 2,      p     p1 
+120,        ftb, 2,      q     q1 
+121,         x1, 2,     mu     nu 
+122,      ldhfa, 2,     mu     nu 
+123,      ldhfb, 2,     mu     nu 
+124,     lfpq_b, 2,     mu     nu 
+125,     lfpq_a, 2,     mu     nu 
+126,       pinf, 2,  kiter  kptr1 
+127,      tpinf, 2,  kiter  kptr1 
+128,       ffai, 2,      a      i 
+129,       ffbj, 2,      b      j 
+130,        tai, 2,      a      i 
+131,       t1ai, 2,      a      i 
+132,        tbj, 2,      b      j 
+133,       t1bj, 2,      b      j 
+134, dens_check, 0.000000
+135,        b11, 0.000000
+136,        b12, 0.000000
+137,        b13, 0.000000
+138,        b14, 0.000000
+139,        b15, 0.000000
+140,        b16, 0.000000
+141,        b17, 0.000000
+142,        b18, 0.000000
+143,        b19, 0.000000
+144,       b110, 0.000000
+145,        b22, 0.000000
+146,        b23, 0.000000
+147,        b24, 0.000000
+148,        b25, 0.000000
+149,        b26, 0.000000
+150,        b27, 0.000000
+151,        b28, 0.000000
+152,        b29, 0.000000
+153,       b210, 0.000000
+154,        b33, 0.000000
+155,        b34, 0.000000
+156,        b35, 0.000000
+157,        b36, 0.000000
+158,        b37, 0.000000
+159,        b38, 0.000000
+160,        b39, 0.000000
+161,       b310, 0.000000
+162,        b44, 0.000000
+163,        b45, 0.000000
+164,        b46, 0.000000
+165,        b47, 0.000000
+166,        b48, 0.000000
+167,        b49, 0.000000
+168,       b410, 0.000000
+169,        b55, 0.000000
+170,        b56, 0.000000
+171,        b57, 0.000000
+172,        b58, 0.000000
+173,        b59, 0.000000
+174,       b510, 0.000000
+175,        b66, 0.000000
+176,        b67, 0.000000
+177,        b68, 0.000000
+178,        b69, 0.000000
+179,       b610, 0.000000
+180,        b77, 0.000000
+181,        b78, 0.000000
+182,        b79, 0.000000
+183,       b710, 0.000000
+184,        b88, 0.000000
+185,        b89, 0.000000
+186,       b810, 0.000000
+187,        b99, 0.000000
+188,       b910, 0.000000
+189,      b1010, 0.000000
+190,         c1, 0.000000
+191,         c2, 0.000000
+192,         c3, 0.000000
+193,         c4, 0.000000
+194,         c5, 0.000000
+195,         c6, 0.000000
+196,         c7, 0.000000
+197,         c8, 0.000000
+198,         c9, 0.000000
+199,        c10, 0.000000
+200,       tb11, 0.000000
+201,       tb12, 0.000000
+202,       tb13, 0.000000
+203,       tb14, 0.000000
+204,       tb15, 0.000000
+205,       tb16, 0.000000
+206,       tb17, 0.000000
+207,       tb18, 0.000000
+208,       tb19, 0.000000
+209,      tb110, 0.000000
+210,       tb21, 0.000000
+211,       tb22, 0.000000
+212,       tb23, 0.000000
+213,       tb24, 0.000000
+214,       tb25, 0.000000
+215,       tb26, 0.000000
+216,       tb27, 0.000000
+217,       tb28, 0.000000
+218,       tb29, 0.000000
+219,      tb210, 0.000000
+220,       tb31, 0.000000
+221,       tb32, 0.000000
+222,       tb33, 0.000000
+223,       tb34, 0.000000
+224,       tb35, 0.000000
+225,       tb36, 0.000000
+226,       tb37, 0.000000
+227,       tb38, 0.000000
+228,       tb39, 0.000000
+229,      tb310, 0.000000
+230,       tb41, 0.000000
+231,       tb42, 0.000000
+232,       tb43, 0.000000
+233,       tb44, 0.000000
+234,       tb45, 0.000000
+235,       tb46, 0.000000
+236,       tb47, 0.000000
+237,       tb48, 0.000000
+238,       tb49, 0.000000
+239,      tb410, 0.000000
+240,       tb51, 0.000000
+241,       tb52, 0.000000
+242,       tb53, 0.000000
+243,       tb54, 0.000000
+244,       tb55, 0.000000
+245,       tb56, 0.000000
+246,       tb57, 0.000000
+247,       tb58, 0.000000
+248,       tb59, 0.000000
+249,      tb510, 0.000000
+250,       tb61, 0.000000
+251,       tb62, 0.000000
+252,       tb63, 0.000000
+253,       tb64, 0.000000
+254,       tb65, 0.000000
+255,       tb66, 0.000000
+256,       tb67, 0.000000
+257,       tb68, 0.000000
+258,       tb69, 0.000000
+259,      tb610, 0.000000
+260,       tb71, 0.000000
+261,       tb72, 0.000000
+262,       tb73, 0.000000
+263,       tb74, 0.000000
+264,       tb75, 0.000000
+265,       tb76, 0.000000
+266,       tb77, 0.000000
+267,       tb78, 0.000000
+268,       tb79, 0.000000
+269,      tb710, 0.000000
+270,       tb81, 0.000000
+271,       tb82, 0.000000
+272,       tb83, 0.000000
+273,       tb84, 0.000000
+274,       tb85, 0.000000
+275,       tb86, 0.000000
+276,       tb87, 0.000000
+277,       tb88, 0.000000
+278,       tb89, 0.000000
+279,      tb810, 0.000000
+280,       tb91, 0.000000
+281,       tb92, 0.000000
+282,       tb93, 0.000000
+283,       tb94, 0.000000
+284,       tb95, 0.000000
+285,       tb96, 0.000000
+286,       tb97, 0.000000
+287,       tb98, 0.000000
+288,       tb99, 0.000000
+289,      tb910, 0.000000
+290,      tb101, 0.000000
+291,      tb102, 0.000000
+292,      tb103, 0.000000
+293,      tb104, 0.000000
+294,      tb105, 0.000000
+295,      tb106, 0.000000
+296,      tb107, 0.000000
+297,      tb108, 0.000000
+298,      tb109, 0.000000
+299,     tb1010, 0.000000
+300,        e_a, 0.000000
+301,        e_b, 0.000000
+302,     escf_a, 0.000000
+303,     escf_b, 0.000000
+304,      etemp, 0.000000
+305,       esum, 0.000000
+306,      esum1, 0.000000
+307,     energy, 0.000000
+308,    energy1, 0.000000
+309,    energy2, 0.000000
+310,      ecrit, 0.000000
+311,      ediff, 0.000000
+312,      damp1, 0.000000
+313,       done, 0.000000
+314,      donea, 0.000000
+315,      doneb, 0.000000
+316,       zero, 0.000000
+317,       mone, 0.000000
+318,        one, 0.000000
+319,        two, 0.000000
+320,      three, 0.000000
+321,       four, 0.000000
+322,    ncount1, 0.000000
+323,       rank, 0.000000
+324,      coreh, 0.000000
+325,     atomic, 0.000000
+326,        scf, 0.000000
+327,   scf_ener, 0.000000
+328, diis_start, 0.000000
+329,   diis_end, 0.000000
+330, diis_order, 0.000000
+331, diis_max_order, 0.000000
+332,      start, 0.000000
+333,     worder, 0.000000
+334, iter_count, 0.000000
+335, prnt_count, 0.000000
+336,     target, 0.000000
+337, start_history, 0.000000
+338,         n1, 0.000000
+339,         n2, 0.000000
+340,         fa, 3,     mu     nu  kdiis 
+341,         fb, 3,     mu     nu  kdiis 
+342,        fbj, 3,      b      j  kdiis 
+343,        fai, 3,      a      i  kdiis 
+344,       tpqx, 3,     mu     nu     d2 
+345,       taix, 3,      a      i     d2 
+346,       tbjx, 3,      b      j     d2 
+347,        tdd, 2,     d1     d2 
+348,       t1dd, 2,     d1     d2 
+349,         bb, 2,  kdiis  kdiis 
+350,   fpqa_new, 2,     mu     nu 
+351,   fpqb_new, 2,     mu     nu 
+352,  dhfa_prev, 2,     mu     nu 
+353,  dhfb_prev, 2,     mu     nu 
+354,  fpqa_prev, 2,     mu     nu 
+355,  fpqb_prev, 2,     mu     nu 
+356,   fpqa_dmp, 2,     mu     nu 
+357,   fpqb_dmp, 2,     mu     nu 
+358,   dpqa_dmp, 2,     mu     nu 
+359,   dpqb_dmp, 2,     mu     nu 
+360,    fpqa_mo, 2,      p     p1 
+361,    fpqb_mo, 2,      q     q1 
+362,        sca, 2,     mu      p 
+363,        scb, 2,     mu      q 
+364,        spp, 2,      p     p1 
+365,       ovlp, 2,     mu     nu 
+366, fpqa_mo_vshift, 2,      p     p1 
+367, fpqb_mo_vshift, 2,      q     q1 
+368,      ovc_t, 2,      p     mu 
+369,        ovc, 2,      p     p1 
+370,        tpx, 2,      p     mu 
+371,       tpxt, 2,      p     mu 
+372,       tppt, 2,      p     p1 
+373,       tpp1, 2,      p     p1 
+374,      txx_a, 2,     mu     nu 
+375,      txx_b, 2,     mu     nu 
+376,    e1m_tmp, 0.000000
+377,    e1p_tmp, 0.000000
+378,  e2m11_tmp, 0.000000
+379,  e2p11_tmp, 0.000000
+380,  e2p12_tmp, 0.000000
+381,        e1m, 0.000000
+382,        e1p, 0.000000
+383,      e211m, 0.000000
+384,      e211p, 0.000000
+385,       e212, 0.000000
+386, damp_denom, 0.000000
+387, damp_numra, 0.000000
+388,          x, 0.000000
+389,         mx, 0.000000
+390,  done_damp, 0.000000
+391,   can_damp, 0.000000
+392, max_d_diff, 0.000000
+393, do_damp_thres, 0.000000
+394, do_level_shift_thres, 0.000000
+395,      esuma, 0.000000
+396,      esumb, 0.000000
+397,        tmp, 0.000000
+398,     shifta, 0.000000
+399,     shiftb, 0.000000
+400,       temp, 0.000000
+401,       temp, 2.000000
+402,       temp, -1.000000
+403,       temp, 0.500000
+404,       temp, 1.000000
+405,       temp, 4.000000
+406,       temp, 3.000000
+407,       temp, 150.000000
+408,       temp, 8.000000
+409,       temp, 10.000000
+410,       temp, 0.001000
+411,       temp, 9.000000
+412,       temp, 20.000000
+Writing tables to src/aces/aces_sial/scf/scf_uhf.sio
+
+SIO (Super Instruction Object) file is saved to "src/aces/aces_sial/scf/scf_uhf.sio".

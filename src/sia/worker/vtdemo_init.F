@@ -25,7 +25,9 @@ C  in the file COPYRIGHT.
      *
      *                       excite, eom_tol, eom_roots, ! Watson Added
      *                       polarizability, a_tensor, g_tensor, 
-     *                       d_tensor, ! Ajith Perera
+     *                       d_tensor, bcc_conv, ! Ajith Perera
+     *                       guess, lshft_a1, lshft_b1, damp_type,
+     *                       damp_tol,
      *
      *                       io_company_id, niocompany, need_predef,
      *                       npre_defined, dryrun)
@@ -99,6 +101,8 @@ C  in the file COPYRIGHT.
       integer istabvalue
       integer iexcite, ieom_tol, ieom_roots ! Watson Added
       integer ipolarizability, ia_tensor, ig_tensor, id_tensor ! Ajith Perera
+      integer ibcc_conv ! Ajith Perera
+      integer iguess, ilshft_a1, ilshft_b1, idamp_type, idamp_tol ! Ajith perera
       integer timertype
       integer index, val1, val2
       integer occ_index, index_type, ind, nindex
@@ -106,9 +110,10 @@ C  in the file COPYRIGHT.
       integer iop, max_batch
       integer ind_pardo(mx_array_index)
       double precision scf_energy, totenerg, stabvalue
-      double precision damp_init, cc_conv, scf_conv
+      double precision damp_init, cc_conv, scf_conv, bcc_conv
       double precision excite, eom_tol, eom_roots ! Watson Added
       double precision polarizability, a_tensor, g_tensor, d_tensor
+      double precision guess, lshft_a1, lshft_b1, damp_type, damp_tol
 
       double precision xxx(2)
 #ifdef ALTIX
@@ -687,13 +692,31 @@ C Ajith Perera, 05/2014  added
       scalar_table(ipolarizability) = polarizability
 
       ia_tensor       = array_table(c_scalar_index,24)
-      scalar_table(ia_tensor) = a_tensor 
+      scalar_table(ia_tensor)  = a_tensor 
 
       ig_tensor       = array_table(c_scalar_index,25)
-      scalar_table(ig_tensor) = g_tensor 
+      scalar_table(ig_tensor)  = g_tensor 
 
       id_tensor       = array_table(c_scalar_index,26)
-      scalar_table(id_tensor) = d_tensor 
+      scalar_table(id_tensor)  = d_tensor 
+
+      ibcc_conv       = array_table(c_scalar_index,27)
+      scalar_table(ibcc_conv)  = bcc_conv
+
+      iguess          = array_table(c_scalar_index,28)
+      scalar_table(iguess) = guess
+
+      ilshft_a1       = array_table(c_scalar_index,29)
+      scalar_table(ilshft_a1)  = lshft_a1
+
+      ilshft_b1       = array_table(c_scalar_index,30)
+      scalar_table(ilshft_b1)  = lshft_b1
+
+      idamp_type      = array_table(c_scalar_index,31)
+      scalar_table(idamp_type) = damp_type
+
+      idamp_tol       = array_table(c_scalar_index,32)
+      scalar_table(idamp_tol)  = damp_tol
 C 
       next = 0
       next_server = 0
@@ -701,8 +724,9 @@ C
 C 
 C Tom Watson, Changed to 22.
 C Ajith Perera, changed to 27, 05/2014. 
+C Ajith Perera, changed to 28, 12/2014. 
 C
-      do i = 27, narray_table   ! 1st 19 arrays are pre-defined.
+      do i = 33, narray_table   ! 1st 19 arrays are pre-defined.
          type = array_table(c_array_type,i) 
          if (type .eq. static_array) then
 

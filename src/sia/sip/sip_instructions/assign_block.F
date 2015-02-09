@@ -196,9 +196,12 @@ c---------------------------------------------------------------------------
      *                     yrange1(2), yrange2(2), 
      *                     ydim1(1),ydim2(1),ydim1(2),ydim2(2),
      *                     xval)
-              else
+              else if (nindex .eq. 1) then
+                 call fill_static_block1(y(indy),yrange1(1),yrange2(1),
+     *                     ydim1(1),ydim2(1),xval)
+              else 
                 print *,'Error: assign scalar must have a target ',
-     *                  'array of 2 or 4 indices.'
+     *                  'array 1 or 2 or 4 indices.'
                 call abort_job()    
                  
               endif
@@ -1614,4 +1617,21 @@ c--------------------------------------------------------------------------
 
       return
       end
+
+      subroutine fill_static_block1(y,a1,a2,na1,na2,xval)
+
+      integer a1,a2
+      integer na1,na2
+      double precision y(na1:na2)
+      double precision xval
+
+      integer a
+
+      do a = a1,a2
+         y(a) = xval
+      enddo
+
+      return
+      end
+
 

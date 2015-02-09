@@ -12,7 +12,7 @@ C  GNU General Public License for more details.
 
 C  The GNU General Public License is included in this distribution
 C  in the file COPYRIGHT.
-      subroutine init_fockdiags(array_table, narray_table, 
+      subroutine Mult_Array_BYC(array_table, narray_table, 
      *                      index_table,
      *                      nindex_table, segment_table, nsegment_table,
      *                      block_map_table, nblock_map_table,
@@ -91,15 +91,18 @@ c---------------------------------------------------------------------------
 
       If (atype .NE. static_array .OR. 
      *    btype .NE. static_array) then
-          print *,'Error: Both arrays must be static in init_fockdiags'
+          print *,'Error: Both arrays must be static in'
+          print *, "Mult_Array_BYC"
          call abort_job()
       endif
 
       nindex_source1 = array_table(c_nindex, source1)
       nindex_source2 = array_table(c_nindex, source2)
 
-      if (nindex_source1 .ne. 2 .OR. nindex_source2 .ne. 2) then
-         print *,'Error: Both arrays dimension must be 2'
+      if (nindex_source1 .ne. 2 .OR. nindex_source2 .ne. 1) then
+         print *,"Error: In the routine Mult_Array_BYC SIP"
+         print *,'Error: First array dimensions must be 2'
+         print *,'Error: Second array dimensions must be 1'
          print *,'First array has ',nindex_source1,' indices.'
          print *,'Second array has ',nindex_source2,' indices.'
          call abort_job()
@@ -125,21 +128,16 @@ c-------------------------------------------------------------------------
       enddo
       isource2 = get_index_from_base(address_table(source2), xxx, 2)
 
-      n = index_table(c_index_size, ind(1))  ! pick up length of index
-
 c--------------------------------------------------------------------------
 
-      call fill_epsilon_cblock(xxx(isource1),xxx(isource2),
-     *                         inda(1),inda(2),atype,
-     *                         indb(1),indb(2),btype)
+      call mult_212(xxx(isource1),xxx(isource2),inda(1),
+     *                    inda(2),indb(1))
 
       return
       end
 C-------------------------------------------------------------------------
 
-      subroutine fill_epsilon_cblock(xxx,yyy,
-     *                               pa1,pa2,atype,
-     *                               pb1,pb2,btype)
+      subroutine mult_212(xxx,yyy,pa1,pa2,pb1)
 
       implicit none
       include 'interpreter.h'
@@ -147,45 +145,41 @@ C-------------------------------------------------------------------------
       include 'mpif.h'
       include 'proto_events.h'
       include 'parallel_info.h'
-      include 'epsilon.h'
 C
-      integer pa1,pa2,pb1,pb2,atype,btype,i,ierr,n
+      integer pa1,pa2,pb1,pb2,atype,btype,i,j,ierr,n,k
       integer company_comm, pst_get_company_comm,master,pst_get_master
       double precision xxx(1:pa1,1:pa2)
-      double precision yyy(1:pb1,1:pb2)
+      double precision yyy(1:pb1)
+      double precision z
 C
-C me=0 is the master (read from parallel_info.h). The neps{a,b} and
-C ieps{a,b} read C from the int_gen_parms.h and should be the number
-C of occ plus vrt orbitals and offsets respectively(??). The epsilon.h
-C common block has epsilon and epsilonb arrays.
-C
-      Write(*,*) pa1, pa2, pb1, pb2
-      master = pst_get_master()
-
-      if (me .eq. master) then
-         do i = 1, nepsa
-            epsilon(i) = xxx(i,i)
-         enddo
-
-         do i = 1, nepsb
-            epsilonb(i) = yyy(i,i)
-         enddo 
-      endif
 C#ifdef _DEBUG_LVL0
       if (me .eq. master) then
-      write(6,"(a)") "Checking the FOCK diagonal arrays"
-      write(6, "(4(1X,F15.10))") (epsilon (i),i=1,nepsa)
-      write(6, "(4(1X,F15.10))") (epsilonb(i),i=1,nepsb)
-      write(6,"(a)") "End checking the FOCK diagonal arrays"
+      write(6,"(a)") "Checking the input arrays"
+      Write(*,"(a,1x,i4,1x,i4)") "The input dimensions: ", pb1, pa2
+      call output(xxx, 1, pa1, 1, pa2, pa1, pa2,1)
+      write(*,*)
+      write(*,"(a)") "The occupation vector"
+      Write(*,"(6(1x,F3.1))") (yyy(i),i=1,pa1)
+      write(6,"(a)") "End checking input array"
       endif 
 C#endif 
-      company_comm = pst_get_company_comm(me)
+   
+      Do j = 1, pa2
+         Z = yyy(j) 
+         Do i = 1, pa1
+            xxx(i,j) = xxx(i,j) * Z
+         Enddo 
 
-      call mpi_bcast(epsilon, nepsa, mpi_double_precision, master,
-     *               company_comm, ierr)
+      Enddo
 
-      if (nepsb .gt. 0) 
-     *   call mpi_bcast(epsilonb, nepsb, mpi_double_precision, master,
-     *               company_comm, ierr)
+C#ifdef _DEBUG_LVL0
+      if (me .eq. master) then
+      write(*,*)
+      write(*,"(a)") "The scalled array"
+      call output(xxx, 1, pa1, 1, pa2, pa1, pa2, 1)
+      Write(*,*)
+      endif
+C#endif
+
       return
       end

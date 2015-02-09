@@ -40,7 +40,7 @@ extern InstructCls Instruct;
 
 QCArrayClass::QCArrayClass()
 {
-    nvars=26;
+    nvars=32;
 }
 
 void QCArrayClass::initializer()
@@ -201,7 +201,31 @@ void QCArrayClass::insertconstant()
     arraytype[25]=scalar;
     fvalue[25]=0;
 
-    nvars = 26;
+    vararray[26]="bcc_conv";
+    arraytype[26]=scalar;
+    fvalue[26]=0;
+
+    vararray[27]="guess";
+    arraytype[27]=scalar;
+    fvalue[27]=0;
+
+    vararray[28]="lshft_a1";
+    arraytype[28]=scalar;
+    fvalue[28]=0;
+
+    vararray[29]="lshft_b1";
+    arraytype[29]=scalar;
+    fvalue[29]=0;
+
+    vararray[30]="damp_type";
+    arraytype[30]=scalar;
+    fvalue[30]=0;
+
+    vararray[31]="damp_tol";
+    arraytype[31]=scalar;
+    fvalue[31]=0;
+
+    nvars = 32;
 }
 
 void QCArrayClass::insert(int type, int idno, int nindex, int*indexarray)

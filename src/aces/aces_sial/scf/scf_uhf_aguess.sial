@@ -176,6 +176,9 @@
       temp T1xq(mu,q) 
       temp Tqq(q,q1) 
       temp T1qq(q,q1) 
+      temp Tip(i,p)
+      temp Tjq(i,q)
+
 #
 # Declare served arrays 
 # --------------------- 

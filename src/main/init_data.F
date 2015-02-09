@@ -1,4 +1,3 @@
-C  Copyright (c) 2003-2010 University of Florida
 C
 C  This program is free software; you can redistribute it and/or modify
 C  it under the terms of the GNU General Public License as published by
@@ -44,11 +43,14 @@ C  in the file COPYRIGHT.
       integer          ieom_temprt, ieom_roots, iexcite    ! Watson Added
       integer          ipolarizability, ig_tensor, ia_tensor! perera Added
       integer          id_tensor                            ! perera Added
+      integer          iguess, ilshfta,  ilshftb
+      integer          idamp_type, idamp_tol
       character*4      atmnam(max_centers)
       logical          cartesian
       logical          uhf
       logical dropit 
-      integer          ijunk(500)
+      integer          ijunk(100)
+      integer          iflags(500)
       logical*8        l8false
       double precision dbuf(1)
 #ifdef ALTIX
@@ -169,6 +171,7 @@ c-------------------------------------------------------------------------
       noccupied       = nalpha_occupied
 
       call igetrec(1,'JOBARC','IFLAGS',100,iJunk)
+      call igetrec(1,'JOBARC','IFLAGS2',500,iflags)
 
 c------------------------------------------------------------------------
 c   Retrieve flags parameters.
@@ -247,7 +250,28 @@ C Ajith Perera for second-order properties; 04/2014.
        a_tensor       = DBLE(ia_tensor)
        g_tensor       = DBLE(ig_tensor)
        d_tensor       = DBLE(id_tensor)
+C
+C Ajith Perera, Bruecknere convergence criteria, 12/2014
+
+       bcc_conv =  10.0d0**(-ijunk(76))
 C 
+C Initial SCF orbitals, level shifting parameters and damping.
+C
+        Iguess = ijunk(45)
+        guess  = DBLE(Iguess)
+
+        ilshfta = Iflags(111)
+        ilshftb = Iflags(112)
+
+        lshft_a1 = DBLE(ilshfta)
+        lshft_b1 = DBLE(ilshftb)
+
+        Idamp_type = iflags(109)
+        Idamp_tol  = iflags(110)
+  
+        Damp_type = DBLE(Idamp_type)
+        Damp_tol  = DBLE(Idamp_tol)
+
 c-------------------------------------------------------------------------
 c   Read IFLAGS2 off JOBARC.
 c-------------------------------------------------------------------------

@@ -476,11 +476,24 @@ c---------------------------------------------------------------------------
          call abort_job() 
          endif 
       endif 
+c----------------------------------------------------------------------------
+c   Exiting for no Brueckner CCSD convergence
+c---------------------------------------------------------------------------
+
+      if (dabs(scalar_table(sind)+20.0) .le. 0.001) then
+         if (me .eq. 0) then
+         write(66,30)
+         call flush(66)
+         call abort_job()
+         endif
+      endif
 
 10    FORMAT(5x,'Maximum iteration reached and The SCF has not 
      *           converged') 
 20    FORMAT(5x,'Maximum iteration reached and The CCSD has not 
      *           converged') 
+30    FORMAT(5x,'Maximum iteration reached and The Brueckner CCSD  
+     *           has not converged') 
 
 c----------------------------------------------------------------------------
 c   CIS excitation energy(RHF) Print Flag = 28     

@@ -12,7 +12,7 @@ C  GNU General Public License for more details.
 
 C  The GNU General Public License is included in this distribution
 C  in the file COPYRIGHT.
-      subroutine init_fockdiags(array_table, narray_table, 
+      subroutine Return_occupation(array_table, narray_table, 
      *                      index_table,
      *                      nindex_table, segment_table, nsegment_table,
      *                      block_map_table, nblock_map_table,
@@ -91,15 +91,17 @@ c---------------------------------------------------------------------------
 
       If (atype .NE. static_array .OR. 
      *    btype .NE. static_array) then
-          print *,'Error: Both arrays must be static in init_fockdiags'
+          print *,'Error: Both arrays must be static in'
+          print *,  "  return_occupation"
          call abort_job()
       endif
 
       nindex_source1 = array_table(c_nindex, source1)
       nindex_source2 = array_table(c_nindex, source2)
 
-      if (nindex_source1 .ne. 2 .OR. nindex_source2 .ne. 2) then
-         print *,'Error: Both arrays dimension must be 2'
+      if (nindex_source1 .ne. 2 .OR. nindex_source2 .ne. 1) then
+         print *,'Error: First array dimensions must be 2'
+         print *,'Error: Second array dimensions must be 1'
          print *,'First array has ',nindex_source1,' indices.'
          print *,'Second array has ',nindex_source2,' indices.'
          call abort_job()
@@ -125,21 +127,16 @@ c-------------------------------------------------------------------------
       enddo
       isource2 = get_index_from_base(address_table(source2), xxx, 2)
 
-      n = index_table(c_index_size, ind(1))  ! pick up length of index
-
 c--------------------------------------------------------------------------
 
-      call fill_epsilon_cblock(xxx(isource1),xxx(isource2),
-     *                         inda(1),inda(2),atype,
-     *                         indb(1),indb(2),btype)
+      call get_occupation(xxx(isource1),xxx(isource2),inda(1),
+     *                    inda(2),indb(1))
 
       return
       end
 C-------------------------------------------------------------------------
 
-      subroutine fill_epsilon_cblock(xxx,yyy,
-     *                               pa1,pa2,atype,
-     *                               pb1,pb2,btype)
+      subroutine get_occupation(xxx,yyy,pa1,pa2,pb1)
 
       implicit none
       include 'interpreter.h'
@@ -149,43 +146,49 @@ C-------------------------------------------------------------------------
       include 'parallel_info.h'
       include 'epsilon.h'
 C
-      integer pa1,pa2,pb1,pb2,atype,btype,i,ierr,n
+      integer pa1,pa2,pb1,pb2,atype,btype,i,j,ierr,n,k
       integer company_comm, pst_get_company_comm,master,pst_get_master
       double precision xxx(1:pa1,1:pa2)
-      double precision yyy(1:pb1,1:pb2)
+      double precision yyy(1:pb1)
+      double precision z
 C
-C me=0 is the master (read from parallel_info.h). The neps{a,b} and
-C ieps{a,b} read C from the int_gen_parms.h and should be the number
-C of occ plus vrt orbitals and offsets respectively(??). The epsilon.h
-C common block has epsilon and epsilonb arrays.
-C
-      Write(*,*) pa1, pa2, pb1, pb2
-      master = pst_get_master()
-
-      if (me .eq. master) then
-         do i = 1, nepsa
-            epsilon(i) = xxx(i,i)
-         enddo
-
-         do i = 1, nepsb
-            epsilonb(i) = yyy(i,i)
-         enddo 
-      endif
 C#ifdef _DEBUG_LVL0
       if (me .eq. master) then
-      write(6,"(a)") "Checking the FOCK diagonal arrays"
-      write(6, "(4(1X,F15.10))") (epsilon (i),i=1,nepsa)
-      write(6, "(4(1X,F15.10))") (epsilonb(i),i=1,nepsb)
-      write(6,"(a)") "End checking the FOCK diagonal arrays"
+      Write(*,*) pb1, pb2
+      write(6,"(a)") "Checking the overlap map"
+      call output(xxx, 1, pa1, 1, pa2, pa1, pa2,1)
+      write(6,"(a)") "End checking the overlap map"
       endif 
 C#endif 
-      company_comm = pst_get_company_comm(me)
+C Determine the raw index of the corresponding to the maximum overlap
+C (absoulte sense) in a column. The orbital corrsponding to that row is
+C occupied. 
+   
+      Do j = 1, pa2
+         Z = 0.0D0
+         Do i = 1, pa1
+            Z = MAX(Z, Dabs(xxx(i,j)))
+         Enddo 
 
-      call mpi_bcast(epsilon, nepsa, mpi_double_precision, master,
-     *               company_comm, ierr)
+C#ifdef _DEBUG_LVL0
+      if (me .eq. master) then
+      Write(*,"(a,I4,1x,a,F12.8)") "The largest of column", j, "is", Z
+      Write(*,*)
+      endif 
+C#endif 
+         Do i = 1, pb1
+            If (Z .EQ. Dabs(xxx(i,j)))  yyy(i) = 1.0D0
+         Enddo
 
-      if (nepsb .gt. 0) 
-     *   call mpi_bcast(epsilonb, nepsb, mpi_double_precision, master,
-     *               company_comm, ierr)
+C#ifdef _DEBUG_LVL0
+      if (me .eq. master) then
+      write(*,"(a)") "The new occupation vector"
+      Write(*,"(6(1x,F3.1))") (yyy(i),i=1,pa1)
+      Write(*,*)
+      endif
+C#endif
+
+      Enddo
+
       return
       end

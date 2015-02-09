@@ -382,6 +382,14 @@ C Ajith Perera, miscellaneous developments.
 
       dummy = load_user_sub('write_vecs2jarc'//char(0),0)
 
+      dummy = load_user_sub('level_shift'//char(0),0)
+
+      dummy = load_user_sub('return_occupation'//char(0),0)
+
+      dummy = load_user_sub('get_init_occupation'//char(0),0)
+
+      dummy = load_user_sub('mult_array_byc'//char(0),0)
+
       dummy = load_user_sub('antihermitize_pqrs'//char(0),0)
 
       dummy = load_user_sub('init_fockdiags'//char(0),0)

@@ -164,6 +164,13 @@ c---------------------------------------------------------------------------
       double precision eps, epsa, epsb, epsi, epsj
       double precision val
 
+#ifdef _DEBUG_LVL0
+      write(6,"(a)") "Checking the diagonal arrays"
+      write(6, "(4(1X,F15.10))") (epsilon (i),i=1,i1+a1)
+      write(6, "(4(1X,F15.10))") (epsilonb(i),i=1,i1+a1)
+      write(6,"(a)") "End checking the diagonal arrays"
+#endif
+
       do j = j1,j2
          if (jtype .eq. mobindex) then
             epsj = epsilonb(j)
@@ -293,6 +300,7 @@ c--------------------------------------------------------------------
       integer a,i
       double precision eps, epsa, epsi
       double precision val
+
 
       do i = i1, i2
          if (itype .eq. mobindex) then

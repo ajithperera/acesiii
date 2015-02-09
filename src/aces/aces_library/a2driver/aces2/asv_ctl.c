@@ -557,7 +557,7 @@ void asv_handle_proc(const f_int * index, const char * value)
                 "MIN_BASIS",	/* 6 */
                 "HUCKEL",	/* 7 */
                 "OVERRIDE",     /* 8 */
-                "ATOMIC"        /* 9 */
+                "ATOMIC",       /* 9 */
                 "AODENS"        /* 10 */
                 ""
             };
