@@ -14,7 +14,7 @@
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
 #
-                           SIAL SCF_UHF_DIIS         
+                           SIAL SCF_UHF
 #
 # ----------------------------------------------------------------------------
 #
@@ -53,6 +53,7 @@
       index   NbfnsA = 1, eavirtorb #norb
       index   NbfnsB = 1, ebvirtorb #norb
 
+      index   ithree = 1, 3
       index   kptr1  = 1, 2
       index   kptr2  = 1, 2
       index   kone   = 1, 1
@@ -135,9 +136,11 @@
       temp Tpq(mu,nu) 
       temp T1pq(mu,nu) 
       temp Txi(mu,i) 
+      temp Txi_t(mu,i) 
       temp Txp(mu,p) 
       temp T1xi(mu,i) 
       temp Txj(mu,j) 
+      temp Txj_t(mu,j) 
       temp Txq(mu,q) 
       temp T1xj(mu,j) 
       temp Txx(mu,nu) 
@@ -440,6 +443,7 @@
       scalar zero 
       scalar mone 
       scalar one
+      scalar onehalf 
       scalar two
       scalar three
       scalar four
@@ -447,6 +451,7 @@
       scalar rank 
       scalar coreh
       scalar atomic
+      scalar invtwopt2
 #VR
       scalar scf
       scalar scf_ener
@@ -508,10 +513,13 @@
       STATIC ORB_OVLP_B(q,j)
       DISTRIBUTED OVLP_TMP_A(p,i)
       DISTRIBUTED OVLP_TMP_B(q,j)
+      DISTRIBUTED INTM_A(nu,i)
+      DISTRIBUTED INTM_B(nu,j)
       STATIC Fpqa_MO_VSHIFT(p,p1)
       STATIC Fpqb_MO_VSHIFT(q,q1)
       STATIC A_OCC_NUMS(NbfnsA)
       STATIC B_OCC_NUMS(NbfnsB)
+      STATIC DAMP_PARMS(Ithree)
 #bgn_debug
      distributed OVC_T(p,mu)
      distributed OVC(p,p1)
@@ -537,15 +545,29 @@
       scalar damp_numra
       scalar X
       scalar MX
-      scalar DONE_damp
-      scalar CAN_damp
       scalar Max_D_diff 
       scalar damp_thres
-      scalar do_level_shift_thres
       scalar esuma
       scalar esumb
       scalar tmp
       scalar occ_num
+      scalar david_dynamic
+      scalar karls_dynamic
+      scalar e0
+      scalar e1
+      scalar e2
+      scalar de 
+      scalar dep
+      scalar des
+      scalar deps
+      scalar deavg 
+      scalar deavg_old
+      scalar icount
+      scalar damp_factor
+      scalar can_damp
+      scalar kill_damp
+      scalar lock_orbs
+      scalar lock_occs
 #
 # ---------------------------------------------------------------------------- 
 #
@@ -1782,78 +1804,60 @@
        ENDPROC C_BTRAN 
 #      --------------- 
 #
-# ---------------------------------------------------------------------------- 
-#
-       PROC HF_DAMP  
-#      ------------ 
-#
-       PARDO mu, nu 
-#
-             GET DHFa(mu,nu) 
-             GET DHFb(mu,nu) 
-             GET DHFa_old(mu,nu) 
-             GET DHFb_old(mu,nu) 
-#
-             Txx(mu,nu)   = DHFa(mu,nu) 
-             T1xx(mu,nu)  = DHFa_old(mu,nu) 
-             T1xx(mu,nu) *= damp  
-             Txx(mu,nu)  += T1xx(mu,nu) 
-             Txx(mu,nu)  *= damp1 
-             PUT DHFa(mu,nu) = Txx(mu,nu)  
-#
-             Txx(mu,nu)   = DHFb(mu,nu) 
-             T1xx(mu,nu)  = DHFb_old(mu,nu) 
-             T1xx(mu,nu) *= damp  
-             Txx(mu,nu)  += T1xx(mu,nu) 
-             Txx(mu,nu)  *= damp1 
-             PUT DHFb(mu,nu) = Txx(mu,nu)  
-#
-       ENDPARDO mu, nu 
-#
-       ENDPROC HF_DAMP  
-#      --------------- 
-#
-# ---------------------------------------------------------------------------- 
-#
-       PROC HFDENS_ZERO   
-#      ----------------  
-#  
-#      Zero out the n-1'th density array. 
-#      ---------------------------------- 
-#
-       PARDO mu, nu 
-#
-             Txx(mu,nu)   = 0.0   
-             PUT DHFa_old(mu,nu) = Txx(mu,nu)  
-             PUT DHFb_old(mu,nu) = Txx(mu,nu)  
-#
-       ENDPARDO mu, nu 
-#
-       ENDPROC HFDENS_ZERO   
-#      ------------------- 
-
       PROC MAKE_OCCUPATION
 #     --------------------
 
 # Compute the overlap between the previous occupied orbitals and
 # the current orbitals
 
+      CREATE INTM_A
+      CREATE INTM_B
       CREATE OVLP_TMP_A
       CREATE OVLP_TMP_B
       execute sip_barrier
 
-      PARDO p,i
+      PARDO nu,i
+        Txi(nu,i) = 0.0
         DO mu
-           Tpi(p,i)         = CA(mu,p) * CA_Prev(mu,i)
-           PUT OVLP_TMP_A(p,i) +=  Tpi(p,i)
+           Txi_t(nu,i)      = OVLP(nu,mu) * CA_Prev(mu,i)
+#bgn_debug
+#           Txi_t(nu,i)      = OVLP(nu,mu) * CA(mu,i)
+#end_debug
+           Txi(nu,i)       += Txi_t(nu,i) 
         ENDDO mu
+           PUT INTM_A(nu,i) = Txi(nu,i)
+      ENDPARDO nu, i
+
+      PARDO nu,j
+         Txj(nu,j) = 0.0
+         DO mu
+            Txj_t(nu,j)     = OVLP(nu,mu) * CB_Prev(mu,j)
+#bgn_debug
+#            Txj_t(nu,j)     = OVLP(nu,mu) * CB(mu,j)
+#end_debug
+            Txj(nu,j)      += Txj_t(nu,j)
+         ENDDO mu
+            PUT INTM_B(nu,j) = Txj(nu,j)
+      ENDPARDO nu,j
+
+      execute sip_barrier
+
+      PARDO p,i
+         DO nu
+            GET INTM_A(nu,i) 
+            Txi(nu,i)            = INTM_A(nu,i) 
+            Tpi(p,i)             = Txi(nu,i) * CA(nu,p)
+            PUT OVLP_TMP_A(p,i) +=  Tpi(p,i)
+        ENDDO nu
       ENDPARDO p,i
 
       PARDO q,j
-      DO mu
-         Tqj(q,j)         =  CB(mu,q) * CB_Prev(mu,j)
-         PUT OVLP_TMP_B(q,j) += Tqj(q,j)
-      ENDDO mu
+         Do nu
+            GET INTM_B(nu,j)
+            Txj(nu,j)            = INTM_B(nu,j)
+            Tqj(q,j)             = Txj(nu,j) * CB(nu,q)
+            PUT OVLP_TMP_B(q,j) += Tqj(q,j)
+         ENDDO nu
       ENDPARDO q,j
       execute sip_barrier
        
@@ -1894,6 +1898,8 @@
 #      ENDIF 
 #end_debug
 
+      DELETE INTM_A
+      DELETE INTM_B
       DELETE OVLP_TMP_A
       DELETE OVLP_TMP_B
 
@@ -1915,6 +1921,7 @@
          execute sip_barrier
 
          CALL OVER_HALF
+         execute sip_barrier
          CALL FOCK_TRANSPOSE
          execute sip_barrier
          CALL FOCK_DIAG
@@ -2100,19 +2107,20 @@
          ENDDO mu
 
          CALL FOCK_MATRIX_FAST
+         execute sip_barrier
 #
 #     Construct S^(-1/2) F S^(-1/2)
 #     -----------------------------
 #
          CALL FOCK_TRANSPOSE
          execute sip_barrier
+
          CALL FOCK_DIAG
 #
 #     Back transform the coefficient array
 #     ------------------------------------
 #
          CALL C_BTRAN
-         execute sip_barrier
 
 #     Compute the new HF density
 #     ----------------------
@@ -2120,38 +2128,16 @@
          EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
          EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
          CALL HFIDENS
+         execute sip_barrier
 
 #     This energy is not suppose to be all that great
 #     -----------------------------------------------
          CALL HF_ENERGY
-         energy1 = energy
-         execute sip_barrier
       
       ENDIF 
 
       ENDPROC IGUESS   
 #     -------------- 
-#
-# -----------------------------------------------------------------------------
-# ---------------------------------------------------------------------------- 
-#
-       PROC HFDENS_REPLACE    
-#      -------------------   
-#
-#      Replace the 'old' HF density by the 'new' HF density. 
-#      ----------------------------------------------------- 
-#
-       PARDO mu, nu 
-#
-             GET DHFa(mu,nu) 
-             GET DHFb(mu,nu) 
-             PUT DHFa_old(mu,nu) = DHFa(mu,nu)  
-             PUT DHFb_old(mu,nu) = DHFb(mu,nu)  
-#
-       ENDPARDO mu, nu 
-#
-       ENDPROC HFDENS_REPLACE    
-#      ----------------------  
 #
        PROC STORE_FOCK_DENS_VEC_OLD
 #      ----------------------------
@@ -3740,7 +3726,7 @@
       ENDPROC CREATE_PMATRIX
 #     ----------------------
 
-       PROC COMPUTE_DAMP_FACTOR
+       PROC KARLS_DAMP_FACTOR
 #      ----------------------
   
 #      initialise the variables at the start of each iteration
@@ -3918,11 +3904,73 @@
       execute print_scalar mx
 #end_debug
 
-      ENDPROC COMPUTE_DAMP_FACTOR
+      ENDPROC KARLS_DAMP_FACTOR
 #    ----------------------------
 
-     PROC DO_DYNAMIC_DAMP_FOCK
+     PROC APPLY_DAVID_DAMP
+#    ---------------------
+
+#  Finally, the davidson damp the Fock matrices
+
+      DAMP_DENOM = DAMP_FACTOR
+      DAMP_DENOM += 1.0
+      DAMP_DENOM  = 1.0/DAMP_DENOM
+      
+      PARDO mu, nu
+
+         TXX_a(mu,nu) = 0.0
+         TXX_b(mu,nu) = 0.0
+
+         GET Fpqa_Prev(mu,nu)
+         GET Fpqb_Prev(mu,nu)
+
+         GET Fpq_a(mu,nu)
+         GET Fpq_b(mu,nu)
+
+         Txx(mu,nu)    = Fpq_a(mu,nu)
+         TXX_a(mu,nu)  = Txx(mu,nu)
+
+         T1xx(mu,nu)   = Fpqa_prev(mu,nu)
+         T1xx(mu,nu)  *= DAMP_FACTOR
+         TXX_a(mu,nu) += T1xx(mu,nu)
+         TXX_a(mu,nu) *= DAMP_DENOM
+
+         Txx(mu,nu)    = Fpq_b(mu,nu)
+         TXX_b(mu,nu)  = Txx(mu,nu)
+
+         T1xx(mu,nu)   = Fpqb_prev(mu,nu)
+         T1xx(mu,nu)  *= DAMP_FACTOR
+         TXX_b(mu,nu) += T1xx(mu,nu)
+         TXX_b(mu,nu) *= DAMP_DENOM
+
+         PUT Fpqa_DMP(mu,nu) = TXX_a(mu,nu)
+         PUT Fpqb_DMP(mu,nu) = TXX_b(mu,nu)
+
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+# Copy the Fock matrices to current Fock matrix arrays.
+
+      PARDO mu, nu
+
+         GET Fpqa_DMP(mu,nu)
+         GET Fpqb_DMP(mu,nu)
+    
+         Txx(mu,nu) = Fpqa_DMP(mu,nu)
+         PUT Fpq_a(mu,nu) = Txx(mu,nu)
+
+         Txx(mu,nu) = Fpqb_DMP(mu,nu)
+         PUT Fpq_b(mu,nu) = Txx(mu,nu)
+
+      ENDPARDO mu, nu
+
+      execute sip_barrier
+
+     ENDPROC APPLY_DAVID_DAMP
 #    ------------------------
+
+     PROC APPLY_KARLS_DAMP_FOCK
+#    --------------------------
 
 #  Finally, the damped Fock matrices
 
@@ -3976,10 +4024,10 @@
 
       execute sip_barrier
 
-     ENDPROC DO_DYNAMIC_DAMP_FOCK
+     ENDPROC APPLY_KARLS_DAMP_FOCK
 #    ----------------------------
 
-     PROC DO_DYNAMIC_DAMP_DENS
+     PROC APPLY_KARLS_DAMP_DENS
 #    -------------------------
 
 #  Finally, the damp density matrices
@@ -4034,8 +4082,8 @@
 
       execute sip_barrier
 
-     ENDPROC DO_DYNAMIC_DAMP_DENS
-#    ----------------------------
+     ENDPROC APPLY_KARLS_DAMP_DENS
+#    -----------------------------
 
      PROC BUILT_MO_FOCK
 #    ------------------
@@ -4250,26 +4298,37 @@
 #
       execute load_balance_off 
       ecrit  = scf_conv # Energy tolerance  
-#     damp   = 0.0 
-      etemp  = 1.0 
-      etemp += damp  
-      damp1  = 1.0/etemp         # 1/(1+damp)  
-      execute print_scalar damp 
-      execute print_scalar damp1
-
+#
+#     Perform initial (aa|bb) integral computation to set Schwartz paramaters
+#     -----------------------------------------------------------------------
+#
+      DO mu
+      DO nu
+      DO lambda
+      DO sigma
+            IF mu == lambda
+            IF nu == sigma
+               execute compute_aabb_batch aoint(mu,nu,lambda,sigma)
+            ENDIF
+            ENDIF
+      ENDDO sigma
+      ENDDO lambda
+      ENDDO nu
+      ENDDO mu
+#
       zero = 0.0 
       mone = -1.0 
       one = 1.0 
       two = 2.0 
       three = 3.0 
       four = 4.0 
+      onehalf = 0.5
+      invtwopt2 = 1.0/2.20
       iter_count = 0.0 
       prnt_count = 0.0
       diis_end = 150.0 
       diis_order = 8.0 
       diis_max_order = 10.0 
-      DO_LEVEL_SHIFT_THRES =  0.001
-      DONE_DAMP = 1.0
 
       diis_start = 0.0
       do kbeg
@@ -4298,14 +4357,18 @@
 # This will force any-damping to only those iterations that invlove no
 # DIIS. Notice that this can be controled by input.
 #
-      CAN_DAMP  = diis_start
-      CAN_DAMP -= 1.0
+      Init_guess  = Guess 
+      Shifta      = lshft_a1
+      Shifta     *= 0.01
+      Shiftb      = lshft_b1
+      Shiftb     *= 0.01
+      damping     = damp_type
+      damp_thres  = damp_tol
+      damp_thres *= 0.01
+      kill_damp   = damp_end
+      lock_orbs   = lock_orbitals
+      lock_occs   = lock_orbocc 
 
-      Init_guess = Guess 
-      Shifta     = lshft_a1
-      Shiftb     = lshft_b1
-      damping    = damp_type
-      damp_thres = damp_tol
 #bgn_debug
       execute print_scalar diis_start  
       execute print_scalar diis_order
@@ -4314,6 +4377,9 @@
       execute print_scalar Shiftb
       execute print_scalar damping
       execute print_scalar damp_thres 
+      execute print_scalar kill_damp 
+      execute print_scalar lock_orbs
+      execute print_scalar lock_occs
 #end_debg
 
 # Set the damp type and GUESS based on user input.
@@ -4331,12 +4397,21 @@
       Endif 
 
       IF NATOMS <= 3
-         COREH = 1.0
+         COREH  = 1.0
+         ATOMIC = 0.0
       ENDIF
+#
+# The davidson damping is based on private communication from 
+# E. R. Davidson and Karls_dynamic is based on CPL, 67,348,1979.
 
-      If Damping >= 1.0
-         Dynamic_damp = 1.0
-      Endif 
+      If Damping == 1.0
+         David_dynamic = 1.0
+         damp_factor  = damp_thres
+         damp_factor += 0.01
+      endif 
+      If Damping == 2.0
+         Karls_dynamic = 1.0
+      Endif
 #
 #     Create the one-particle arrays needed for the computation. 
 #     ---------------------------------------------------------- 
@@ -4345,18 +4420,14 @@
 #     ----------- 
       CREATE Fpq_a  
       CREATE Fpq_b  
-#
-#     New HF density 
-#     -------------- 
-#
       CREATE DHFa   
       CREATE DHFb   
 #
 #     Old HF density 
 #     -------------- 
 #
-      CREATE DHFa_old
-      CREATE DHFb_old    
+#      CREATE DHFa_old
+#      CREATE DHFb_old    
       CREATE DHFa_Prev
       CREATE DHFb_Prev
 
@@ -4394,23 +4465,6 @@
       CREATE IDhfa 
       CREATE IDhfb 
       execute sip_barrier 
-#
-#     Perform initial (aa|bb) integral computation to set Schwartz paramaters 
-#     ----------------------------------------------------------------------- 
-#
-      DO mu
-      DO nu
-      DO lambda
-      DO sigma
-            IF mu == lambda
-            IF nu == sigma
-               execute compute_aabb_batch aoint(mu,nu,lambda,sigma)
-            ENDIF
-            ENDIF
-      ENDDO sigma
-      ENDDO lambda
-      ENDDO nu
-      ENDDO mu 
 #
 # Initialize the static arrays of SCF vectors and occupation numbers
 # ------------------------------------------------------------------
@@ -4488,15 +4542,15 @@
  
          CALL FOCK_MATRIX_FAST   
          execute sip_barrier 
+
          CALL HF_ENERGY 
-         energy2 = energy 
-         execute sip_barrier
-#
-#        Store the current Fock and density matrix of the
-#        first iteration (as F_prev) and D_prev)
-#        --------------------------------------------
-#
+
+# Store the current Fock and density matrix of the first iteration 
+# (as F_prev) and D_prev). I am taking the Guess density, fock matrix 
+# and the energy as the first iteration of the SCF equations.
+
          IF ITER_COUNT == 1.0
+            E0  = ENERGY
             CALL STORE_FOCK_DENS_VEC_OLD
          ENDIF 
         
@@ -4512,11 +4566,15 @@
          ELSE
             MAX_D_Diff = DONEB
          ENDIF
-         
-         execute print_scalar MAX_D_DIFF
 
-         IF  ITER_COUNT < 20.0
-         IF  MAX_D_DIFF > DO_LEVEL_SHIFT_THRES
+#bgn_debug         
+         execute print_scalar MAX_D_DIFF
+#end_debug
+
+# The level shifting if demanded. 
+
+         IF  ITER_COUNT < KILL_DAMP
+         IF  MAX_D_DIFF > DAMP_THRES 
              execute print_scalar four
              CALL BUILT_MO_FOCK
              EXECUTE LEVEL_SHIFT  FPQA_MO_VSHIFT  Shifta
@@ -4525,35 +4583,139 @@
          ENDIF
          ENDIF 
 
-         execute print_scalar CAN_DAMP
-
          IF ITER_COUNT > 1.0
 
-            IF MAX_D_Diff >= DAMP_THRES
-                IF ITER_COUNT < CAN_DAMP
+            CAN_DAMP = 0.0
+            IF DAVID_DYNAMIC == 1.0
 
-                   execute print_scalar four
-                   CALL CREATE_PMATRIX
-                   CALL COMPUTE_DAMP_FACTOR
+               IF ITER_COUNT == 2.0
+
+                  E1    = E0
+                  E0    = ENERGY
+                  DE    = E0
+                  DE   -= E1
+                  DEP   = 0.0
+                  DES   = DE
+                  DES  *= DE
+                  EXECUTE SQUARE_ROOT DES ONEHALF
+                  DEAVG_OLD  = DES
+                  DEAVG_OLD *= 0.20
+
+               ELSE
+
+                  E2    = E1
+                  E1    = E0
+                  E0    = ENERGY
+                  DE    = E0
+                  DE   -= E1
+                  DEP   = E1
+                  DEP  -= E2
+#bgn_debug
+      execute print_scalar e0
+      execute print_scalar e1
+      execute print_scalar e2
+      execute print_scalar de
+      execute print_scalar dep
+#end_debug
+
+                  DES   = DE
+                  DES  *= DE
+                  DEPS  = DEP
+                  DEPS *= DEP
+
+                  EXECUTE SQUARE_ROOT DES ONEHALF
+                  EXECUTE SQUARE_ROOT DEPS ONEHALF
+
+                  DEAVG  = DES
+                  DEAVG += DEPS
+                  DEAVG += DEAVG_OLD
+                  DEAVG *= INVTWOPT2
+                  DEAVG_OLD  = DEAVG
+                  DEAVG_OLD *= 0.20
+
+#bgn_debug
+      execute print_scalar des
+      execute print_scalar deps
+      execute print_scalar DEAVG_OLD
+#end_debug
+                  ICOUNT = 0.0
+                  DO ITHREE 
+                     ICOUNT += 1.0
+                     IF ICOUNT == 1.0
+                        DAMP_PARMS(ITHREE) = DE
+                     ENDIF
+                     IF ICOUNT == 2.0
+                        DAMP_PARMS(ITHREE) = DEP
+                     ENDIF
+                     IF ICOUNT == 3.0
+                        DAMP_PARMS(ITHREE) = DEAVG
+                     ENDIF
+                  ENDDO ITHREE 
+
+                  EXECUTE DAVID_DAMP_FACTOR DAMP_PARMS DAMP_FACTOR
+                  EXECUTE SIP_BARRIER 
+#bgn_debug
+      execute print_scalar damp_factor
+      execute print_scalar damp_thres
+#end_debug
+                 IF DAMP_FACTOR >= DAMP_THRES
+                       CAN_DAMP = 1.0
+                       CALL APPLY_DAVID_DAMP
+                 ELSE
+                     IF DES >= 0.05
+                        CAN_DAMP      = 1.0
+                        CALL APPLY_DAVID_DAMP
+                     ELSE
+                        DAVID_DYNAMIC = 0.0
+                        CAN_DAMP      = 0.0
+                        DIIS_START   += DIIS_ORDER
+                     ENDIF
+                 ENDIF
+
+                 IF ITER_COUNT  >  KILL_DAMP
+                     DAVID_DYNAMIC = 0.0
+                     DAMPING       = 0.0
+                 ENDIF 
+ 
+               ENDIF 
+            ENDIF 
+
+         ENDIF 
+#
+            IF KARLS_DYNAMIC == 1.0
+
+               IF ITER_COUNT > 1.0
+
+                  IF MAX_D_DIFF >= DAMP_THRES
+                     execute print_scalar four
+                     CALL CREATE_PMATRIX
+                     CALL KARLS_DAMP_FACTOR
 
 # If MX > 0; there is damping. When it is zero there is no contribution
 # from the previous density. If the damping is done and we are less than
 # five iterations, continiue damping. If it is greater than 5, turn off
 # damping regardless of the density difference.  
 
-                  IF MX > 0.0
-#                     CALL DO_DYNAMIC_DAMP_FOCK
-                     CALL DO_DYNAMIC_DAMP_DENS
-#                     CALL STORE_FOCK_DENS_VEC_OLD
-                     DONE_DAMP = 1.0
-                  ELSE
-                     DONE_DAMP = 0.0
-                  ENDIF
+                     IF MX > 0.0
+#                       CALL APPLY_KARLS_DAMP_FOCK
+                        CALL APPLY_KARLS_DAMP_DENS
+                     ENDIF
+                    
+                     IF ITER_COUNT > KILL_DAMP
+                        KARLS_DYNAMIC = 0.0
+                        DAMPING       = 0.0
+                     ENDIF 
 
-                ENDIF 
-             ENDIF
+                 ELSE
+
+                     IF ITER_COUNT > KILL_DAMP
+                        KARLS_DYNAMIC = 0.0
+                        DAMPING       = 0.0
+                     ENDIF
+
+                 ENDIF 
+              ENDIF
          ENDIF
-
 #
 # Set up the DIIS start when the dynamic damping stops. As soon as
 # the damping stops start the DIIS. There is no turning back to 
@@ -4562,6 +4724,12 @@
 #
 #        Compute the DIIS when dynamic damping is finished.
 #        -------------------------------------------------
+
+         IF DAMPING > 0.0
+            IF ITER_COUNT >= diis_start
+               DIIS_START += 1.0
+            ENDIF
+         ENDIF 
 
          execute print_scalar diis_start
          execute print_scalar diis_end
@@ -4614,19 +4782,36 @@
 #
          CALL C_BTRAN 
 
-         IF ITER_COUNT > 2.0
-            CALL MAKE_OCCUPATION
+         IF LOCK_OCCS == 1.0
+            EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+            EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
+         ENDIF
+
+         IF LOCK_ORBS == 1.0
+            IF ITER_COUNT >= DIIS_START 
+        
+               DO nbfnsA
+                   A_OCC_NUMS (nbfnsA) = 0.0
+               ENDDO nbfnsA
+
+               DO nbfnsB
+                   B_OCC_NUMS (nbfnsB) = 0.0
+               ENDDO nbfnsB
+#
+               CALL MAKE_OCCUPATION
+            ENDIF 
          ENDIF 
 #
          done = 0.0 
-         execute sip_barrier
 # 
 #        Compute HF density
 #        -----------------
          CALL HFDENS
          execute sip_barrier
 
-         CALL STORE_FOCK_DENS_VEC_OLD
+# Now we have a new density. During the first-iteration, the
+# following density difference is the difference between guess
+# density and the iteration one density.
 #       
 #        Check on convergence --> largest HF density difference. 
 #        ------------------------------------------------------- 
@@ -4637,11 +4822,11 @@
 #           Alpha component 
 #           --------------- 
 #
-            GET           DHFa_old(mu,nu) 
+            GET           DHFa_Prev(mu,nu) 
             GET           DHFa(mu,nu) 
 #
             Txx(mu,nu)  = DHFa(mu,nu) 
-            Txx(mu,nu) -= DHFa_old(mu,nu) 
+            Txx(mu,nu) -= DHFa_Prev(mu,nu) 
             execute check_dconf Txx donea  
             if donea > done 
                done = donea 
@@ -4650,11 +4835,11 @@
 #           Beta component 
 #           -------------- 
 #
-            GET           DHFb_old(mu,nu) 
+            GET           DHFb_Prev(mu,nu) 
             GET           DHFb(mu,nu) 
 #
             Txx(mu,nu)  = DHFb(mu,nu) 
-            Txx(mu,nu) -= DHFb_old(mu,nu) 
+            Txx(mu,nu) -= DHFb_Prev(mu,nu) 
             execute check_dconf Txx doneb  
             if doneb > done 
                done = doneb 
@@ -4663,11 +4848,10 @@
          ENDDO nu 
          ENDDO mu 
 #
+        execute sip_barrier 
+#bgn_debug
         execute print_scalar done 
-
-#         CALL HF_ENERGY 
-#         energy2 = energy 
-#         execute sip_barrier
+#end_debug
 
          ncount1 = 0.0
          DO kptr1
@@ -4687,7 +4871,8 @@
             endif
          ENDDO kptr1
          execute print_rel_info one pinf
-        execute print_scalar iter_count
+
+         CALL STORE_FOCK_DENS_VEC_OLD
 
 #        Check on convergence using density difference. 
 #        ---------------------------------------------- 
@@ -4701,16 +4886,7 @@
                exit 
             ENDIF 
          ENDIF 
-         execute sip_barrier
 
-         CALL HFDENS_REPLACE 
-         execute sip_barrier          
-#
-#        Reset eold --> enew
-#        -------------------
-#
-         energy1 = energy2  
-#
 #        Delete one-particle arrays to be used in the next iteration. 
 #        ------------------------------------------------------------ 
 #
@@ -4723,7 +4899,9 @@
          DELETE FTpq_b  
          DELETE CBT_a 
          DELETE CBT_b 
-#
+
+# Dump the eigenvectors 10 iteration intervals.
+
          if kiter >= scf_iter
             one = -1.0
             execute print_rel_info one pinf
@@ -4833,7 +5011,7 @@
       totenerg = scfeneg
       execute sip_barrier
 #
-                           ENDSIAL SCF_UHF_DIIS         
+                           ENDSIAL SCF_UHF
 #
 ###############################################################################
 #
