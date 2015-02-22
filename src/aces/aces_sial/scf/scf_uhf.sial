@@ -4732,6 +4732,7 @@
          ENDIF 
 #bgn_debug
          execute print_scalar diis_start
+         execute print_scalar iter_count
          execute print_scalar diis_end
 #end_debug
 

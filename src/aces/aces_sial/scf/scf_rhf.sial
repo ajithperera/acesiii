@@ -4071,14 +4071,16 @@
 
                      IF ITER_COUNT > KILL_DAMP
                         KARLS_DYNAMIC = 0.0
-                        DAMPING       = 0.0
+		        CAN_DAMP      = 0.0
+                        DIIS_START   += DIIS_ORDER
                      ENDIF
 
                  ELSE
 
                      IF ITER_COUNT > KILL_DAMP
                         KARLS_DYNAMIC = 0.0
-                        DAMPING       = 0.0
+		        CAN_DAMP      = 0.0
+                        DIIS_START   += DIIS_ORDER
                      ENDIF
 
                  ENDIF
