@@ -4725,14 +4725,15 @@
 #        Compute the DIIS when dynamic damping is finished.
 #        -------------------------------------------------
 
-         IF DAMPING > 0.0
+         IF CAN_DAMP > 0.0
             IF ITER_COUNT >= diis_start
                DIIS_START += 1.0
             ENDIF
          ENDIF 
-
+#bgn_debug
          execute print_scalar diis_start
          execute print_scalar diis_end
+#end_debug
 
          IF ITER_COUNT > 1.0
 
