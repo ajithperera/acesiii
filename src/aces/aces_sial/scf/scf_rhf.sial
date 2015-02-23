@@ -3289,8 +3289,8 @@
       ENDIF
 
 #bgn_debug
-      X = 1.0
-      MX = 0.0
+#      X = 1.0
+#      MX = 0.0
       execute print_scalar x
       execute print_scalar mx
 #end_debug
@@ -3798,7 +3798,6 @@
       If Shiftb > 0.0
          level_shift = 1.0
       Endif 
-      
 #
 #     Create the distributed arrays assigned for various purposes.
 #     ---------------------------------------------------------- 
@@ -3942,24 +3941,40 @@
 #end_debug
 
 # The level shifting if demanded.
-
-         IF  LEVEL_SHIFT > 0.0
-         IF  ITER_COUNT < KILL_DAMP
-         IF  MAX_D_DIFF > DAMP_THRES
-             CALL BUILT_MO_FOCK
-             EXECUTE LEVEL_SHIFT  FPQA_MO_VSHIFT  Shifta
-             EXECUTE LEVEL_SHIFT  FPQB_MO_VSHIFT  Shiftb
-             CALL BUILT_AO_FOCK
-         ENDIF
-         ENDIF
-         ENDIF 
-
+           
          IF ITER_COUNT > 1.0
 
-            CAN_DAMP = 0.0
-            IF DAVID_DYNAMIC == 1.0
+            IF LEVEL_SHIFT > 0.0
 
-               IF ITER_COUNT == 2.0
+               CAN_DAMP = 0.0
+               IF ITER_COUNT < KILL_DAMP
+                  IF MAX_D_DIFF > DAMP_THRES
+                     CALL BUILT_MO_FOCK
+                     EXECUTE LEVEL_SHIFT  FPQA_MO_VSHIFT  Shifta
+                     EXECUTE LEVEL_SHIFT  FPQB_MO_VSHIFT  Shiftb
+                     CALL BUILT_AO_FOCK
+                     CAN_DAMP = 1.0
+                  ENDIF
+               ENDIF
+#bgn_debug
+         execute print_scalar can_damp
+#end_debug
+#
+# Start DIIS only when level shifting is done (and stop level-shifting
+# at that point.
+
+               IF CAN_DAMP == 0.0
+                  LEVEL_SHIFT = 0.0
+                  DIIS_START   += DIIS_ORDER
+               ENDIF
+         ENDIF
+#
+# Damping techniquies other than level shifting 
+
+         CAN_DAMP = 0.0
+         IF DAVID_DYNAMIC == 1.0
+
+             IF ITER_COUNT == 2.0
 
                   E1    = E0
                   E0    = ENERGY
@@ -4046,51 +4061,52 @@
 
                ENDIF
               ENDIF
-
-           ENDIF
 #
            IF KARLS_DYNAMIC == 1.0
 
-              IF ITER_COUNT > 1.0
-                 IF MAX_D_DIFF >= DAMP_THRES
+              IF MAX_D_DIFF >= DAMP_THRES
 #bgn_debug
-                    execute print_scalar four
+                 execute print_scalar MAX_D_DIFF
+                 execute print_scalar DAMP_THRES
 #end_debug
-                    CALL CREATE_PMATRIX
-                    CALL KARLS_DAMP_FACTOR
+                  CALL CREATE_PMATRIX
+                  CALL KARLS_DAMP_FACTOR
 
 # If MX > 0; there is damping. When it is zero there is no contribution
 # from the previous density. If the damping is done and we are less than
 # five iterations, continiue damping. If it is greater than 5, turn off
 # damping regardless of the density difference.
 
-                     IF MX > 0.0
-#                       CALL APPLY_KARLS_DAMP_FOCK
-                        CALL APPLY_KARLS_DAMP_DENS
-                     ENDIF
+                  IF MX > 0.0
+                     CAN_DAMP      = 1.0
+#                    CALL APPLY_KARLS_DAMP_FOCK
+                     CALL APPLY_KARLS_DAMP_DENS
+                   ENDIF
 
-                     IF ITER_COUNT > KILL_DAMP
-                        KARLS_DYNAMIC = 0.0
-		        CAN_DAMP      = 0.0
-                        DIIS_START   += DIIS_ORDER
-                     ENDIF
+                   IF ITER_COUNT > KILL_DAMP
+                      KARLS_DYNAMIC = 0.0
+	              CAN_DAMP      = 0.0
+                      DIIS_START   += DIIS_ORDER
+                   ENDIF
 
-                 ELSE
+              ELSE
 
-                     IF ITER_COUNT > KILL_DAMP
-                        KARLS_DYNAMIC = 0.0
-		        CAN_DAMP      = 0.0
-                        DIIS_START   += DIIS_ORDER
-                     ENDIF
+                   IF ITER_COUNT > KILL_DAMP
+                      KARLS_DYNAMIC = 0.0
+	              CAN_DAMP      = 0.0
+                      DIIS_START   += DIIS_ORDER
+                   ENDIF
 
-                 ENDIF
-              ENDIF
+              ENDIF 
            ENDIF
+
+# The following ENDIF is for the ITER_COUNT > 0 loop.
+
+       ENDIF
 #
 # Set up the DIIS start when the dynamic damping stops. As soon as
 # the damping stops start the DIIS. There is no turning back to
 # damping after DIIS starts.
-# F(D1)*D1, F(D2)D2,...
 #
 #        Compute the DIIS when dynamic damping is finished.
 #        -------------------------------------------------
@@ -4114,6 +4130,10 @@
 
          IF ITER_COUNT >= DIIS_START
          IF ITER_COUNT <= DIIS_END
+
+#bgn_debug
+         execute print_scalar DIIS_ORDER
+#end_debug
 
             CALL DIISN
 
