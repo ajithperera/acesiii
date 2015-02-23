@@ -743,7 +743,6 @@
 #
        execute sip_barrier
 #
-       execute get_my_rank rank 
        if rank == 0.0 
        DO mu    
        DO nu   
@@ -1511,7 +1510,6 @@
 #
        execute sip_barrier
 #
-       execute get_my_rank rank 
        if rank == 0.0 
        DO mu    
        DO nu   
@@ -1565,7 +1563,7 @@
 #
        energy = 0.0
        esum = 0.0 
-       execute get_my_rank rank 
+
        if rank == 0.0 
        DO mu  
        DO nu 
@@ -1714,6 +1712,7 @@
 #      First put the transposed Fock arrays into static arrays 
 #      ------------------------------------------------------- 
 #
+       IF RANK == 0.0
        DO mu   
        DO nu  
 #
@@ -1725,9 +1724,14 @@
 #
        ENDDO nu  
        ENDDO mu   
-#
        execute eig FSpq_a ca
        execute eig FSpq_b Cb  
+
+       ENDIF 
+#
+       execute sip_barrier 
+       execute broadcast_array ca
+       execute broadcast_array cb
 #
        ENDPROC FOCK_DIAG 
 #      ----------------- 
@@ -1884,7 +1888,6 @@
       EXECUTE  RETURN_OCCUPATION ORB_OVLP_B  B_OCC_NUMS
 
 #bgn_debug
-#      execute get_my_rank rank
 #      if rank == 0.0
 #      DO p
 #      DO p1
@@ -2031,7 +2034,6 @@
             ENDPARDO mu, nu
 
             execute sip_barrier 
-            execute get_my_rank rank
 #            if rank == 0.0
 
                PARDO katom
@@ -4299,6 +4301,7 @@
 #
       execute load_balance_off 
       ecrit  = scf_conv # Energy tolerance  
+      execute get_my_rank rank
 #
 #     Perform initial (aa|bb) integral computation to set Schwartz paramaters
 #     -----------------------------------------------------------------------
@@ -4811,7 +4814,6 @@
 #        -------------------------------------- 
 #
          CALL FOCK_DIAG 
-         execute sip_barrier
 #
 #        Back transform the coefficient array 
 #        ------------------------------------ 
@@ -4944,7 +4946,6 @@
          endif
 
          if prnt_count > 10.0
-            execute get_my_rank rank
             if rank == 0.0
                DO mu
                DO p
@@ -5025,7 +5026,6 @@
       execute print_rel_info two pinf
       execute print_rel_info three Fock_a  
       execute print_rel_info four Fock_b  
-      execute get_my_rank rank
       if rank == 0.0
          DO mu
          DO p
