@@ -527,6 +527,7 @@
       scalar occ_num
       scalar david_dynamic
       scalar karls_dynamic
+      scalar constant_damping
       scalar e0
       scalar e1
       scalar e2
@@ -1966,8 +1967,6 @@
             txx(mu,nu)     *= 0.5
             PUT DHFa(mu,nu) = txx(mu,nu)
             PUT DHFb(mu,nu) = txx(mu,nu)
-            etemp = txx(mu,nu)*txx(mu,nu)
-            esum += etemp
         ENDPARDO mu, nu
 
          CALL OVER_HALF
@@ -3293,6 +3292,71 @@
       ENDPROC KARLS_DAMP_FACTOR
 #    --------------------------
 
+      PROC APPLY_CONSTANT_DAMP
+#     ------------------------
+#
+#  Apply constant damping, Damp factor is computed using a
+#  simple formula (1/1+constant) where the constant is user
+#  choosen
+#
+      DAMP_DENOM  = 1.0
+      DAMP_DENOM += DAMP_FACTOR
+      DAMP_FACTOR  = 1.0/DAMP_DENOM
+#bgn_debug
+     execute print_scalar damp_factor
+#end_debug
+#
+      PARDO mu, nu
+
+         TXX_a(mu,nu) = 0.0
+         TXX_b(mu,nu) = 0.0
+
+         GET DHFa_Prev(mu,nu)
+         GET DHFb_Prev(mu,nu)
+
+         GET DHFa(mu,nu)
+         GET DHFb(mu,nu)
+
+         Txx(mu,nu)    = DHFa(mu,nu)
+         TXX_a(mu,nu)  = Txx(mu,nu)
+
+         T1xx(mu,nu)   = DHFa_prev(mu,nu)
+         T1xx(mu,nu)  *= DAMP_FACTOR
+         TXX_a(mu,nu) += T1xx(mu,nu)
+
+         Txx(mu,nu)    = DHFb(mu,nu)
+         TXX_a(mu,nu)  = Txx(mu,nu)
+
+         T1xx(mu,nu)   = DHFb_prev(mu,nu)
+         T1xx(mu,nu)  *= DAMP_FACTOR
+         TXX_b(mu,nu) += T1xx(mu,nu)
+
+         PUT Dpqa_DMP(mu,nu) = TXX_a(mu,nu)
+         PUT Dpqb_DMP(mu,nu) = TXX_b(mu,nu)
+
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+# Copy the Damped density to current density arrays.
+
+      PARDO mu, nu
+
+         GET Dpqa_DMP(mu,nu)
+         GET Dpqb_DMP(mu,nu)
+
+         Txx(mu,nu) = Dpqa_DMP(mu,nu)
+         PUT DHFa(mu,nu) = Txx(mu,nu)
+
+         Txx(mu,nu) = Dpqb_DMP(mu,nu)
+         PUT DHFb(mu,nu) = Txx(mu,nu)
+
+      ENDPARDO mu, nu
+
+      execute sip_barrier
+
+      ENDPROC APPLY_CONSTANT_DAMP
+#     ---------------------------
+
      PROC APPLY_DAVID_DAMP
 #    ---------------------
 
@@ -3782,6 +3846,13 @@
          damp_factor  = damp_thres
          damp_factor += 0.01
       endif 
+
+      If Damping == 2.0
+         constant_damping = 1.0
+         damp_factor      = damp_thres
+         damp_factor     += 0.125
+      Endif
+
       If Damping == 2.0
          Karls_dynamic = 1.0
       Endif
@@ -3967,6 +4038,18 @@
 # Damping techniquies other than level shifting 
 
          CAN_DAMP = 0.0
+
+         IF CONSTANT_DAMPING == 1.0
+
+            IF ITER_COUNT > 2.0
+#
+# Constant damp factor is computed in the APPLY_CONSTANT_DAMP
+# procedure.
+               CALL APPLY_CONSTANT_DAMP
+            ENDIF
+
+         ENDIF
+
          IF DAVID_DYNAMIC == 1.0
 
              IF ITER_COUNT == 2.0
