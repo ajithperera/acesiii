@@ -1646,7 +1646,6 @@
 #      First put the transposed Fock arrays into static arrays 
 #      ------------------------------------------------------- 
 #
-       IF RANK == 0.0
        DO mu   
        DO nu  
 #
@@ -1661,11 +1660,6 @@
 
        execute eig FSpq_a ca
 
-       ENDIF 
-#
-       execute sip_barrier 
-       execute broadcast_array ca
-#
        ENDPROC FOCK_DIAG 
 #      ----------------- 
 #
