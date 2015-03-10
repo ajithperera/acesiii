@@ -227,6 +227,9 @@
       DISTRIBUTED Fpqb_MO(q,q1)
       DISTRIBUTED SCa(mu,p)
       DISTRIBUTED SCb(mu,q)
+      DISTRIBUTED OVLP_INV(mu,nu)
+      DISTRIBUTED OCA(mu,p)
+      DISTRIBUTED BCA(mu,p)
       STATIC Spp(p,p1)
       STATIC OVLP(mu,nu)
       STATIC CA_Prev(mu,p)
@@ -247,6 +250,8 @@
 #bgn_debug
      distributed OVC_T(p,mu)
      distributed OVC(p,p1)
+     distributed fpqa_dbg(mu,nu)
+     distributed fpqb_dbg(mu,nu)
      temp tpx(p,mu)
      temp tpxt(p,mu)
      temp Tppt(p,p1)
@@ -527,7 +532,7 @@
       scalar occ_num
       scalar david_dynamic
       scalar karls_dynamic
-      scalar constant_damping
+      scalar constant_damping 
       scalar e0
       scalar e1
       scalar e2
@@ -573,7 +578,21 @@
       ENDDO p
    
       EXECUTE MULT_ARRAY_BYC CA_TEMP A_OCC_NUMS
+      execute sip_barrier 
 
+# This is a temporary measure to avoid multilying two static
+#  arrays. There should be a fix at a lower level.
+#
+      DO p
+      DO nu
+         Txp(nu,p)     = CA_TEMP(nu,p)
+         T1xp(nu,p)    = CA(nu,p)
+         PUT OCA(nu,p) = Txp(nu,p)
+         PUT BCA(nu,p) = T1xp(nu,p)
+      ENDDO nu
+      ENDDO p
+
+      execute sip_barrier 
 #
 #     The HF density is computed. Davidson damping is incorporated thus
 #     knowledge of the previous iteration is needed. 
@@ -587,9 +606,10 @@
             Tpq(mu,nu) = 0.0
 
             DO p
-#
-               Txp(nu,p)   = CA_TEMP(nu,p)
-               T1pq(mu,nu) = Txp(nu,p)*ca(mu,p)
+               GET  OCA(nu,p)
+               GET  BCA(mu,p)
+               Txp(nu,p)   = OCA(nu,p)  
+               T1pq(mu,nu) = Txp(nu,p)*BCA(mu,p)
                Tpq(mu,nu) += T1pq(mu,nu) 
 #
             ENDDO p
@@ -620,6 +640,18 @@
       ENDDO p
 
       EXECUTE MULT_ARRAY_BYC CA_TEMP A_OCC_NUMS
+      execute sip_barrier 
+
+      DO p
+      DO nu
+         Txp(nu,p)     = CA_TEMP(nu,p)
+         T1xp(nu,p)    = CA(nu,p)
+         PUT OCA(nu,p) = Txp(nu,p)
+         PUT BCA(nu,p) = T1xp(nu,p)
+      ENDDO nu
+      ENDDO p
+
+      execute sip_barrier 
 
       PARDO mu, nu
 #
@@ -630,9 +662,10 @@
             Tpq(mu,nu) = 0.0
 #
             DO p
-
-               Txp(nu,p)   = CA_TEMP(nu,p)
-               T1pq(mu,nu) = Txp(nu,p) * ca(mu,p)
+               GET OCA(nu,p)
+               GET BCA(mu,p)
+               Txp(nu,p)   = OCA(nu,p)
+               T1pq(mu,nu) = Txp(nu,p) * BCA(mu,p)
                Tpq(mu,nu) += T1pq(mu,nu)
 
             ENDDO p
@@ -643,6 +676,46 @@
       ENDPARDO mu, nu 
 #
       ENDPROC HFIDENS
+#     ---------------
+#bgn_debug
+      PROC CHECK_FOCK
+#     ---------------
+       create Fpqa_dbg
+       create Fpqb_dbg
+       execute sip_barrier 
+       DO mu
+       DO nu    
+         Txx(mu,nu)        = Fockrohf_a(mu,nu)
+         PUT Fpqa_dbg(mu,nu) += Txx(mu,nu)
+       ENDDO nu
+       ENDDO mu
+       DO mu
+       DO nu
+          Txx(mu,nu)        = Fockrohf_b(mu,nu)
+          PUT Fpqb_dbg(mu,nu) += Txx(mu,nu)
+       ENDDO nu
+       ENDDO mu
+       execute sip_barrier
+       if rank==0.0
+       esuma = 0.0
+       esumb = 0.0
+       DO mu
+       DO nu
+          get Fpqa_dbg(mu,nu)
+          get Fpqb_dbg(mu,nu)
+#          execute dump_amp Fpqa_dbg(mu,nu)
+          etemp  = Fpqa_dbg(mu,nu) * Fpqa_dbg(mu,nu)
+          esuma += etemp
+          etemp  = Fpqb_dbg(mu,nu) * Fpqb_dbg(mu,nu)
+          esumb += etemp
+       ENDDO nu
+       ENDDO mu
+       execute print_scalar esuma
+       execute print_scalar esumb
+       endif
+       delete Fpqa_dbg
+       delete Fpqb_dbg
+      ENDPROC CHECK_FOCK
 #     ---------------
 #
 # ---------------------------------------------------------------------------- 
@@ -1311,6 +1384,9 @@
                     execute compute_ubatch1 aoint(mu,nu,lambda,sigma)
 ##
         ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 ##
 #
 ############ CLASS 3  ############
@@ -1325,6 +1401,9 @@
                 execute compute_ubatch2 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma 
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
 ############ CLASS 5  ############
 ###################  CLASS A ##############
@@ -1341,6 +1420,9 @@
                    execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 
 ###################  CLASS B ##############
 #  Do three-center part (mu nu |mu la)->(mu nu |la mu ),(nu mu|mu la),(nu mu|la mu)
@@ -1355,6 +1437,9 @@
                    execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
 # 
 ###################  CLASS C ##############
@@ -1370,6 +1455,9 @@
                    execute compute_ubatch4 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
 ############ CLASS 4  ############
 #  Do two-center part (mu nu |mu nu)->(mu nu |nu mu ),(nu mu|mu nu),(nu mu|nu mu)
@@ -1383,8 +1471,10 @@
                    execute compute_ubatch8 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
-#          
 ############ CLASS 2  ############
 #  Do two-center part (mu mu |nu nu)->(nu nu |mu mu )
 #
@@ -1397,9 +1487,11 @@
                    execute compute_ubatch7 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma 
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
 ############ END CLASS 2  ############
-#
 #
 ############ CLASS 1  ############
 #  Do one-center part (mu mu |mu mu)
@@ -1412,6 +1504,9 @@
                    execute compute_ubatch6 aoint(mu,nu,lambda,sigma)
 #
        ENDPARDO mu, nu, lambda, sigma
+#bgn_debug
+#        CALL CHECK_FOCK
+#end_debug
 #
        execute sip_barrier
 #      
@@ -1448,8 +1543,6 @@
        DO mu    
        DO nu   
 #
-            #Txx(mu,nu)        = oed_nai(mu,nu)  
-            #Txx(mu,nu)       += oed_kin(mu,nu)  
             Txx(mu,nu) = 0.0 
             execute return_h1 txx 
 #
@@ -1461,7 +1554,6 @@
        endif 
 
 #bgn_debug
-       execute sip_barrier
        if rank==0.0
        esuma = 0.0
        esumb = 0.0
@@ -1505,7 +1597,7 @@
 #
              GET Fpq_a(mu,nu)
              GET Fpq_b(mu,nu)
-             GET DHFa(mu,nu) 
+             GET DHFa(mu,nu)  
              GET DHFb(mu,nu) 
 #
              Txx(mu,nu)   = 0.0 
@@ -1559,9 +1651,42 @@
              OVLP(mu,nu) = Txx(mu,nu)
        ENDDO nu
        ENDDO mu
-#
+
+      esum=0.0
+      do mu
+      do nu
+         txx(mu,nu) = 0.0
+         x1(mu,nu) = txx(mu,nu)
+#bgn_debug
+         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+         esum += etemp
+#end_debug
+      enddo nu
+      enddo mu
+#bgn_debug
+      execute print_scalar esum
+#end_debug
+
        execute eig_sr_inv oed_ovl x1   
-#
+
+#bgn_debug
+      esuma=0.0
+      esumb=0.0
+      do mu
+      do nu
+         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+         esuma += etemp
+         etemp =  x1(mu,nu) * x1(mu,nu)
+         esumb += etemp
+         txx(mu,nu) = x1(mu,nu)
+         PUT OVLP_INV(mu,nu) = txx(mu,nu)
+      enddo nu
+      enddo mu
+      execute print_scalar esuma
+      execute print_scalar esumb
+      execute sip_barrier 
+#end_debug
+
 #      Form the Q-matrix --> U s**{-1/2) 
 #      --------------------------------- 
 #
@@ -1570,7 +1695,11 @@
           Txx(mu,nu) = 0.0 
 #
           DO lambda 
-             T1xx(mu,nu) = x1(mu,lambda)*oed_ovl(lambda,nu) 
+
+              GET OVLP_INV(mu,lambda)
+#             T1xx(mu,nu) = x1(mu,lambda)*oed_ovl(lambda,nu) 
+#
+             T1xx(mu,nu) = OVLP_INV(mu,lambda)*oed_ovl(lambda,nu) 
              Txx(mu,nu) += T1xx(mu,nu) 
           ENDDO lambda  
 #
@@ -1578,7 +1707,22 @@
 #
        ENDPARDO mu, nu  
 #
+#bgn_debug
+      execute sip_barrier
+      esum=0.0
+      if rank==0.0
+      do mu
+      do nu
+         get  Qxx(mu,nu)
+         etemp = Qxx(mu,nu) * Qxx(mu,nu)
+         esum += etemp
+      enddo nu
+      enddo mu
+      endif
+      execute print_scalar esum
+#end_debug
       #execute print_scalar scfeneg
+
        ENDPROC OVER_HALF 
 #      ----------------- 
 #
@@ -1660,7 +1804,8 @@
        ENDDO mu   
 
        execute eig FSpq_a ca
-
+       execute sip_barrier 
+#
        ENDPROC FOCK_DIAG 
 #      ----------------- 
 #
@@ -1801,7 +1946,9 @@
          execute sip_barrier
          CALL FOCK_DIAG
          CALL C_BTRAN
+         execute sip_barrier
          EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+         execute sip_barrier 
          CALL HFIDENS
          execute sip_barrier
 
@@ -1878,7 +2025,6 @@
          execute print_scalar four
 
          IF NATOMS > 3
-            execute sip_barrier
             etemp = 0.0
             DO katom
             DO jatom
@@ -1982,6 +2128,7 @@
          ENDDO mu
 
          CALL FOCK_MATRIX_FAST
+         execute sip_barrier
 #
 #     Construct S^(-1/2) F S^(-1/2)
 #     -----------------------------
@@ -1994,6 +2141,7 @@
 #     ------------------------------------
 #
          CALL C_BTRAN
+         execute sip_barrier
 
 #     Compute the new HF density
 #     ----------------------
@@ -3297,13 +3445,13 @@
 #
 #  Apply constant damping, Damp factor is computed using a
 #  simple formula (1/1+constant) where the constant is user
-#  choosen
+#  choosen 
 #
       DAMP_DENOM  = 1.0
       DAMP_DENOM += DAMP_FACTOR
       DAMP_FACTOR  = 1.0/DAMP_DENOM
 #bgn_debug
-     execute print_scalar damp_factor
+     execute print_scalar damp_factor 
 #end_debug
 #
       PARDO mu, nu
@@ -3355,7 +3503,7 @@
       execute sip_barrier
 
       ENDPROC APPLY_CONSTANT_DAMP
-#     ---------------------------
+#     ------------------------
 
      PROC APPLY_DAVID_DAMP
 #    ---------------------
@@ -3753,6 +3901,12 @@
       ENDDO nu
       ENDDO mu
 
+      DO IITER1
+      DO JJTER2
+         dflags12(iiter1,jjter2) = 0.0
+      ENDDO JJTER2
+      ENDDO IITER1
+#
       zero = 0.0 
       mone = -1.0 
       one = 1.0 
@@ -3849,11 +4003,11 @@
 
       If Damping == 2.0
          constant_damping = 1.0
-         damp_factor      = damp_thres
+         damp_factor      = damp_thres 
          damp_factor     += 0.125
       Endif
 
-      If Damping == 2.0
+      If Damping == 3.0
          Karls_dynamic = 1.0
       Endif
  
@@ -3907,6 +4061,9 @@
 #     ------------------------------------------- 
 #
       CREATE Qxx 
+      CREATE OVLP_INV
+      CREATE OCA
+      CREATE BCA
       execute sip_barrier 
 #
 # Initialize the static arrays of SCF vectors and occupation numbers
@@ -3925,7 +4082,7 @@
 #     Construct the initial guess of the density matrix
 #     -----------------------------------------------
 #   
-      CALL IGUESS
+#      CALL IGUESS
 
 #
 # Delete the distributed arrays used in initial guess routines
@@ -3938,6 +4095,29 @@
       DELETE CBT_b
       DELETE Fpq_a
       DELETE Fpq_b
+#      DELETE OVLP_INV
+#bgn_debug
+     DO mu
+     Do nu
+        if mu == nu
+           Txx(mu,nu) = 1.0
+           PUT dhfa(mu,nu) = txx(mu,nu)
+           PUT dhfb(mu,nu) = txx(mu,nu)
+         endif
+     enddo nu
+     enddo mu
+     execute sip_barrier
+     EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+     CALL OVER_HALF
+     execute sip_barrier
+     create Fpq_a
+     create Fpq_b
+     execute sip_barrier
+     CALL STORE_FOCK_DENS_VEC_OLD
+     delete Fpq_a
+     delete Fpq_b
+     DELETE OVLP_INV
+#end_debug
 
 # Start iterations 
 # ---------------- 
@@ -4043,12 +4223,26 @@
 
             IF ITER_COUNT > 2.0
 #
-# Constant damp factor is computed in the APPLY_CONSTANT_DAMP
+# Constant damp factor is computed in the APPLY_CONSTANT_DAMP 
 # procedure.
-               CALL APPLY_CONSTANT_DAMP
-            ENDIF
+               IF MAX_D_DIFF > DAMP_THRES
+                  CALL APPLY_CONSTANT_DAMP
+                  CAN_DAMP = 1.0
+               ENDIF
 
-         ENDIF
+               IF CAN_DAMP == 0.0
+                  CONSTANT_DAMPING  = 0.0
+                  DIIS_START       += DIIS_ORDER
+               ENDIF 
+
+               IF ITER_COUNT  >  KILL_DAMP
+                  CONSTANT_DAMPING  = 0.0
+                  DIIS_START       += DIIS_ORDER
+               ENDIF
+
+            ENDIF 
+
+         ENDIF 
 
          IF DAVID_DYNAMIC == 1.0
 
@@ -4251,6 +4445,7 @@
 #        ------------------------------------ 
 #
          CALL C_BTRAN 
+         execute sip_barrier
 
          IF LOCK_OCCS == 1.0
             EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO

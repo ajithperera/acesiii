@@ -138,10 +138,12 @@
       temp Txi(mu,i) 
       temp Txi_t(mu,i) 
       temp Txp(mu,p) 
+      temp T1xp(mu,p) 
       temp T1xi(mu,i) 
       temp Txj(mu,j) 
       temp Txj_t(mu,j) 
       temp Txq(mu,q) 
+      temp T1xq(mu,q) 
       temp T1xj(mu,j) 
       temp Txx(mu,nu) 
       temp TAxx(mu,nu) 
@@ -172,10 +174,8 @@
       temp T1ii(i,i1) 
       temp Tjj(j,j1) 
       temp T1jj(j,j1) 
-      temp T1xp(mu,p) 
       temp Tpp(p,p1) 
       temp T1pp(p,p1) 
-      temp T1xq(mu,q) 
       temp Tqq(q,q1) 
       temp T1qq(q,q1) 
       temp Taa(a,a1)
@@ -503,8 +503,13 @@
       DISTRIBUTED Fpqb_MO(q,q1)
       DISTRIBUTED SCa(mu,p)
       DISTRIBUTED SCb(mu,q)
+      DISTRIBUTED OCA(mu,p)
+      DISTRIBUTED OCB(mu,q)
+      DISTRIBUTED BCA(mu,p)
+      DISTRIBUTED BCB(mu,q)
       STATIC Spp(p,p1)
       STATIC OVLP(mu,nu)
+      DISTRIBUTED OVLP_INV(mu,nu)
       STATIC CA_Prev(mu,p)
       STATIC CB_Prev(mu,q)
       STATIC CA_TEMP(mu,p)
@@ -596,6 +601,29 @@
 
       EXECUTE MULT_ARRAY_BYC CA_TEMP A_OCC_NUMS
       EXECUTE MULT_ARRAY_BYC CB_TEMP B_OCC_NUMS
+      execute sip_barrier
+
+# This is a temporary measure to avoid multplication of two
+# static arrays. 
+
+      DO p
+      DO nu
+         Txp(nu,p)     = CA_TEMP(nu,p)
+         T1xp(nu,p)    = CA(nu,p)
+         PUT OCA(nu,p) = Txp(nu,p)
+         PUT BCA(nu,p) = T1xp(nu,p)
+      ENDDO nu
+      ENDDO p
+
+      DO q
+      DO nu
+         Txq(nu,q)     = CB_TEMP(nu,q)
+         T1xq(nu,q)    = CB(nu,q)
+         PUT OCB(nu,q) = Txq(nu,q)
+         PUT BCB(nu,q) = T1xq(nu,q)
+      ENDDO nu
+      ENDDO q
+      execute sip_barrier
 
       PARDO mu, nu 
 
@@ -610,9 +638,10 @@
 #            Tpq(mu,nu) *= damp  
 #
             DO p
-
-               Txp(nu,p)   = CA_TEMP(nu,p)
-               T1pq(mu,nu) = Txp(nu,p) * ca(mu,p)
+               GET OCA(nu,p)
+               GET BCA(mu,p)
+               Txp(nu,p)   = OCA(nu,p)
+               T1pq(mu,nu) = Txp(nu,p) * BCA(mu,p)
                Tpq(mu,nu) += T1pq(mu,nu) 
 
             ENDDO p
@@ -630,9 +659,10 @@
 #            Tpq(mu,nu) *= damp  
 #
             DO q
-
-               Txq(nu,q)   = CB_TEMP(nu,q)
-               T1pq(mu,nu) = Txq(nu,q) * cb(mu,q)
+               GET OCB(nu,q)
+               GET BCB(mu,q)
+               Txq(nu,q)   = OCB(nu,q)
+               T1pq(mu,nu) = Txq(nu,q) * BCB(mu,q)
                Tpq(mu,nu) += T1pq(mu,nu) 
 #
             ENDDO q
@@ -671,6 +701,29 @@
  
       EXECUTE MULT_ARRAY_BYC CA_TEMP A_OCC_NUMS 
       EXECUTE MULT_ARRAY_BYC CB_TEMP B_OCC_NUMS 
+      execute sip_barrier 
+
+# This is a temporary measure to avoid multilying two static
+# arrays. There should be a fix at a lower level.
+#
+      DO p
+      DO nu
+         Txp(nu,p)     = CA_TEMP(nu,p)
+         T1xp(nu,p)    = CA(nu,p)
+         PUT OCA(nu,p) = Txp(nu,p)
+         PUT BCA(nu,p) = T1xp(nu,p)
+      ENDDO nu
+      ENDDO p
+
+      DO q
+      DO nu
+         Txq(nu,q)     = CB_TEMP(nu,q)
+         T1xq(nu,q)    = CB(nu,q)
+         PUT OCB(nu,q) = Txq(nu,q)
+         PUT BCB(nu,q) = T1xq(nu,q)
+      ENDDO nu
+      ENDDO q
+      execute sip_barrier 
 
       PARDO mu, nu 
 #
@@ -681,9 +734,10 @@
             Tpq(mu,nu) = 0.0 
 #
             DO p
-
-               Txp(nu,p)   = CA_TEMP(nu,p)
-               T1pq(mu,nu) = Txp(nu,p) * ca(mu,p)
+               GET OCA(nu,p) 
+               GET BCA(mu,p) 
+               Txp(nu,p)   = OCA(nu,p)
+               T1pq(mu,nu) = Txp(nu,p) * BCA(mu,p)
                Tpq(mu,nu) += T1pq(mu,nu)
 
             ENDDO p
@@ -696,9 +750,10 @@
             Tpq(mu,nu) = 0.0 
 
             DO q
-
-               Txq(nu,q)   = CB_TEMP(nu,q)
-               T1pq(mu,nu) = cb(mu,q) * Txq(nu,q)
+               GET OCB(nu,q) 
+               GET BCB(mu,q) 
+               Txq(nu,q)   = OCB(nu,q)
+               T1pq(mu,nu) = Txq(nu,q) * BCB(mu,q)
                Tpq(mu,nu) += T1pq(mu,nu)
 
             ENDDO q
@@ -1622,9 +1677,45 @@
              OVLP(mu,nu) = Txx(mu,nu)
        ENDDO nu
        ENDDO mu
+
+#bgn_debug
+      esum=0.0
+      do mu
+      do nu
+         txx(mu,nu) = 0.0
+         x1(mu,nu) = txx(mu,nu)
+#bgn_debug
+         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+         esum += etemp
+#end_debug
+      enddo nu
+      enddo mu
+#bgn_debug
+      execute print_scalar esum
+#end_debug
        
        execute eig_sr_inv oed_ovl x1   
-#
+
+#bgn_debug
+      esuma=0.0
+      esumb=0.0
+      do mu
+      do nu
+         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+         esuma += etemp
+         etemp = x1(mu,nu) * x1(mu,nu)
+         esumb += etemp
+         txx(mu,nu) = x1(mu,nu)
+         PUT OVLP_INV(mu,nu) = txx(mu,nu)
+      enddo nu
+      enddo mu
+      execute print_scalar esuma
+      execute print_scalar esumb
+      execute sip_barrier 
+      
+#end_debug
+       
+      
 #      Form the Q-matrix --> U s**{-1/2) 
 #      --------------------------------- 
 #
@@ -1633,7 +1724,11 @@
           Txx(mu,nu) = 0.0 
 #
           DO lambda 
-             T1xx(mu,nu) = x1(mu,lambda)*oed_ovl(lambda,nu) 
+              GET OVLP_INV(mu,lambda)
+
+#             T1xx(mu,nu) = x1(mu,lambda)*oed_ovl(lambda,nu) 
+#
+             T1xx(mu,nu) = OVLP_INV(mu,lambda) * oed_ovl(lambda,nu)
              Txx(mu,nu) += T1xx(mu,nu) 
           ENDDO lambda  
 #
@@ -1642,20 +1737,19 @@
        ENDPARDO mu, nu  
 
 #bgn_debug 
-#      esum=0
-#      if rank==0.0
-#      do mu
-#      do nu
-#         get  Qxx(mu,nu)
-#         etemp = Qxx(mu,nu) * Qxx(mu,nu)
-#         esum += etemp
-#      enddo nu
-#      enddo mu
-#      endif 
-#      execute print_scalar esum
+      execute sip_barrier 
+      esum=0.0
+      if rank==0.0
+      do mu
+      do nu
+         get  Qxx(mu,nu)
+         etemp = Qxx(mu,nu) * Qxx(mu,nu)
+         esum += etemp
+      enddo nu
+      enddo mu
+      endif 
+      execute print_scalar esum
 #end_debug
-        
-
 #
       #execute print_scalar scfeneg
        ENDPROC OVER_HALF 
@@ -1702,6 +1796,25 @@
 #
        ENDPARDO mu, sigma   
 #
+##bgn_debug
+       execute sip_barrier
+       if rank==0.0
+          esuma = 0.0
+          esumb = 0.0
+          DO mu
+          DO nu
+              get FTpq_a(mu,nu)
+              get FTpq_b(mu,nu)
+              etemp  = FTpq_a(mu,nu) * FTpq_a(mu,nu)
+              esuma += etemp
+              etemp  = FTpq_b(mu,nu) * FTpq_b(mu,nu)
+              esumb += etemp
+           ENDDO nu
+           ENDDO mu
+       endif
+       execute print_scalar esuma
+       execute print_scalar esumb
+#end_debug
        ENDPROC FOCK_TRANSPOSE 
 #      ---------------------- 
 #
@@ -1923,7 +2036,9 @@
          CALL FOCK_TRANSPOSE
          execute sip_barrier
          CALL FOCK_DIAG
+         execute sip_barrier
          CALL C_BTRAN
+         execute sip_barrier 
          EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
          EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
          CALL HFIDENS
@@ -2053,7 +2168,7 @@
             IF Natoms <= 3
                txx(mu,nu) = 0.0
             ENDIF
-            PUT DHFA(mu,nu) += txx(mu,nu)
+            PUT IDHFA(mu,nu) += txx(mu,nu)
          ENDDO nu
          ENDDO mu
 
@@ -2063,7 +2178,7 @@
             IF Natoms <= 3
                txx(mu,nu) = 0.0
             ENDIF
-            PUT DHFB(mu,nu) += txx(mu,nu)
+            PUT IDHFB(mu,nu) += txx(mu,nu)
          ENDDO nu
          ENDDO mu
          execute sip_barrier 
@@ -2073,11 +2188,11 @@
       esumb = 0.0
       DO mu
       DO nu
-            get DHFA(mu,nu)
-            get DHFB(mu,nu)
-            tmp = DHFA(mu,nu) * DHFA(mu,nu)
+            get IDHFA(mu,nu)
+            get IDHFB(mu,nu)
+            tmp = IDHFA(mu,nu) * IDHFA(mu,nu)
             esuma += tmp
-            tmp = DHFB(mu,nu) * DHFB(mu,nu)
+            tmp = IDHFB(mu,nu) * IDHFB(mu,nu)
             esumb += tmp
       ENDDO nu
       ENDDO mu
@@ -2126,11 +2241,13 @@
          execute sip_barrier
 
          CALL FOCK_DIAG
+         execute sip_barrier
 #
 #     Back transform the coefficient array
 #     ------------------------------------
 #
          CALL C_BTRAN
+         execute sip_barrier
 
 #     Compute the new HF density
 #     ----------------------
@@ -4391,6 +4508,12 @@
       ENDDO nu
       ENDDO mu
 #
+      DO IITER1
+      DO JJTER2
+         dflags12(iiter1,jjter2) = 0.0
+      ENDDO JJTER2
+      ENDDO IITER1
+#
       zero = 0.0 
       mone = -1.0 
       one = 1.0 
@@ -4552,6 +4675,11 @@
       CREATE Qxx 
       CREATE IDhfa 
       CREATE IDhfb 
+      CREATE OVLP_INV
+      CREATE OCA
+      CREATE OCB
+      CREATE BCA
+      CREATE BCB
       execute sip_barrier 
 #
 # Initialize the static arrays of SCF vectors and occupation numbers
@@ -4580,16 +4708,51 @@
 #     Construct the initial guess of the density matrix
 #     -----------------------------------------------
 #    
-      CALL IGUESS
+#      CALL IGUESS
 
 # Delete the distributed arrays used in initial guess routines
 
+      DELETE IDHFa
+      DELETE IDHFb
       DELETE FTpq_a  
       DELETE FTpq_b  
       DELETE CBT_a 
       DELETE CBT_b 
       DELETE Fpq_a 
       DELETE Fpq_b 
+      DELETE OVLP_INV
+
+#bgn_debug
+#     esuma=0.0
+#     do mu
+#     do nu
+#        etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+#        esuma += etemp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar esuma
+     DO mu
+     Do nu
+        if mu == nu
+           Txx(mu,nu) = 1.0
+           PUT dhfa(mu,nu) = txx(mu,nu)
+           PUT dhfb(mu,nu) = txx(mu,nu)
+         endif
+     enddo nu
+     enddo mu
+     execute sip_barrier
+     EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+     EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
+     CALL OVER_HALF
+     execute sip_barrier
+     create Fpq_a
+     create Fpq_b
+     execute sip_barrier
+     CALL STORE_FOCK_DENS_VEC_OLD
+     delete Fpq_a
+     delete Fpq_b
+     DELETE OVLP_INV
+#end_debug
 
 # Start iterations 
 # ---------------- 
@@ -4609,6 +4772,7 @@
          CREATE CBT_b 
          CREATE FTpq_a  
          CREATE FTpq_b  
+         execute sip_barrier 
 #
 #        Construct the new Fock matrix 
 #        -----------------------------
@@ -4698,8 +4862,21 @@
 #
 # Constant damp factor is computed in the APPLY_CONSTANT_DAMP
 # procedure.
-#               CALL APPLY_CONSTANT_DAMP
-#
+                  IF MAX_D_DIFF > DAMP_THRES
+                     CALL APPLY_CONSTANT_DAMP
+                     CAN_DAMP = 1.0
+                   ENDIF 
+
+                   IF CAN_DAMP == 0.0
+                      CONSTANT_DAMPING  = 0.0
+                      DIIS_START       += DIIS_ORDER
+                   ENDIF 
+
+                   IF ITER_COUNT  >  KILL_DAMP
+                      CONSTANT_DAMPING  = 0.0
+                      DIIS_START       += DIIS_ORDER
+                   ENDIF
+
                ENDIF
 
             ENDIF
@@ -4793,6 +4970,7 @@
                  IF ITER_COUNT  >  KILL_DAMP
                      DAVID_DYNAMIC = 0.0
                      DAMPING       = 0.0
+                     DIIS_START   += DIIS_ORDER
                  ENDIF 
  
                ENDIF 
@@ -4905,11 +5083,13 @@
 #        -------------------------------------- 
 #
          CALL FOCK_DIAG 
+         execute sip_barrier
 #
 #        Back transform the coefficient array 
 #        ------------------------------------ 
 #
          CALL C_BTRAN 
+         execute sip_barrier
 
          IF LOCK_OCCS == 1.0
             EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
