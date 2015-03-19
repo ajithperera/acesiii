@@ -47,6 +47,7 @@ NO_SERVERS=YES
 
 scf_test.sio
 IGNORE_DROPMO=YES
+NO_SERVERS=YES 
 
 scf_lbo_test.sio
 IGNORE_DROPMO=YES
@@ -62,6 +63,14 @@ IGNORE_DROPMO=YES
 
 scf_uhf_new.sio
 IGNORE_DROPMO=YES
+
+scf_uhf.sio
+IGNORE_DROPMO=YES
+NO_SERVERS=YES 
+
+scf_rhf.sio
+IGNORE_DROPMO=YES
+NO_SERVERS=YES 
 
 mp2_rhf_sp.sio
 NO_SERVERS=YES 

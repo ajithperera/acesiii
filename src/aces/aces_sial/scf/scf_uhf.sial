@@ -135,6 +135,7 @@
       temp I1xj(mu,j) 
       temp Tpq(mu,nu) 
       temp T1pq(mu,nu) 
+      temp T2pq(mu,nu) 
       temp Txi(mu,i) 
       temp Txi_t(mu,i) 
       temp Txp(mu,p) 
@@ -535,6 +536,9 @@
 #end_debug
       Temp TXX_a(mu,nu)
       Temp TXX_b(mu,nu)
+      Temp ToccA(nbfnsA)
+      Temp ToccB(nbfnsB)
+      Temp Tf12(iiter1,jjter2)
 
       scalar e1m_tmp 
       scalar e1p_tmp 
@@ -641,7 +645,8 @@
                GET OCA(nu,p)
                GET BCA(mu,p)
                Txp(nu,p)   = OCA(nu,p)
-               T1pq(mu,nu) = Txp(nu,p) * BCA(mu,p)
+               T1xp(mu,p)  = BCA(mu,p)
+               T1pq(mu,nu) = Txp(nu,p) * T1xp(mu,p) 
                Tpq(mu,nu) += T1pq(mu,nu) 
 
             ENDDO p
@@ -662,7 +667,8 @@
                GET OCB(nu,q)
                GET BCB(mu,q)
                Txq(nu,q)   = OCB(nu,q)
-               T1pq(mu,nu) = Txq(nu,q) * BCB(mu,q)
+               T1xq(mu,q)  = BCB(mu,q)
+               T1pq(mu,nu) = Txq(nu,q) * T1xq(mu,q)
                Tpq(mu,nu) += T1pq(mu,nu) 
 #
             ENDDO q
@@ -702,6 +708,55 @@
       EXECUTE MULT_ARRAY_BYC CA_TEMP A_OCC_NUMS 
       EXECUTE MULT_ARRAY_BYC CB_TEMP B_OCC_NUMS 
       execute sip_barrier 
+#bgn_debug
+#      esuma=0.0
+#      esumb=0.0
+#      execute Sum_2D_Array  CA_TEMP esuma 
+#      execute Sum_2D_Array  CB_TEMP esumb
+#      execute print_scalar esuma
+#      execute print_scalar esumb
+#      esuma=0.0
+#      esumb=0.0
+#      execute Sum_2D_Array  CA esuma 
+#      execute Sum_2D_Array  CB esumb
+#      execute print_scalar esuma
+#      execute print_scalar esumb
+      esuma=0.0
+      esumb=0.0
+      do nu
+      do p
+         Txp(nu,p)     = CA_TEMP(nu,p)
+         tmp = Txp(nu,p) * Txp(nu,p) 
+         esuma += tmp
+      enddo p
+      enddo nu
+      execute print_scalar esuma
+      do nu
+      do q
+         Txq(nu,q)     = CB_TEMP(nu,q)
+         tmp = Txq(nu,q) * Txq(nu,q)
+         esumb += tmp
+      enddo q
+      enddo nu
+      execute print_scalar esumb
+      esuma = 0.0
+      esumb = 0.0
+      do mu
+      do p
+         tmp = Ca(mu,p) * Ca(mu,p)
+         esuma += tmp
+      enddo p
+      enddo mu
+      execute print_scalar esuma
+      do mu
+      do q
+         tmp = Cb(mu,q) * Cb(mu,q)
+         esumb += tmp
+      enddo q
+      enddo mu
+      execute print_scalar esumb
+#end_debug
+
 
 # This is a temporary measure to avoid multilying two static
 # arrays. There should be a fix at a lower level.
@@ -737,12 +792,16 @@
                GET OCA(nu,p) 
                GET BCA(mu,p) 
                Txp(nu,p)   = OCA(nu,p)
-               T1pq(mu,nu) = Txp(nu,p) * BCA(mu,p)
+               T1xp(mu,p)  = BCA(mu,p)
+               T1pq(mu,nu) = Txp(nu,p) *  T1xp(mu,p)
                Tpq(mu,nu) += T1pq(mu,nu)
 
             ENDDO p
 # 
             PUT Dhfa(mu,nu) = Tpq(mu,nu)
+      ENDPARDO mu, nu 
+
+      PARDO mu, nu 
 #
 #           beta component 
 #           -------------- 
@@ -753,7 +812,8 @@
                GET OCB(nu,q) 
                GET BCB(mu,q) 
                Txq(nu,q)   = OCB(nu,q)
-               T1pq(mu,nu) = Txq(nu,q) * BCB(mu,q)
+               T1xq(mu,q)  = BCB(mu,q)
+               T1pq(mu,nu) = Txq(nu,q) * T1xq(mu,q)
                Tpq(mu,nu) += T1pq(mu,nu)
 
             ENDDO q
@@ -1678,41 +1738,32 @@
        ENDDO nu
        ENDDO mu
 
-#bgn_debug
-      esum=0.0
-      do mu
-      do nu
-         txx(mu,nu) = 0.0
-         x1(mu,nu) = txx(mu,nu)
-#bgn_debug
-         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
-         esum += etemp
-#end_debug
-      enddo nu
-      enddo mu
-#bgn_debug
-      execute print_scalar esum
-#end_debug
-       
        execute eig_sr_inv oed_ovl x1   
 
-#bgn_debug
-      esuma=0.0
-      esumb=0.0
-      do mu
-      do nu
-         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
-         esuma += etemp
-         etemp = x1(mu,nu) * x1(mu,nu)
-         esumb += etemp
+       DO mu
+       DO nu
          txx(mu,nu) = x1(mu,nu)
          PUT OVLP_INV(mu,nu) = txx(mu,nu)
-      enddo nu
-      enddo mu
-      execute print_scalar esuma
-      execute print_scalar esumb
-      execute sip_barrier 
-      
+       ENDDO nu
+       ENDDO mu
+       execute sip_barrier
+
+#bgn_debug
+#      esuma=0.0
+#      esumb=0.0
+#      do mu
+#      do nu
+#         etemp = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+#         esuma += etemp
+#         etemp = x1(mu,nu) * x1(mu,nu)
+#         esumb += etemp
+#         txx(mu,nu) = x1(mu,nu)
+#         PUT OVLP_INV(mu,nu) = txx(mu,nu)
+#      enddo nu
+#      enddo mu
+#      execute print_scalar esuma
+#      execute print_scalar esumb
+#      execute sip_barrier 
 #end_debug
        
       
@@ -1724,12 +1775,14 @@
           Txx(mu,nu) = 0.0 
 #
           DO lambda 
-              GET OVLP_INV(mu,lambda)
 
-#             T1xx(mu,nu) = x1(mu,lambda)*oed_ovl(lambda,nu) 
-#
-             T1xx(mu,nu) = OVLP_INV(mu,lambda) * oed_ovl(lambda,nu)
+             GET OVLP_INV(mu,lambda) 
+              
+             T2xx(mu,lambda) = OVLP_INV(mu,lambda)
+             T3XX(lambda,nu) = oed_ovl(lambda,nu)
+             T1xx(mu,nu)     =  T2xx(mu,lambda) * T3XX(lambda,nu)
              Txx(mu,nu) += T1xx(mu,nu) 
+
           ENDDO lambda  
 #
           PUT Qxx(mu,nu) = Txx(mu,nu)  
@@ -1831,14 +1884,48 @@
 #
           GET             FTpq_a(mu,nu) 
           GET             FTpq_b(mu,nu)
+          Txx(mu,nu)  = FTpq_a(mu,nu)
+          T1xx(mu,nu) = FTpq_b(mu,nu)
 #
-          FSpq_a(mu,nu) = FTpq_a(mu,nu)
-          FSpq_b(mu,nu) = FTpq_b(mu,nu)
+          FSpq_a(mu,nu) = Txx(mu,nu)
+          FSpq_b(mu,nu) = T1xx(mu,nu)
 #
        ENDDO nu  
        ENDDO mu   
-       execute eig FSpq_a ca
-       execute eig FSpq_b Cb  
+       execute sip_barrier 
+#bgn_debug
+       esuma=0.0
+       esumb=0.0
+       execute sum_2d_array FSpq_a esuma 
+       execute sum_2d_array FSpq_b esumb
+       execute print_scalar esuma
+       execute print_scalar esumb
+#end_debug
+       execute eig FSpq_a CA
+       execute eig FSpq_b CB
+
+#       DO mu 
+#       DO p
+#         Txp(mu,p) = CA_TEMP(mu,p)
+#         CA(mu,p)  = Txp(mu,p)
+#       ENDDO p
+#       ENDDO mu
+#
+#       DO mu 
+#       DO q
+#          Txq(mu,q) = CB_TEMP(mu,q)
+#          CB(mu,q)  = Txq(mu,q)
+#       ENDDO q
+#       ENDDO mu
+#
+#bgn_debug
+       esuma=0.0
+       esumb=0.0
+       execute sum_2d_array ca esuma 
+       execute sum_2d_array cb esumb
+       execute print_scalar esuma
+       execute print_scalar esumb
+#end_debug
 #
        ENDPROC FOCK_DIAG 
 #      ----------------- 
@@ -1858,8 +1945,9 @@
           DO nu 
 #
              GET          Qxx(mu,nu) 
+             Txx(mu,nu) = Qxx(mu,nu)
 #
-             T1xp(mu,p) = Qxx(mu,nu)*ca(nu,p)   
+             T1xp(mu,p) = Txx(mu,nu)*ca(nu,p)   
              Txp(mu,p) += T1xp(mu,p) 
 #
           ENDDO nu 
@@ -1875,8 +1963,9 @@
           DO nu 
 #
              GET          Qxx(mu,nu) 
+             Txx(mu,nu) = Qxx(mu,nu)
 #
-             T1xq(mu,q) = Qxx(mu,nu)*cb(nu,q)   
+             T1xq(mu,q) = Txx(mu,nu)*cb(nu,q)   
              Txq(mu,q) += T1xq(mu,q) 
 #
           ENDDO nu 
@@ -1893,15 +1982,18 @@
        DO mu 
        DO p 
           GET        CBT_a(mu,p) 
-          ca(mu,p) = CBT_a(mu,p) 
+          TXP(mu,p) = CBT_a(mu,p)
+          ca(mu,p)  = TXP(mu,p) 
        ENDDO p 
        ENDDO mu  
        DO mu 
        DO q 
           GET        CBT_b(mu,q) 
-          cb(mu,q) = CBT_b(mu,q) 
+          TXQ(mu,q) = CBT_b(mu,q)
+          cb(mu,q)  = TXQ(mu,q) 
        ENDDO q 
        ENDDO mu  
+       execute sip_barrier 
 
 #       execute sip_barrier
 #       if rank == 0.0
@@ -2030,7 +2122,7 @@
             PUT Fpq_b(mu,nu) = Txx(mu,nu)
          ENDPARDO mu, nu
          execute sip_barrier
-
+#
          CALL OVER_HALF
          execute sip_barrier
          CALL FOCK_TRANSPOSE
@@ -2075,6 +2167,8 @@
       enddo mu
       execute print_scalar esuma
       execute print_scalar esumb
+
+
 
 # Check the orthonaormality of NEW Vectors C^tSC =1
 
@@ -2256,6 +2350,22 @@
          EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
          CALL HFIDENS
          execute sip_barrier
+#bgn_debug
+      esuma = 0.0
+      esumb = 0.0
+      do mu
+      do nu
+         get DHFa(mu,nu)
+         get DHFb(mu,nu)
+         tmp = DHFa(mu,nu) * DHFa(mu,nu)
+         esuma += tmp
+         tmp = DHFb(mu,nu) * DHFb(mu,nu)
+         esumb += tmp
+      enddo nu
+      enddo mu
+      execute print_scalar esuma
+      execute print_scalar esumb
+#end_debug
 
 #     This energy is not suppose to be all that great
 #     -----------------------------------------------
@@ -4491,29 +4601,6 @@
       ecrit  = scf_conv # Energy tolerance  
       execute get_my_rank rank
 #
-#     Perform initial (aa|bb) integral computation to set Schwartz paramaters
-#     -----------------------------------------------------------------------
-#
-      DO mu
-      DO nu
-      DO lambda
-      DO sigma
-            IF mu == lambda
-            IF nu == sigma
-               execute compute_aabb_batch aoint(mu,nu,lambda,sigma)
-            ENDIF
-            ENDIF
-      ENDDO sigma
-      ENDDO lambda
-      ENDDO nu
-      ENDDO mu
-#
-      DO IITER1
-      DO JJTER2
-         dflags12(iiter1,jjter2) = 0.0
-      ENDDO JJTER2
-      ENDDO IITER1
-#
       zero = 0.0 
       mone = -1.0 
       one = 1.0 
@@ -4684,31 +4771,116 @@
 #
 # Initialize the static arrays of SCF vectors and occupation numbers
 # ------------------------------------------------------------------
-
       DO mu
       DO p
-         ca(mu,p) = 0.0
+         Txp(mu,p) = 0.0
+         ca(mu,p) = Txp(mu,p)
+         CA_Prev(mu,p) = Txp(mu,p) 
+         CA_TEMP(mu,p) = Txp(mu,p)
       ENDDO p
       ENDDO mu
 
       DO mu
       DO q
-         cb(mu,q) = 0.0
+         Txq(mu,q) = 0.0
+         cb(mu,q)  = Txq(mu,q)
+         CB_Prev(mu,q) = Txq(mu,q) 
+         CB_TEMP(mu,q) = Txq(mu,q)
       ENDDO q
       ENDDO mu
 
+      DO p
+      DO i
+         Tpi(p,i) = 0
+         ORB_OVLP_A(p,i) = Tpi(p,i)
+      ENDDO i
+      ENDDO p
+
+      DO q
+      DO j
+         Tqj(q,j) = 0.0
+         ORB_OVLP_B(q,j) = Tqj(q,j)
+      ENDDO j
+      ENDDO q
+
+      DO p
+      DO p1
+         Tpp(p,p1) = 0.0
+         Fpqa_MO_VSHIFT(p,p1) = Tpp(p,p1)
+      ENDDO p1
+      ENDDO p
+
+      DO q
+      DO q1
+         Tqq(q,q1) = 0.0
+         Fpqb_MO_VSHIFT(q,q1) = Tqq(q,q1)
+      ENDDO q1
+      ENDDO q
+      
+      DO ITHREE 
+         DAMP_PARMS(ITHREE) = 0.0
+      ENDDO ITHREE
+
       DO nbfnsA
-          A_OCC_NUMS (nbfnsA) = 0.0
+          ToccA(nbfnsA)        = 0.0
+          A_OCC_NUMS (nbfnsA) = ToccA(nbfnsA)
       ENDDO nbfnsA
 
       DO nbfnsB
-          B_OCC_NUMS (nbfnsB) = 0.0
+          ToccB(nbfnsB)       = 0.0
+          B_OCC_NUMS (nbfnsB) = ToccB(nbfnsB)
       ENDDO nbfnsB
+
+      DO IITER1
+      DO JJTER2
+         Tf12(iiter1,jjter2)     = 0.0
+         dflags12(iiter1,jjter2) = Tf12(iiter1,jjter2)
+      ENDDO JJTER2
+      ENDDO IITER1
+ 
+      DO KITER 
+      DO KPTR1 
+         tpinf(kiter,kptr1) = 0
+         tpinf(kiter,kptr1) = tpinf(kiter,kptr1)
+      ENDDO KPTR1 
+      ENDDO KITER 
+
+      DO katom
+      DO jatom
+             atom(katom,jatom) = 0.0
+      ENDDO jatom
+      ENDDO katom
+
+      DO MU
+      DO NU
+         txx(mu,nu) = 0.0
+         x1(mu,nu)  = txx(mu,nu)
+         FSpq_a(mu,nu) = txx(mu,nu)
+         FSpq_b(mu,nu) = txx(mu,nu)
+      ENDDO NU
+      ENDDO MU
+      execute sip_barrier 
+#
+#     Perform initial (aa|bb) integral computation to set Schwartz paramaters
+#     -----------------------------------------------------------------------
+#
+      DO mu
+      DO nu
+      DO lambda
+      DO sigma
+            IF mu == lambda
+            IF nu == sigma
+               execute compute_aabb_batch aoint(mu,nu,lambda,sigma)
+            ENDIF
+            ENDIF
+      ENDDO sigma
+      ENDDO lambda
+      ENDDO nu
+      ENDDO mu
 #
 #     Construct the initial guess of the density matrix
 #     -----------------------------------------------
-#    
-#      CALL IGUESS
+     CALL IGUESS
 
 # Delete the distributed arrays used in initial guess routines
 
@@ -4721,7 +4893,6 @@
       DELETE Fpq_a 
       DELETE Fpq_b 
       DELETE OVLP_INV
-
 #bgn_debug
 #     esuma=0.0
 #     do mu
@@ -4731,29 +4902,29 @@
 #     enddo nu
 #     enddo mu
 #     execute print_scalar esuma
-     DO mu
-     Do nu
-        if mu == nu
-           Txx(mu,nu) = 1.0
-           PUT dhfa(mu,nu) = txx(mu,nu)
-           PUT dhfb(mu,nu) = txx(mu,nu)
-         endif
-     enddo nu
-     enddo mu
-     execute sip_barrier
-     EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
-     EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
-     CALL OVER_HALF
-     execute sip_barrier
-     create Fpq_a
-     create Fpq_b
-     execute sip_barrier
-     CALL STORE_FOCK_DENS_VEC_OLD
-     delete Fpq_a
-     delete Fpq_b
-     DELETE OVLP_INV
+#     DO mu
+#     Do nu
+#        if mu == nu
+#           Txx(mu,nu) = 1.0
+#           PUT dhfa(mu,nu) = txx(mu,nu)
+#           PUT dhfb(mu,nu) = txx(mu,nu)
+#         endif
+#     enddo nu
+#     enddo mu
+#     execute sip_barrier
+#     EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+#     EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
+#     CALL OVER_HALF
+#     execute sip_barrier
+#     create Fpq_a
+#     create Fpq_b
+#     execute sip_barrier
+#     CALL STORE_FOCK_DENS_VEC_OLD
+#     delete Fpq_a
+#     delete Fpq_b
+#     DELETE OVLP_INV
 #end_debug
-
+#
 # Start iterations 
 # ---------------- 
 #

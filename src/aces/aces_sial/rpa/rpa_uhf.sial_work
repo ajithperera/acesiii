@@ -134,6 +134,12 @@
       distributed VCH1B(b,j,k20)
       distributed VTEMP1B(b,j,k20)
 
+# Arrays for a new RPA code
+
+      
+     
+
+
       distributed ax(j20,k20)
       local Lax(j20,k20)
       static MYvev(kindex20,jindex20)
@@ -2490,54 +2496,106 @@
      ENDPROC copy_toVCHactual_2
 #    -------------------------- 
 #
-     PROC FORM_AO_R1AB
-#    -----------------
+     PROC FORM_AO_R1AB_OLD
+#    ---------------------
 #
       PARDO MU, NU
         DO I
            DO A
-              GET R1ANEW(A,I)
-              TXA_T(MU,A) = R1ANEW(A,I) * CA(MU,I)
+              GET R1A_MO_OLD_P(A,I)
+              TXA_T(MU,A) = R1A_MO_OLD_P(A,I) * CA(MU,I)
               TXA(MU,A)  += TXA_T(MU,A)
            ENDDO A
            TXX_T(MU,NU) = TXA(MU,A) * CA(NU,A)
            TXX(MU,NU)  += TXX_T(MU,NU)
         ENDDO I
 
-        PUT R1A_AO_ANEW(mu,nu) =  TXX(MU,NU)
+        PUT R1A_AO_AOLD_P(mu,nu) =  TXX(MU,NU)
 
       ENDPARDO MU, NU
 
       PARDO MU, NU
         DO J
            DO B
-              GET R1BNEW(B,J)
-              TXB_T(MU,B) = R1BNEW(B,J) * CB(MU,J)
+              GET R1B_MO_OLD_P(B,J)
+              TXB_T(MU,B) = R1B_MO_OLD_P(B,J) * CB(MU,J)
               TXB(MU,B)  += TXB_T(MU,B)
            ENDDO B
            TXX_T(MU,NU) = TXB(MU,B) * CB(NU,B)
            TXX(MU,NU)  += TXX_T(MU,NU)
         ENDDO I
 
-        PUT R1B_AO_ANEW(MU,NU) =  TXX(MU,NU)
+        PUT R1B_AO_BNEW(MU,NU) =  TXX(MU,NU)
 
       ENDPARDO MU, NU
 
+      PARDO MU, NU
+        DO I
+           DO A
+              GET R1A_MO_OLD_M(A,I)
+              TXA_T(MU,A) = R1A_MO_OLD_M(A,I) * CA(MU,I)
+              TXA(MU,A)  += TXA_T(MU,A)
+           ENDDO A
+           TXX_T(MU,NU) = TXA(MU,A) * CA(NU,A)
+           TXX(MU,NU)  += TXX_T(MU,NU)
+        ENDDO I
+
+        PUT R1A_AO_AOLD_P(mu,nu) =  TXX(MU,NU)
+
+      ENDPARDO MU, NU
+
+      PARDO MU, NU
+        DO J
+           DO B
+              GET R1B_MO_OLD_M(B,J)
+              TXB_T(MU,B) = R1B_MO_OLD_M(B,J) * CB(MU,J)
+              TXB(MU,B)  += TXB_T(MU,B)
+           ENDDO B
+           TXX_T(MU,NU) = TXB(MU,B) * CB(NU,B)
+           TXX(MU,NU)  += TXX_T(MU,NU)
+        ENDDO I
+
+        PUT R1B_AO_BNEW(MU,NU) =  TXX(MU,NU)
+
+      ENDPARDO MU, NU
+
+
       execute sip_barrier 
 
-     ENDPROC FORM_AO_R1AB
-#    -----------------
+     ENDPROC FORM_AO_R1AB_OLD
+#    ------------------------
 
      PROC FORM_APLUSB_R1AB
 #    ---------------------
 
      PARDO MU, NU, LAMBDA
+
            DO SIGMA
 
               COMPUTE INTEGRALS AOINT(MU,NU,LAMBDA,SIGMA)
 
               TXXXX(MU,NU,LAMBDA,SIGMA) = AOINT(MU,NU,LAMBDA,SIGMA)
-           
+              TXXXX(MU,NU,LAMBDA,SIGMA) *= 2.0
+
+              TP1XXXX(MU,SIGMA,LAMBDA,NU) = TXXXX(MU,NU,LAMBDA,SIGMA)
+              TP2XXXX(MU,LAMBDA,SIGMA,NU) = TP1XXXX(MU,SIGMA,LAMBDA,NU)
+       
+              TP1XXXX(MU,NU,SIGMA,LAMBDA) -= TP2XXXX(MU,SIGMA,LAMBDA,NU)
+              TPXXXX(MU,NU,LAMBDA,SIGMA)  += TP1XXXX(MU,NU,SIGMA,LAMBDA)
+
+              PREPARE APBXXXX(MU,NU,LAMBDA,SIGMA) =  TXXXX(MU,NU,LAMBDA,SIGMA)
+
+              TMXXXX(MU,LAMBDA,SIGMA,NU)  = TP2XXXX(MU,LAMBDA,SIGMA,NU)
+                                         -= TP1XXXX(MU,SIGMA,LAMBDA,NU)
+
+              PREPARE AMBXXXX(MU,NU,LAMBDA,SIGMA) =  TMXXXX(MU,NU,LAMBDA,SIGMA)
+ 
+           DO SIGMA
+
+          
+     PARDO MU, NU, LAMBDA
+
+     EXECUTE SEREVER_BARRIER 
 
      ENDPROC FORM_APLUSB_R1AB
 #    ------------------------
@@ -2545,12 +2603,11 @@
      PROC DHCmult
 #    --------------
 
-     CALL FORM_AO_R1AB
+     CALL FORM_AO_R1AB_OLD
 
-     CALL FORM_APLUSB_R1AB
-     CALL FORM_AMINUSB_R1AB
+     CALL FORM_AO_APLUSB_AMINUSB
 
-
+     CALL FORM_MO_R1AB_NEW
 
      ENDPROC DHCmult
 #    --------------
