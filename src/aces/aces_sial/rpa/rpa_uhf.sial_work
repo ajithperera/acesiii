@@ -1,5 +1,4 @@
-#  Copyright (c) 2003-2010 University of Florida
-#
+    
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
@@ -2495,7 +2494,135 @@
 #
      ENDPROC copy_toVCHactual_2
 #    -------------------------- 
+
+     PROC SAVE_HISTORY
+#    -----------------
+
+     IF ITER_COUNT == 0.0
+
+        PARDO A, I
+              GET R1A_MO_P_START(A,I)
+              GET R1A_MO_M_START(A,I)
+
+              DO MINDEX20 
+                  IF MINDXE20 == BEGIN_COLLECT
+
+                     TAIP(A,I) = R1A_MO_P_START(A,I)
+                     TAIM(A,I) = R1A_MO_M_START(A,I)
+
+                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
+                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIM(A,I)
+                  ENDIF 
+             ENDDO 
+        ENDPARDO A, I
+
+        PARDO B, J
+              GET R1B_MO_P_START(B,J)
+              GET R1B_MO_M_START(B,J)
+
+              DO MINDEX20 
+                  IF MINDXE20 == BEGIN_COLLECT
+
+                     TBJP(B,J) = R1B_MO_P_START(B,J)
+                     TBJM(B,J) = R1B_MO_M_START(B,J)
+
+                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
+                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJM(B,J)
+
+                  ENDIF 
+             ENDDO 
+        ENDPARDO B, J
+
+        execute sip_barrier
+
+     ELSE 
+
+        PARDO A, I
+              GET R1A_MO_P_ACTIVE(A,I)
+              GET R1A_MO_M_ACTIVE(A,I)
+
+              DO MINDEX20
+                  IF MINDXE20 == ITER_COUNT
+
+                     TAIP(A,I) = R1A_MO_P_START(A,I)
+                     TAIM(A,I) = R1A_MO_M_START(A,I)
+
+                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
+                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIM(A,I)
+
+                  ENDIF
+             ENDDO
+        ENDPARDO A, I
+
+        PARDO B, J
+              GET R1B_MO_P_ACTIVE(B,J)
+              GET R1B_MO_M_ACTIVE(B,J)
+
+              DO MINDEX20
+                  IF MINDXE20 == ITER_COUNT
+
+                     TBJP(B,J) = R1B_MO_P_START(B,J)
+                     TBJM(B,J) = R1B_MO_M_START(B,J)
+
+                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
+                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJM(B,J)
+
+                  ENDIF
+             ENDDO
+        ENDPARDO B, J
+
+        execute sip_barrier
+
+    ENDIF 
+
+    ENDPROC SAVE_HISTORY
+#   ---------------------
 #
+     PROC MOVE_HISTORY_2CURRENT
+#    -------------------------
+
+     PARDO A, I
+           DO MINDEX20 
+
+              IF MINDEX20 == ITER_COUNT
+                 GET R1A_MO_P_HIST(A,I,MINDEX20)
+                 GET R1A_MO_M_HIST(A,I,MINDEX20)
+
+                 TAIP(A,I) =  R1A_MO_P_HIST(A,I,MINDEX20)
+                 TAIM(A,I) =  R1A_MO_M_HIST(A,I,MINDEX20)
+   
+                 PUT R1A_MO_P_PREV(A,I) = TAIP(A,I)
+                 PUT R1A_MO_M_PREV(A,I) = TAIP(A,I)
+
+              ENDIF 
+
+           ENDDO 
+     ENDPARDO A, I
+
+     PARDO B, J
+           DO MINDEX20 
+
+              IF MINDEX20 == ITER_COUNT
+                 GET R1B_MO_P_HIST(B,J,MINDEX20)
+                 GET R1B_MO_M_HIST(B,J,MINDEX20)
+
+                 TBJP(B,J) =  R1B_MO_P_HIST(B,J,MINDEX20)
+                 TBJM(B,J) =  R1B_MO_M_HIST(B,J,MINDEX20)
+   
+                 PUT R1B_MO_P_PREV(B,J) = TBJP(B,J)
+                 PUT R1B_MO_M_PREV(B,J) = TBJM(B,J)
+
+              ENDIF 
+
+           ENDDO 
+     ENDPARDO A, I
+
+     execute sip_barrier
+     
+     ENDPROC MOVE_HISTORY_2CURRENT
+#    -----------------------------
+
+
      PROC FORM_AO_R1AB_OLD
 #    ---------------------
 #
@@ -2525,7 +2652,7 @@
            TXX(MU,NU)  += TXX_T(MU,NU)
         ENDDO I
 
-        PUT R1B_AO_BNEW(MU,NU) =  TXX(MU,NU)
+        PUT R1B_AO_BOLD_PMU,NU) =  TXX(MU,NU)
 
       ENDPARDO MU, NU
 
@@ -2540,7 +2667,7 @@
            TXX(MU,NU)  += TXX_T(MU,NU)
         ENDDO I
 
-        PUT R1A_AO_AOLD_P(mu,nu) =  TXX(MU,NU)
+        PUT R1A_AO_AOLD_M(mu,nu) =  TXX(MU,NU)
 
       ENDPARDO MU, NU
 
@@ -2555,7 +2682,7 @@
            TXX(MU,NU)  += TXX_T(MU,NU)
         ENDDO I
 
-        PUT R1B_AO_BNEW(MU,NU) =  TXX(MU,NU)
+        PUT R1B_AO_BOLD_M(MU,NU) =  TXX(MU,NU)
 
       ENDPARDO MU, NU
 
@@ -2611,6 +2738,161 @@
 
      ENDPROC DHCmult
 #    --------------
+
+     PROC ACONSTRUCT 
+      
+        PARDDO A, I 
+              
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+                     GET R1A_MO_P_HIST(A,I,MINDEX20) 
+                     GET R1A_MO_M_HIST(A,I,MINDEX20) 
+                      
+                        TAIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
+                        TMP       = TAIP(A,I)  * TAIP(A,I) 
+                        SUMP     += TMP
+
+                        TAIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
+                        TMP       = TAIM(A,I)  * TAIM(A,I) 
+                        SUMM     += TMP
+
+                      DO NINDEX
+        
+                         IF NINDEX == ITER_COUNT
+
+                            AMATRIX_P(MINDEX20,NIDEX20) = SUMP
+                            AMATRIX_M(MINDEX20,NIDEX20) = SUMM
+                         
+                         ENDIF 
+
+                       ENDDO 
+                  ENDIF
+              
+               ENDDO
+                             
+        ENDPARDDO A, I
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+                     GET R1B_MO_P_HIST(B,J,MINDEX20) 
+                     GET R1B_MO_M_HIST(B,J,MINDEX20)
+                      
+                        TBJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
+                        TMP       = TBJP(B,J)  * TBJP(B,J)
+                        SUMP     += TMP
+
+                        TBJM(B,J) = R1B_MO_M_HIST(B,J,MINDEX20)
+                        TMP       = TBJM(B,J) * TBJM(B,J)
+                        SUMM     += TMP
+
+                      DO NINDEX
+        
+                         IF NINDEX == ITER_COUNT
+
+                            AMATRIX_P(MINDEX20,NIDEX20) += SUMP
+                            AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+                         
+                         ENDIF 
+
+                       ENDDO
+                  ENDIF
+              
+               ENDDO
+
+        ENPARDDO B, J
+
+     ELSE              
+
+        PARDDO A, I
+
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+                     GET R1A_MO_P_HIST(A,I,MINDEX20)
+                     GET R1A_MO_M_HIST(A,I,MINDEX20)
+
+                     TAIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
+                     TAIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
+
+                      DO NINDEX
+                         IF NINDEX20 <= ITER_COUNT
+                            GET R1A_MO_P_HIST(A,I,NINDEX20)
+                            GET R1A_MO_M_HIST(A,I,NINDEX20)
+
+                            T1AIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
+                            T1AIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
+
+                            TMP       = TAIP(A,I)  * T1AIP(A,I))
+                            SUMP     += TMP
+
+                            TMP       = TAIM(A,I)  * T1AIM(A,I))
+                            SUMM     += TMP
+
+			    AMATRIX_P(MINDEX20,NIDEX20) += SUMP
+			    AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+                     
+                         ENDIF
+        
+                       ENDDO
+                  ENDIF
+
+               ENDDO 
+
+        ENDPARDDO A, I
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+                     GET R1B_MO_P_HIST(B,J,MINDEX20)
+                     GET R1B_MO_M_HIST(B,J,MINDEX20)
+
+                     TBJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
+                     TBJM(B,J) = R1B_MO_M_HIST(B,J,MINDEX20)
+
+                      DO NINDEX
+                         IF NINDEX20 <= ITER_COUNT
+                            GET R1B_MO_P_HIST(B,J,NINDEX20)
+                            GET R1B_MO_M_HIST(B,J,NINDEX20)
+
+                            T1BJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
+                            T1BJM(B,B) = R1B_MO_M_HIST(B,J,MINDEX20)
+
+                            TMP       = TBJP(B,J) * T1BJP(B,J)
+                            SUMP     += TMP
+
+                            TMP       = TBJM(B,J) * T1BJM(A,I)
+                            SUMM     += TMP
+
+                            AMATRIX_P(MINDEX20,NIDEX20) += SUMP
+                            AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+
+                         ENDIF
+
+                       ENDDO
+                  ENDIF
+
+               ENDDO
+
+        ENDPARDDO B, J
+         
+     PROC ACONSTRUCT 
+#    ----------------
+
+
+
+
+
+
+
+
+
+
 # ----------------------------------------------------------------------------
 #
      PROC Adiag
@@ -2783,181 +3065,6 @@
      if kindex5 == 3
      if jindex5 == 3
      execute return_sval tcoef5  Aeig3
-     endif
-     endif
-     if kindex5 == 4
-     if jindex5 == 4
-     execute return_sval tcoef5  Aeig4
-     endif
-     endif
-     if kindex5 == 5
-     if jindex5 == 5
-     execute return_sval tcoef5  Aeig5
-     endif
-     endif
-#
-     enddo kindex5
-     enddo jindex5
-#
-     endif
-#
-#    --------------end 5th iteration-----------------
-#
-#    --------------6th iteration-----------------
-     if spdim == 6
-#
-     execute eig_nonsymm Smat6 SVEV6
-#
-     do jindex6
-     do kindex6
-#
-     tcoef6(kindex6,jindex6)=Smat6(kindex6,jindex6)
-#
-     if kindex6 == 1
-     if jindex6 == 1
-     execute return_sval tcoef6  Aeig1
-     endif
-     endif
-     if kindex6 == 2
-     if jindex6 == 2
-     execute return_sval tcoef6  Aeig2
-     endif
-     endif
-     if kindex6 == 3
-     if jindex6 == 3
-     execute return_sval tcoef6  Aeig3
-     endif
-     endif
-     if kindex6 == 4
-     if jindex6 == 4
-     execute return_sval tcoef6  Aeig4
-     endif
-     endif
-     if kindex6 == 5
-     if jindex6 == 5
-     execute return_sval tcoef6  Aeig5
-     endif
-     endif
-     if kindex6 == 6
-     if jindex6 == 6
-     execute return_sval tcoef6  Aeig6
-     endif
-     endif
-#
-     enddo kindex6
-     enddo jindex6
-#
-     endif
-#
-#    --------------end 6th iteration-----------------
-#
-#    --------------7th iteration-----------------
-     if spdim == 7
-#
-     execute eig_nonsymm Smat7 SVEV7
-#
-     do jindex7
-     do kindex7
-#
-     tcoef7(kindex7,jindex7)=Smat7(kindex7,jindex7)
-#
-     if kindex7 == 1
-     if jindex7 == 1
-     execute return_sval tcoef7  Aeig1
-     endif
-     endif
-     if kindex7 == 2
-     if jindex7 == 2
-     execute return_sval tcoef7  Aeig2
-     endif
-     endif
-     if kindex7 == 3
-     if jindex7 == 3
-     execute return_sval tcoef7  Aeig3
-     endif
-     endif
-     if kindex7 == 4
-     if jindex7 == 4
-     execute return_sval tcoef7  Aeig4
-     endif
-     endif
-     if kindex7 == 5
-     if jindex7 == 5
-     execute return_sval tcoef7  Aeig5
-     endif
-     endif
-     if kindex7 == 6
-     if jindex7 == 6
-     execute return_sval tcoef7  Aeig6
-     endif
-     endif
-     if kindex7 == 7
-     if jindex7 == 7
-     execute return_sval tcoef7  Aeig7
-     endif
-     endif
-#
-     enddo kindex7
-     enddo jindex7
-#
-     endif
-#
-#    --------------end 7th iteration-----------------
-#
-#    --------------8th iteration-----------------
-     if spdim == 8
-#
-     execute eig_nonsymm Smat8 SVEV8
-#
-     do jindex8
-     do kindex8
-#
-     tcoef8(kindex8,jindex8)=Smat8(kindex8,jindex8)
-#
-     if kindex8 == 1
-     if jindex8 == 1
-     execute return_sval tcoef8  Aeig1
-     endif
-     endif
-     if kindex8 == 2
-     if jindex8 == 2
-     execute return_sval tcoef8  Aeig2
-     endif
-     endif
-     if kindex8 == 3
-     if jindex8 == 3
-     execute return_sval tcoef8  Aeig3
-     endif
-     endif
-     if kindex8 == 4
-     if jindex8 == 4
-     execute return_sval tcoef8  Aeig4
-     endif
-     endif
-     if kindex8 == 5
-     if jindex8 == 5
-     execute return_sval tcoef8  Aeig5
-     endif
-     endif
-     if kindex8 == 6
-     if jindex8 == 6
-     execute return_sval tcoef8  Aeig6
-     endif
-     endif
-     if kindex8 == 7
-     if jindex8 == 7
-     execute return_sval tcoef8  Aeig7
-     endif
-     endif
-     if kindex8 == 8
-     if jindex8 == 8
-     execute return_sval tcoef8  Aeig8
-     endif
-     endif
-#
-     enddo kindex8
-     enddo jindex8
-#
      endif
 #
 #    --------------end 8th iteration-----------------
@@ -22129,292 +22236,6 @@
      sqr+=etemp
 #
        exponent=0.5
-       execute square_root sqr exponent
-       sqr2=1.0/sqr
-#
-     V12_1*=sqr2
-     V12_2*=sqr2
-     V12_3*=sqr2
-     V12_4*=sqr2
-     V12_5*=sqr2
-     V12_6*=sqr2
-     V12_7*=sqr2
-     V12_8*=sqr2
-     V12_9*=sqr2
-     V12_10*=sqr2
-     V12_11*=sqr2
-     V12_12*=sqr2
-     V12_13*=sqr2
-     V12_14*=sqr2
-     V12_15*=sqr2
-     V12_16*=sqr2
-     V12_17*=sqr2
-     V12_18*=sqr2
-     V12_19*=sqr2
-     V12_20*=sqr2
-# 
-     DO k20 
-     DO j20 
-#
-        if j20 == 1 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_1  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_1  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_1  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_1  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_1  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_1  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_1  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_1  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_1  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_1  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_1  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_1  
-           endif 
-        endif 
-#
-#
-        if j20 == 2 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_2  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_2  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_2  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_2  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_2  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_2  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_2  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_2  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_2  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_2  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_2  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_2  
-           endif 
-        endif 
-#
-#
-        if j20 == 3 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_3  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_3  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_3  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_3  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_3  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_3  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_3  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_3  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_3  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_3  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_3  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_3  
-           endif 
-        endif 
-#
-#
-        if j20 == 4 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_4  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_4  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_4  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_4  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_4  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_4  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_4  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_4  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_4  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_4  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_4  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_4  
-           endif 
-        endif 
-#
-#
-        if j20 == 5 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_5  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_5  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_5  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_5  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_5  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_5  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_5  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_5  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_5  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_5  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_5  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_5  
-           endif 
-        endif 
-#
-#
-        if j20 == 6 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_6  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_6  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_6  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_6  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_6  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_6  
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_6  
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_6  
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_6  
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_6  
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_6  
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_6  
-           endif 
-        endif 
-#
-#
-        if j20 == 7 
-           if k20 == 1 
-              MYvev(k20,j20) = V1_7  
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_7  
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_7  
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_7  
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_7  
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_7  
-           endif 
            if k20 == 7 
               MYvev(k20,j20) = V7_7  
            endif 
@@ -22548,285 +22369,6 @@
               MYvev(k20,j20) = V10_10 
            endif 
            if k20 == 11
-              MYvev(k20,j20) = V11_10 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_10 
-           endif 
-        endif 
-#
-#
-        if j20 == 11
-           if k20 == 1 
-              MYvev(k20,j20) = V1_11 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_11 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_11 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_11 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_11 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_11 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_11 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_11 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_11 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_11 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_11 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_11 
-           endif 
-        endif 
-#
-#
-        if j20 == 12
-           if k20 == 1 
-              MYvev(k20,j20) = V1_12 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_12 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_12 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_12 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_12 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_12 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_12 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_12 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_12 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_12 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_12 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_12 
-           endif 
-        endif 
-#
-#
-        if j20 == 13
-           if k20 == 1 
-              MYvev(k20,j20) = V1_13 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_13 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_13 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_13 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_13 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_13 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_13 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_13 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_13 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_13 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_13 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_13 
-           endif 
-        endif 
-#
-#
-        if j20 == 14
-           if k20 == 1 
-              MYvev(k20,j20) = V1_14 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_14 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_14 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_14 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_14 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_14 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_14 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_14 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_14 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_14 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_14 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_14 
-           endif 
-        endif 
-#
-#
-        if j20 == 15
-           if k20 == 1 
-              MYvev(k20,j20) = V1_15 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_15 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_15 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_15 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_15 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_15 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_15 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_15 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_15 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_15 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_15 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_15 
-           endif 
-        endif 
-#
-#
-        if j20 == 16
-           if k20 == 1 
-              MYvev(k20,j20) = V1_16 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_16 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_16 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_16 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_16 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_16 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_16 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_16 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_16 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_16 
-           endif 
-           if k20 == 11
-              MYvev(k20,j20) = V11_16 
-           endif 
-           if k20 == 12
-              MYvev(k20,j20) = V12_16 
-           endif 
-        endif 
-#
-#
-        if j20 == 17
-           if k20 == 1 
-              MYvev(k20,j20) = V1_17 
-           endif 
-           if k20 == 2 
-              MYvev(k20,j20) = V2_17 
-           endif 
-           if k20 == 3 
-              MYvev(k20,j20) = V3_17 
-           endif 
-           if k20 == 4 
-              MYvev(k20,j20) = V4_17 
-           endif 
-           if k20 == 5 
-              MYvev(k20,j20) = V5_17 
-           endif 
-           if k20 == 6 
-              MYvev(k20,j20) = V6_17 
-           endif 
-           if k20 == 7 
-              MYvev(k20,j20) = V7_17 
-           endif 
-           if k20 == 8 
-              MYvev(k20,j20) = V8_17 
-           endif 
-           if k20 == 9 
-              MYvev(k20,j20) = V9_17 
-           endif 
-           if k20 == 10
-              MYvev(k20,j20) = V10_17 
-           endif 
            if k20 == 11
               MYvev(k20,j20) = V11_17 
            endif 
@@ -23055,763 +22597,10 @@
 #
       ENDPROC TRANSFORM
 #     ----------------- 
-#
-# ----------------------------------------------------------------------------
-#
-      PROC ConstrA_a
-#     --------------
-#
-      PARDO a, i
-            DO k20
-            IF k20 == spdim
-               GET         VCH1A(a,i,k20)
-               t1ai(a,i) = VCH1A(a,i,k20)
-               DO k21
-               if k21 <= spdim
-                  DO j20
-                     IF j20 == k21
-                        GET                VC1A(a,i,k21)
-                        tai(a,i)         = VC1A(a,i,k21)
-                        etemp            = tai(a,i)*t1ai(a,i)
-                        t20(j20,k20)     = etemp
-                        Lax(j20,k20) += t20(j20,k20)
-                     endif # j20 == k21
-                  ENDDO j20
-               endif
-               ENDDO k21
-            endif
-            ENDDO k20
-      ENDPARDO a, i
-#
-      PARDO a, i
-            DO k21
-            IF k21 == spdim
-                  DO j20
-                     IF j20 == k21
-                        GET        VC1A(a,i,k21)
-                        tai(a,i) = VC1A(a,i,k21)
-                        DO k20
-                          if k20 < spdim
-                             GET                VCH1A(a,i,k20)
-                             t1ai(a,i)        = VCH1A(a,i,k20)
-                             etemp            = tai(a,i)*t1ai(a,i)
-                             t20(j20,k20)     = etemp
-                             Lax(j20,k20) += t20(j20,k20)
-                          endif
-                        ENDDO k20
-                     endif # j20 == k21
-                  ENDDO j20
-            endif
-            ENDDO k21
-      ENDPARDO a, i
-#
-      ENDPROC ConstrA_a
-#     -----------------
 
-# ----------------------------------------------------------------------------
-#
-      PROC ConstrA_b
-#     --------------
-#
-      PARDO b, j
-            DO k20
-            IF k20 == spdim
-               GET         VCH1B(b,j,k20)
-               t1bj(b,j) = VCH1B(b,j,k20)
-               DO k21
-               if k21 <= spdim
-                  DO j20
-                     IF j20 == k21
-                        GET                VC1B(b,j,k21)
-                        tbj(b,j)         = VC1B(b,j,k21)
-                        etemp            = tbj(b,j)*t1bj(b,j)
-                        t20(j20,k20)     = etemp
-                        Lax(j20,k20) += t20(j20,k20)
-                     endif # j20 == k21
-                  ENDDO j20
-               endif
-               ENDDO k21
-            endif
-            ENDDO k20
-      ENDPARDO b, j
-#
-      PARDO b, j
-            DO k21
-            IF k21 == spdim
-                  DO j20
-                     IF j20 == k21
-                        GET          VC1B(b,j,k21)
-                        tbj(b,j)   = VC1B(b,j,k21)
-                        DO k20
-                          if k20 < spdim
-                             GET                VCH1B(b,j,k20)
-                             t1bj(b,j)        = VCH1B(b,j,k20)
-                             etemp            = tbj(b,j)*t1bj(b,j)
-                             t20(j20,k20)     = etemp
-                             Lax(j20,k20) += t20(j20,k20)
-                          endif
-                        ENDDO k20
-                     endif # j20 == k21
-                  ENDDO j20
-            endif
-            ENDDO k21
-      ENDPARDO b, j
-#
-      ENDPROC ConstrA_b
-#     -----------------
-#
-# ----------------------------------------------------------------------------
-#
-# -----------------------------------------------------------------------------
-#
-      PROC Aconstr_tr
-#     ---------------
-#
-      do spdim
-      if spdim < 13
-#
-      create ax
-      allocate Lax(*,*) 
-      execute sip_barrier
-      CALL ConstrA_a
-      CALL ConstrA_b
-      execute sip_barrier
-      DO kindex20 
-      DO jindex20 
-           #t20(jindex20,kindex20) = Lax(jindex20,kindex20) 
-            PUT ax(jindex20,kindex20) += Lax(jindex20,kindex20)
-      ENDDO jindex20
-      ENDDO kindex20
 
-      execute sip_barrier
-#
-       DO kindex20
-       DO jindex20
-          if kindex20 == spdim
-          if jindex20 <= spdim
-             GET                         ax(jindex20,kindex20)
-             sMAT20(jindex20,kindex20) = ax(jindex20,kindex20)
-          endif
-          endif
-          if kindex20 <= spdim
-          if jindex20 == spdim
-             GET                         ax(jindex20,kindex20)
-             sMAT20(jindex20,kindex20) = ax(jindex20,kindex20)
-          endif
-          endif
-       ENDDO jindex20
-       ENDDO kindex20
-       execute sip_barrier
-#
-       if spdim == 2
-          DO kindex2
-          DO kindex20
-             if kindex20 == kindex2
-          DO jindex2
-          DO jindex20
-             if jindex20 == jindex2
-                t20(jindex20,kindex20)  = smat20(jindex20,kindex20)
-                execute return_sval   t20 etemp3
-                atemp2(jindex2,kindex2) = etemp3
-                sMAT2(jindex2,kindex2)  = atemp2(jindex2,kindex2)
-             endif
-          ENDDO jindex20
-          ENDDO jindex2
-             endif
-          ENDDO kindex20
-          ENDDO kindex2
-       endif
-#
-       if spdim == 3
-          DO kindex3
-          DO kindex20
-             if kindex20 == kindex3
-          DO jindex3
-          DO jindex20
-             if jindex20 == jindex3
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp3(jindex3,kindex3)    = etemp3
-                sMAT3(jindex3,kindex3) = atemp3(jindex3,kindex3)
-             endif
-          ENDDO jindex20
-          ENDDO jindex3
-             endif
-          ENDDO kindex20
-          ENDDO kindex3
-       endif
-#
-       if spdim == 4
-          DO kindex4
-          DO kindex20
-             if kindex20 == kindex4
-          DO jindex4
-          DO jindex20
-             if jindex20 == jindex4
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp4(jindex4,kindex4)    = etemp3
-                sMAT4(jindex4,kindex4) = atemp4(jindex4,kindex4)
-             endif
-          ENDDO jindex20
-          ENDDO jindex4
-             endif
-          ENDDO kindex20
-          ENDDO kindex4
-       endif
-#
-       if spdim == 5
-          DO kindex5
-          DO kindex20
-             if kindex20 == kindex5
-          DO jindex5
-          DO jindex20
-             if jindex20 == jindex5
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp5(jindex5,kindex5)    = etemp3
-                sMAT5(jindex5,kindex5) = atemp5(jindex5,kindex5)
-             endif
-          ENDDO jindex20
-          ENDDO jindex5
-             endif
-          ENDDO kindex20
-          ENDDO kindex5
-       endif
-#
-       if spdim == 6
-          DO kindex6
-          DO kindex20
-             if kindex20 == kindex6
-          DO jindex6
-          DO jindex20
-             if jindex20 == jindex6
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp6(jindex6,kindex6)    = etemp3
-                sMAT6(jindex6,kindex6) = atemp6(jindex6,kindex6)
-             endif
-          ENDDO jindex20
-          ENDDO jindex6
-             endif
-          ENDDO kindex20
-          ENDDO kindex6
-       endif
-#
-       if spdim == 7
-          DO kindex7
-          DO kindex20
-             if kindex20 == kindex7
-          DO jindex7
-          DO jindex20
-             if jindex20 == jindex7
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp7(jindex7,kindex7)    = etemp3
-                sMAT7(jindex7,kindex7) = atemp7(jindex7,kindex7)
-             endif
-          ENDDO jindex20
-          ENDDO jindex7
-             endif
-          ENDDO kindex20
-          ENDDO kindex7
-       endif
-#
-       if spdim == 8
-          DO kindex8
-          DO kindex20
-             if kindex20 == kindex8
-          DO jindex8
-          DO jindex20
-             if jindex20 == jindex8
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp8(jindex8,kindex8)    = etemp3
-                sMAT8(jindex8,kindex8) = atemp8(jindex8,kindex8)
-             endif
-          ENDDO jindex20
-          ENDDO jindex8
-             endif
-          ENDDO kindex20
-          ENDDO kindex8
-       endif
-#
-       if spdim == 9
-          DO kindex9
-          DO kindex20
-             if kindex20 == kindex9
-          DO jindex9
-          DO jindex20
-             if jindex20 == jindex9
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp9(jindex9,kindex9)    = etemp3
-                sMAT9(jindex9,kindex9) = atemp9(jindex9,kindex9)
-             endif
-          ENDDO jindex20
-          ENDDO jindex9
-             endif
-          ENDDO kindex20
-          ENDDO kindex9
-       endif
-#
-       if spdim == 10
-          DO kindex10
-          DO kindex20
-             if kindex20 == kindex10
-          DO jindex10
-          DO jindex20
-             if jindex20 == jindex10
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp10(jindex10,kindex10)    = etemp3
-                sMAT10(jindex10,kindex10) = atemp10(jindex10,kindex10)
-             endif
-          ENDDO jindex20
-          ENDDO jindex10
-             endif
-          ENDDO kindex20
-          ENDDO kindex10
-       endif
-#
-       if spdim == 11
-          DO kindex11
-          DO kindex20
-             if kindex20 == kindex11
-          DO jindex11
-          DO jindex20
-             if jindex20 == jindex11
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp11(jindex11,kindex11)    = etemp3
-                sMAT11(jindex11,kindex11) = atemp11(jindex11,kindex11)
-             endif
-          ENDDO jindex20
-          ENDDO jindex11
-             endif
-          ENDDO kindex20
-          ENDDO kindex11
-       endif
-#
-       if spdim == 12
-          DO kindex12
-          DO kindex20
-             if kindex20 == kindex12
-          DO jindex12
-          DO jindex20
-             if jindex20 == jindex12
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp12(jindex12,kindex12)    = etemp3
-                sMAT12(jindex12,kindex12) = atemp12(jindex12,kindex12)
-             endif
-          ENDDO jindex20
-          ENDDO jindex12
-             endif
-          ENDDO kindex20
-          ENDDO kindex12
-       endif
-#
-      execute sip_barrier
-      deallocate Lax(*,*) 
-      delete ax
-#
-      endif # spdim < 13
-      enddo spdim
-#
-     ENDPROC Aconstr_tr
-#    ------------------
-#
-# -----------------------------------------------------------------------------
-#
-# -----------------------------------------------------------------------------
-#
-      PROC Aconstr
-#     ------------
-#
-      create ax
-      allocate Lax(*,*) 
-      execute sip_barrier
-      CALL ConstrA_a
-      CALL ConstrA_b 
-      execute sip_barrier
-      DO kindex20 
-      DO jindex20 
-           #t20(jindex20,kindex20) = Lax(jindex20,kindex20) 
-            PUT ax(jindex20,kindex20) += Lax(jindex20,kindex20)
-      ENDDO jindex20
-      ENDDO kindex20
 
-      execute sip_barrier
-#
-       DO kindex20
-       DO jindex20
-          if kindex20 == spdim
-          if jindex20 <= spdim
-             GET                         ax(jindex20,kindex20)
-             sMAT20(jindex20,kindex20) = ax(jindex20,kindex20)
-          endif
-          endif
-          if kindex20 <= spdim
-          if jindex20 == spdim
-             GET                         ax(jindex20,kindex20)
-             sMAT20(jindex20,kindex20) = ax(jindex20,kindex20)
-          endif
-          endif
-       ENDDO jindex20
-       ENDDO kindex20
-       execute sip_barrier
-#
-       if spdim == 2
-          DO kindex20
-          DO jindex20
-          DO kindex2
-          DO jindex2
-             if kindex20 == kindex2
-             if jindex20 == jindex2
-                t20(jindex20,kindex20)  = smat20(jindex20,kindex20)
-                execute return_sval   t20 etemp3
-                atemp2(jindex2,kindex2) = etemp3
-                sMAT2(jindex2,kindex2)  = atemp2(jindex2,kindex2)
-             endif
-             endif
-          ENDDO jindex2
-          ENDDO kindex2
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 3
-          DO kindex20
-          DO jindex20
-          DO kindex3
-          DO jindex3
-             if kindex20 == kindex3
-             if jindex20 == jindex3
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp3(jindex3,kindex3)    = etemp3
-                sMAT3(jindex3,kindex3) = atemp3(jindex3,kindex3)
-             endif
-             endif
-          ENDDO jindex3
-          ENDDO kindex3
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 4
-          DO kindex20
-          DO jindex20
-          DO kindex4
-          DO jindex4
-             if kindex20 == kindex4
-             if jindex20 == jindex4
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp4(jindex4,kindex4)    = etemp3
-                sMAT4(jindex4,kindex4) = atemp4(jindex4,kindex4)
-             endif
-             endif
-          ENDDO jindex4
-          ENDDO kindex4
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 5
-          DO kindex20
-          DO jindex20
-          DO kindex5
-          DO jindex5
-             if kindex20 == kindex5
-             if jindex20 == jindex5
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp5(jindex5,kindex5)    = etemp3
-                sMAT5(jindex5,kindex5) = atemp5(jindex5,kindex5)
-             endif
-             endif
-          ENDDO jindex5
-          ENDDO kindex5
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 6
-          DO kindex20
-          DO jindex20
-          DO kindex6
-          DO jindex6
-             if kindex20 == kindex6
-             if jindex20 == jindex6
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp6(jindex6,kindex6)    = etemp3
-                sMAT6(jindex6,kindex6) = atemp6(jindex6,kindex6)
-             endif
-             endif
-          ENDDO jindex6
-          ENDDO kindex6
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 7
-          DO kindex20
-          DO jindex20
-          DO kindex7
-          DO jindex7
-             if kindex20 == kindex7
-             if jindex20 == jindex7
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp7(jindex7,kindex7)    = etemp3
-                sMAT7(jindex7,kindex7) = atemp7(jindex7,kindex7)
-             endif
-             endif
-          ENDDO jindex7
-          ENDDO kindex7
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 8
-          DO kindex20
-          DO jindex20
-          DO kindex8
-          DO jindex8
-             if kindex20 == kindex8
-             if jindex20 == jindex8
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp8(jindex8,kindex8)    = etemp3
-                sMAT8(jindex8,kindex8) = atemp8(jindex8,kindex8)
-             endif
-             endif
-          ENDDO jindex8
-          ENDDO kindex8
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 9
-          DO kindex20
-          DO jindex20
-          DO kindex9
-          DO jindex9
-             if kindex20 == kindex9
-             if jindex20 == jindex9
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp9(jindex9,kindex9)    = etemp3
-                sMAT9(jindex9,kindex9) = atemp9(jindex9,kindex9)
-             endif
-             endif
-          ENDDO jindex9
-          ENDDO kindex9
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 10
-          DO kindex20
-          DO jindex20
-          DO kindex10
-          DO jindex10
-             if kindex20 == kindex10
-             if jindex20 == jindex10
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp10(jindex10,kindex10)    = etemp3
-                sMAT10(jindex10,kindex10) = atemp10(jindex10,kindex10)
-             endif
-             endif
-          ENDDO jindex10
-          ENDDO kindex10
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 11
-          DO kindex20
-          DO jindex20
-          DO kindex11
-          DO jindex11
-             if kindex20 == kindex11
-             if jindex20 == jindex11
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp11(jindex11,kindex11)    = etemp3
-                sMAT11(jindex11,kindex11) = atemp11(jindex11,kindex11)
-             endif
-             endif
-          ENDDO jindex11
-          ENDDO kindex11
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 12
-          DO kindex20
-          DO jindex20
-          DO kindex12
-          DO jindex12
-             if kindex20 == kindex12
-             if jindex20 == jindex12
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp12(jindex12,kindex12)    = etemp3
-                sMAT12(jindex12,kindex12) = atemp12(jindex12,kindex12)
-             endif
-             endif
-          ENDDO jindex12
-          ENDDO kindex12
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 13
-          DO kindex20
-          DO jindex20
-          DO kindex13
-          DO jindex13
-             if kindex20 == kindex13
-             if jindex20 == jindex13
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp13(jindex13,kindex13)    = etemp3
-                sMAT13(jindex13,kindex13) = atemp13(jindex13,kindex13)
-             endif
-             endif
-          ENDDO jindex13
-          ENDDO kindex13
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 14
-          DO kindex20
-          DO jindex20
-          DO kindex14
-          DO jindex14
-             if kindex20 == kindex14
-             if jindex20 == jindex14
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp14(jindex14,kindex14)    = etemp3
-                sMAT14(jindex14,kindex14) = atemp14(jindex14,kindex14)
-             endif
-             endif
-          ENDDO jindex14
-          ENDDO kindex14
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 15
-          DO kindex20
-          DO jindex20
-          DO kindex15
-          DO jindex15
-             if kindex20 == kindex15
-             if jindex20 == jindex15
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp15(jindex15,kindex15)    = etemp3
-                sMAT15(jindex15,kindex15) = atemp15(jindex15,kindex15)
-             endif
-             endif
-          ENDDO jindex15
-          ENDDO kindex15
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 16
-          DO kindex20
-          DO jindex20
-          DO kindex16
-          DO jindex16
-             if kindex20 == kindex16
-             if jindex20 == jindex16
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp16(jindex16,kindex16)    = etemp3
-                sMAT16(jindex16,kindex16) = atemp16(jindex16,kindex16)
-             endif
-             endif
-          ENDDO jindex16
-          ENDDO kindex16
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 17
-          DO kindex20
-          DO jindex20
-          DO kindex17
-          DO jindex17
-             if kindex20 == kindex17
-             if jindex20 == jindex17
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp17(jindex17,kindex17)    = etemp3
-                sMAT17(jindex17,kindex17) = atemp17(jindex17,kindex17)
-             endif
-             endif
-          ENDDO jindex17
-          ENDDO kindex17
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 18
-          DO kindex20
-          DO jindex20
-          DO kindex18
-          DO jindex18
-             if kindex20 == kindex18
-             if jindex20 == jindex18
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp18(jindex18,kindex18)    = etemp3
-                sMAT18(jindex18,kindex18) = atemp18(jindex18,kindex18)
-             endif
-             endif
-          ENDDO jindex18
-          ENDDO kindex18
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-       if spdim == 19
-          DO kindex20
-          DO jindex20
-          DO kindex19
-          DO jindex19
-             if kindex20 == kindex19
-             if jindex20 == jindex19
-                t20(jindex20,kindex20)     = smat20(jindex20,kindex20)
-                execute return_sval    t20 etemp3
-                atemp19(jindex19,kindex19)    = etemp3
-                sMAT19(jindex19,kindex19) = atemp19(jindex19,kindex19)
-             endif
-             endif
-          ENDDO jindex19
-          ENDDO kindex19
-          ENDDO jindex20
-          ENDDO kindex20
-       endif
-#
-      execute sip_barrier
-      deallocate Lax(*,*) 
-      delete ax
-#
-     ENDPROC Aconstr
-#    ---------------
-#
-# -----------------------------------------------------------------------------
+
 #
       PROC TRANSFORM_HC
 #     ----------------- 
@@ -26353,48 +25142,22 @@
 
      ENDPROC AMPL_PRINT
 #    -------------------
+
+#
 #     BEGIN MAIN PROGRAM
+#     -----------------
 #
-# Needs to transfer this to a user-defined input control.
-#
-       DIRECT = 1.0
+# Some initialization of constants 
+      
 
-       IF DIRECT == 0.0
-          CALL TRAN_PPPP 
-          execute load_balance_off 
-          execute server_barrier
-       ENDIF 
+# Read the maximum number of roots and the convergence threshold from
+# input.
 
-#
-       CALL CREATE_ARRAYS
-#
-       root1=100000.0
-       root2=100000.0
-       root3=100000.0
-       root4=100000.0
-       root5=100000.0
-       root6=100000.0
-       root7=100000.0
-       root8=100000.0
-       root9=100000.0
-       root10=100000.0
-       root11=100000.0
-       root12=100000.0
-#
-       eomthresh=0.0001
-      #rootmax=6.0
-#
-      #eomthresh=eom_tol  #
-       rootmax=eom_roots  # Watson Added
+       max_roots = eom_roots  
+       rpa_thres = eom_tol
        EXECUTE  PRINT_SCALAR  eom_roots
        EXECUTE  PRINT_SCALAR  eom_tol
-       six = 6.0 
-       if eom_roots < six  
-          rootmax = 6.0  
-       endif
-#
-# WARNING: DO NOT SET MAXCYCLE BELOW 25. TERRIBLE THINGS WOULD HAPPEN.
-#
+
        maxcycle=100.0
 #
        nsp=1.0
@@ -26403,26 +25166,34 @@
        imaxc=0.0
 #
        call CONVER
+
+# Generate initial guess. 
+
+       CALL GET_INIT_GUESS 
+
+       ITER_COUNT    = 0.0
+       BEGIN_COLLECT = 1.0
+
+       CALL SAVE_HISTORY 
 #
-       call startvec2
+       DO SUBSP_DIM 
+
+          ITER_COUNT += 1.0
 #
-       call copy_starttoev
+          IF ITER_COUNT >= 2.0
+             CALL MOVE_HISTORY_2CURRENT 
+          ENDIF 
 #
-# --------------------------------------------------------------
+# The DHCMULT is really the time consuming step in this. The Direct 
+# AO based alogrithm implemented here is described in several papers.
+# G. B. Bacskay, Chemical Physics,61,385,1981 and J. Olsen and 
+# co-workers, Chemical Physics,119,297,1988. 
+
+          CALL DHCMULT
 #
-       do spdim
+          CALL ACONSTRUCT
 #
-          imaxc+=1.0
-#
-          if spdim >= 2
-             call copy_toVCactual
-          endif
-#
-          call DHCmult
-#
-          call Aconstr
-#
-          call Adiag
+          CALL  Adiag
 #
           call SELVEC
 #

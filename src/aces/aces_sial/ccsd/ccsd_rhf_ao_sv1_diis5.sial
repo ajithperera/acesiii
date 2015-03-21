@@ -643,6 +643,13 @@
        scalar c8 
        scalar c9 
        scalar c10  
+       scalar suma
+       scalar sumb
+       scalar sumc
+       scalar esumc
+       scalar tmp
+#
+
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -702,6 +709,29 @@
            PREPARE D0aibj(a,i,b,j)   = Taibj(a,i,b,j)  
 #
      ENDPARDO a, b, i, j 
+#bgn_debug
+     execute server_barrier
+     suma = 0.0
+     sumb = 0.0
+     esuma=0.0
+     esumb=0.0
+     PARDO a, b, i, j
+           REQUEST                     T2old_ab(a,i,b,j) j
+           REQUEST                     Vpiqj(a,i,b,j) j
+           REQUEST                     Vpiqj(b,j,a,i) j
+           Taibj(a,i,b,j)            = Vpiqj(b,j,a,i)
+           Taibj(a,i,b,j)           += Vpiqj(a,i,b,j)
+           tmp = Taibj(a,i,b,j) * Taibj(a,i,b,j)
+           suma += tmp
+           tmp = T2old_ab(a,i,b,j) * T2old_ab(a,i,b,j)
+           sumb += tmp
+     ENDPARDO a, b, i, j
+     execute sip_barrier 
+     collective esuma += suma
+     collective esumb += sumb
+     execute print_scalar esuma
+     execute print_scalar esumb
+#end_debug
 #
      PARDO a, i
 #
@@ -2188,7 +2218,46 @@
 #
      ecorrab = 0.0 
      esumab  = 0.0 
-     execute sip_barrier 
+     execute server_barrier
+#bgn_debug
+     suma = 0.0
+     sumb = 0.0
+     sumc = 0.0
+     esuma= 0.0
+     esumb= 0.0
+     esumc= 0.0
+     PARDO a, b, i, j
+           REQUEST                     T2old_ab(a,i,b,j) j
+           REQUEST                     Vpiqj(a,i,b,j) j
+           REQUEST                     Vpiqj(a,j,b,i) j
+           Taibj(a,i,b,j)            = Vpiqj(a,i,b,j)
+           tmp = Taibj(a,i,b,j) * Taibj(a,i,b,j)
+           suma += tmp
+           Taibj(a,i,b,j)            = Vpiqj(a,j,b,i)
+           tmp = Taibj(a,i,b,j) * Taibj(a,i,b,j)
+           sumb += tmp
+           tmp = T2old_ab(a,i,b,j) * T2old_ab(a,i,b,j)
+           sumc += tmp
+     ENDPARDO a, b, i, j
+     execute sip_barrier
+     collective esuma += suma
+     collective esumb += sumb
+     collective esumc += sumc
+
+     execute print_scalar esuma
+     execute print_scalar esumb
+     execute print_scalar esumc
+     suma = 0.0
+     DO a
+     do i
+        get t1a_old(a,i)
+        tmp = t1a_old(a,i) * t1a_old(a,i)
+        esuma += tmp
+     enddo i
+     enddo a
+     execute print_scalar suma
+#end_debug
+
      PARDO a, b, i, j 
 #
            REQUEST Vpiqj(a,i,b,j) j  
