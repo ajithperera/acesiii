@@ -1,0 +1,121 @@
+      PROC SELECT_VECTOR_TOGO
+#     -----------------------
+
+     IF ITER_COUNT == 1.0
+
+        NCOUNT = 1.0
+
+        PARDO A, I 
+
+              GET R1A_MO_P_NEW_R(A,I,NCOUNT)
+              GET R1A_MO_M_NEW_R(A,I,NCOUNT)
+              GET R1A_MO_P_NEW_L(A,I,NCOUNT)
+              GET R1A_MO_N_NEW_L(A,I,NCOUNT)
+
+              TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,NCOUNT)
+              TAM_R(A,I) = R1A_MO_M_NEW_R(A,I,NCOUNT)
+              TAP_L(A,I) = R1A_MO_P_NEW_R(A,I,NCOUNT)
+              TAM_L(A,I) = R1A_MO_M_NEW_R(A,I,NCOUNT)
+
+              PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
+              PUT R1A_MO_M_PICKED_R(A,I) = TAM_R(A,I)
+              PUT R1A_MO_P_PICKED_L(A,I) = TAP_L(A,I)
+              PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+
+        ENDPARDO A, I 
+
+        execute sip_barrier 
+
+     ELSE 
+
+        KCOUNT = 1.0
+
+        PARDO A, I
+
+              GET R1A_MO_P_HIST_R(A,I,KCOUNT)
+              GET R1A_MO_M_HIST_R(A,I,KCOUNT)
+              GET R1A_MO_P_HIST_L(A,I,KCOUNT)
+              GET R1A_MO_N_HIST_L(A,I,KCOUNT)
+
+              T1AP_R(A,I) = R1A_MO_P_HIST_R(A,I,KCOUNT)
+              T1AM_R(A,I) = R1A_MO_M_HIST_R(A,I,KCOUNT)
+              T1AP_L(A,I) = R1A_MO_P_HIST_L(A,I,KCOUNT)
+              T1AM_L(A,I) = R1A_MO_M_HIST_L(A,I,KCOUNT)
+
+              DO MINDEX20
+          
+                 IF MINDEX20 <= SUBSP_DIM
+                    NCOUNT += 1.0
+
+                    GET R1A_MO_P_NEW_R(A,I,NCOUNT)
+                    GET R1A_MO_M_NEW_R(A,I,NCOUNT)
+                    GET R1A_MO_P_NEW_L(A,I,NCOUNT)
+                    GET R1A_MO_N_NEW_L(A,I,NCOUNT)
+
+                    TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,NCOUNT)
+                    TAM_R(A,I) = R1A_MO_M_NEW_R(A,I,NCOUNT)
+                    TAP_L(A,I) = R1A_MO_P_NEW_L(A,I,NCOUNT)
+                    TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,NCOUNT)
+
+                    TMP = T1AP_R(A,I) * TAP_R(A,I)
+                    OVLP_P_R(NCOUNT) += TMP
+                    TMP = T1AM_R(A,I) * TAM_R(A,I)
+                    OVLP_M_R(NCOUNT) += TMP
+                    TMP = T1AP_L(A,I) * TAP_L(A,I)
+                    OVLP_P_L(NCOUNT) += TMP
+                    TMP = T1AM_L(A,I) * TAM_L(A,I)
+                    OVLP_M_L(NCOUNT) += TMP
+
+                 ENDIF
+
+             ENDDO MINDEX20
+
+        ENPARDO A, I
+
+        execute sip_barrier 
+#
+# This SIPs returns the index corresponding to the maximum value 
+# in the first static array. The return scalar gives the pointer
+# to vector that has the maximum overlap with the guess. 
+# 
+         OVLP_P_MAX_R = 0.0
+         OVLP_M_MAX_R = 0.0
+         OVLP_P_MAX_L = 0.0
+         OVLP_M_MAX_L = 0.0
+   
+         CALL XXXX OVLP_P_MAX_R
+         CALL XXXX OVLP_M_MAX_R
+         CALL XXXX OVLP_P_MAX_L
+         CALL XXXX OVLP_M_MAX_L
+
+# Get vectors corresponding to the maximum overlap and put them
+# in the distributed arrrays labelled as _PICKED_ and return.
+#
+        PARDO A, I
+
+              GET R1A_MO_P_HIST_R(A,I,OVLP_P_MAX_R)
+              GET R1A_MO_M_HIST_R(A,I,OVLP_M_MAX_R)
+              GET R1A_MO_P_HIST_L(A,I,OVLP_P_MAX_L)
+              GET R1A_MO_N_HIST_L(A,I,OVLP_M_MAX_L)
+
+              TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,OVLP_P_MAX_R)
+              TAM_R(A,I) = R1A_MO_M_HIST_R(A,I,OVLP_M_MAX_R)
+              TAP_L(A,I) = R1A_MO_P_HIST_L(A,I,OVLP_P_MAX_L)
+              TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,OVLP_M_MAX_L)
+
+              PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
+              PUT R1A_MO_M_PICKED_R(A,I) = TAM_R(A,I)
+              PUT R1A_MO_P_PICKED_L(A,I) = TAP_L(A,I)
+              PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+       
+        ENDPARDO A, I
+
+        execute sip_barrier 
+
+     ENDIF 
+
+      PROC SELECT_VECTOR_TOGO
+#     -----------------------
+ 
+             
+        

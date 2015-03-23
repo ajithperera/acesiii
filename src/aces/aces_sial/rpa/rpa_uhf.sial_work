@@ -2511,7 +2511,7 @@
                      TAIM(A,I) = R1A_MO_M_START(A,I)
 
                      PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
-                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIM(A,I)
+                     PUT R1A_MO_M_HIST(A,I,MINDEX20) = TAIM(A,I)
                   ENDIF 
              ENDDO 
         ENDPARDO A, I
@@ -2527,7 +2527,7 @@
                      TBJM(B,J) = R1B_MO_M_START(B,J)
 
                      PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
-                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJM(B,J)
+                     PUT R1B_MO_M_HIST(B,J,MINDEX20) = TBJM(B,J)
 
                   ENDIF 
              ENDDO 
@@ -2548,7 +2548,7 @@
                      TAIM(A,I) = R1A_MO_M_START(A,I)
 
                      PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
-                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIM(A,I)
+                     PUT R1A_MO_M_HIST(A,I,MINDEX20) = TAIM(A,I)
 
                   ENDIF
              ENDDO
@@ -2565,7 +2565,7 @@
                      TBJM(B,J) = R1B_MO_M_START(B,J)
 
                      PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
-                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJM(B,J)
+                     PUT R1B_MO_M_HIST(B,J,MINDEX20) = TBJM(B,J)
 
                   ENDIF
              ENDDO
@@ -2727,8 +2727,8 @@
      ENDPROC FORM_APLUSB_R1AB
 #    ------------------------
 
-     PROC DHCmult
-#    --------------
+     PROC DHC_MULT
+#    -------------
 
      CALL FORM_AO_R1AB_OLD
 
@@ -2736,37 +2736,46 @@
 
      CALL FORM_MO_R1AB_NEW
 
-     ENDPROC DHCmult
-#    --------------
+     ENDPROC DHC_MULT
+#    ----------------
 
-     PROC ACONSTRUCT 
-      
+     PROC CONSTRUCT_A_MATRIX
+#    -----------------------
+     IF ITER_COUNT == 1.0
+
+# Build A(1,1) for the first iteraion
+ 
         PARDDO A, I 
               
                DO MINDEX20
 
                   IF MINDEX20 == ITER_COUNT
-                     GET R1A_MO_P_HIST(A,I,MINDEX20) 
-                     GET R1A_MO_M_HIST(A,I,MINDEX20) 
+                     GET R1A_MO_P_HIST_R(A,I,MINDEX20) 
+                     GET R1A_MO_M_HIST_R(A,I,MINDEX20) 
+                     GET R1A_MO_P_HIST_L(A,I,MINDEX20) 
+                     GET R1A_MO_M_HIST_L(A,I,MINDEX20) 
                       
-                        TAIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
-                        TMP       = TAIP(A,I)  * TAIP(A,I) 
-                        SUMP     += TMP
+                     TAIP_R(A,I) = R1A_MO_P_HIST_R(A,I,MINDEX20)
+                     TAIP_L(A,I) = R1A_MO_P_HIST_L(A,I,MINDEX20)
 
-                        TAIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
-                        TMP       = TAIM(A,I)  * TAIM(A,I) 
-                        SUMM     += TMP
+                     TMP        = TAIP_R(A,I) * TAIP_L(A,I) 
+                     SUMP      += TMP
 
-                      DO NINDEX
-        
-                         IF NINDEX == ITER_COUNT
+                     TAIM_R(A,I) = R1A_MO_M_HIST_R(A,I,MINDEX20)
+                     TAIM_L(A,I) = R1A_MO_M_HIST_L(A,I,MINDEX20)
+                     TMP         = TAIM_R(A,I) * TAIM_L(A,I) 
+                     SUMM       += TMP
 
-                            AMATRIX_P(MINDEX20,NIDEX20) = SUMP
-                            AMATRIX_M(MINDEX20,NIDEX20) = SUMM
+                     DO NINDEX20 
+       
+                         IF NINDEX20 ==  MINDEX20
+
+                            A_MATRIX_P(NINDEX20,MINDEX20) = SUMP
+                            A_MATRIX_M(NINDEX20,MINDEX20) = SUMM
                          
                          ENDIF 
 
-                       ENDDO 
+                     ENDDO 
                   ENDIF
               
                ENDDO
@@ -2778,23 +2787,27 @@
                DO MINDEX20
 
                   IF MINDEX20 == ITER_COUNT
-                     GET R1B_MO_P_HIST(B,J,MINDEX20) 
-                     GET R1B_MO_M_HIST(B,J,MINDEX20)
+                     GET R1B_MO_P_HIST_R(B,J,MINDEX20) 
+                     GET R1B_MO_M_HIST_R(B,J,MINDEX20)
+                     GET R1B_MO_P_HIST_L(B,J,MINDEX20) 
+                     GET R1B_MO_M_HIST_L(B,J,MINDEX20)
                       
-                        TBJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
-                        TMP       = TBJP(B,J)  * TBJP(B,J)
-                        SUMP     += TMP
+                     TBJP_R(B,J) = R1B_MO_P_HIST_R(B,J,MINDEX20)
+                     TBJP_L(B,J) = R1B_MO_P_HIST_L(B,J,MINDEX20)
+                     TMP       = TBJP_R(B,J)  * TBJP_L(B,J)
+                     SUMP     += TMP
 
-                        TBJM(B,J) = R1B_MO_M_HIST(B,J,MINDEX20)
-                        TMP       = TBJM(B,J) * TBJM(B,J)
-                        SUMM     += TMP
+                     TBJM_R(B,J) = R1B_MO_M_HIST_R(B,J,MINDEX20)
+                     TBJM_L(B,J) = R1B_MO_M_HIST_L(B,J,MINDEX20)
+                     TMP       = TBJM_R(B,J) * TBJM_L(B,J)
+                     SUMM     += TMP
 
                       DO NINDEX
         
                          IF NINDEX == ITER_COUNT
 
-                            AMATRIX_P(MINDEX20,NIDEX20) += SUMP
-                            AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+                            A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                            A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
                          
                          ENDIF 
 
@@ -2807,33 +2820,35 @@
 
      ELSE              
 
+# Build  A(i,j) i<=j  first 
+
         PARDDO A, I
 
                DO MINDEX20
 
-                  IF MINDEX20 == ITER_COUNT
-                     GET R1A_MO_P_HIST(A,I,MINDEX20)
-                     GET R1A_MO_M_HIST(A,I,MINDEX20)
+                  IF MINDEX20 == SUBSP_DIM
+                     GET R1A_MO_P_HIST_R(A,I,MINDEX20)
+                     GET R1A_MO_M_HIST_R(A,I,MINDEX20)
 
-                     TAIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
-                     TAIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
+                     TAIP_R(A,I) = R1A_MO_P_HIST_R(A,I,MINDEX20)
+                     TAIP_R(A,I) = R1A_MO_P_HIST_R(A,I,MINDEX20)
 
-                      DO NINDEX
-                         IF NINDEX20 <= ITER_COUNT
-                            GET R1A_MO_P_HIST(A,I,NINDEX20)
-                            GET R1A_MO_M_HIST(A,I,NINDEX20)
+                     DO NINDEX20
+                        IF NINDEX20 <= MINDEX20
+                           GET R1A_MO_P_HIST_L(A,I,NINDEX20)
+                           GET R1A_MO_M_HIST_L(A,I,NINDEX20)
 
-                            T1AIP(A,I) = R1A_MO_P_HIST(A,I,MINDEX20)
-                            T1AIM(A,I) = R1A_MO_M_HIST(A,I,MINDEX20)
+                           T1AIP_L(A,I) = R1A_MO_P_HIST_L(A,I,NINDEX20)
+                           T1AIM_L(A,I) = R1A_MO_M_HIST_L(A,I,NINDEX20)
 
-                            TMP       = TAIP(A,I)  * T1AIP(A,I))
-                            SUMP     += TMP
+                           TMP       = TAIP_R(A,I)  * T1AIP_L(A,I))
+                           SUMP     += TMP
 
-                            TMP       = TAIM(A,I)  * T1AIM(A,I))
-                            SUMM     += TMP
+                           TMP       = TAIM_R(A,I)  * T1AIM_L(A,I))
+                           SUMM     += TMP
 
-			    AMATRIX_P(MINDEX20,NIDEX20) += SUMP
-			    AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+                           A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+   		           A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
                      
                          ENDIF
         
@@ -2848,29 +2863,29 @@
 
                DO MINDEX20
 
-                  IF MINDEX20 == ITER_COUNT
-                     GET R1B_MO_P_HIST(B,J,MINDEX20)
-                     GET R1B_MO_M_HIST(B,J,MINDEX20)
+                  IF MINDEX20 == SUBSP_DIM
+                     GET R1B_MO_P_HIST_R(B,J,MINDEX20)
+                     GET R1B_MO_M_HIST_R(B,J,MINDEX20)
 
-                     TBJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
-                     TBJM(B,J) = R1B_MO_M_HIST(B,J,MINDEX20)
+                     TBJP_R(B,J) = R1B_MO_P_HIST_R(B,J,MINDEX20)
+                     TBJM_R(B,J) = R1B_MO_M_HIST_R(B,J,MINDEX20)
 
-                      DO NINDEX
-                         IF NINDEX20 <= ITER_COUNT
-                            GET R1B_MO_P_HIST(B,J,NINDEX20)
-                            GET R1B_MO_M_HIST(B,J,NINDEX20)
+                      DO NINDEX20
+                         IF NINDEX20 <= MINDEX20
+                            GET R1B_MO_P_HIST_L(B,J,NINDEX20)
+                            GET R1B_MO_M_HIST_L(B,J,NINDEX20)
 
-                            T1BJP(B,J) = R1B_MO_P_HIST(B,J,MINDEX20)
-                            T1BJM(B,B) = R1B_MO_M_HIST(B,J,MINDEX20)
+                            T1BJP_L(B,J) = R1B_MO_P_HIST_L(B,J,NINDEX20)
+                            T1BJM_L(B,B) = R1B_MO_M_HIST_L(B,J,NINDEX20)
 
-                            TMP       = TBJP(B,J) * T1BJP(B,J)
+                            TMP       = TBJP_R(B,J) * T1BJP_L(B,J)
                             SUMP     += TMP
 
-                            TMP       = TBJM(B,J) * T1BJM(A,I)
+                            TMP       = TBJM_R(B,J) * T1BJM_L(A,I)
                             SUMM     += TMP
 
-                            AMATRIX_P(MINDEX20,NIDEX20) += SUMP
-                            AMATRIX_M(MINDEX20,NIDEX20) += SUMM
+                            A_MATRIX_P(NINDEX20,MIDEX20) += SUMP
+                            A_MATRIX_M(NINDEX20,MIDEX20) += SUMM
 
                          ENDIF
 
@@ -2880,1299 +2895,109 @@
                ENDDO
 
         ENDPARDDO B, J
+
+# Build  A(i,j) i>j  now.
+
+        PARDDO A, I
+
+               DO MINDEX20
+
+                  IF MINDEX20 == SUBSP_DIM
+                     GET R1A_MO_P_HIST_L(A,I,MINDEX20)
+                     GET R1A_MO_M_HIST_L(A,I,MINDEX20)
+
+                     TAIP_L(A,I) = R1A_MO_P_HIST_L(A,I,MINDEX20)
+                     TAIP_L(A,I) = R1A_MO_P_HIST_L(A,I,MINDEX20)
+
+                     DO NINDEX20
+                        IF NINDEX20 <= MINDEX20
+                           GET R1A_MO_P_HIST_R(A,I,NINDEX20)
+                           GET R1A_MO_M_HIST_R(A,I,NINDEX20)
+
+                           T1AIP_R(A,I) = R1A_MO_P_HIST_L(A,I,NINDEX20)
+                           T1AIM_R(A,I) = R1A_MO_M_HIST_L(A,I,NINDEX20)
+
+                           TMP       = TAIP_R(A,I)  * T1AIP_L(A,I))
+                           SUMP     += TMP
+
+                           TMP       = TAIM_R(A,I)  * T1AIM_L(A,I))
+                           SUMM     += TMP
+
+                           A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                           A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                         ENDIF
+
+                       ENDDO
+                  ENDIF
+
+               ENDDO
+
+        ENDPARDDO A, I
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 == SUBSP_DIM
+                     GET R1B_MO_P_HIST_L(B,J,MINDEX20)
+                     GET R1B_MO_M_HIST_L(B,J,MINDEX20)
+
+                     TBJP_L(B,J) = R1B_MO_P_HIST_L(B,J,MINDEX20)
+                     TBJM_L(B,J) = R1B_MO_M_HIST_L(B,J,MINDEX20)
+
+                      DO NINDEX20
+                         IF NINDEX20 <= MINDEX20
+                            GET R1B_MO_P_HIST_R(B,J,NINDEX20)
+                            GET R1B_MO_M_HIST_R(B,J,NINDEX20)
+
+                            T1BJP_R(B,J) = R1B_MO_P_HIST_R(B,J,NINDEX20)
+                            T1BJM_R(B,B) = R1B_MO_M_HIST_R(B,J,NINDEX20)
+
+                            TMP       = TBJP_R(B,J) * T1BJP_L(B,J)
+                            SUMP     += TMP
+
+                            TMP       = TBJM_R(B,J) * T1BJM_L(A,I)
+                            SUMM     += TMP
+
+                            A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                            A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                         ENDIF
+
+                       ENDDO
+                  ENDIF
+
+               ENDDO
+
+        ENDPARDDO B, J
+
+     ENDIF 
          
-     PROC ACONSTRUCT 
-#    ----------------
+     PROC CONSTRUCT_A_MATRIX
+#    ------------------------
+#
+     PROC DIAG_A_MATRIX
+#    ------------------
 
+     EXECUTE DGEEV_4NOSYM_MATRIX  A_MATRIX_P 
+     EXECUTE DGEEV_4NOSYM_MATRIX  A_MATRIX_M 
 
+     execute sip_barrier 
 
+     EXECUTE SETUP_VECS  R_VEC_P L_VEC_P
+     EXECUTE SETUP_VECS  R_VEC_M L_VEC_M
 
+     execute sip_barrier 
 
+     ENDPROC DIAG_A_MATRIX
+#    ---------------------
 
+     PROC FORM_NEW_VECTOR
+#    --------------------
 
-
-
-
-# ----------------------------------------------------------------------------
-#
-     PROC Adiag
-#    ---------- 
-#
-     Aeig1=0.0
-     Aeig2=0.0
-     Aeig3=0.0
-     Aeig4=0.0
-     Aeig5=0.0
-     Aeig6=0.0
-     Aeig7=0.0
-     Aeig8=0.0
-     Aeig9=0.0
-     Aeig10=0.0
-     Aeig11=0.0
-     Aeig12=0.0
-     Aeig13=0.0
-     Aeig14=0.0
-     Aeig15=0.0
-     Aeig16=0.0
-     Aeig17=0.0
-     Aeig18=0.0
-     Aeig19=0.0
-     Aeig20=0.0
-#
-#    FIRST ITERATION
-#
-     if spdim == 1
-#
-    #Aeig1=a1_1
-#
-     do jindex20
-     do kindex20
-         if jindex20 == 1
-         if kindex20 == 1
-            t20(kindex20,jindex20) = sMAT20(kindex20,jindex20)
-            execute return_sval t20  Aeig1
-         endif
-         endif
-     enddo kindex20
-     enddo jindex20
-#
-     endif
-#
-#======================================================
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#--start of script generated part of the code
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#======================================================
-#    --------------2th iteration-----------------
-     if spdim == 2
-#
-     execute eig_nonsymm Smat2 SVEV2
-#
-     do jindex2
-     do kindex2
-#
-     tcoef2(kindex2,jindex2)=Smat2(kindex2,jindex2)
-#
-     if kindex2 == 1
-     if jindex2 == 1
-     execute return_sval tcoef2  Aeig1
-     endif
-     endif
-     if kindex2 == 2
-     if jindex2 == 2
-     execute return_sval tcoef2  Aeig2
-     endif
-     endif
-#
-     enddo kindex2
-     enddo jindex2
-#
-     endif
-#
-#    --------------end 2th iteration-----------------
-#
-#    --------------3th iteration-----------------
-     if spdim == 3
-#
-     execute eig_nonsymm Smat3 SVEV3
-#
-     do jindex3
-     do kindex3
-#
-     tcoef3(kindex3,jindex3)=Smat3(kindex3,jindex3)
-#
-     if kindex3 == 1
-     if jindex3 == 1
-     execute return_sval tcoef3  Aeig1
-     endif
-     endif
-     if kindex3 == 2
-     if jindex3 == 2
-     execute return_sval tcoef3  Aeig2
-     endif
-     endif
-     if kindex3 == 3
-     if jindex3 == 3
-     execute return_sval tcoef3  Aeig3
-     endif
-     endif
-#
-     enddo kindex3
-     enddo jindex3
-#
-     endif
-#
-#    --------------end 3th iteration-----------------
-#
-#    --------------4th iteration-----------------
-     if spdim == 4
-#
-     execute eig_nonsymm Smat4 SVEV4
-#
-     do jindex4
-     do kindex4
-#
-     tcoef4(kindex4,jindex4)=Smat4(kindex4,jindex4)
-#
-     if kindex4 == 1
-     if jindex4 == 1
-     execute return_sval tcoef4  Aeig1
-     endif
-     endif
-     if kindex4 == 2
-     if jindex4 == 2
-     execute return_sval tcoef4  Aeig2
-     endif
-     endif
-     if kindex4 == 3
-     if jindex4 == 3
-     execute return_sval tcoef4  Aeig3
-     endif
-     endif
-     if kindex4 == 4
-     if jindex4 == 4
-     execute return_sval tcoef4  Aeig4
-     endif
-     endif
-#
-     enddo kindex4
-     enddo jindex4
-#
-     endif
-#
-#    --------------end 4th iteration-----------------
-#
-#    --------------5th iteration-----------------
-     if spdim == 5
-#
-     execute eig_nonsymm Smat5 SVEV5
-#
-     do jindex5
-     do kindex5
-#
-     tcoef5(kindex5,jindex5)=Smat5(kindex5,jindex5)
-#
-     if kindex5 == 1
-     if jindex5 == 1
-     execute return_sval tcoef5  Aeig1
-     endif
-     endif
-     if kindex5 == 2
-     if jindex5 == 2
-     execute return_sval tcoef5  Aeig2
-     endif
-     endif
-     if kindex5 == 3
-     if jindex5 == 3
-     execute return_sval tcoef5  Aeig3
-     endif
-#
-#    --------------end 8th iteration-----------------
-#
-#    --------------9th iteration-----------------
-     if spdim == 9
-#
-     execute eig_nonsymm Smat9 SVEV9
-#
-     do jindex9
-     do kindex9
-#
-     tcoef9(kindex9,jindex9)=Smat9(kindex9,jindex9)
-#
-     if kindex9 == 1
-     if jindex9 == 1
-     execute return_sval tcoef9  Aeig1
-     endif
-     endif
-     if kindex9 == 2
-     if jindex9 == 2
-     execute return_sval tcoef9  Aeig2
-     endif
-     endif
-     if kindex9 == 3
-     if jindex9 == 3
-     execute return_sval tcoef9  Aeig3
-     endif
-     endif
-     if kindex9 == 4
-     if jindex9 == 4
-     execute return_sval tcoef9  Aeig4
-     endif
-     endif
-     if kindex9 == 5
-     if jindex9 == 5
-     execute return_sval tcoef9  Aeig5
-     endif
-     endif
-     if kindex9 == 6
-     if jindex9 == 6
-     execute return_sval tcoef9  Aeig6
-     endif
-     endif
-     if kindex9 == 7
-     if jindex9 == 7
-     execute return_sval tcoef9  Aeig7
-     endif
-     endif
-     if kindex9 == 8
-     if jindex9 == 8
-     execute return_sval tcoef9  Aeig8
-     endif
-     endif
-     if kindex9 == 9
-     if jindex9 == 9
-     execute return_sval tcoef9  Aeig9
-     endif
-     endif
-#
-     enddo kindex9
-     enddo jindex9
-#
-     endif
-#
-#
-#    --------------end 9th iteration-----------------
-#
-#
-#    --------------10th iteration-----------------
-     if spdim == 10
-#
-     execute eig_nonsymm Smat10 SVEV10
-#
-     do jindex10
-     do kindex10
-#
-     tcoef10(kindex10,jindex10)=Smat10(kindex10,jindex10)
-#
-     if kindex10 == 1
-     if jindex10 == 1
-     execute return_sval tcoef10  Aeig1
-     endif
-     endif
-     if kindex10 == 2
-     if jindex10 == 2
-     execute return_sval tcoef10  Aeig2
-     endif
-     endif
-     if kindex10 == 3
-     if jindex10 == 3
-     execute return_sval tcoef10  Aeig3
-     endif
-     endif
-     if kindex10 == 4
-     if jindex10 == 4
-     execute return_sval tcoef10  Aeig4
-     endif
-     endif
-     if kindex10 == 5
-     if jindex10 == 5
-     execute return_sval tcoef10  Aeig5
-     endif
-     endif
-     if kindex10 == 6
-     if jindex10 == 6
-     execute return_sval tcoef10  Aeig6
-     endif
-     endif
-     if kindex10 == 7
-     if jindex10 == 7
-     execute return_sval tcoef10  Aeig7
-     endif
-     endif
-     if kindex10 == 8
-     if jindex10 == 8
-     execute return_sval tcoef10  Aeig8
-     endif
-     endif
-     if kindex10 == 9
-     if jindex10 == 9
-     execute return_sval tcoef10  Aeig9
-     endif
-     endif
-     if kindex10 == 10
-     if jindex10 == 10
-     execute return_sval tcoef10  Aeig10
-     endif
-     endif
-#
-     enddo kindex10
-     enddo jindex10
-#
-     endif
-#
-#    --------------end 10th iteration-----------------
-#
-#    --------------11th iteration-----------------
-     if spdim == 11
-#
-     execute eig_nonsymm Smat11 SVEV11
-#
-     do jindex11
-     do kindex11
-#
-     tcoef11(kindex11,jindex11)=Smat11(kindex11,jindex11)
-#
-     if kindex11 == 1
-     if jindex11 == 1
-     execute return_sval tcoef11  Aeig1
-     endif
-     endif
-     if kindex11 == 2
-     if jindex11 == 2
-     execute return_sval tcoef11  Aeig2
-     endif
-     endif
-     if kindex11 == 3
-     if jindex11 == 3
-     execute return_sval tcoef11  Aeig3
-     endif
-     endif
-     if kindex11 == 4
-     if jindex11 == 4
-     execute return_sval tcoef11  Aeig4
-     endif
-     endif
-     if kindex11 == 5
-     if jindex11 == 5
-     execute return_sval tcoef11  Aeig5
-     endif
-     endif
-     if kindex11 == 6
-     if jindex11 == 6
-     execute return_sval tcoef11  Aeig6
-     endif
-     endif
-     if kindex11 == 7
-     if jindex11 == 7
-     execute return_sval tcoef11  Aeig7
-     endif
-     endif
-     if kindex11 == 8
-     if jindex11 == 8
-     execute return_sval tcoef11  Aeig8
-     endif
-     endif
-     if kindex11 == 9
-     if jindex11 == 9
-     execute return_sval tcoef11  Aeig9
-     endif
-     endif
-     if kindex11 == 10
-     if jindex11 == 10
-     execute return_sval tcoef11  Aeig10
-     endif
-     endif
-     if kindex11 == 11
-     if jindex11 == 11
-     execute return_sval tcoef11  Aeig11
-     endif
-     endif
-#
-     enddo kindex11
-     enddo jindex11
-#
-     endif
-#
-#    --------------end 11th iteration-----------------
-#
-#    --------------12th iteration-----------------
-     if spdim == 12
-#
-     execute eig_nonsymm Smat12 SVEV12
-#
-     do jindex12
-     do kindex12
-#
-     tcoef12(kindex12,jindex12)=Smat12(kindex12,jindex12)
-#
-     if kindex12 == 1
-     if jindex12 == 1
-     execute return_sval tcoef12  Aeig1
-     endif
-     endif
-     if kindex12 == 2
-     if jindex12 == 2
-     execute return_sval tcoef12  Aeig2
-     endif
-     endif
-     if kindex12 == 3
-     if jindex12 == 3
-     execute return_sval tcoef12  Aeig3
-     endif
-     endif
-     if kindex12 == 4
-     if jindex12 == 4
-     execute return_sval tcoef12  Aeig4
-     endif
-     endif
-     if kindex12 == 5
-     if jindex12 == 5
-     execute return_sval tcoef12  Aeig5
-     endif
-     endif
-     if kindex12 == 6
-     if jindex12 == 6
-     execute return_sval tcoef12  Aeig6
-     endif
-     endif
-     if kindex12 == 7
-     if jindex12 == 7
-     execute return_sval tcoef12  Aeig7
-     endif
-     endif
-     if kindex12 == 8
-     if jindex12 == 8
-     execute return_sval tcoef12  Aeig8
-     endif
-     endif
-     if kindex12 == 9
-     if jindex12 == 9
-     execute return_sval tcoef12  Aeig9
-     endif
-     endif
-     if kindex12 == 10
-     if jindex12 == 10
-     execute return_sval tcoef12  Aeig10
-     endif
-     endif
-     if kindex12 == 11
-     if jindex12 == 11
-     execute return_sval tcoef12  Aeig11
-     endif
-     endif
-     if kindex12 == 12
-     if jindex12 == 12
-     execute return_sval tcoef12  Aeig12
-     endif
-     endif
-#
-     enddo kindex12
-     enddo jindex12
-#
-     endif
-#
-#    --------------end 12th iteration-----------------
-#
-#    --------------13th iteration-----------------
-     if spdim == 13
-#
-     execute eig_nonsymm Smat13 SVEV13
-#
-     do jindex13
-     do kindex13
-#
-     tcoef13(kindex13,jindex13)=Smat13(kindex13,jindex13)
-#
-     if kindex13 == 1
-     if jindex13 == 1
-     execute return_sval tcoef13  Aeig1
-     endif
-     endif
-     if kindex13 == 2
-     if jindex13 == 2
-     execute return_sval tcoef13  Aeig2
-     endif
-     endif
-     if kindex13 == 3
-     if jindex13 == 3
-     execute return_sval tcoef13  Aeig3
-     endif
-     endif
-     if kindex13 == 4
-     if jindex13 == 4
-     execute return_sval tcoef13  Aeig4
-     endif
-     endif
-     if kindex13 == 5
-     if jindex13 == 5
-     execute return_sval tcoef13  Aeig5
-     endif
-     endif
-     if kindex13 == 6
-     if jindex13 == 6
-     execute return_sval tcoef13  Aeig6
-     endif
-     endif
-     if kindex13 == 7
-     if jindex13 == 7
-     execute return_sval tcoef13  Aeig7
-     endif
-     endif
-     if kindex13 == 8
-     if jindex13 == 8
-     execute return_sval tcoef13  Aeig8
-     endif
-     endif
-     if kindex13 == 9
-     if jindex13 == 9
-     execute return_sval tcoef13  Aeig9
-     endif
-     endif
-     if kindex13 == 10
-     if jindex13 == 10
-     execute return_sval tcoef13  Aeig10
-     endif
-     endif
-     if kindex13 == 11
-     if jindex13 == 11
-     execute return_sval tcoef13  Aeig11
-     endif
-     endif
-     if kindex13 == 12
-     if jindex13 == 12
-     execute return_sval tcoef13  Aeig12
-     endif
-     endif
-     if kindex13 == 13
-     if jindex13 == 13
-     execute return_sval tcoef13  Aeig13
-     endif
-     endif
-#
-     enddo kindex13
-     enddo jindex13
-#
-     endif
-#
-#    --------------end 13th iteration-----------------
-#
-#    --------------14th iteration-----------------
-     if spdim == 14
-#
-     execute eig_nonsymm Smat14 SVEV14
-#
-     do jindex14
-     do kindex14
-#
-     tcoef14(kindex14,jindex14)=Smat14(kindex14,jindex14)
-#
-     if kindex14 == 1
-     if jindex14 == 1
-     execute return_sval tcoef14  Aeig1
-     endif
-     endif
-     if kindex14 == 2
-     if jindex14 == 2
-     execute return_sval tcoef14  Aeig2
-     endif
-     endif
-     if kindex14 == 3
-     if jindex14 == 3
-     execute return_sval tcoef14  Aeig3
-     endif
-     endif
-     if kindex14 == 4
-     if jindex14 == 4
-     execute return_sval tcoef14  Aeig4
-     endif
-     endif
-     if kindex14 == 5
-     if jindex14 == 5
-     execute return_sval tcoef14  Aeig5
-     endif
-     endif
-     if kindex14 == 6
-     if jindex14 == 6
-     execute return_sval tcoef14  Aeig6
-     endif
-     endif
-     if kindex14 == 7
-     if jindex14 == 7
-     execute return_sval tcoef14  Aeig7
-     endif
-     endif
-     if kindex14 == 8
-     if jindex14 == 8
-     execute return_sval tcoef14  Aeig8
-     endif
-     endif
-     if kindex14 == 9
-     if jindex14 == 9
-     execute return_sval tcoef14  Aeig9
-     endif
-     endif
-     if kindex14 == 10
-     if jindex14 == 10
-     execute return_sval tcoef14  Aeig10
-     endif
-     endif
-     if kindex14 == 11
-     if jindex14 == 11
-     execute return_sval tcoef14  Aeig11
-     endif
-     endif
-     if kindex14 == 12
-     if jindex14 == 12
-     execute return_sval tcoef14  Aeig12
-     endif
-     endif
-     if kindex14 == 13
-     if jindex14 == 13
-     execute return_sval tcoef14  Aeig13
-     endif
-     endif
-     if kindex14 == 14
-     if jindex14 == 14
-     execute return_sval tcoef14  Aeig14
-     endif
-     endif
-#
-     enddo kindex14
-     enddo jindex14
-#
-     endif
-#
-#    --------------end 14th iteration-----------------
-#
-#
-#    --------------15th iteration-----------------
-     if spdim == 15
-#
-     execute eig_nonsymm Smat15 SVEV15
-#
-     do jindex15
-     do kindex15
-#
-     tcoef15(kindex15,jindex15)=Smat15(kindex15,jindex15)
-#
-     if kindex15 == 1
-     if jindex15 == 1
-     execute return_sval tcoef15  Aeig1
-     endif
-     endif
-     if kindex15 == 2
-     if jindex15 == 2
-     execute return_sval tcoef15  Aeig2
-     endif
-     endif
-     if kindex15 == 3
-     if jindex15 == 3
-     execute return_sval tcoef15  Aeig3
-     endif
-     endif
-     if kindex15 == 4
-     if jindex15 == 4
-     execute return_sval tcoef15  Aeig4
-     endif
-     endif
-     if kindex15 == 5
-     if jindex15 == 5
-     execute return_sval tcoef15  Aeig5
-     endif
-     endif
-     if kindex15 == 6
-     if jindex15 == 6
-     execute return_sval tcoef15  Aeig6
-     endif
-     endif
-     if kindex15 == 7
-     if jindex15 == 7
-     execute return_sval tcoef15  Aeig7
-     endif
-     endif
-     if kindex15 == 8
-     if jindex15 == 8
-     execute return_sval tcoef15  Aeig8
-     endif
-     endif
-     if kindex15 == 9
-     if jindex15 == 9
-     execute return_sval tcoef15  Aeig9
-     endif
-     endif
-     if kindex15 == 10
-     if jindex15 == 10
-     execute return_sval tcoef15  Aeig10
-     endif
-     endif
-     if kindex15 == 11
-     if jindex15 == 11
-     execute return_sval tcoef15  Aeig11
-     endif
-     endif
-     if kindex15 == 12
-     if jindex15 == 12
-     execute return_sval tcoef15  Aeig12
-     endif
-     endif
-     if kindex15 == 13
-     if jindex15 == 13
-     execute return_sval tcoef15  Aeig13
-     endif
-     endif
-     if kindex15 == 14
-     if jindex15 == 14
-     execute return_sval tcoef15  Aeig14
-     endif
-     endif
-     if kindex15 == 15
-     if jindex15 == 15
-     execute return_sval tcoef15  Aeig15
-     endif
-     endif
-#
-     enddo kindex15
-     enddo jindex15
-#
-     endif
-#
-#    --------------end 15th iteration-----------------
-#
-#    --------------16th iteration-----------------
-     if spdim == 16
-#
-     execute eig_nonsymm Smat16 SVEV16
-#
-     do jindex16
-     do kindex16
-#
-     tcoef16(kindex16,jindex16)=Smat16(kindex16,jindex16)
-#
-     if kindex16 == 1
-     if jindex16 == 1
-     execute return_sval tcoef16  Aeig1
-     endif
-     endif
-     if kindex16 == 2
-     if jindex16 == 2
-     execute return_sval tcoef16  Aeig2
-     endif
-     endif
-     if kindex16 == 3
-     if jindex16 == 3
-     execute return_sval tcoef16  Aeig3
-     endif
-     endif
-     if kindex16 == 4
-     if jindex16 == 4
-     execute return_sval tcoef16  Aeig4
-     endif
-     endif
-     if kindex16 == 5
-     if jindex16 == 5
-     execute return_sval tcoef16  Aeig5
-     endif
-     endif
-     if kindex16 == 6
-     if jindex16 == 6
-     execute return_sval tcoef16  Aeig6
-     endif
-     endif
-     if kindex16 == 7
-     if jindex16 == 7
-     execute return_sval tcoef16  Aeig7
-     endif
-     endif
-     if kindex16 == 8
-     if jindex16 == 8
-     execute return_sval tcoef16  Aeig8
-     endif
-     endif
-     if kindex16 == 9
-     if jindex16 == 9
-     execute return_sval tcoef16  Aeig9
-     endif
-     endif
-     if kindex16 == 10
-     if jindex16 == 10
-     execute return_sval tcoef16  Aeig10
-     endif
-     endif
-     if kindex16 == 11
-     if jindex16 == 11
-     execute return_sval tcoef16  Aeig11
-     endif
-     endif
-     if kindex16 == 12
-     if jindex16 == 12
-     execute return_sval tcoef16  Aeig12
-     endif
-     endif
-     if kindex16 == 13
-     if jindex16 == 13
-     execute return_sval tcoef16  Aeig13
-     endif
-     endif
-     if kindex16 == 14
-     if jindex16 == 14
-     execute return_sval tcoef16  Aeig14
-     endif
-     endif
-     if kindex16 == 15
-     if jindex16 == 15
-     execute return_sval tcoef16  Aeig15
-     endif
-     endif
-     if kindex16 == 16
-     if jindex16 == 16
-     execute return_sval tcoef16  Aeig16
-     endif
-     endif
-#
-     enddo kindex16
-     enddo jindex16
-#
-     endif
-#
-#    --------------end 16th iteration-----------------
-#
-#    --------------17th iteration-----------------
-     if spdim == 17
-#
-     execute eig_nonsymm Smat17 SVEV17
-#
-     do jindex17
-     do kindex17
-#
-     tcoef17(kindex17,jindex17)=Smat17(kindex17,jindex17)
-#
-     if kindex17 == 1
-     if jindex17 == 1
-     execute return_sval tcoef17  Aeig1
-     endif
-     endif
-     if kindex17 == 2
-     if jindex17 == 2
-     execute return_sval tcoef17  Aeig2
-     endif
-     endif
-     if kindex17 == 3
-     if jindex17 == 3
-     execute return_sval tcoef17  Aeig3
-     endif
-     endif
-     if kindex17 == 4
-     if jindex17 == 4
-     execute return_sval tcoef17  Aeig4
-     endif
-     endif
-     if kindex17 == 5
-     if jindex17 == 5
-     execute return_sval tcoef17  Aeig5
-     endif
-     endif
-     if kindex17 == 6
-     if jindex17 == 6
-     execute return_sval tcoef17  Aeig6
-     endif
-     endif
-     if kindex17 == 7
-     if jindex17 == 7
-     execute return_sval tcoef17  Aeig7
-     endif
-     endif
-     if kindex17 == 8
-     if jindex17 == 8
-     execute return_sval tcoef17  Aeig8
-     endif
-     endif
-     if kindex17 == 9
-     if jindex17 == 9
-     execute return_sval tcoef17  Aeig9
-     endif
-     endif
-     if kindex17 == 10
-     if jindex17 == 10
-     execute return_sval tcoef17  Aeig10
-     endif
-     endif
-     if kindex17 == 11
-     if jindex17 == 11
-     execute return_sval tcoef17  Aeig11
-     endif
-     endif
-     if kindex17 == 12
-     if jindex17 == 12
-     execute return_sval tcoef17  Aeig12
-     endif
-     endif
-     if kindex17 == 13
-     if jindex17 == 13
-     execute return_sval tcoef17  Aeig13
-     endif
-     endif
-     if kindex17 == 14
-     if jindex17 == 14
-     execute return_sval tcoef17  Aeig14
-     endif
-     endif
-     if kindex17 == 15
-     if jindex17 == 15
-     execute return_sval tcoef17  Aeig15
-     endif
-     endif
-     if kindex17 == 16
-     if jindex17 == 16
-     execute return_sval tcoef17  Aeig16
-     endif
-     endif
-     if kindex17 == 17
-     if jindex17 == 17
-     execute return_sval tcoef17  Aeig17
-     endif
-     endif
-#
-     enddo kindex17
-     enddo jindex17
-#
-     endif
-#
-#    --------------end 17th iteration-----------------
-#
-#    --------------18th iteration-----------------
-     if spdim == 18
-#
-     execute eig_nonsymm Smat18 SVEV18
-#
-     do jindex18
-     do kindex18
-#
-     tcoef18(kindex18,jindex18)=Smat18(kindex18,jindex18)
-#
-     if kindex18 == 1
-     if jindex18 == 1
-     execute return_sval tcoef18  Aeig1
-     endif
-     endif
-     if kindex18 == 2
-     if jindex18 == 2
-     execute return_sval tcoef18  Aeig2
-     endif
-     endif
-     if kindex18 == 3
-     if jindex18 == 3
-     execute return_sval tcoef18  Aeig3
-     endif
-     endif
-     if kindex18 == 4
-     if jindex18 == 4
-     execute return_sval tcoef18  Aeig4
-     endif
-     endif
-     if kindex18 == 5
-     if jindex18 == 5
-     execute return_sval tcoef18  Aeig5
-     endif
-     endif
-     if kindex18 == 6
-     if jindex18 == 6
-     execute return_sval tcoef18  Aeig6
-     endif
-     endif
-     if kindex18 == 7
-     if jindex18 == 7
-     execute return_sval tcoef18  Aeig7
-     endif
-     endif
-     if kindex18 == 8
-     if jindex18 == 8
-     execute return_sval tcoef18  Aeig8
-     endif
-     endif
-     if kindex18 == 9
-     if jindex18 == 9
-     execute return_sval tcoef18  Aeig9
-     endif
-     endif
-     if kindex18 == 10
-     if jindex18 == 10
-     execute return_sval tcoef18  Aeig10
-     endif
-     endif
-     if kindex18 == 11
-     if jindex18 == 11
-     execute return_sval tcoef18  Aeig11
-     endif
-     endif
-     if kindex18 == 12
-     if jindex18 == 12
-     execute return_sval tcoef18  Aeig12
-     endif
-     endif
-     if kindex18 == 13
-     if jindex18 == 13
-     execute return_sval tcoef18  Aeig13
-     endif
-     endif
-     if kindex18 == 14
-     if jindex18 == 14
-     execute return_sval tcoef18  Aeig14
-     endif
-     endif
-     if kindex18 == 15
-     if jindex18 == 15
-     execute return_sval tcoef18  Aeig15
-     endif
-     endif
-     if kindex18 == 16
-     if jindex18 == 16
-     execute return_sval tcoef18  Aeig16
-     endif
-     endif
-     if kindex18 == 17
-     if jindex18 == 17
-     execute return_sval tcoef18  Aeig17
-     endif
-     endif
-     if kindex18 == 18
-     if jindex18 == 18
-     execute return_sval tcoef18  Aeig18
-     endif
-     endif
-#
-     enddo kindex18
-     enddo jindex18
-#
-     endif
-#
-#
-#    --------------end 18th iteration-----------------
-#
-#
-#    --------------19th iteration-----------------
-     if spdim == 19
-#
-     execute eig_nonsymm Smat19 SVEV19
-#
-     do jindex19
-     do kindex19
-#
-     tcoef19(kindex19,jindex19)=Smat19(kindex19,jindex19)
-#
-     if kindex19 == 1
-     if jindex19 == 1
-     execute return_sval tcoef19  Aeig1
-     endif
-     endif
-     if kindex19 == 2
-     if jindex19 == 2
-     execute return_sval tcoef19  Aeig2
-     endif
-     endif
-     if kindex19 == 3
-     if jindex19 == 3
-     execute return_sval tcoef19  Aeig3
-     endif
-     endif
-     if kindex19 == 4
-     if jindex19 == 4
-     execute return_sval tcoef19  Aeig4
-     endif
-     endif
-     if kindex19 == 5
-     if jindex19 == 5
-     execute return_sval tcoef19  Aeig5
-     endif
-     endif
-     if kindex19 == 6
-     if jindex19 == 6
-     execute return_sval tcoef19  Aeig6
-     endif
-     endif
-     if kindex19 == 7
-     if jindex19 == 7
-     execute return_sval tcoef19  Aeig7
-     endif
-     endif
-     if kindex19 == 8
-     if jindex19 == 8
-     execute return_sval tcoef19  Aeig8
-     endif
-     endif
-     if kindex19 == 9
-     if jindex19 == 9
-     execute return_sval tcoef19  Aeig9
-     endif
-     endif
-     if kindex19 == 10
-     if jindex19 == 10
-     execute return_sval tcoef19  Aeig10
-     endif
-     endif
-     if kindex19 == 11
-     if jindex19 == 11
-     execute return_sval tcoef19  Aeig11
-     endif
-     endif
-     if kindex19 == 12
-     if jindex19 == 12
-     execute return_sval tcoef19  Aeig12
-     endif
-     endif
-     if kindex19 == 13
-     if jindex19 == 13
-     execute return_sval tcoef19  Aeig13
-     endif
-     endif
-     if kindex19 == 14
-     if jindex19 == 14
-     execute return_sval tcoef19  Aeig14
-     endif
-     endif
-     if kindex19 == 15
-     if jindex19 == 15
-     execute return_sval tcoef19  Aeig15
-     endif
-     endif
-     if kindex19 == 16
-     if jindex19 == 16
-     execute return_sval tcoef19  Aeig16
-     endif
-     endif
-     if kindex19 == 17
-     if jindex19 == 17
-     execute return_sval tcoef19  Aeig17
-     endif
-     endif
-     if kindex19 == 18
-     if jindex19 == 18
-     execute return_sval tcoef19  Aeig18
-     endif
-     endif
-     if kindex19 == 19
-     if jindex19 == 19
-     execute return_sval tcoef19  Aeig19
-     endif
-     endif
-#
-     enddo kindex19
-     enddo jindex19
-#
-     endif
-#
-#    --------------end 19th iteration-----------------
-#
-#    --------------20th iteration-----------------
-     if spdim == 20
-#
-     execute eig_nonsymm Smat20 SVEV20
-#
-     do jindex20
-     do kindex20
-#
-     tcoef20(kindex20,jindex20)=Smat20(kindex20,jindex20)
-#
-     if kindex20 == 1
-     if jindex20 == 1
-     execute return_sval tcoef20  Aeig1
-     endif
-     endif
-     if kindex20 == 2
-     if jindex20 == 2
-     execute return_sval tcoef20  Aeig2
-     endif
-     endif
-     if kindex20 == 3
-     if jindex20 == 3
-     execute return_sval tcoef20  Aeig3
-     endif
-     endif
-     if kindex20 == 4
-     if jindex20 == 4
-     execute return_sval tcoef20  Aeig4
-     endif
-     endif
-     if kindex20 == 5
-     if jindex20 == 5
-     execute return_sval tcoef20  Aeig5
-     endif
-     endif
-     if kindex20 == 6
-     if jindex20 == 6
-     execute return_sval tcoef20  Aeig6
-     endif
-     endif
-     if kindex20 == 7
-     if jindex20 == 7
-     execute return_sval tcoef20  Aeig7
-     endif
-     endif
-     if kindex20 == 8
-     if jindex20 == 8
-     execute return_sval tcoef20  Aeig8
-     endif
-     endif
-     if kindex20 == 9
-     if jindex20 == 9
-     execute return_sval tcoef20  Aeig9
-     endif
-     endif
-     if kindex20 == 10
-     if jindex20 == 10
-     execute return_sval tcoef20  Aeig10
-     endif
-     endif
-     if kindex20 == 11
-     if jindex20 == 11
-     execute return_sval tcoef20  Aeig11
-     endif
-     endif
-     if kindex20 == 12
-     if jindex20 == 12
-     execute return_sval tcoef20  Aeig12
-     endif
-     endif
-     if kindex20 == 13
-     if jindex20 == 13
-     execute return_sval tcoef20  Aeig13
-     endif
-     endif
-     if kindex20 == 14
-     if jindex20 == 14
-     execute return_sval tcoef20  Aeig14
-     endif
-     endif
-     if kindex20 == 15
-     if jindex20 == 15
-     execute return_sval tcoef20  Aeig15
-     endif
-     endif
-     if kindex20 == 16
-     if jindex20 == 16
-     execute return_sval tcoef20  Aeig16
-     endif
-     endif
-     if kindex20 == 17
-     if jindex20 == 17
-     execute return_sval tcoef20  Aeig17
-     endif
-     endif
-     if kindex20 == 18
-     if jindex20 == 18
-     execute return_sval tcoef20  Aeig18
-     endif
-     endif
-     if kindex20 == 19
-     if jindex20 == 19
-     execute return_sval tcoef20  Aeig19
-     endif
-     endif
-     if kindex20 == 20
-     if jindex20 == 20
-     execute return_sval tcoef20  Aeig20
-     endif
-     endif
-#
-     enddo kindex20
-     enddo jindex20
-#
-     execute sip_barrier
-#
-     endif
-#
-#
-#    --------------end 20th iteration-----------------
-#
-#
-#======================================================
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#--end of script generated part of the code
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#======================================================
-#
-#
-     ENDPROC Adiag
-#
+     ENDPROC FORM_NEW_VECTOR
+#    -----------------------
 #
      PROC SELVEC
 #
@@ -25189,21 +24014,32 @@
 # G. B. Bacskay, Chemical Physics,61,385,1981 and J. Olsen and 
 # co-workers, Chemical Physics,119,297,1988. 
 
-          CALL DHCMULT
+          CALL AO_DIRECT_HCMULT
 #
-          CALL ACONSTRUCT
+#  A(i,j) = <R_i | H | R_j>, where R_i, i=1,2,3... are the sub-space
+# vectors. The diagonalization of the sub-space matrix A gives a
+# set of vectors of the dimension of the sub-space matrix (N=1,2..) 
+# that can be used to form a set of N vectors. One of them will be
+# chosen to built the correction vector.
 #
-          CALL  Adiag
+          CALL CONSTRUCT_A_MATRIX
 #
-          call SELVEC
+          CALL DIAG_A_MATRIX
 #
-          call VECLINCOMB_1
+# The FORM_NEW_VECTORS do things. It will form the set of new 
+# vectors using the formula  C_k (m,n) = A_k(1,1)*R_1 + A_k(2,2)*R_2 +....
 #
-          call VECLINCOMB_2
+          CALL FORM_NEW_VECTORS
 #
-          call RESID
+# We have C_k  (k=1,.., N where N is curent dimension of the sub-space).
+# We select a vector from them based on the criteria on the maximum 
+# overlap criteria with the starting guess vector. 
+
+          CALL SELECT_VECTOR_TOGO
 #
-          call REZYDUUM
+          CALL FORM_RESIDUAL_VECTOR
+#
+          CALL FORM_CORRECTION_VECTOR
 #
           call SCALEVCACT
 #
