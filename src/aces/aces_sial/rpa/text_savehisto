@@ -1,0 +1,169 @@
+     PROC SAVE_HISTORY
+#    -----------------
+
+     IF ITER_COUNT == 0.0
+
+        MCOUNT = -1.0
+        RCOUNT =  0.0
+
+        PARDO A, I
+
+              DO ROOT 
+                 RCOUNT += 1.0
+
+                 IF RCOUNT == ROOT_PIC
+
+                    GET R1A_MO_P_START_R(A,I,ROOT)
+                    GET R1A_MO_M_START_R(A,I,ROOT)
+                    GET R1A_MO_P_START_L(A,I,ROOT)
+                    GET R1A_MO_M_START_L(A,I,ROOT)
+
+                    TAIP_R(A,I) = R1A_MO_P_START_R(A,I,ROOT)
+                    TAIM_R(A,I) = R1A_MO_M_START_R(A,I,ROOT)
+                    TAIP_L(A,I) = R1A_MO_P_START_L(A,I,ROOT)
+                    TAIM_L(A,I) = R1A_MO_M_START_L(A,I,ROOT)
+
+                    DO MINDEX20
+                       MCOUNT += 1.0
+                          
+                       IF MCOUNT == ITER_COUNT 
+
+                          PUT R1A_MO_P_HIST_R(A,I,MINDEX20,ROOT) = TAIP_R(A,I)
+                          PUT R1A_MO_M_HIST_R(A,I,MINDEX20,ROOT) = TAIP_R(A,I)
+                          PUT R1A_MO_P_HIST_L(A,I,MINDEX20,ROOT) = TAIM_L(A,I)
+                          PUT R1A_MO_M_HIST_L(A,I,MINDEX20,ROOT) = TAIM_L(A,I)
+
+                       ENDIF
+                    ENDDO
+
+                 ENDIF 
+
+              ENDDO
+        ENDPARDO A, I
+
+        MCOUNT = 0.0
+        RCOUNT = 0.0
+
+        PARDO B, J
+
+              DO ROOT 
+                 RCOUNT += 1.0
+
+                 IF RCOUNT == ROOT_PIC
+
+                    GET R1B_MO_P_START_R(B,J,ROOT)
+                    GET R1B_MO_M_START_R(B,J,ROOT)
+                    GET R1B_MO_P_START_L(B,J,ROOT)
+                    GET R1B_MO_M_START_L(B,J,ROOT)
+
+                    TBJP_R(B,J) = R1B_MO_P_START_R(B,J,ROOT)
+                    TBJM_R(B,J) = R1B_MO_M_START_R(B,J,ROOT)
+                    TBJP_L(B,J) = R1B_MO_P_START_L(B,J,ROOT)
+                    TBJM_L(B,J) = R1B_MO_M_START_L(B,J,ROOT)
+
+                    DO MINDEX20
+                       IF MCOUNT == ITER_COUNT 
+
+                          PUT R1B_MO_P_HIST_R(B,J,MINDEX20,ROOT) = TBJP_R(B,J)
+                          PUT R1B_MO_M_HIST_R(B,J,MINDEX20,ROOT) = TBJM_R(B,J)
+                          PUT R1B_MO_P_HIST_L(B,J,MINDEX20,ROOT) = TBJP_L(B,J)
+                          PUT R1B_MO_M_HIST_L(B,J,MINDEX20,ROOT) = TBJM_L(B,J)
+
+                       ENDIF
+                   ENDDO
+
+                 ENDIF 
+
+              ENDDO
+        ENDPARDO B, J
+
+        execute sip_barrier
+
+     ELSE
+
+        MCOUNT = 1.0
+        PARDO A, I
+
+              DO ROOT 
+                 RCOUNT += 1.0
+
+                 IF RCOUNT == ROOT_PIC
+
+                    GET R1A_MO_P_CURRENT_R(A,I,ROOT)
+                    GET R1A_MO_M_CURRENT_R(A,I,ROOT)
+                    GET R1A_MO_P_CURRENT_L(A,I,ROOT)
+                    GET R1A_MO_M_CURRENT_L(A,I,ROOT)
+
+                    DO MINDEX20
+                       MCOUNT  += 1.0
+
+                       TAIP_R(A,I) = R1A_MO_P_CURRENT_R(A,I,ROOT)
+                       TAIM_R(A,I) = R1A_MO_M_CURRENT_R(A,I,ROOT)
+                       TAIP_L(A,I) = R1A_MO_P_CURRENT_L(A,I,ROOT)
+                       TAIM_L(A,I) = R1A_MO_M_CURRENT_L(A,I,ROOT)
+
+                       IF MCOUNT == ITER_COUNT
+
+                          PUT R1A_MO_P_HIST_R(A,I,MINDEX20,ROOT) = TAIP_R(A,I)
+                          PUT R1A_MO_M_HIST_R(A,I,MINDEX20,ROOT) = TAIM_R(A,I)
+                          PUT R1A_MO_P_HIST_L(A,I,MINDEX20,ROOT) = TAIP_L(A,I)
+                          PUT R1A_MO_M_HIST_L(A,I,MINDEX20,ROOT) = TAIM_L(A,I)
+
+                       ENDIF
+                    ENDDO
+
+                 ENDIF
+
+              ENDDO 
+        ENDPARDO A, I
+
+        MCOUNT = 1.0
+
+        PARDO B, J
+
+              DO ROOT 
+                 RCOUNT += 1.0
+
+                 IF RCOUNT == ROOT_PIC
+
+                    GET R1B_MO_P_CURRENT_R(B,J,ROOT)
+                    GET R1B_MO_M_CURRENT_R(B,J,ROOT)
+                    GET R1B_MO_P_CURRENT_L(B,J,ROOT)
+                    GET R1B_MO_M_CURRENT_L(B,J,ROOT)
+
+                    TBJP_R(B,J) = R1B_MO_P_CURRENT_R(B,J,ROOT)
+                    TBJM_R(B,J) = R1B_MO_M_CURRENR_R(B,J,ROOT)
+                    TBJP_L(B,J) = R1B_MO_P_CURRENT_L(B,J,ROOT
+                    TBJM_L(B,J) = R1B_MO_M_CURRENR_L(B,J,EOOT)
+
+                    DO MINDEX20
+                       MCOUNT  += 1.0
+
+                      IF MCOUNT == ITER_COUNT
+
+                         PUT R1B_MO_P_HIST_R(B,J,MINDEX20,ROOT) = TBJP_R(B,J)
+                         PUT R1B_MO_M_HIST_R(B,J,MINDEX20,ROOT) = TBJM_R(B,J)
+                         PUT R1B_MO_P_HIST_L(B,J,MINDEX20,ROOT) = TBJP_L(B,J)
+                         PUT R1B_MO_M_HIST_L(B,J,MINDEX20,ROOT) = TBJM_L(B,J)
+    
+                      ENDIF
+
+                    ENDDO
+                ENDIF 
+
+             ENDDO
+        ENDPARDO B, J
+
+        execute sip_barrier
+
+    ENDIF
+
+    ENDPROC SAVE_HISTORY
+#   ---------------------
+#
+
+
+
+
+
+

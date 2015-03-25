@@ -31,8 +31,8 @@
                         TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
                         TMNM_R(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
 
-                        TMNP_L(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
-                        TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
+                        TMNP_L(MCOUNT,NCOUNT) = EIG_VECS_A_P_L(MCOUNT,NCOUNT)
+                        TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_L(MCOUNT,NCOUNT)
 
                         TAP_R(A,I) *= TMNP_R(MCOUNT,NCOUNT)
                         TAM_R(A,I) *= TMNM_R(MCOUNT,NCOUNT)
@@ -70,8 +70,11 @@
                         IF NINDEX20 <= SUBSP_DIM
                            MCOUNT += 1.0
 
-                           TMNP(MCOUNT,NCOUNT) = EIG_VECS_A_P(MCOUNT,NCOUNT)
-                           TMNM(MCOUNT,NCOUNT) = EIG_VECS_A_M(MCOUNT,NCOUNT)
+                           TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
+                           TMNM_R(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
+
+                           TMNP_L(MCOUNT,NCOUNT) = EIG_VECS_A_P_L(MCOUNT,NCOUNT)
+                           TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_L(MCOUNT,NCOUNT)
 
                            DO SUBSP_DIM 
                               SUBSP_COUNT += 1.0
@@ -84,14 +87,14 @@
                               TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,SUBSP_COUNT)
                               TAM_R(A,I) = R1A_MO_M_HIST_R(A,I,SUBSP_COUNT)
 
-                              TAP_R(A,I) *= TMNP(MCOUNT,NCOUNT)
-                              TAM_R(A,I) *= TMNM(MCOUNT,NCOUNT)
+                              TAP_R(A,I) *= TMNP_R(MCOUNT,NCOUNT)
+                              TAM_R(A,I) *= TMNM_R(MCOUNT,NCOUNT)
                        
                               TAP_L(A,I) = R1A_MO_P_HIST_L(A,I,SUBSP_COUNT)
                               TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,SUBSP_COUNT)
 
-                              TAP_L(A,I) *= TMNP(MCOUNT,NCOUNT)
-                              TAM_L(A,I) *= TMNM(MCOUNT,NCOUNT)
+                              TAP_L(A,I) *= TMNP_L(MCOUNT,NCOUNT)
+                              TAM_L(A,I) *= TMNM_L(MCOUNT,NCOUNT)
 
                            ENDDO
                         ENDIF 

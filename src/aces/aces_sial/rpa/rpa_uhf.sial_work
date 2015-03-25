@@ -1,4 +1,4 @@
-    
+CH
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
@@ -2585,14 +2585,21 @@
            DO MINDEX20 
 
               IF MINDEX20 == ITER_COUNT
-                 GET R1A_MO_P_HIST(A,I,MINDEX20)
-                 GET R1A_MO_M_HIST(A,I,MINDEX20)
 
-                 TAIP(A,I) =  R1A_MO_P_HIST(A,I,MINDEX20)
-                 TAIM(A,I) =  R1A_MO_M_HIST(A,I,MINDEX20)
+                 GET R1A_MO_P_HIST_R(A,I,MINDEX20)
+                 GET R1A_MO_M_HIST_R(A,I,MINDEX20)
+                 GET R1A_MO_P_HIST_L(A,I,MINDEX20)
+                 GET R1A_MO_M_HIST_L(A,I,MINDEX20)
+
+                 TAIP_R(A,I) =  R1A_MO_P_HIST_R(A,I,MINDEX20)
+                 TAIM_R(A,I) =  R1A_MO_M_HIST_R(A,I,MINDEX20)
+                 TAIP_L(A,I) =  R1A_MO_P_HIST_L(A,I,MINDEX20)
+                 TAIM_L(A,I) =  R1A_MO_M_HIST_L(A,I,MINDEX20)
    
-                 PUT R1A_MO_P_PREV(A,I) = TAIP(A,I)
-                 PUT R1A_MO_M_PREV(A,I) = TAIP(A,I)
+                 PUT R1A_MO_P_CURR_R(A,I) = TAIP_R(A,I)
+                 PUT R1A_MO_M_CURR_R(A,I) = TAIM_R(A,I)
+                 PUT R1A_MO_P_CURR_L(A,I) = TAIP_L(A,I)
+                 PUT R1A_MO_M_CURR_L(A,I) = TAIM_L(A,I)
 
               ENDIF 
 
@@ -2603,14 +2610,21 @@
            DO MINDEX20 
 
               IF MINDEX20 == ITER_COUNT
-                 GET R1B_MO_P_HIST(B,J,MINDEX20)
-                 GET R1B_MO_M_HIST(B,J,MINDEX20)
 
-                 TBJP(B,J) =  R1B_MO_P_HIST(B,J,MINDEX20)
-                 TBJM(B,J) =  R1B_MO_M_HIST(B,J,MINDEX20)
+                 GET R1B_MO_P_HIST_R(B,J,MINDEX20)
+                 GET R1B_MO_M_HIST_R(B,J,MINDEX20)
+                 GET R1B_MO_P_HIST_L(B,J,MINDEX20)
+                 GET R1B_MO_M_HIST_L(B,J,MINDEX20)
+
+                 TBJP_R(B,J) =  R1B_MO_P_HIST_R(B,J,MINDEX20)
+                 TBJM_R(B,J) =  R1B_MO_M_HIST_R(B,J,MINDEX20)
+                 TBJP_L(B,J) =  R1B_MO_P_HIST_L(B,J,MINDEX20)
+                 TBJM_L(B,J) =  R1B_MO_M_HIST_L(B,J,MINDEX20)
    
-                 PUT R1B_MO_P_PREV(B,J) = TBJP(B,J)
-                 PUT R1B_MO_M_PREV(B,J) = TBJM(B,J)
+                 PUT R1B_MO_P_CURR_R(B,J) = TBJP_R(B,J)
+                 PUT R1B_MO_M_CURR_R(B,J) = TBJM_R(B,J)
+                 PUT R1B_MO_M_CURR_L(B,J) = TBJM_L(B,J)
+                 PUT R1B_MO_M_CURR_L(B,J) = TBJM_L(B,J)
 
               ENDIF 
 
@@ -21878,192 +21892,6 @@
      sqr+=etemp
      etemp=V6_7*V6_7
      sqr+=etemp
-     etemp=V6_8*V6_8
-     sqr+=etemp
-     etemp=V6_9*V6_9
-     sqr+=etemp
-     etemp=V6_10*V6_10
-     sqr+=etemp
-     etemp=V6_11*V6_11
-     sqr+=etemp
-     etemp=V6_12*V6_12
-     sqr+=etemp
-     etemp=V6_13*V6_13
-     sqr+=etemp
-     etemp=V6_14*V6_14
-     sqr+=etemp
-     etemp=V6_15*V6_15
-     sqr+=etemp
-     etemp=V6_16*V6_16
-     sqr+=etemp
-     etemp=V6_17*V6_17
-     sqr+=etemp
-     etemp=V6_18*V6_18
-     sqr+=etemp
-     etemp=V6_19*V6_19
-     sqr+=etemp
-     etemp=V6_20*V6_20
-     sqr+=etemp
-#
-     exponent=0.5
-      execute square_root sqr exponent
-      sqr2=1.0/sqr
-#
-     V6_1*=sqr2
-     V6_2*=sqr2
-     V6_3*=sqr2
-     V6_4*=sqr2
-     V6_5*=sqr2
-     V6_6*=sqr2
-     V6_7*=sqr2
-     V6_8*=sqr2
-     V6_9*=sqr2
-     V6_10*=sqr2
-     V6_11*=sqr2
-     V6_12*=sqr2
-     V6_13*=sqr2
-     V6_14*=sqr2
-     V6_15*=sqr2
-     V6_16*=sqr2
-     V6_17*=sqr2
-     V6_18*=sqr2
-     V6_19*=sqr2
-     V6_20*=sqr2
-#
-#------7 vectors -------------------------------
-#
-       sqr=0.0
-#
-     etemp=V7_1*V7_1
-     sqr+=etemp
-     etemp=V7_2*V7_2
-     sqr+=etemp
-     etemp=V7_3*V7_3
-     sqr+=etemp
-     etemp=V7_4*V7_4
-     sqr+=etemp
-     etemp=V7_5*V7_5
-     sqr+=etemp
-     etemp=V7_6*V7_6
-     sqr+=etemp
-     etemp=V7_7*V7_7
-     sqr+=etemp
-     etemp=V7_8*V7_8
-     sqr+=etemp
-     etemp=V7_9*V7_9
-     sqr+=etemp
-     etemp=V7_10*V7_10
-     sqr+=etemp
-     etemp=V7_11*V7_11
-     sqr+=etemp
-     etemp=V7_12*V7_12
-     sqr+=etemp
-     etemp=V7_13*V7_13
-     sqr+=etemp
-     etemp=V7_14*V7_14
-     sqr+=etemp
-     etemp=V7_15*V7_15
-     sqr+=etemp
-     etemp=V7_16*V7_16
-     sqr+=etemp
-     etemp=V7_17*V7_17
-     sqr+=etemp
-     etemp=V7_18*V7_18
-     sqr+=etemp
-     etemp=V7_19*V7_19
-     sqr+=etemp
-     etemp=V7_20*V7_20
-     sqr+=etemp
-#
-     exponent=0.5
-      execute square_root sqr exponent
-      sqr2=1.0/sqr
-#
-     V7_1*=sqr2
-     V7_2*=sqr2
-     V7_3*=sqr2
-     V7_4*=sqr2
-     V7_5*=sqr2
-     V7_6*=sqr2
-     V7_7*=sqr2
-     V7_8*=sqr2
-     V7_9*=sqr2
-     V7_10*=sqr2
-     V7_11*=sqr2
-     V7_12*=sqr2
-     V7_13*=sqr2
-     V7_14*=sqr2
-     V7_15*=sqr2
-     V7_16*=sqr2
-     V7_17*=sqr2
-     V7_18*=sqr2
-     V7_19*=sqr2
-     V7_20*=sqr2
-#
-#------8 vectors -------------------------------
-#
-       sqr=0.0
-#
-     etemp=V8_1*V8_1
-     sqr+=etemp
-     etemp=V8_2*V8_2
-     sqr+=etemp
-     etemp=V8_3*V8_3
-     sqr+=etemp
-     etemp=V8_4*V8_4
-     sqr+=etemp
-     etemp=V8_5*V8_5
-     sqr+=etemp
-     etemp=V8_6*V8_6
-     sqr+=etemp
-     etemp=V8_7*V8_7
-     sqr+=etemp
-     etemp=V8_8*V8_8
-     sqr+=etemp
-     etemp=V8_9*V8_9
-     sqr+=etemp
-     etemp=V8_10*V8_10
-     sqr+=etemp
-     etemp=V8_11*V8_11
-     sqr+=etemp
-     etemp=V8_12*V8_12
-     sqr+=etemp
-     etemp=V8_13*V8_13
-     sqr+=etemp
-     etemp=V8_14*V8_14
-     sqr+=etemp
-     etemp=V8_15*V8_15
-     sqr+=etemp
-     etemp=V8_16*V8_16
-     sqr+=etemp
-     etemp=V8_17*V8_17
-     sqr+=etemp
-     etemp=V8_18*V8_18
-     sqr+=etemp
-     etemp=V8_19*V8_19
-     sqr+=etemp
-     etemp=V8_20*V8_20
-     sqr+=etemp
-#
-     exponent=0.5
-      execute square_root sqr exponent
-      sqr2=1.0/sqr
-#
-     V8_1*=sqr2
-     V8_2*=sqr2
-     V8_3*=sqr2
-     V8_4*=sqr2
-     V8_5*=sqr2
-     V8_6*=sqr2
-     V8_7*=sqr2
-     V8_8*=sqr2
-     V8_9*=sqr2
-     V8_10*=sqr2
-     V8_11*=sqr2
-     V8_12*=sqr2
-     V8_13*=sqr2
-     V8_14*=sqr2
-     V8_15*=sqr2
      V8_16*=sqr2
      V8_17*=sqr2
      V8_18*=sqr2

@@ -1,0 +1,54 @@
+      PROC FORM_CORRECTION_VECTOR  
+#     ---------------------------
+
+       OFFSET  = SUBSP_DIM
+       OFFSET += 1.0
+
+       PARDO A, I
+
+             GET RESIDUE_P_VEC_R(A,I) 
+             GET RESIDUE_M_VEC_R(A,I) 
+             GET RESIDUE_P_VEC_L(A,I) 
+             GET RESIDUE_M_VEC_L(A,I) 
+
+             GET H_DIAGONAL(A,I) 
+
+             TAIP_R(A,I) = RESIDUE_P_VEC_R(A,I)
+             TAIM_R(A,I) = RESIDUE_M_VEC_R(A,I) 
+             TAIP_L(A,I) = RESIDUE_P_VEC_L(A,I)
+             TAIM_L(A,I) = RESIDUE_M_VEC_L(A,I)
+
+             TAIP_R(A,I) += OMEGA_P
+             TAIP_M(A,I) += OMEGA_M
+             TAIP_L(A,I) += OMEGA_P
+             TAIM_L(A,I) += OMEGA_M
+
+             T1AI(A,I)   =  H_DIAGONAL(A,I)
+             T1AI(A,I)  -=  -1.0
+             T1AI_P(A,I) = OMEGA_P
+             T1AI_M(A,I) = OMEGA_M
+            
+             T1AI_P(A,I) += T1AI(A,I)
+             T1AI_M(A,I) += T1AI(A,I)
+
+             EXECUTE APPLY_DEN2 TAIP_R(A,I) T1AI_P(A,I) 
+             EXECUTE APPLY_DEN2 TAIM_R(A,I) T1AI_M(A,I) 
+             EXECUTE APPLY_DEN2 TAIP_L(A,I) T1AI_P(A,I) 
+             EXECUTE APPLY_DEN2 TAIM_L(A,I) T1AI_M(A,I) 
+          
+             T2AIP_R(A,I) = TAIP_R(A,I)
+             T2AIM_R(A,I) = TAIM_R(A,I)
+             T2AIP_L(A,I) = TAIP_L(A,I)
+             T2AIM_L(A,I) = TAIM_L(A,I)
+
+             PUT CORR_VEC_INTMD_P_R(A,I) = TAIP_R(A,I)
+             PUT CORR_VEC_INTMD_M_R(A,I) = TAIM_R(A,I)
+             PUT CORR_VEC_INTMD_P_L(A,I) = TAIP_L(A,I)
+             PUT CORR_VEC_INTMD_M_L(A,I) = TAIM_L(A,I)
+
+       ENDARDO A, I
+
+       execute sip_barrier
+
+      ENDPROC FORM_CORRECTION_VECTOR
+#     ------------------------------

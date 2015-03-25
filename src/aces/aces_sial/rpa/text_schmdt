@@ -1,0 +1,131 @@
+      PROC FORM_BIORTHOGANAL_VECS
+#     ---------------------------
+
+       NORM_INTMD_P_R_NEW = 0.0
+       NORM_INTMD_M_R_NEW = 0.0
+       NORM_INTMD_P_L_NEW = 0.0
+       NORM_INTMD_M_L_NEW = 0.0
+       NORM_P_R_NEW = 0.0
+       NORM_M_R_NEW = 0.0
+       NORM_P_L_NEW = 0.0
+       NORM_M_L_NEW = 0.0
+
+       PARDO A, I
+
+             GET CORR_VEC_INTMD_P_R(A,I) 
+             GET CORR_VEC_INTMD_M_R(A,I)
+             GET CORR_VEC_INTMD_P_L(A,I) 
+             GET CORR_VEC_INTMD_M_L(A,I)
+
+             TAP_R(A,I) = CORR_VEC_INTMD_P_R(A,I)
+             TAM_R(A,I) = CORR_VEC_INTMD_M_R(A,I)
+             TAP_L(A,I) = CORR_VEC_INTMD_P_L(A,I)
+             TAM_L(A,I) = CORR_VEC_INTMD_M_L(A,I)
+
+             TMP = TAP_R(A,I) * TAP_R(A,I)
+             NORM_INTMD_P_R_NEW += TMP
+             TMP = TAM_R(A,I) * TAM_R(A,I)
+             NORM_INTMD_M_R_NEW += TMP
+             TMP = TAP_L(A,I) * TAP_L(A,I)
+             NORM_INTMD_P_L_NEW += TMP
+             TMP = TAM_L(A,I) * TAM_L(A,I)
+             NORM_INTMD_M_L_NEW += TMP
+
+             DO MINDEX20
+
+                IF MINDEX < SUBSP_DIM
+                   MCOUNT += 1.0
+
+                   GET R1A_MO_P_HIST_R(A,I,MCOUNT)
+                   GET R1A_MO_M_HIST_R(A,I,MCOUNT)
+                   GET R1A_MO_P_HIST_L(A,I,MCOUNT)
+                   GET R1A_MO_N_HIST_L(A,I,MCOUNT)
+
+                   T1AP_R(A,I) = R1A_MO_P_HIST_R(A,I,MCOUNT)
+                   T1AM_R(A,I) = R1A_MO_M_HIST_R(A,I,MCOUNT)
+                   T1AP_L(A,I) = R1A_MO_M_HIST_L(A,I,MCOUNT)
+                   T1AM_L(A,I) = R1A_MO_M_HIST_L(A,I,MCOUNT)
+
+                   TMP  = T1AP_L(A,I) * TAP_R(A,I)
+                   TMP *= -1.0
+                   PUT ORTHO_COEFS_P_R(MCOUNT,MCOUNT) += TMP 
+                   TMP  = T1AM_L(A,I) * TAM_R(A,I)
+                   TMP *= -1.0
+                   PUT ORTHO_COEFS_M_R(MCOUNT,MCOUNT) += TMP
+                   TMP = T1AP_R(A,I) * TAP_L(A,I)
+                   TMP *= -1.0
+                   PUT ORTHO_COEFS_P_L(MCOUNT,MCOUNT) += TMP 
+                   TMP = T1AM_R(A,I) * TAM_L(A,I)
+                   TMP *= -1.0
+                   PUT ORTHO_COEFS_M_L(MCOUNT,MCOUNT) += TMP 
+
+             ENDDO MINDEX20
+
+       ENDPARDO A, I
+
+       execute sip_barrier
+       
+       PARDO A, I
+
+             GET CORR_VEC_INTMD_P_R(A,I) 
+             GET CORR_VEC_INTMD_M_R(A,I)
+             GET CORR_VEC_INTMD_P_L(A,I) 
+             GET CORR_VEC_INTMD_M_L(A,I)
+
+             TAP_R(A,I) = CORR_VEC_INTMD_P_R(A,I)
+             TAM_R(A,I) = CORR_VEC_INTMD_M_R(A,I)
+             TAP_L(A,I) = CORR_VEC_INTMD_P_L(A,I)
+             TAM_L(A,I) = CORR_VEC_INTMD_M_L(A,I)
+
+             DO MINDEX20
+
+                   GET  ORTHO_COEFS_P_L(MCOUNT,MCOUNT)
+                   GET  ORTHO_COEFS_M_L(MCOUNT,MCOUNT)
+                   GET  ORTHO_COEFS_P_R(MCOUNT,MCOUNT)
+                   GET  ORTHO_COEFS_M_R(MCOUNT,MCOUNT)
+
+                   TNORM_P_L(MCOUNT, MCOUNT) = ORTHO_COEFS_P_L(MCOUNT,MCOUNT)
+                   TNORM_M_L(MCOUNT, MCOUNT) = ORTHO_COEFS_M_L(MCOUNT,MCOUNT)
+                   TNORM_P_R(MCOUNT, MCOUNT) = ORTHO_COEFS_P_R(MCOUNT,MCOUNT)
+                   TNORM_M_R(MCOUNT, MCOUNT) = ORTHO_COEFS_M_R(MCOUNT,MCOUNT)
+
+                   ExECUTE RETURN_SVAL TNORM_P_L(MCOUNT, MCOUNT) LKRP_NORM
+                   ExECUTE RETURN_SVAL TNORM_M_L(MCOUNT, MCOUNT) LKRM_NORM
+                   ExECUTE RETURN_SVAL TNORM_P_R(MCOUNT, MCOUNT) RKRP_NORM
+                   ExECUTE RETURN_SVAL TNORM_M_R(MCOUNT, MCOUNT) RKRM_NORM
+                   
+                   GET R1A_MO_P_HIST_L(A,I,MCOUNT)
+                   GET R1A_MO_M_HIST_L(A,I,MCOUNT)
+                   GET R1A_MO_P_HIST_R(A,I,MCOUNT)
+                   GET R1A_MO_M_HIST_R(A,I,MCOUNT)
+
+                   T1AP_L(A,I) = R1A_MO_P_HIST_L(A,I,MCOUNT)
+                   T1AM_L(A,I) = R1A_MO_M_HIST_L(A,I,MCOUNT)
+
+                   T1AP_L(A,I) *= LKRP_NORM
+                   T1AM_L(A,I) *= LKRM_NORM
+                  
+                   TAP_R(A,I) += T1AP_L(A,I)
+                   TAP_R(A,I) += T1AP_L(A,I)
+
+                   T1AP_R(A,I) = R1A_MO_P_HIST_R(A,I,MCOUNT)
+                   T1AM_R(A,I) = R1A_MO_M_HIST_R(A,I,MCOUNT)
+
+                   T1AP_R(A,I) *= RKRP_NORM
+                   T1AM_R(A,I) *= RKRM_NORM
+
+                   TAP_L(A,I) += T1AP_R(A,I)
+                   TAP_L(A,I) += T1AP_R(A,I)
+
+              ENDDO MINDEX20
+
+              PUT        TAP_R(A,I)
+              PUT        TAM_R(A,I)
+
+              PUT        TAP_L(A,I)
+              PUT        TAM_L(A,I)
+
+       ENDPARDO A, I
+
+      ENDPROC FORM_BIORTHOGANAL_VECS
+#     ------------------------------
