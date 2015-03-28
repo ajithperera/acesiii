@@ -6,7 +6,6 @@
 
          NCOUNT      = 1.0
          MCOUNT      = 1.0
-         SUBSP_COUNT = 1.0
 
 # We have only one R vector and the dimension of the A matrix
 # is one. So, the eigenvector is actully is 1.0 and we have
@@ -18,99 +17,163 @@
                   IF NINDEX20 == ITER_COUNT
 
                   DO MINDEX20 
+
                      IF NINDEX20 == MINDEX20 
 
-                        GET R1A_MO_P_HIST_R(A,I,SUBSP_COUNT)
-                        GET R1A_MO_M_HIST_R(A,I,SUBSP_COUNT)
-                        GET R1A_MO_P_HIST_L(A,I,SUBSP_COUNT)
-                        GET R1A_MO_M_HIST_L(A,I,SUBSP_COUNT)
+                        GET R1A_MO_P_HIST_R(A,I,NINDEX20)
+                        GET R1A_MO_M_HIST_L(A,I,NINDEX20)
 
-                        TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,SUBSP_COUNT)
-                        TAM_R(A,I) = R1A_MO_M_HIST_R(A,I,SUBSP_COUNT)
+                        TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,NINDEX20)
+                        TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,NINDEX20)
 
                         TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
                         TMNM_R(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
 
-                        TMNP_L(MCOUNT,NCOUNT) = EIG_VECS_A_P_L(MCOUNT,NCOUNT)
-                        TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_L(MCOUNT,NCOUNT)
-
                         TAP_R(A,I) *= TMNP_R(MCOUNT,NCOUNT)
-                        TAM_R(A,I) *= TMNM_R(MCOUNT,NCOUNT)
+                        TAM_L(A,I) *= TMNM_R(MCOUNT,NCOUNT)
 
-                        PUT R1A_MO_P_NEW_R(A,I),NINDEX20) = TAP_R(A,I)
-                        PUT R1A_MO_M_NEW_R(A,I),NINDEX20) = TAM_R(A,I)
-
-                        TAP_L(A,I) = R1A_MO_P_HIST_L(A,I,SUBSP_COUNT)
-                        TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,SUBSP_COUNT)
-
-                        TAP_L(A,I) *= TMNP_L(MCOUNT,NCOUNT)
-                        TAM_L(A,I) *= TMNM_L(MCOUNT,NCOUNT)
-
-                        PUT R1A_MO_P_NEW_L(A,I),NOCUNT) = TAP_L(A,I)
-                        PUT R1A_MO_M_NEW_L(A,I),NCOUNT) = TAM_L(A,I)
+                        PUT R1A_MO_P_NEW_R(A,I,NINDEX20) += TAP_R(A,I)
+                        PUT R1A_MO_M_NEW_L(A,I,NINDEX20) += TAM_L(A,I)
 
                      ENDIF 
-                 ENDDO
-               ENDDO
+
+                  ENDDO MINDEX20
+
+               ENDDO NINDEX20
+
          ENDPARDO A, I 
+
+         PARDO B, J
+
+               DO NINDEX20
+                  IF NINDEX20 == ITER_COUNT
+
+                  DO MINDEX20
+
+                     IF NINDEX20 == MINDEX20
+
+                        GET R1B_MO_P_HIST_R(B,J,NINDEX20)
+                        GET R1B_MO_M_HIST_L(B,J,NINDEX20)
+
+                        TBP_R(B,J) = R1B_MO_P_HIST_R(B,J,NINDEX20)
+                        TBM_L(B,J) = R1B_MO_M_HIST_L(B,J,NINDEX20)
+
+                        TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_B_P_R(MCOUNT,NCOUNT)
+                        TMNM_R(MCOUNT,NCOUNT) = EIG_VECS_B_M_R(MCOUNT,NCOUNT)
+
+                        TBP_R(B,J) *= TMNP_R(MCOUNT,NCOUNT)
+                        TBM_L(B,J) *= TMNM_R(MCOUNT,NCOUNT)
+
+                        PUT R1B_MO_P_NEW_R(B,J,NINDEX20) += TBP_R(B,J)
+                        PUT R1B_MO_M_NEW_L(B,J,NINDEX20) += TBM_L(B,J)
+
+                     ENDIF
+
+                  ENDDO MINDEX20
+
+               ENDDO NINDEX20
+
+         ENDPARDO A, I
+
+         execute sip_barrier 
 
       ELSE
 
          NCOUNT      = 0.0
          MCOUNT      = 0.0
          SUBSP_COUNT = 0.0
-
+   
          PARDO A, I 
 
                DO NINDEX20 
-                  IF NINDEX20 <= SUBSP_DIM
+
+                  IF NINDEX20 <= ITER_COUNT
                      NCOUNT += 1.0
                   
                      DO MINDEX20 
-                        IF NINDEX20 <= SUBSP_DIM
+
+                        IF NINDEX20 <=  ITER_COUNT
                            MCOUNT += 1.0
 
                            TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
-                           TMNM_R(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
-
-                           TMNP_L(MCOUNT,NCOUNT) = EIG_VECS_A_P_L(MCOUNT,NCOUNT)
-                           TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_L(MCOUNT,NCOUNT)
+                           TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
 
                            DO SUBSP_DIM 
                               SUBSP_COUNT += 1.0
 
                               GET R1A_MO_P_HIST_R(A,I,SUBSP_COUNT)
-                              GET R1A_MO_M_HIST_R(A,I,SUBSP_COUNT)
-                              GET R1A_MO_P_HIST_L(A,I,SUBSP_COUNT)
                               GET R1A_MO_M_HIST_L(A,I,SUBSP_COUNT)
 
                               TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,SUBSP_COUNT)
-                              TAM_R(A,I) = R1A_MO_M_HIST_R(A,I,SUBSP_COUNT)
-
-                              TAP_R(A,I) *= TMNP_R(MCOUNT,NCOUNT)
-                              TAM_R(A,I) *= TMNM_R(MCOUNT,NCOUNT)
-                       
-                              TAP_L(A,I) = R1A_MO_P_HIST_L(A,I,SUBSP_COUNT)
                               TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,SUBSP_COUNT)
 
-                              TAP_L(A,I) *= TMNP_L(MCOUNT,NCOUNT)
-                              TAM_L(A,I) *= TMNM_L(MCOUNT,NCOUNT)
+                              TAP_R(A,I) *= TMNP_R(MCOUNT,NCOUNT)
+                              TAM_L(A,I) *= TMNM_R(MCOUNT,NCOUNT)
 
-                           ENDDO
+                              PUT R1A_MO_P_NEW_R(A,I,SUBSP_COUNT) += TAP_R(A,I)
+                              PUT R1A_MO_M_NEW_L(A,I,SUBSP_COUNT) += TAM_L(A,I)
+
+                           ENDDO SUBSP_DIM
+
                         ENDIF 
-                     ENDDO
 
-                     PUT R1A_MO_P_NEW_R(A,I,NCOUNT) += TAP_R(A,I)
-                     PUT R1A_MO_M_NEW_R(A,I,NCOUNT) += TAM_R(A,I)
+                     ENDDO MINDEX20
 
-                     PUT R1A_MO_P_NEW_L(A,I,NCOUNT) += TAP_L(A,I)
-                     PUT R1A_MO_M_NEW_L(A,I,NCOUNT) += TAM_L(A,I)
 
                   ENDIF 
-               ENDDO 
+
+               ENDDO  NINDEX20
 
          ENDPARDO A, I 
-`
+
+         NCOUNT      = 0.0
+         MCOUNT      = 0.0
+         SUBSP_COUNT = 0.0
+
+         PARDO B, J
+
+               DO NINDEX20
+
+                  IF NINDEX20 <= ITER_COUNT
+                     NCOUNT += 1.0
+
+                     DO MINDEX20
+
+                        IF NINDEX20 <=  ITER_COUNT
+                           MCOUNT += 1.0
+
+                           TMNP_R(MCOUNT,NCOUNT) = EIG_VECS_A_P_R(MCOUNT,NCOUNT)
+                           TMNM_L(MCOUNT,NCOUNT) = EIG_VECS_A_M_R(MCOUNT,NCOUNT)
+
+                           DO SUBSP_DIM
+                              SUBSP_COUNT += 1.0
+
+                              GET R1B_MO_P_HIST_R(B,J,SUBSP_COUNT)
+                              GET R1B_MO_M_HIST_L(B,J,SUBSP_COUNT)
+
+                              TBP_R(B,J) = R1B_MO_P_HIST_R(B,J,SUBSP_COUNT)
+                              TBM_L(B,J) = R1B_MO_M_HIST_L(B,J,SUBSP_COUNT)
+
+                              TBP_R(B,J) *= TMNP_R(MCOUNT,NCOUNT)
+                              TBM_L(B,J) *= TMNM_R(MCOUNT,NCOUNT)
+
+                              PUT R1B_MO_P_NEW_R(B,J,SUBSP_COUNT) += TBP_R(B,J)
+                              PUT R1B_MO_M_NEW_L(B,J,SUBSP_COUNT) += TBM_L(B,J)
+
+                           ENDDO SUBSP_DIM
+
+                        ENDIF
+
+                     ENDDO MINDEX20
+
+                  ENDIF
+
+               ENDDO  NINDEX20
+
+         ENDPARDO B, J
+
+         execute sip_barrier
+
       ENDIF 
   
       ENDPROC FORM_NEW_VECTORS 

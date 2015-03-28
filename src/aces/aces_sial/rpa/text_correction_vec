@@ -1,0 +1,71 @@
+      PROC FORM_CORRECTION_VECTOR  
+#     ---------------------------
+
+       PARDO A, I
+
+             GET RESIDUEA_P_VEC_R(A,I) 
+             GET RESIDUEA_M_VEC_L(A,I) 
+
+             GET H_DIAGONAL(A,I) 
+
+             TAIP_R(A,I) = RESIDUEA_P_VEC_R(A,I)
+             TAIM_L(A,I) = RESIDUEA_M_VEC_L(A,I)
+
+             TAIP_R(A,I) *= OMEGA_P
+             TAIM_L(A,I) *= OMEGA_M
+
+             T1AI(A,I)   =  H_DIAGONAL(A,I)
+             T1AI(A,I)  -=  -1.0
+             T1AI_P(A,I) = OMEGA_P
+             T1AI_M(A,I) = OMEGA_M
+            
+             T1AI_P(A,I) += T1AI(A,I)
+             T1AI_M(A,I) += T1AI(A,I)
+
+             EXECUTE APPLY_DEN2 TAIP_R(A,I) T1AI_P(A,I) 
+             EXECUTE APPLY_DEN2 TAIM_L(A,I) T1AI_M(A,I) 
+          
+             T2AIP_R(A,I) = TAIP_R(A,I)
+             T2AIM_L(A,I) = TAIM_L(A,I)
+
+             PUT CORR_VECA_INTMD_P_R(A,I) = TAIP_R(A,I)
+             PUT CORR_VECA_INTMD_M_L(A,I) = TAIM_L(A,I)
+
+       ENDARDO A, I
+
+       PARDO B, J
+
+             GET RESIDUEB_P_VEC_R(B,J)
+             GET RESIDUEB_M_VEC_L(B,J)
+
+             GET H_DIAGONAL(B,J)
+
+             TBJP_R(B,J) = RESIDUEB_P_VEC_R(B,J)
+             TBJM_L(B,J) = RESIDUEB_M_VEC_L(B,J)
+
+             TBJP_R(B,J) *= OMEGA_P
+             TBJM_L(B,J) *= OMEGA_M
+
+             T1BJ(B,J)   =  H_DIAGONAL(A,I)
+             T1BJ(B,J)  -=  -1.0
+             T1BJ_P(B,J) = OMEGA_P
+             T1BJ_M(B,J) = OMEGA_M
+
+             T1BJ_P(B,J) += T1BJ(B,J)
+             T1BJ_M(B,J) += T1BJ(B,J)
+
+             EXECUTE APPLY_DEN2 TBJP_R(B,J) T1BJ_P(B,J)
+             EXECUTE APPLY_DEN2 TBJM_L(B,J) T1BJ_M(B,J`)
+
+             T2BJP_R(B,J) = TBJP_R(B,J)
+             T2BJM_L(B,J) = TBJM_L(B,J)
+
+             PUT CORR_VECB_INTMD_P_R(B,J) = TBJP_R(B,J)
+             PUT CORR_VECB_INTMD_M_L(B,J) = TBJM_L(B,J)
+
+       ENDARDO B, J
+
+       execute sip_barrier
+
+      ENDPROC FORM_CORRECTION_VECTOR
+#     ------------------------------

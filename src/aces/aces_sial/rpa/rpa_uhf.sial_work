@@ -2495,148 +2495,7 @@ CH
      ENDPROC copy_toVCHactual_2
 #    -------------------------- 
 
-     PROC SAVE_HISTORY
-#    -----------------
-
-     IF ITER_COUNT == 0.0
-
-        PARDO A, I
-              GET R1A_MO_P_START(A,I)
-              GET R1A_MO_M_START(A,I)
-
-              DO MINDEX20 
-                  IF MINDXE20 == BEGIN_COLLECT
-
-                     TAIP(A,I) = R1A_MO_P_START(A,I)
-                     TAIM(A,I) = R1A_MO_M_START(A,I)
-
-                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
-                     PUT R1A_MO_M_HIST(A,I,MINDEX20) = TAIM(A,I)
-                  ENDIF 
-             ENDDO 
-        ENDPARDO A, I
-
-        PARDO B, J
-              GET R1B_MO_P_START(B,J)
-              GET R1B_MO_M_START(B,J)
-
-              DO MINDEX20 
-                  IF MINDXE20 == BEGIN_COLLECT
-
-                     TBJP(B,J) = R1B_MO_P_START(B,J)
-                     TBJM(B,J) = R1B_MO_M_START(B,J)
-
-                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
-                     PUT R1B_MO_M_HIST(B,J,MINDEX20) = TBJM(B,J)
-
-                  ENDIF 
-             ENDDO 
-        ENDPARDO B, J
-
-        execute sip_barrier
-
-     ELSE 
-
-        PARDO A, I
-              GET R1A_MO_P_ACTIVE(A,I)
-              GET R1A_MO_M_ACTIVE(A,I)
-
-              DO MINDEX20
-                  IF MINDXE20 == ITER_COUNT
-
-                     TAIP(A,I) = R1A_MO_P_START(A,I)
-                     TAIM(A,I) = R1A_MO_M_START(A,I)
-
-                     PUT R1A_MO_P_HIST(A,I,MINDEX20) = TAIP(A,I)
-                     PUT R1A_MO_M_HIST(A,I,MINDEX20) = TAIM(A,I)
-
-                  ENDIF
-             ENDDO
-        ENDPARDO A, I
-
-        PARDO B, J
-              GET R1B_MO_P_ACTIVE(B,J)
-              GET R1B_MO_M_ACTIVE(B,J)
-
-              DO MINDEX20
-                  IF MINDXE20 == ITER_COUNT
-
-                     TBJP(B,J) = R1B_MO_P_START(B,J)
-                     TBJM(B,J) = R1B_MO_M_START(B,J)
-
-                     PUT R1B_MO_P_HIST(B,J,MINDEX20) = TBJP(B,J)
-                     PUT R1B_MO_M_HIST(B,J,MINDEX20) = TBJM(B,J)
-
-                  ENDIF
-             ENDDO
-        ENDPARDO B, J
-
-        execute sip_barrier
-
-    ENDIF 
-
-    ENDPROC SAVE_HISTORY
 #   ---------------------
-#
-     PROC MOVE_HISTORY_2CURRENT
-#    -------------------------
-
-     PARDO A, I
-           DO MINDEX20 
-
-              IF MINDEX20 == ITER_COUNT
-
-                 GET R1A_MO_P_HIST_R(A,I,MINDEX20)
-                 GET R1A_MO_M_HIST_R(A,I,MINDEX20)
-                 GET R1A_MO_P_HIST_L(A,I,MINDEX20)
-                 GET R1A_MO_M_HIST_L(A,I,MINDEX20)
-
-                 TAIP_R(A,I) =  R1A_MO_P_HIST_R(A,I,MINDEX20)
-                 TAIM_R(A,I) =  R1A_MO_M_HIST_R(A,I,MINDEX20)
-                 TAIP_L(A,I) =  R1A_MO_P_HIST_L(A,I,MINDEX20)
-                 TAIM_L(A,I) =  R1A_MO_M_HIST_L(A,I,MINDEX20)
-   
-                 PUT R1A_MO_P_CURR_R(A,I) = TAIP_R(A,I)
-                 PUT R1A_MO_M_CURR_R(A,I) = TAIM_R(A,I)
-                 PUT R1A_MO_P_CURR_L(A,I) = TAIP_L(A,I)
-                 PUT R1A_MO_M_CURR_L(A,I) = TAIM_L(A,I)
-
-              ENDIF 
-
-           ENDDO 
-     ENDPARDO A, I
-
-     PARDO B, J
-           DO MINDEX20 
-
-              IF MINDEX20 == ITER_COUNT
-
-                 GET R1B_MO_P_HIST_R(B,J,MINDEX20)
-                 GET R1B_MO_M_HIST_R(B,J,MINDEX20)
-                 GET R1B_MO_P_HIST_L(B,J,MINDEX20)
-                 GET R1B_MO_M_HIST_L(B,J,MINDEX20)
-
-                 TBJP_R(B,J) =  R1B_MO_P_HIST_R(B,J,MINDEX20)
-                 TBJM_R(B,J) =  R1B_MO_M_HIST_R(B,J,MINDEX20)
-                 TBJP_L(B,J) =  R1B_MO_P_HIST_L(B,J,MINDEX20)
-                 TBJM_L(B,J) =  R1B_MO_M_HIST_L(B,J,MINDEX20)
-   
-                 PUT R1B_MO_P_CURR_R(B,J) = TBJP_R(B,J)
-                 PUT R1B_MO_M_CURR_R(B,J) = TBJM_R(B,J)
-                 PUT R1B_MO_M_CURR_L(B,J) = TBJM_L(B,J)
-                 PUT R1B_MO_M_CURR_L(B,J) = TBJM_L(B,J)
-
-              ENDIF 
-
-           ENDDO 
-     ENDPARDO A, I
-
-     execute sip_barrier
-     
-     ENDPROC MOVE_HISTORY_2CURRENT
-#    -----------------------------
-
-
      PROC FORM_AO_R1AB_OLD
 #    ---------------------
 #
@@ -23822,7 +23681,7 @@ CH
 
 # Generate initial guess. 
 
-       CALL GET_INIT_GUESS 
+       CALL FORM_INITIAL_GUESS 
 
        ITER_COUNT    = 0.0
        BEGIN_COLLECT = 1.0

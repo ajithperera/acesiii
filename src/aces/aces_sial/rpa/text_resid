@@ -1,81 +1,80 @@
       PROC FORM_RESIDUAL_VECTOR
 #     -------------------------
-
 # 
        PARDO A, I
 
-             GET R1A_MO_P_CURR_R(A,I)
-             GET R1A_MO_M_CURR_R(A,I)
-             GET R1A_MO_P_CURR_L(A,I)
-             GET R1A_MO_M_CURR_L(A,I)
+             GET R1A_MO_P_PICKED_R(A,I)
+             GET R1A_MO_M_PICKED_L(A,I)
 
-             GET HR1A_MO_P_CURR_R(A,I)
-             GET HR1A_MO_M_CURR_R(A,I)
-             GET HR1A_MO_P_CURR_L(A,I)
-             GET HR1A_MO_M_CURR_L(A,I)
+             GET HR1A_MO_P_PICKED_R(A,I)
+             GET HR1A_MO_M_PICKED_L(A,I)
 
-             TAIP_R(A,I) = R1A_MO_P_CURR_R(A,I)
-             TAIM_R(A,I) = R1A_MO_M_CURR_R(A,I)
-             TAIP_L(A,I) = R1A_MO_P_CURR_L(A,I)
-             TAIM_L(A,I) = R1A_MO_M_CURR_L(A,I)
+             TAIP_R(A,I) = R1A_MO_P_PICKED_R(A,I)
+             TAIM_L(A,I) = R1A_MO_M_PICKED_L(A,I)
 
              TAIP_R(A,I) += OMEGA_P
-             TAIM_M(A,I) += OMEGA_M
-             TAIP_L(A,I) += OMEGA_P
              TAIM_L(A,I) += OMEGA_M
 
              TAIP_R(A,I) += -1.0
-             TAIM_M(A,I) += -1.0
-             TAIP_L(A,I) += -1.0
              TAIM_L(A,I) += -1.0
 
-             T1AIP_R(A,I) = HR1A_MO_P_CURR_R(A,I)
-             T1AIM_R(A,I) = HR1A_MO_M_CURR_R(A,I)
-             T1AIP_L(A,I) = HR1A_MO_P_CURR_L(A,I)
-             T1AIM_L(A,I) = HR1A_MO_M_CURR_L(A,I)
+             T1AIP_R(A,I) = HR1A_MO_P_PICKED_R(A,I)
+             T1AIM_L(A,I) = HR1A_MO_M_PICKED_L(A,I)
   
              T1AIP_R(A,I) += TAIP_R(A,I)
-             T1AIP_M(A,I) += TAIM_M(A,I)
-             T1AIP_L(A,I) += TAIP_L(A,I)
-             T1AIP_L(A,I) += TAIM_L(A,I)
+             T1AIM_L(A,I) += TAIM_L(A,I)
 
-             PUT RESIDUE_P_VEC_R(A,I) = T1AIP_R(A,I) 
-             PUT RESIDUE_M_VEC_R(A,I) = T1AIP_M(A,I) 
-             PUT RESIDUE_P_VEC_L(A,I) = T1AIP_L(A,I) 
-             PUT RESIDUE_M_VEC_L(A,I) = T1AIP_L(A,I) 
+             PUT RESIDUEA_P_VEC_R(A,I) = T1AIP_R(A,I) 
+             PUT RESIDUEA_M_VEC_L(A,I) = T1AIM_L(A,I) 
 
        ENDARDO A, I
+
+       PARDO B, J
+
+             GET R1B_MO_P_PICKED_R(B,J)
+             GET R1B_MO_M_PICKED_L(B,J)
+
+             GET HR1B_MO_P_PICKED_R(B,J)
+             GET HR1B_MO_M_CURRENT_L(B,J)
+
+             TBJP_R(B,J) = R1B_MO_P_PICKED_R(B,J)
+             TBJM_L(B,J) = R1B_MO_M_PICKED_L(B,J)
+
+             TBJP_R(B,J) += OMEGA_P
+             TBJM_L(B,J) += OMEGA_M
+
+             TBJP_R(B,J) += -1.0
+             TBJM_L(B,J) += -1.0
+
+             T1BJP_R(B,J) = HR1B_MO_P_PICKED_R(B,J)
+             T1BJM_L(B,J) = HR1B_MO_M_PICKED_L(B,J)
+ 
+             T1BJP_R(B,J) += TBJP_R(B,J)
+             T1BJM_L(B,J) += TBJM_L(B,J)
+
+             PUT RESIDUEB_P_VEC_R(B,J) = T1BJP_R(B,J)
+             PUT RESIDUEB_M_VEC_L(B,J) = T1BJM_L(B,J)
+
+       ENDARDO B, J
 
        execute sip_barrier 
 
        NORM_INTMD_P_R = 0.0
-       NORM_INTMD_M_R = 0.0
-       NORM_INTMD_P_L = 0.0
        NORM_INTMD_M_L = 0.0
-       NORM_P_R = 0.0
-       NORM_M_R = 0.0
-       NORM_P_L = 0.0
-       NORM_M_L = 0.0
+       NORMA_P_R = 0.0
+       NORMA_M_L = 0.0
 
        PARDO A, I
 
-             GET RESIDUE_P_VEC_R(A,I)
-             GET RESIDUE_M_VEC_R(A,I)
-             GET RESIDUE_P_VEC_L(A,I)
-             GET RESIDUE_M_VEC_L(A,I)
+             GET RESIDUEA_P_VEC_R(A,I)
+             GET RESIDUEA_M_VEC_L(A,I)
              
              TAP_R(A,I) = RESIDUE_P_VEC_R(A,I)
-             TAM_R(A,I) = RESIDUE_M_VEC_R(A,I)
-             TAP_L(A,I) = RESIDUE_P_VEC_L(A,I)
              TAM_L(A,I) = RESIDUE_M_VEC_L(A,I)
 
-  
              TMP = TAP_R(A,I) * TAP_R(A,I)
              NORM_INTMD_P_R += TMP
-             TMP = TAM_R(A,I) * TAM_R(A,I)
-             NORM_INTMD_M_R += TMP
-             TMP = TAP_L(A,I) * TAP_L(A,I)
-             NORM_INTMD_P_L += TMP
+
              TMP = TAM_L(A,I) * TAM_L(A,I)
              NORM_INTMD_M_L += TMP
 
@@ -83,10 +82,34 @@
        
        execute sip_barrier 
        
-       COLLECTIVE NORM_P_R =+ NORM_INTMD_P_R
-       COLLECTIVE NORM_M_R =+ NORM_INTMD_M_R
-       COLLECTIVE NORM_P_L =+ NORM_INTMD_P_L
-       COLLECTIVE NORM_M_L =+ NORM_INTMD_M_L
+       COLLECTIVE NORMA_P_R =+ NORM_INTMD_P_R
+       COLLECTIVE NORMA_M_L =+ NORM_INTMD_M_L
+
+       NORM_INTMD_P_R = 0.0
+       NORM_INTMD_M_L = 0.0
+       NORMB_P_R = 0.0
+       NORMB_M_L = 0.0
+
+       PARDO B, J
+
+             GET RESIDUEB_P_VEC_R(B,J)
+             GET RESIDUEB_M_VEC_L(B,J)
+
+             TBP_R(B,J) = RESIDUEB_P_VEC_R(A,I)
+             TBM_L(B,J) = RESIDUEB_M_VEC_L(B,J)
+
+             TMP = TBP_R(B,J) * TBP_R(B,J)
+             NORM_INTMD_P_R += TMP
+
+             TMP = TBM_L(B,J) * TBN_L(B,J)
+             NORM_INTMD_M_L += TMP
+
+       ENDARDO A, I
+
+       execute sip_barrier
+
+       COLLECTIVE NORMB_P_R =+ NORM_INTMD_P_R
+       COLLECTIVE NORMB_M_L =+ NORM_INTMD_M_L
 
       ENDPROC FORM_RESIDUAL_VECTOR
 #     ----------------------------

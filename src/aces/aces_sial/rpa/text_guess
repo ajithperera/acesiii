@@ -1,0 +1,60 @@
+      PROC FORM_INTIAL_GUESS
+#     ----------------------
+
+      STWO = 2.0
+      HALF = 0.5
+
+      EXECUTE SQUARE_ROOT TWO HALF
+      INV_SQR_TWO = 1.0/STWO 
+
+      RCOUNT = 0.0
+
+      PARDO A, I 
+
+            EXECUTE PLACE_PONE_DIAGONAL GUESS_A INV_SQR_TWO
+
+            DO MAX_NO_ROOTS
+               RCOUNT += 1.0
+
+               IF RCOUNT == COUNT_NO_ROOTS
+
+                  TAI_P(A,I) = GUESS_A(A,I,MAX_NO_ROOTS)
+                  TAI_M(A,I) = GUESS_A(A,I,MAX_NO_ROOTS)
+                  
+                  PUT R1A_MO_P_START_R(A,I,MAX_NO_ROOTS) = TAI_P(A,I)
+                  PUT R1A_MO_M_START_L(A,I,MAX_NO_ROOTS) = TAI_M(A,I)
+
+               ENDIF 
+           
+            ENDDO NROOT
+
+      ENDPARDO A, I 
+
+      RCOUNT = 0.0
+
+      PARDO B, J
+
+            EXECUTE PLACE_PONE_DIAGONAL GUESS_B INV_SQR_TWO
+
+            DO MAX_NO_ROOTS
+               RCOUNT += 1.0
+
+               IF RCOUNT == COUNT_NO_ROOTS
+
+                  TBJ_P(B,J) = GUESS_B(B,J,MAX_NO_ROOTS)
+                  TBJ_M(B,J) = GUESS_B(B,J,MAX_NO_ROOTS)
+              
+                  PUT R1B_MO_P_START_R(B,J,MAX_NO_ROOTS) = TBJ_P(B,J)
+                  PUT R1B_MO_M_START_L(B,J,MAX_NO_ROOTS) = TBJ_M(B,J) 
+
+                ENDIF 
+
+            ENDDO NROOT
+
+      ENDPARDO B, J
+
+      execute sip_barrier 
+
+      ENDPROC FORM_INTIAL_GUESS
+#     -------------------------
+

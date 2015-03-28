@@ -1,0 +1,296 @@
+     PROC CONSTRUCT_A_MATRIX
+#    -----------------------
+
+     IF ITER_COUNT == 1.0
+
+# Build A(1,1) for the first iteraion
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO A, I
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+
+                     GET HR1A_MO_P_CURRENT_R(A,I)
+                     GET HR1A_MO_M_CURRENT_L(A,I)
+
+                     TAIP_R(A,I) = HR1A_MO_P_CURRENT_R(A,I)
+                     TAIM_L(A,I) = HR1A_MO_M_CURRENT_L(A,I)
+
+                     TMP        = TAIP_R(A,I) * TAIP_R(A,I)
+                     SUMP      += TMP
+
+                     TMP         = TAIM_L(A,I) * TAIM_L(A,I)
+                     SUMM       += TMP
+
+                     DO NINDEX20
+
+                         IF NINDEX20 ==  MINDEX20
+
+                            A_A_MATRIX_P(NINDEX20,MINDEX20) = SUMP
+                            A_A_MATRIX_M(NINDEX20,MINDEX20) = SUMM
+
+                         ENDIF
+
+                     ENDDO NINDEX20
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENDPARDDO A, I
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 == ITER_COUNT
+
+                     GET HR1B_MO_P_CURRENT_R(B,J)
+                     GET HR1B_MO_M_CURRENT_L(B,J)
+
+                     TBJP_R(B,J) = HR1B_MO_P_CURRENT_R(B,J)
+                     TBJM_L(B,J) = HR1B_MO_M_CURRENT_L(B,J)
+
+                     TMP       = TBJP_R(B,J) * TBJP_R(B,J)
+                     SUMP     += TMP
+
+                     TMP       = TBJM_L(B,J) * TBJM_L(B,J)
+                     SUMM     += TMP
+
+                      DO NINDEX20
+
+                         IF NINDEX20 == MINDEX20
+
+                            B_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                            B_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                         ENDIF
+
+                       ENDDO NINDEX20
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENPARDDO B, J
+
+        execute sip_barrier 
+
+     ELSE
+
+# Build  A(i,j) i<<j  first
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO A, I
+
+               DO MINDEX20
+
+                  IF MINDEX20 == SUBSP_DIM
+
+                     GET HR1A_MO_P_CURRENT_R(A,I)
+                     GET HR1A_MO_M_CURRENT_L(A,I)
+
+                     TAIP_R(A,I) = HR1A_MO_P_CURRENT_R(A,I)
+                     TAIM_R(A,I) = HR1A_MO_M_CURRENT_L(A,I)
+
+                     DO NINDEX20
+
+                        IF NINDEX20 == MINDEX20
+
+                           TMP       = TAIP_R(A,I)  * TAIP_R(A,I)
+                           SUMP     += TMP
+
+                           TMP       = TAIM_L(A,I)  * TAIM_L(A,I)
+                           SUMM     += TMP
+
+                           A_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                           A_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                        ENDIF 
+
+                        IF  NINDEX20 < MINDEX20
+
+                           GET R1A_MO_P_HIST_R(A,I,NINDEX20)
+                           GET R1A_MO_M_HIST_L(A,I,NINDEX20)
+
+                           T1AIP_L(A,I) = R1A_MO_P_HIST_R(A,I,NINDEX20)
+                           T1AIM_L(A,I) = R1A_MO_M_HIST_L(A,I,NINDEX20)
+
+                           TMP       = TAIP_R(A,I)  * T1AIP_R(A,I))
+                           SUMP     += TMP
+
+                           TMP       = TAIM_L(A,I)  * T1AIM_L(A,I))
+                           SUMM     += TMP
+
+                           A_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                           A_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                        ENDIF
+
+                     ENDDO NINDEX20
+
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENDPARDDO A, I
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 == SUBSP_DIM
+
+                     GET HR1B_MO_P_CURRENT_R(B,J,MINDEX20)
+                     GET HR1B_MO_M_CURRENT_L(B,J,MINDEX20)
+
+                     TBJP_R(B,J) = HR1B_MO_P_CURRENT_R(B,J,MINDEX20)
+                     TBJM_L(B,J) = HR1B_MO_M_CURRENT_L(B,J,MINDEX20)
+
+                      DO NINDEX20
+
+                        IF NINDEX20 == MINDEX20
+
+                           TMP       = TBJP_R(A,I)  * TBJP_R(A,I)
+                           SUMP     += TMP
+
+                           TMP       = TBJM_L(A,I)  * TBJM_L(A,I)
+                           SUMM     += TMP
+
+                           A_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                           A_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                        ENDIF
+
+                        IF NINDEX20 < MINDEX20
+
+                            GET R1B_MO_P_HIST_R(B,J,NINDEX20)
+                            GET R1B_MO_M_HIST_L(B,J,NINDEX20)
+
+                            T1BJP_R(B,J) = R1B_MO_P_HIST_R(B,J,NINDEX20)
+                            T1BJM_L(B,B) = R1B_MO_M_HIST_L(B,J,NINDEX20)
+
+                            TMP       = TBJP_R(B,J) * T1BJP_R(B,J)
+                            SUMP     += TMP
+
+                            TMP       = TBJM_L(B,J) * T1BJM_L(A,I)
+                            SUMM     += TMP
+
+                            B_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                            B_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                         ENDIF
+ 
+                      ENDDO NINDEX20
+
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENDPARDDO B, J
+
+# Build  A(i,j) i>j  now.
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO A, I
+
+               DO MINDEX20
+
+                  IF MINDEX20 < SUBSP_DIM
+
+                     GET R1A_MO_P_HIST_R(A,I,MINDEX20)
+                     GET R1A_MO_M_HIST_L(A,I,MINDEX20)
+
+                     TAIP_R(A,I) = R1A_MO_P_HIST_R(A,I,MINDEX20)
+                     TAIM_L(A,I) = R1A_MO_M_HIST_L(A,I,MINDEX20)
+
+                     DO NINDEX20
+
+                        IF NINDEX20 == SUBSP_DIM
+
+                           GET HR1A_MO_P_CURRENT_R(A,I,NINDEX20)
+                           GET HR1A_MO_M_CURRENT_L(A,I,NINDEX20)
+
+                           T1AIP_R(A,I) = HR1A_MO_P_CURRENT_R(A,I,NINDEX20)
+                           T1AIM_R(A,I) = HR1A_MO_M_CURRENT_L(A,I,NINDEX20)
+
+                           TMP       = TAIP_R(A,I) * T1AIP_R(A,I))
+                           SUMP     += TMP
+
+                           TMP       = TAIM_L(A,I) * T1AIM_L(A,I))
+                           SUMM     += TMP
+
+                           A_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                           A_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                        ENDIF
+
+                     ENDDO NINDEX20
+
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENDPARDDO A, I
+
+        SUMP = 0.0
+        SUMM = 0.0
+
+        PARDDO B, J
+
+               DO MINDEX20
+
+                  IF MINDEX20 < SUBSP_DIM
+
+                     GET R1B_MO_P_HIST_R(B,J,MINDEX20)
+                     GET R1B_MO_M_HIST_L(B,J,MINDEX20)
+
+                     TBJP_R(B,J) = R1B_MO_P_HIST_R(B,J,MINDEX20)
+                     TBJM_L(B,J) = R1B_MO_M_HIST_L(B,J,MINDEX20)
+
+                      DO NINDEX20
+
+                         IF NINDEX20 == SUBSP_DIM
+
+                            GET HR1B_MO_P_CURRENT_R(B,J,NINDEX20)
+                            GET HR1B_MO_M_CURRENT_L(B,J,NINDEX20)
+
+                            T1BJP_R(B,J) = HR1B_MO_P_CURRENT_R(B,J,NINDEX20)
+                            T1BJM_L(B,J) = HR1B_MO_M_CURRENT_L(B,J,NINDEX20)
+
+                            TMP       = TBJP_R(B,J) * T1BJP_R(B,J)
+                            SUMP     += TMP
+
+                            TMP       = TBJM_L(B,J) * T1BJM_L(A,I)
+                            SUMM     += TMP
+
+                            B_A_MATRIX_P(NINDEX20,MINDEX20) += SUMP
+                            B_A_MATRIX_M(NINDEX20,MINDEX20) += SUMM
+
+                         ENDIF
+
+                       ENDDO NINDEX20
+                  ENDIF
+
+               ENDDO MINDEX20
+
+        ENDPARDDO B, J
+
+        execute sip_barrier 
+
+    ENDIF
+
+     PROC CONSTRUCT_A_MATRIX
+#    ------------------------
+

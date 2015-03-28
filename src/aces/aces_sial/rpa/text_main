@@ -1,0 +1,96 @@
+#
+#     BEGIN MAIN PROGRAM
+#     -----------------
+#
+# Read the maximum number of roots and the convergence threshold from
+# input.
+
+       TARGET_ROOTS   = eom_roots
+       CONV_TOLERANCE = eom_tol
+
+       EXECUTE  PRINT_SCALAR  TARGET_ROOTS
+       EXECUTE  PRINT_SCALAR  CONV_TOLERANCE
+
+       DO A
+          DO I
+             DO MAX_NO_ROOTS
+                GUESS_A(A,I,MAX_NO_ROOTS) = 0.0
+             ENDDO NROOT
+          ENDDO I
+       ENDDO A
+
+       DO B
+          DO J
+             DO NROOT
+                GUESS_B(B,J,MAX_NO_ROOTS) = 0.0
+             ENDDO NROOT
+          ENDDO J
+       ENDDO B
+
+       DO MAX_NO_ROOTS 
+
+          COUNT_NO_ROOTS += 1.0
+
+          IF COUNT_NO_ROOTS > TARGET_ROOTS
+             EXIT 
+          END IF 
+          
+          ITER_COUNT = 0.0
+          CALL FORM_INTIAL_GUESS
+
+          CALL MOVE_GUESS_2CURRENT
+
+          DO MAXIMUM_SUBSP_DIM
+   
+             ITER_COUNT  += 1.0
+
+             IF ITER_COUNT >= 2.0
+                CALL MOVE_HISTORY_2CURRENT
+             ENDIF 
+
+# Lets denote the eigenvalue problem we are trying to solve as
+# H C = E C and {c_1, c_2, c_3...} expansion vector for a given
+# root. 
+
+             CALL SAVE_C_VECTORS
+
+# The vector-matrix product in the following step  is really the time 
+# consuming step in this. The Direct AO based alogrithm implemented 
+# here is described in several papers: G. B. Bacskay, 
+# Chemical Physics,61,385,1981 and J. Olsen and co-workers, 
+# Chemical Physics,119,297,1988.
+
+             CALL AO_DIRECT_HCMULT
+
+             CALL SAVE_HC_VECTORS
+
+#  A(i,j) = <R_i | H | R_j>, where R_i, i=1,2,3... are the sub-space
+# vectors. The diagonalization of the sub-space matrix A gives a
+# set of vectors of the dimension of the sub-space matrix (N=1,2..)
+# that can be used to form a set of N vectors. One of them will be
+# chosen to built the correction vector.
+#
+            CALL CONSTRUCT_A_MATRIX
+
+            CALL DIAG_A_MATRIX
+
+# The FORM_NEW_VECTORS and SELECT_VECTOR_TOGO do two things. The first one
+# will form the set of new vectors using the formula  
+# C_k (m,n) = A_k(1,1)*R_1 + A_k(2,1)*R_2 +... Following that We will 
+# have C_k  k=1,.., N where N is curent dimension of 
+# the sub-space). We select a vector from them based on the criteria 
+# on the maximum overlap criteria with the starting guess vector.
+
+             CALL FORM_NEW_VECTORS
+
+             CALL SELECT_VECTOR_TOGO
+ 
+             CALL FORM_RESIDUAL_VECTOR
+
+             CALL FORM_CORRECTION_VECTOR
+
+             CALL FORM_BIORTHOGANAL_VECS
+
+          ENDDO MAXIMUM_SUBSP_DIM 
+
+        ENDDO MAX_NO_ROOTS
