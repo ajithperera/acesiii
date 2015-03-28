@@ -122,12 +122,12 @@
                    T1AM_L(A,I) *= RLRM_NORM
                   
                    TAP_R(A,I) += T1AP_L(A,I)
-                   TAP_R(A,I) += T1AP_L(A,I)
+                   TAM_L(A,I) += T1AM_L(A,I)
 
               ENDDO MINDEX20
 
-              PUT        TAP_R(A,I)
-              PUT        TAM_R(A,I)
+              PUT R1A_MO_P_CURRENT_R(A,I) = TAP_R(A,I)
+              PUT R1A_MO_M_CURRENT_L(A,I) = TAM_L(A,I)
 
        ENDPARDO A, I
 
@@ -163,12 +163,12 @@
                    T1BM_L(B,J) *= RLRM_NORM
 
                    TBP_R(A,I) += T1BP_L(B,J)
-                   TBP_R(A,I) += T1BP_L(B,J)
+                   TBM_L(A,I) += T1BM_L(B,J)
 
               ENDDO MINDEX20
 
-              PUT        TBP_R(B,J)
-              PUT        TBM_R(B,J)
+              PUT R1B_MO_P_CURRENT_R(B,J) = TBP_R(B,J)
+              PUT R1B_MO_M_CURRENT_L(B,J) = TBM_L(B,J)
 
        ENDPARDO B, J
 

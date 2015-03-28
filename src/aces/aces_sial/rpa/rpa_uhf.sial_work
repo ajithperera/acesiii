@@ -2557,7 +2557,7 @@ CH
 
         PUT R1B_AO_BOLD_M(MU,NU) =  TXX(MU,NU)
 
-      ENDPARDO MU, NU
+      ENDPARDO MU, NuU
 
 
       execute sip_barrier 

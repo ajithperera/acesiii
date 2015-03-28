@@ -1,33 +1,53 @@
-      PROC SELECT_VECTOR_TOGO
-#     -----------------------
+     PROC SELECT_VECTOR_TOGO
+#    -----------------------
 
      IF ITER_COUNT == 1.0
 
-        NCOUNT = 1.0
+        NCOUNT = 0.0
 
         PARDO A, I 
 
-              GET R1A_MO_P_NEW_R(A,I,NCOUNT)
-              GET R1A_MO_M_NEW_L(A,I,NCOUNT)
+              DO MINDEX20
+                 NCOUNT += 1.0
 
-              TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,NCOUNT)
-              TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,NCOUNT)
+                 IF NCOUNT  == ITER_COUNT
 
-              PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
-              PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+                    GET R1A_MO_P_NEW_R(A,I,MINDEX20)
+                    GET R1A_MO_M_NEW_L(A,I,MINDEX20)
+
+                    TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
+                    TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
+
+                    PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
+                    PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+
+                 ENDIF 
+
+              ENDDO NROOT
 
         ENDPARDO A, I 
 
+        NCOUNT = 0.0
+
         PARDO B, J
 
-              GET R1B_MO_P_NEW_R(B,J,NCOUNT)
-              GET R1B_MO_M_NEW_L(B,J,NCOUNT)
+              DO MINDEX20
+                 MINDEX20 += 1.0
 
-              TAP_R(A,I) = R1B_MO_P_NEW_R(B,J,NCOUNT)
-              TAM_L(A,I) = R1B_MO_M_NEW_L(B,J,NCOUNT)
+                 IF NCOUNT  == ITER_COUNT
 
-              PUT R1B_MO_P_PICKED_R(A,I) = TAP_R(A,I)
-              PUT R1B_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+                    GET R1B_MO_P_NEW_R(B,J,MINDEX20)
+                    GET R1B_MO_M_NEW_L(B,J,MINDEX20)
+
+                    TAP_R(A,I) = R1B_MO_P_NEW_R(B,J,MINDEX20)
+                    TAM_L(A,I) = R1B_MO_M_NEW_L(B,J,MINDEX20)
+
+                    PUT R1B_MO_P_PICKED_R(A,I) = TAP_R(A,I)
+                    PUT R1B_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+
+                 ENDIF 
+
+              ENDDO NROOT
 
         ENDPARDO B, J
 
@@ -35,11 +55,14 @@
 
      ELSE 
 
+        NCOUNT = 0.0
+
         PARDO A, I
               
               DO NROOT 
+                 NCOUNT += 1.0
 
-                 IF NROOT == ROOT_COUNT
+                 IF NCOUNT == COUNT_NO_ROOTS
 
                      GET R1A_MO_P_START_R(A,I,NROOT) 
                      GET R1A_MO_M_START_L(A,I,NROOT) 
@@ -49,7 +72,7 @@
 
                      DO MINDEX20
           
-                        IF MINDEX20 <= SUBSP_DIM
+                        IF MINDEX20 <= ITER_COUNT 
 
                            GET R1A_MO_P_NEW_R(A,I,MINDEX20)
                            GET R1A_MO_N_NEW_L(A,I,MINDEX20)
@@ -87,7 +110,7 @@
 
                      DO MINDEX20
 
-                        IF MINDEX20 <= SUBSP_DIM
+                        IF MINDEX20 <= ITER_COUNT
 
                            GET R1B_MO_P_NEW_R(B,J,MINDEX20)
                            GET R1B_MO_N_NEW_L(B,J,MINDEX20)
@@ -140,20 +163,26 @@
                  IF MCOUNT == OVLPA_P_MAX_R
 
                     GET R1A_MO_P_NEW_R(A,I,MINDEX20)
+                    GET HR1A_MO_P_NEW_R(A,I,MINDEX20)
 
-                    TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
+                    TAP_R(A,I)  = R1A_MO_P_NEW_R(A,I,MINDEX20)
+                    T1AP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
 
-                    PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
+                    PUT R1A_MO_P_PICKED_R(A,I) =  TAP_R(A,I)
+                    PUT HR1A_MO_P_PICKED_R(A,I) = T1AP_R(A,I)
 
                  ENDIF 
 
                  IF MCOUNT == OVLPA_M_MAX_L
 
                     GET R1A_MO_M_NEW_L(A,I,MINDEX20)
+                    GET HR1A_MO_M_NEW_L(A,I,MINDEX20)
 
-                    TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
+                    TAM_L(A,I)  = R1A_MO_M_NEW_L(A,I,MINDEX20)
+                    T1AM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
 
-                    PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+                    PUT R1A_MO_M_PICKED_L(A,I)  = TAM_L(A,I)
+                    PUT HR1A_MO_M_PICKED_L(A,I) = T1AM_L(A,I)
 
                  ENDIF 
 
@@ -170,20 +199,26 @@
                  IF MCOUNT == OVLPB_P_MAX_R
 
                     GET R1B_MO_P_NEW_R(B,J,MINDEX20)
+                    GET HR1B_MO_P_NEW_R(B,J,MINDEX20)
 
-                    TBP_R(B,J) = R1B_MO_P_NEW_R(B,J,MINDEX20)
+                    TBP_R(B,J)  = R1B_MO_P_NEW_R(B,J,MINDEX20)
+                    T1BP_R(B,J) = HR1B_MO_P_NEW_R(B,J,MINDEX20)
 
-                    PUT R1B_MO_P_PICKED_R(B,J) = TBP_R(B,J)
+                    PUT R1B_MO_P_PICKED_R(B,J)  = TBP_R(B,J)
+                    PUT HR1B_MO_P_PICKED_R(B,J) = TBP_R(B,J)
 
                  ENDIF 
 
                  IF MCOUNT == OVLPA_M_MAX_L
 
                     GET R1B_MO_M_NEW_L(B,J,MINDEX20)
+                    GET HR1B_MO_M_NEW_L(B,J,MINDEX20)
 
-                    TBP_L(B,J) = R1B_MO_M_NEW_L(B,J,MINDEX20)
+                    TBP_L(B,J)  = R1B_MO_M_NEW_L(B,J,MINDEX20)
+                    T1BP_L(B,J) = HR1B_MO_M_NEW_L(B,J,MINDEX20)
 
-                    PUT R1B_MO_M_PICKED_LBJ(B,J) = TBP_R(B,J)
+                    PUT R1B_MO_M_PICKED_LBJ(B,J)  = TBP_L(B,J)
+                    PUT HR1B_MO_M_PICKED_LBJ(B,J) = TBP_L(B,J)
               
                  ENDIF 
 

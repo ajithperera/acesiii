@@ -35,7 +35,7 @@
              GET R1B_MO_M_PICKED_L(B,J)
 
              GET HR1B_MO_P_PICKED_R(B,J)
-             GET HR1B_MO_M_CURRENT_L(B,J)
+             GET HR1B_MO_M_PICKED_L(B,J)
 
              TBJP_R(B,J) = R1B_MO_P_PICKED_R(B,J)
              TBJM_L(B,J) = R1B_MO_M_PICKED_L(B,J)
