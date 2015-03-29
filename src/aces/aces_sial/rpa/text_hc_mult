@@ -108,6 +108,50 @@
      ENDPROC FORM_APLUSB_R1AB
 #    ------------------------
 
+#    PROC HC_MULTIPLY
+#    ----------------
+
+     PARDO MU, NU, LAMBDA 
+
+           GET R1A_AO_P_CURRENT_R(MU,NU) 
+           GET R1A_AO_M_CURRENT_L(MU,NU)
+           GET R1B_AO_P_CURRENT_R(MU,NU)
+           GET R1B_AO_M_CURRENT_L(MU,NU) 
+
+           TAXXP(MU,NU) = R1A_AO_P_CURRENT_R(MU,NU)
+           TAXXM(MU,NU) = R1A_AO_M_CURRENT_M(MU,NU)
+           TBXXP(MU,NU) = R1B_AO_P_CURRENT_R(MU,NU)
+           TBXXM(MU,NU) = R1B_AO_M_CURRENT_M(MU,NU)
+
+           REQUEST APBXXXX(MU,NU,LAMBDA,SIGMA) SIGMA 
+           REQUEST AMBXXXX(MU,NU,LAMBDA,SIGMA) SIGMA 
+
+           TPXXXX(MU,NU,LAMBDA,SIGMA) = APBXXXX(MU,NU,LAMBDA,SIGMA)
+           TMXXXX(MU,NU,LAMBDA,SIGMA) = AMBXXXX(MU,NU,LAMBDA,SIGMA)
+
+           TAPXX_INT(LAMBDA,SIGMA)  = TAXXP(MU,NU) * TPXXXX(MU,NU,LAMBDA,SIGMA)
+           TAPXX(LAMBDA,SIGMA)     += TAPXX_INT(LAMBDA,SIGMA)
+
+           TBPXX_INT(LAMBDA,SIGMA)  = TBXXP(MU,NU) * TPXXXX(MU,NU,LAMBDA,SIGMA)
+           TBPXX(LAMBDA,SIGMA)     += TBPXX_INT(LAMBDA,SIGMA)
+
+           TAMXX_INT(LAMBDA,SIGMA)  = TAXXM(MU,NU) * TMXXXX(MU,NU,LAMBDA,SIGMA)
+           TAMXX(LAMBDA,SIGMA)     += TAMXX_INT(LAMBDA,SIGMA)
+
+           TBMXX_INT(LAMBDA,SIGMA)  = TBXXM(MU,NU) * TMXXXX(MU,NU,LAMBDA,SIGMA)
+           TBMXX(LAMBDA,SIGMA)     += TBMXX_INT(LAMBDA,SIGMA)
+
+           PUT HR1A_AO_P_CURRENT_R(MU,NU) = TAPXX(LAMBDA,SIGMA) 
+           PUT HR1A_AO_M_CURRENT_L(MU,NU) = TAMXX(LAMBDA,SIGMA)
+           PUT HR1B_AO_P_CURRENT_R(MU,NU) = TBPXX(LAMBDA,SIGMA)
+           PUT HR1B_AO_M_CURRENT_L(MU,NU) = TBMXX(LAMBDA,SIGMA
+
+     ENDPARDO MU, NU, LAMBDA 
+         
+
+#    ENDPROC HC_MULTIPLY
+#    -------------------
+
      PROC FORM_AO_R1AB_OLD
 #    ---------------------
 
@@ -183,10 +227,16 @@
 #    ----------------------
 
      CALL FORM_AO_R1AB_OLD
+     execute sip_barrier 
 
      CALL FORM_AO_APLUSB_AMINUSB
+     execute server_barrier 
+     
+     CALL HC_CONTRACT
+     execute server_barrier 
 
      CALL FORM_MO_R1AB_NEW
+     execute sip_barrier 
 
      PROC DIRECT_AO_HC_MULT
 #    ----------------------

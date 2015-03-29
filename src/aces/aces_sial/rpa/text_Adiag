@@ -1,0 +1,21 @@
+     PROC DIAG_A_MATRIX
+#    ------------------
+
+# I am sticking to old EIG_NONSYMM (modified to use DGEEV instead
+# ancient rg). In ACES IV. For RPA we only need the right eigen-vectors
+# only. As a result, the ACES III SIP format is good enough. The ACES IV
+# format is now allowing both left and right vectors transfered to the
+# SIAL code. 
+
+# A_MATRIX_P and  A_MATRIX_M are very small (maximum order is 
+# is currently set to maximum subspace dimension 20. Both arrays
+# must be static. 
+
+     EXECUTE EIG_NONSYMM  A_MATRIX_P  R_VEC_P
+     EXECUTE EIG_NONSYMM  A_MATRIX_M  R_VEC_M
+
+     execute sip_barrier
+
+     ENDPROC DIAG_A_MATRIX
+#    ---------------------
+
