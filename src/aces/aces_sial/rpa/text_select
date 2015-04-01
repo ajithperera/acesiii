@@ -15,11 +15,20 @@
                     GET R1A_MO_P_NEW_R(A,I,MINDEX20)
                     GET R1A_MO_M_NEW_L(A,I,MINDEX20)
 
+                    GET HR1A_MO_P_NEW_R(A,I,MINDEX20)
+                    GET HR1A_MO_M_NEW_L(A,I,MINDEX20)
+
                     TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
                     TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
 
+                    T1AP_R(A,I) = HR1A_MO_P_NEW_R(A,I,MINDEX20)
+                    T1AM_L(A,I) = HR1A_MO_M_NEW_L(A,I,MINDEX20)
+
                     PUT R1A_MO_P_PICKED_R(A,I) = TAP_R(A,I)
                     PUT R1A_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+
+                    PUT HR1A_MO_P_PICKED_R(A,I) = T1AP_R(A,I)
+                    PUT HR1A_MO_M_PICKED_L(A,I) = T1AM_L(A,I)
 
                  ENDIF 
 
@@ -32,18 +41,27 @@
         PARDO B, J
 
               DO MINDEX20
-                 MINDEX20 += 1.0
+                 NCOUNT += 1.0
 
                  IF NCOUNT  == ITER_COUNT
 
                     GET R1B_MO_P_NEW_R(B,J,MINDEX20)
                     GET R1B_MO_M_NEW_L(B,J,MINDEX20)
 
+                    GET HR1B_MO_P_NEW_R(B,J,MINDEX20)
+                    GET HR1B_MO_M_NEW_L(B,J,MINDEX20)
+
                     TAP_R(A,I) = R1B_MO_P_NEW_R(B,J,MINDEX20)
                     TAM_L(A,I) = R1B_MO_M_NEW_L(B,J,MINDEX20)
 
+                    T1AP_R(A,I) = HR1B_MO_P_NEW_R(B,J,MINDEX20)
+                    T1AM_L(A,I) = HR1B_MO_M_NEW_L(B,J,MINDEX20)
+
                     PUT R1B_MO_P_PICKED_R(A,I) = TAP_R(A,I)
                     PUT R1B_MO_M_PICKED_L(A,I) = TAM_L(A,I)
+
+                    PUT HR1B_MO_P_PICKED_R(A,I) = T1AP_R(A,I)
+                    PUT HR1B_MO_M_PICKED_L(A,I) = T1AM_L(A,I)
 
                  ENDIF 
 
@@ -56,13 +74,15 @@
      ELSE 
 
         NCOUNT = 0.0
+        MCOUNT = 0.0
+        RCOUNT = 0.0
 
         PARDO A, I
               
               DO NROOT 
-                 NCOUNT += 1.0
+                 RCOUNT += 1.0
 
-                 IF NCOUNT == COUNT_NO_ROOTS
+                 IF RCOUNT == COUNT_NO_ROOTS
 
                      GET R1A_MO_P_START_R(A,I,NROOT) 
                      GET R1A_MO_M_START_L(A,I,NROOT) 
@@ -70,25 +90,43 @@
                      T1AP_R(A,I) = R1A_MO_P_START_R(A,I,NROOT)
                      T1AM_L(A,I) = R1A_MO_M_START_L(A,I,NROOT)
 
-                     DO MINDEX20
+                     DO NINDEX20
+                        NCOUNT += 1.0
+                        
+                        IF NCOUNT <= ITER_COUNT
+
+                           DO MINDEX20
+                              MCOUNT += 1.0
           
-                        IF MINDEX20 <= ITER_COUNT 
+                              IF MINDEX20 <= ITER_COUNT 
 
-                           GET R1A_MO_P_NEW_R(A,I,MINDEX20)
-                           GET R1A_MO_N_NEW_L(A,I,MINDEX20)
+                                 GET R1A_MO_P_NEW_R(A,I,MINDEX20)
+                                 GET R1A_MO_N_NEW_L(A,I,MINDEX20)
 
-                           TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
-                           TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
+                                 TAP_R(A,I) = R1A_MO_P_NEW_R(A,I,MINDEX20)
+                                 TAM_L(A,I) = R1A_MO_M_NEW_L(A,I,MINDEX20)
 
-                           TMP = T1AP_R(A,I) * TAP_R(A,I)
-                           OVLPA_P_R(NCOUNT) += TMP
+                                 TMP = T1AP_R(A,I) * TAP_R(A,I)
+                                 OVLPA_P_R_INTMD += TMP
 
-                           TMP = T1AM_L(A,I) * TAM_L(A,I)
-                           OVLPA_M_L(NCOUNT) += TMP
+                                 TMP = T1AM_L(A,I) * TAM_L(A,I)
+                                 OVLPA_M_L_INTMD += TMP
 
-                        ENDIF
+                              ENDIF 
 
-                     ENDDO MINDEX20
+                           ENDDO MINDEX20
+
+                           execute sip_barrier
+
+                           COLLECTIVE OVLPA_P_R += OVLPA_P_R_INTMD
+                           COLLECTIVE OVLPA_M_L += OVLPA_M_L_INTMD
+
+                        ENDIF 
+
+                           OVLPA_P_R(NINDEX20) = OVLPA_P_R
+                           OVLPA_M_L(NINDEX20) = OVLPA_M_L
+
+                     ENDDO NINDEX20
 
                  ENDIF 
 
@@ -96,11 +134,16 @@
 
         ENPARDO A, I
 
+        NCOUNT = 0.0
+        MCOUNT = 0.0
+        RCOUNT = 0.0
+
         PARDO B, J
 
               DO NROOT
+                 RCOUNT += 1.0
 
-                 IF NROOT == ROOT_COUNT
+                 IF RCOUNT == ROOT_COUNT
 
                      GET R1B_MO_P_START_R(B,J,NROOT)
                      GET R1B_MO_M_START_L(B,J,NROOT)
@@ -108,27 +151,45 @@
                      T1BP_R(B,J) = R1B_MO_P_START_R(B,J,NROOT)
                      T1BM_L(B,J) = R1B_MO_M_START_L(B,J,NROOT)
 
-                     DO MINDEX20
+                     DO NINDEX20
+                        NCOUNT += 1.0
+                        
+                        IF NCOUNT <= ITER_COUNT
 
-                        IF MINDEX20 <= ITER_COUNT
+                           DO MINDEX20
+                              MCOUNT  += 1.0
 
-                           GET R1B_MO_P_NEW_R(B,J,MINDEX20)
-                           GET R1B_MO_N_NEW_L(B,J,MINDEX20)
+                              IF MCOUNT == NCOUNT 
 
-                           TBP_R(B,J) = R1B_MO_P_NEW_R(B,J,MINDEX20)
-                           TBM_L(B,J) = R1B_MO_M_NEW_L(B,J,MINDEX20)
+                                 GET R1B_MO_P_NEW_R(B,J,MINDEX20)
+                                 GET R1B_MO_N_NEW_L(B,J,MINDEX20)
 
-                           TMP = T1BP_R(B,J) * TBP_R(B,J)
-                           OVLPB_P_R(NCOUNT) += TMP
+                                 TBP_R(B,J) = R1B_MO_P_NEW_R(B,J,MINDEX20)
+                                 TBM_L(B,J) = R1B_MO_M_NEW_L(B,J,MINDEX20)
 
-                           TMP = T1BM_L(B,J) * TBM_L(B,J)
-                           OVLPB_M_L(NCOUNT) += TMP
+                                 TMP = T1BP_R(B,J) * TBP_R(B,J)
+                                 OVLPB_P_R_INTMD += TMP
+
+                                 TMP = T1BM_L(B,J) * TBM_L(B,J)
+                                 OVLPB_M_L_INTMD += TMP
+
+                              ENDIF
+   
+                           ENDDO MINDEX20
+
+                           execute sip_barrier 
+                
+                           COLLECTIVE OVLPB_P_R += OVLPB_P_R_INTMD
+                           COLLECTIVE OVLPB_M_L += OVLPB_M_L_INTMD
 
                         ENDIF
 
-                     ENDDO MINDEX20
+                           OVLPB_P_R(NINDEX20) = OVLPB_P_R
+                           OVLPB_M_L(NINDEX20) = OVLPB_M_L
 
-                 ENDIF
+                     ENDDO NINDEX20
+
+                 ENDIF 
 
               ENDDO NROOT
 
@@ -140,6 +201,7 @@
 # in the first static array. The return scalar gives the pointer
 # to vector that has the maximum overlap with the guess. 
 # 
+
          OVLPA_P_MAX_R = 0.0
          OVLPA_M_MAX_L = 0.0
          OVLPB_P_MAX_R = 0.0
@@ -214,11 +276,11 @@
                     GET R1B_MO_M_NEW_L(B,J,MINDEX20)
                     GET HR1B_MO_M_NEW_L(B,J,MINDEX20)
 
-                    TBP_L(B,J)  = R1B_MO_M_NEW_L(B,J,MINDEX20)
-                    T1BP_L(B,J) = HR1B_MO_M_NEW_L(B,J,MINDEX20)
+                    TBM_L(B,J)  = R1B_MO_M_NEW_L(B,J,MINDEX20)
+                    T1BM_L(B,J) = HR1B_MO_M_NEW_L(B,J,MINDEX20)
 
-                    PUT R1B_MO_M_PICKED_LBJ(B,J)  = TBP_L(B,J)
-                    PUT HR1B_MO_M_PICKED_LBJ(B,J) = TBP_L(B,J)
+                    PUT R1B_MO_M_PICKED_L(B,J)  = TBM_L(B,J)
+                    PUT HR1B_MO_M_PICKED_L(B,J) = TBM_L(B,J)
               
                  ENDIF 
 

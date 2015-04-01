@@ -1,3 +1,11 @@
+# 
+# This is a critical step in Davidson algorithm. The new set of vectors are 
+# formed from the eigenvectors of the subspace matrix and the original vectors 
+# that is used to built the small matrix. Prciesely speaking, 
+# A (N,N) = C^(t) H C^(t), the Eigenvectors of A are b(N,N). 
+# the new vectors are fromed by  C_new(m,n) = Sum{i} b(i,k) * C_i(m,n) 
+# (C_new_k= b(1,k) * C1 + b(2,k) * C2 + ....)(k=1,..N))
+#
 
       PROC FORM_NEW_VECTORS 
 #     ---------------------
@@ -64,7 +72,6 @@
 
        NCOUNT      = 0.0
        MCOUNT      = 0.0
-       SUBSP_COUNT = 0.0
 
        PARDO B, J
 

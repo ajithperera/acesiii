@@ -34,11 +34,11 @@
 
               IF RCOUNT == COUNT_NO_ROOTS
 
-                 GET R1B_MO_P_HIST_R(B,J,MAX_NO_ROOTS)
-                 GET R1B_MO_M_HIST_L(B,J,MAX_NO_ROOTS)
+                 GET R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
+                 GET R1B_MO_M_START_L(B,J,MAX_NO_ROOTS)
 
-                 TBJP_R(B,J) =  R1B_MO_P_HIST_R(B,J,MAX_NO_ROOTS)
-                 TBJM_L(B,J) =  R1B_MO_M_HIST_L(B,J,MAX_NO_ROOTS)
+                 TBJP_R(B,J) =  R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
+                 TBJM_L(B,J) =  R1B_MO_M_START_L(B,J,MAX_NO_ROOTS)
 
                  PUT R1B_MO_P_CURRENT_R(B,J) = TBJP_R(B,J)
                  PUT R1B_MO_M_CURRENT_L(B,J) = TBJM_L(B,J)
@@ -47,7 +47,7 @@
 
            ENDDO MINDEX20
  
-     ENDPARDO A, I
+     ENDPARDO B, J
 
      execute sip_barrier
 

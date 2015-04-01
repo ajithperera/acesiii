@@ -11,22 +11,6 @@
        EXECUTE  PRINT_SCALAR  TARGET_ROOTS
        EXECUTE  PRINT_SCALAR  CONV_TOLERANCE
 
-       DO A
-          DO I
-             DO MAX_NO_ROOTS
-                GUESS_A(A,I,MAX_NO_ROOTS) = 0.0
-             ENDDO NROOT
-          ENDDO I
-       ENDDO A
-
-       DO B
-          DO J
-             DO NROOT
-                GUESS_B(B,J,MAX_NO_ROOTS) = 0.0
-             ENDDO NROOT
-          ENDDO J
-       ENDDO B
-
        DO MAX_NO_ROOTS 
 
           COUNT_NO_ROOTS += 1.0

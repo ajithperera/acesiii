@@ -10,11 +10,11 @@
               GET R1A_MO_P_CURRENT_R(A,I)
               GET R1A_MO_M_CURRENT_L(A,I)
   
-              TAIP(A,I) = R1A_MO_P_CURRENT_R(A,I)
-              TAIM(A,I) = R1A_MO_M_CURRENT_L(A,I)
+              TAIP_R(A,I) = R1A_MO_P_CURRENT_R(A,I)
+              TAIM_L(A,I) = R1A_MO_M_CURRENT_L(A,I)
 
-              TXAP_T(MU,A) = R1A_MO_P_CURRENT_R(A,I) * CA(MU,I)
-              TXAM_T(MU,A) = R1A_MO_M_CURRENT_L(A,I) * CA(MU,I)
+              TXAP_T(MU,A) = TAIP_R(A,I) * CA(MU,I)
+              TXAM_T(MU,A) = TAIM_L(A,I) * CA(MU,I)
 
               TXAP(MU,A)  += TXAP_T(MU,A)
               TXAM(MU,A)  += TXAM_T(MU,A)
@@ -22,7 +22,7 @@
            ENDDO A
 
            TXXP_T(MU,NU) = TXAP(MU,A) * CA(NU,A)
-           TXXP_T(MU,NU) = TXAM(MU,A) * CA(NU,A)
+           TXXM_T(MU,NU) = TXAM(MU,A) * CA(NU,A)
 
            TXXP(MU,NU)  += TXXP_T(MU,NU)
            TXXM(MU,NU)  += TXXM_T(MU,NU)
@@ -43,11 +43,11 @@
               GET R1B_MO_P_CURRENT_R(B,J)
               GET R1B_MO_M_CURRENT_L(B,J)
 
-              TBJP(B,J) = R1B_MO_P_CURRENT_R(B,J)
-              TBJM(B,J) = R1B_MO_M_CURRENT_L(B,J)
+              TBJP_R(B,J) = R1B_MO_P_CURRENT_R(B,J)
+              TBJM_L(B,J) = R1B_MO_M_CURRENT_L(B,J)
 
-              TXBP_T(MU,B) = TBJP(B,J) * CB(MU,J)
-              TXBM_T(MU,B) = TBJM(B,J) * CB(MU,J)
+              TXBP_T(MU,B) = TBJP_R(B,J) * CB(MU,J)
+              TXBM_T(MU,B) = TBJM_L(B,J) * CB(MU,J)
 
               TXBP(MU,B)  += TXBP_T(MU,B)
               TXBM(MU,B)  += TXBM_T(MU,B)
@@ -144,7 +144,7 @@
            PUT HR1A_AO_P_CURRENT_R(MU,NU) = TAPXX(LAMBDA,SIGMA) 
            PUT HR1A_AO_M_CURRENT_L(MU,NU) = TAMXX(LAMBDA,SIGMA)
            PUT HR1B_AO_P_CURRENT_R(MU,NU) = TBPXX(LAMBDA,SIGMA)
-           PUT HR1B_AO_M_CURRENT_L(MU,NU) = TBMXX(LAMBDA,SIGMA
+           PUT HR1B_AO_M_CURRENT_L(MU,NU) = TBMXX(LAMBDA,SIGMA)
 
      ENDPARDO MU, NU, LAMBDA 
          
@@ -157,11 +157,11 @@
 
      PARDO MU, NU
 
-            GET R1A_MO_P_CURRENT_R(NU,MU)
-            GET R1A_MO_M_CURRENT_L(NU,MU)
+            GET HR1A_AO_P_CURRENT_R(NU,MU)
+            GET HR1A_AO_M_CURRENT_L(NU,MU)
 
-            TXXP(NU,MU) = R1A_MO_P_CURRENT_R(NU,MU)
-            TXXM(NU,MU) = R1A_MO_M_CURRENT_L(NU,MU)
+            TXXP(NU,MU) = HR1A_AO_P_CURRENT_R(NU,MU)
+            TXXM(NU,MU) = HR1A_AO_M_CURRENT_L(NU,MU)
 
             DO A
                DO I
@@ -177,14 +177,14 @@
                TAIP_T(A,I) = TXAP(NU,I) * CA(NU,A)
                TAIM_T(A,I) = TXAM(NU,I) * CA(NU,A)
 
-               TAIP_T(A,I)  += TAIP_T(A,I)
-               TAIM_T(A,I)  += TAIM_T(A,I)
+               TAIP_R(A,I)  += TAIP_T(A,I)
+               TAIM_L(A,I)  += TAIM_T(A,I)
 
                ENDDO I
             ENDDO A
 
-        PUT HR1A_MO_P_CURRENT_R(A,I) = TAIP_T(A,I)
-        PUT HR1A_MO_M_CURRENT_L(A,I) = TAIM_T(A,I)
+        PUT HR1A_MO_P_CURRENT_R(A,I) = TAIP_R(A,I)
+        PUT HR1A_MO_M_CURRENT_L(A,I) = TAIM_L(A,I)
 
      ENDPARDO MU, NU
 
@@ -207,17 +207,17 @@
 
                ENDDO J
 
-               TAIP_T(B,J) = TXJP(NU,J) * CB(NU,B)
-               TAIM_T(B,J) = TXJM(NU,J) * CB(NU,B)
+               TBJP_T(B,J) = TXJP(NU,J) * CB(NU,B)
+               TBJM_T(B,J) = TXJM(NU,J) * CB(NU,B)
 
-               TBJP_T(B,J)  += TBJP_T(B,J)
-               TBJM_T(B,J)  += TBJM_T(B,J`)
+               TBJP_R(B,J)  += TBJP_T(B,J)
+               TBJM_L(B,J)  += TBJM_T(B,J`)
 
                ENDDO I
             ENDDO A
 
-        PUT HR1B_MO_P_CURRENT_R(B,J) =  TBJP_T(B,J)
-        PUT HR1B_MO_M_CURRENT_L(B,J) =  TBJM_T(B,J)
+        PUT HR1B_MO_P_CURRENT_R(B,J) =  TBJP_R(B,J)
+        PUT HR1B_MO_M_CURRENT_L(B,J) =  TBJM_L(B,J)
 
      ENDPARDO MU, NU
 

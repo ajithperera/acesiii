@@ -11,8 +11,10 @@
 # is currently set to maximum subspace dimension 20. Both arrays
 # must be static. 
 
-     EXECUTE EIG_NONSYMM  A_MATRIX_P  R_VEC_P
-     EXECUTE EIG_NONSYMM  A_MATRIX_M  R_VEC_M
+     EXECUTE EIG_NONSYMM  A_A_MATRIX_P  EIG_VECS_A_P_R
+     EXECUTE EIG_NONSYMM  A_A_MATRIX_M  EIG_VECS_A_M_R
+     EXECUTE EIG_NONSYMM  B_A_MATRIX_P  EIG_VECS_B_P_R
+     EXECUTE EIG_NONSYMM  B_A_MATRIX_M  EIG_VECS_B_M_R
 
      execute sip_barrier
 

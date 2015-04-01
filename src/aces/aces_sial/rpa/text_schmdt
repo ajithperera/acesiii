@@ -37,11 +37,11 @@
 
                    TMP  = T1AM_L(A,I) * TAP_R(A,I)
                    TMP *= -1.0
-                   PUT ORTHO_COEFSA_P_RL(MCOUNT,MCOUNT) += TMP 
+                   PUT ORTHO_COEFSA_P_RL(MINDEX20,MINDEX20) += TMP 
 
                    TMP = T1AP_R(A,I) * TAM_L(A,I)
                    TMP *= -1.0
-                   PUT ORTHO_COEFSA_M_RL(MCOUNT,MCOUNT) += TMP 
+                   PUT ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20) += TMP 
 
              ENDDO MINDEX20
 
@@ -73,15 +73,15 @@
 
                    TMP  = T1BM_L(B,J) * TBP_R(B,J)
                    TMP *= -1.0
-                   PUT ORTHO_COEFSB_P_RL(MCOUNT,MCOUNT) += TMP  
+                   PUT ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20) += TMP  
 
                    TMP = T1BP_R(A,I) * TBM_L(A,I)
                    TMP *= -1.0
-                   PUT ORTHO_COEFSB_M_RL(MCOUNT,MCOUNT) += TMP
+                   PUT ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20) += TMP
 
              ENDDO MINDEX20
 
-       ENDPARDO A, I
+       ENDPARDO B, J
 
        execute sip_barrier
 
