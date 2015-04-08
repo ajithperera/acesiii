@@ -1,5 +1,5 @@
-input  file: scf/scf_uhf_ainit_aguess.sial
-output file: scf/scf_uhf_ainit_aguess.sio
+input  file: rpa/rpa_uhf.sial
+output file: rpa/rpa_uhf.sio
     No compilation errors
 
 array table
@@ -36,305 +36,210 @@ array table
 29,   lshft_b1, 0.000000
 30,  damp_type, 0.000000
 31,   damp_tol, 0.000000
-32,       dhfa, 2,     mu     nu 
-33,       dhfb, 2,     mu     nu 
-34,      idhfa, 2,     mu     nu 
-35,      idhfb, 2,     mu     nu 
-36,   dhfa_old, 2,     mu     nu 
-37,   dhfb_old, 2,     mu     nu 
-38,      fpq_a, 2,     mu     nu 
-39,      fpq_b, 2,     mu     nu 
-40,     ftpq_a, 2,     mu     nu 
-41,     ftpq_b, 2,     mu     nu 
-42,      cbt_a, 2,     mu      p 
-43,      cbt_b, 2,     mu      q 
-44,   dflags11, 2, iiter1 jjter1 
-45,   dflags12, 2, iiter1 jjter2 
-46,        ixi, 2,     mu      i 
-47,       i1xi, 2,     mu      i 
-48,        ixj, 2,     mu      j 
-49,       i1xj, 2,     mu      j 
-50,        tpq, 2,     mu     nu 
-51,       t1pq, 2,     mu     nu 
-52,        txi, 2,     mu      i 
-53,       t1xi, 2,     mu      i 
-54,        txj, 2,     mu      j 
-55,       t1xj, 2,     mu      j 
-56,        txx, 2,     mu     nu 
-57,       taxx, 2,     mu     nu 
-58,       tbxx, 2,     mu     nu 
-59,       t1xx, 2,     mu     nu 
-60,       t2xx, 2,     mu     nu 
-61,       t3xx, 2,     mu     nu 
-62,       t4xx, 2,     mu     nu 
-63,       t5xx, 2,     mu     nu 
-64,       t6xx, 2,     mu     nu 
-65,       t7xx, 2,     mu     nu 
-66,       t8xx, 2,     mu     nu 
-67,       t9xx, 2,     mu     nu 
-68,      t10xx, 2,     mu     nu 
-69,      t11xx, 2,     mu     nu 
-70,      t12xx, 2,     mu     nu 
-71,      t13xx, 2,     mu     nu 
-72,      t14xx, 2,     mu     nu 
-73,      t15xx, 2,     mu     nu 
-74,      t16xx, 2,     mu     nu 
-75,      t17xx, 2,     mu     nu 
-76,      t18xx, 2,     mu     nu 
-77,      t19xx, 2,     mu     nu 
-78,      t20xx, 2,     mu     nu 
-79,      t21xx, 2,     mu     nu 
-80,      t22xx, 2,     mu     nu 
-81,        tii, 2,      i     i1 
-82,       t1ii, 2,      i     i1 
-83,        tjj, 2,      j     j1 
-84,       t1jj, 2,      j     j1 
-85,        txp, 2,     mu      p 
-86,       t1xp, 2,     mu      p 
-87,        tpp, 2,      p     p1 
-88,       t1pp, 2,      p     p1 
-89,        txq, 2,     mu      q 
-90,       t1xq, 2,     mu      q 
-91,        tqq, 2,      q     q1 
-92,       t1qq, 2,      q     q1 
-93,      aoint, 4,     mu     nu lambda  sigma 
-94,     fspq_a, 2,     mu     nu 
-95,     fspq_b, 2,     mu     nu 
-96,        qxx, 2,     mu     nu 
-97,        fta, 2,      p     p1 
-98,        ftb, 2,      q     q1 
-99,         x1, 2,     mu     nu 
-100,      ldhfa, 2,     mu     nu 
-101,      ldhfb, 2,     mu     nu 
-102,     lfpq_b, 2,     mu     nu 
-103,     lfpq_a, 2,     mu     nu 
-104,       pinf, 2,  kiter  kptr1 
-105,      tpinf, 2,  kiter  kptr1 
-106,       ffai, 2,      a      i 
-107,       ffbj, 2,      b      j 
-108,        tai, 2,      a      i 
-109,       t1ai, 2,      a      i 
-110,        tbj, 2,      b      j 
-111,       t1bj, 2,      b      j 
-112,        b11, 0.000000
-113,        b12, 0.000000
-114,        b13, 0.000000
-115,        b14, 0.000000
-116,        b15, 0.000000
-117,        b16, 0.000000
-118,        b17, 0.000000
-119,        b18, 0.000000
-120,        b19, 0.000000
-121,       b110, 0.000000
-122,        b22, 0.000000
-123,        b23, 0.000000
-124,        b24, 0.000000
-125,        b25, 0.000000
-126,        b26, 0.000000
-127,        b27, 0.000000
-128,        b28, 0.000000
-129,        b29, 0.000000
-130,       b210, 0.000000
-131,        b33, 0.000000
-132,        b34, 0.000000
-133,        b35, 0.000000
-134,        b36, 0.000000
-135,        b37, 0.000000
-136,        b38, 0.000000
-137,        b39, 0.000000
-138,       b310, 0.000000
-139,        b44, 0.000000
-140,        b45, 0.000000
-141,        b46, 0.000000
-142,        b47, 0.000000
-143,        b48, 0.000000
-144,        b49, 0.000000
-145,       b410, 0.000000
-146,        b55, 0.000000
-147,        b56, 0.000000
-148,        b57, 0.000000
-149,        b58, 0.000000
-150,        b59, 0.000000
-151,       b510, 0.000000
-152,        b66, 0.000000
-153,        b67, 0.000000
-154,        b68, 0.000000
-155,        b69, 0.000000
-156,       b610, 0.000000
-157,        b77, 0.000000
-158,        b78, 0.000000
-159,        b79, 0.000000
-160,       b710, 0.000000
-161,        b88, 0.000000
-162,        b89, 0.000000
-163,       b810, 0.000000
-164,        b99, 0.000000
-165,       b910, 0.000000
-166,      b1010, 0.000000
-167,         c1, 0.000000
-168,         c2, 0.000000
-169,         c3, 0.000000
-170,         c4, 0.000000
-171,         c5, 0.000000
-172,         c6, 0.000000
-173,         c7, 0.000000
-174,         c8, 0.000000
-175,         c9, 0.000000
-176,        c10, 0.000000
-177,       tb11, 0.000000
-178,       tb12, 0.000000
-179,       tb13, 0.000000
-180,       tb14, 0.000000
-181,       tb15, 0.000000
-182,       tb16, 0.000000
-183,       tb17, 0.000000
-184,       tb18, 0.000000
-185,       tb19, 0.000000
-186,      tb110, 0.000000
-187,       tb21, 0.000000
-188,       tb22, 0.000000
-189,       tb23, 0.000000
-190,       tb24, 0.000000
-191,       tb25, 0.000000
-192,       tb26, 0.000000
-193,       tb27, 0.000000
-194,       tb28, 0.000000
-195,       tb29, 0.000000
-196,      tb210, 0.000000
-197,       tb31, 0.000000
-198,       tb32, 0.000000
-199,       tb33, 0.000000
-200,       tb34, 0.000000
-201,       tb35, 0.000000
-202,       tb36, 0.000000
-203,       tb37, 0.000000
-204,       tb38, 0.000000
-205,       tb39, 0.000000
-206,      tb310, 0.000000
-207,       tb41, 0.000000
-208,       tb42, 0.000000
-209,       tb43, 0.000000
-210,       tb44, 0.000000
-211,       tb45, 0.000000
-212,       tb46, 0.000000
-213,       tb47, 0.000000
-214,       tb48, 0.000000
-215,       tb49, 0.000000
-216,      tb410, 0.000000
-217,       tb51, 0.000000
-218,       tb52, 0.000000
-219,       tb53, 0.000000
-220,       tb54, 0.000000
-221,       tb55, 0.000000
-222,       tb56, 0.000000
-223,       tb57, 0.000000
-224,       tb58, 0.000000
-225,       tb59, 0.000000
-226,      tb510, 0.000000
-227,       tb61, 0.000000
-228,       tb62, 0.000000
-229,       tb63, 0.000000
-230,       tb64, 0.000000
-231,       tb65, 0.000000
-232,       tb66, 0.000000
-233,       tb67, 0.000000
-234,       tb68, 0.000000
-235,       tb69, 0.000000
-236,      tb610, 0.000000
-237,       tb71, 0.000000
-238,       tb72, 0.000000
-239,       tb73, 0.000000
-240,       tb74, 0.000000
-241,       tb75, 0.000000
-242,       tb76, 0.000000
-243,       tb77, 0.000000
-244,       tb78, 0.000000
-245,       tb79, 0.000000
-246,      tb710, 0.000000
-247,       tb81, 0.000000
-248,       tb82, 0.000000
-249,       tb83, 0.000000
-250,       tb84, 0.000000
-251,       tb85, 0.000000
-252,       tb86, 0.000000
-253,       tb87, 0.000000
-254,       tb88, 0.000000
-255,       tb89, 0.000000
-256,      tb810, 0.000000
-257,       tb91, 0.000000
-258,       tb92, 0.000000
-259,       tb93, 0.000000
-260,       tb94, 0.000000
-261,       tb95, 0.000000
-262,       tb96, 0.000000
-263,       tb97, 0.000000
-264,       tb98, 0.000000
-265,       tb99, 0.000000
-266,      tb910, 0.000000
-267,      tb101, 0.000000
-268,      tb102, 0.000000
-269,      tb103, 0.000000
-270,      tb104, 0.000000
-271,      tb105, 0.000000
-272,      tb106, 0.000000
-273,      tb107, 0.000000
-274,      tb108, 0.000000
-275,      tb109, 0.000000
-276,     tb1010, 0.000000
-277,        e_a, 0.000000
-278,        e_b, 0.000000
-279,     escf_a, 0.000000
-280,     escf_b, 0.000000
-281,      etemp, 0.000000
-282,       esum, 0.000000
-283,      esum1, 0.000000
-284,     energy, 0.000000
-285,    energy1, 0.000000
-286,    energy2, 0.000000
-287,      ecrit, 0.000000
-288,      ediff, 0.000000
-289,      damp1, 0.000000
-290,       done, 0.000000
-291,      donea, 0.000000
-292,      doneb, 0.000000
-293,       zero, 0.000000
-294,       mone, 0.000000
-295,        one, 0.000000
-296,        two, 0.000000
-297,      three, 0.000000
-298,       four, 0.000000
-299,    ncount1, 0.000000
-300,       rank, 0.000000
-301, diis_start, 0.000000
-302,   diis_end, 0.000000
-303, diis_order, 0.000000
-304, diis_max_order, 0.000000
-305, diis_count, 0.000000
-306,     worder, 0.000000
-307,         n1, 0.000000
-308,         n2, 0.000000
-309,         fa, 3,     mu     nu  kdiis 
-310,         fb, 3,     mu     nu  kdiis 
-311,        fbj, 3,      b      j  kdiis 
-312,        fai, 3,      a      i  kdiis 
-313,       tpqx, 3,     mu     nu     d2 
-314,       taix, 3,      a      i     d2 
-315,       tbjx, 3,      b      j     d2 
-316,        tdd, 2,     d1     d2 
-317,       t1dd, 2,     d1     d2 
-318,         bb, 2,  kdiis  kdiis 
-319,       temp, 0.000000
-320,       temp, 2.000000
-321,       temp, -1.000000
-322,       temp, 0.500000
-323,       temp, 1.000000
-324,       temp, 1000.000000
-325,       temp, 3.000000
-326,       temp, 4.000000
-327,       temp, 150.000000
-328,       temp, 8.000000
-329,       temp, 10.000000
-330,       temp, -10.000000
-Writing tables to scf/scf_uhf_ainit_aguess.sio
+32, lindep_tol, 0.000000
+33, lock_orbitals, 0.000000
+34, intgrl_tol, 0.000000
+35,   damp_end, 0.000000
+36, lock_orbocc, 0.000000
+37, r1a_mo_p_start_r, 3,      a      i max_no_roots 
+38, r1a_mo_m_start_l, 3,      a      i max_no_roots 
+39, r1b_mo_p_start_r, 3,      b      j max_no_roots 
+40, r1b_mo_m_start_l, 3,      b      j max_no_roots 
+41, r1a_mo_p_current_r, 2,      a      i 
+42, r1a_mo_m_current_l, 2,      a      i 
+43, r1b_mo_p_current_r, 2,      b      j 
+44, r1b_mo_m_current_l, 2,      b      j 
+45, r1a_ao_p_current_r, 2,     mu     nu 
+46, r1a_ao_m_current_l, 2,     mu     nu 
+47, r1b_ao_p_current_r, 2,     mu     nu 
+48, r1b_ao_m_current_l, 2,     mu     nu 
+49, hr1a_ao_p_current_r, 2,     mu     nu 
+50, hr1a_ao_m_current_l, 2,     mu     nu 
+51, hr1b_ao_p_current_r, 2,     mu     nu 
+52, hr1b_ao_m_current_l, 2,     mu     nu 
+53, hr1a_mo_p_current_r, 2,      a      i 
+54, hr1a_mo_m_current_l, 2,      a      i 
+55, hr1b_mo_p_current_r, 2,      b      j 
+56, hr1b_mo_m_current_l, 2,      b      j 
+57, r1a_mo_p_hist_r, 3,      a      i mindex20 
+58, r1a_mo_m_hist_l, 3,      a      i mindex20 
+59, r1b_mo_p_hist_r, 3,      b      j mindex20 
+60, r1b_mo_m_hist_l, 3,      b      j mindex20 
+61, hr1a_mo_p_hist_r, 3,      a      i mindex20 
+62, hr1a_mo_m_hist_l, 3,      a      i mindex20 
+63, hr1b_mo_p_hist_r, 3,      b      j mindex20 
+64, hr1b_mo_m_hist_l, 3,      b      j mindex20 
+65, r1a_mo_p_new_r, 3,      a      i nindex20 
+66, r1a_mo_m_new_l, 3,      a      i nindex20 
+67, r1b_mo_p_new_r, 3,      b      j nindex20 
+68, r1b_mo_m_new_l, 3,      b      j nindex20 
+69, hr1a_mo_p_new_r, 3,      a      i nindex20 
+70, hr1a_mo_m_new_l, 3,      a      i nindex20 
+71, hr1b_mo_p_new_r, 3,      b      j nindex20 
+72, hr1b_mo_m_new_l, 3,      b      j nindex20 
+73, r1a_mo_p_picked_r, 2,      a      i 
+74, r1a_mo_m_picked_l, 2,      a      i 
+75, r1b_mo_p_picked_r, 2,      b      j 
+76, r1b_mo_m_picked_l, 2,      b      j 
+77, hr1a_mo_p_picked_r, 2,      a      i 
+78, hr1a_mo_m_picked_l, 2,      a      i 
+79, hr1b_mo_p_picked_r, 2,      b      j 
+80, hr1b_mo_m_picked_l, 2,      b      j 
+81, residuea_p_vec_r, 2,      a      i 
+82, residuea_m_vec_l, 2,      a      i 
+83, residueb_p_vec_r, 2,      b      j 
+84, residueb_m_vec_l, 2,      b      j 
+85, corr_veca_intmd_p_r, 2,      a      i 
+86, corr_veca_intmd_m_l, 2,      a      i 
+87, corr_vecb_intmd_p_r, 2,      b      j 
+88, corr_vecb_intmd_m_l, 2,      b      j 
+89, ortho_coefsa_p_rl, 2, mindex20 mindex20 
+90, ortho_coefsa_m_rl, 2, mindex20 mindex20 
+91, ortho_coefsb_p_rl, 2, mindex20 mindex20 
+92, ortho_coefsb_m_rl, 2, mindex20 mindex20 
+93, h_a_diagonal, 2,      a      i 
+94, h_b_diagonal, 2,      b      j 
+95,    guess_a, 3,      a      i max_no_roots 
+96,    guess_b, 3,      b      j max_no_roots 
+97, a_a_matrix_p, 2, nindex20 mindex20 
+98, a_a_matrix_m, 2, nindex20 mindex20 
+99, b_a_matrix_p, 2, nindex20 mindex20 
+100, b_a_matrix_m, 2, nindex20 mindex20 
+101,     tmnp_r, 2, nindex20 mindex20 
+102,     tmnm_l, 2, nindex20 mindex20 
+103, eig_vecs_a_p_r, 2, nindex20 mindex20 
+104, eig_vecs_a_m_r, 2, nindex20 mindex20 
+105, eig_vecs_b_p_r, 2, nindex20 mindex20 
+106, eig_vecs_b_m_r, 2, nindex20 mindex20 
+107,  tnorm_p_r, 2, nindex20 mindex20 
+108,  tnorm_m_l, 2, nindex20 mindex20 
+109, ovlpa_history_p_r, 1, nindex20 
+110, ovlpa_history_m_l, 1, nindex20 
+111, ovlpb_history_p_r, 1, nindex20 
+112, ovlpb_history_m_l, 1, nindex20 
+113,    apbxxxx, 4,     mu     nu lambda  sigma 
+114,    ambxxxx, 4,     mu     nu lambda  sigma 
+115,      aoint, 4,     mu     nu lambda  sigma 
+116,     taip_r, 2,      a      i 
+117,     taim_l, 2,      a      i 
+118,     tbjp_r, 2,      b      j 
+119,     tbjm_l, 2,      b      j 
+120,     txap_t, 2,     mu      a 
+121,     txam_t, 2,     mu      a 
+122,       txap, 2,     mu      a 
+123,       txam, 2,     mu      a 
+124,     txxp_t, 2,     mu     nu 
+125,     txxm_t, 2,     mu     nu 
+126,       txxp, 2,     mu     nu 
+127,       txxm, 2,     mu     nu 
+128,     txbp_t, 2,     mu      b 
+129,     txbm_t, 2,     mu      b 
+130,       txbp, 2,     mu      b 
+131,       txbm, 2,     mu      b 
+132,      txxxx, 4,     mu     nu lambda  sigma 
+133,    tp1xxxx, 4,     mu     nu lambda  sigma 
+134,    tp2xxxx, 4,     mu     nu lambda  sigma 
+135,     tpxxxx, 4,     mu     nu lambda  sigma 
+136,     tmxxxx, 4,     mu     nu lambda  sigma 
+137,      taxxp, 2,     mu     nu 
+138,      taxxm, 2,     mu     nu 
+139,      tbxxp, 2,     mu     nu 
+140,      tbxxm, 2,     mu     nu 
+141,  tapxx_int, 2, lambda  sigma 
+142,  tbpxx_int, 2, lambda  sigma 
+143,  tamxx_int, 2, lambda  sigma 
+144,  tbmxx_int, 2, lambda  sigma 
+145,      tapxx, 2, lambda  sigma 
+146,      tamxx, 2, lambda  sigma 
+147,      tbpxx, 2, lambda  sigma 
+148,      tbmxx, 2, lambda  sigma 
+149,     txip_t, 2,     nu      i 
+150,     txim_t, 2,     nu      i 
+151,     txjp_t, 2,     nu      j 
+152,     txjm_t, 2,     nu      j 
+153,       txip, 2,     nu      i 
+154,       txim, 2,     nu      i 
+155,       txjp, 2,     nu      j 
+156,       txjm, 2,     nu      j 
+157,     taip_t, 2,      a      i 
+158,     taim_t, 2,      a      i 
+159,     tbjp_t, 2,      b      j 
+160,     tbjm_t, 2,      b      j 
+161,      tap_r, 2,      a      i 
+162,      tam_l, 2,      a      i 
+163,      tbp_r, 2,      b      j 
+164,      tbm_l, 2,      b      j 
+165,        tai, 2,      a      i 
+166,        tbj, 2,      b      j 
+167,       t1ai, 2,      a      i 
+168,       t1bj, 2,      b      j 
+169,     t1ap_r, 2,      a      i 
+170,     t1am_l, 2,      a      i 
+171,     t1bp_r, 2,      b      j 
+172,     t1bm_l, 2,      b      j 
+173,    t1aip_r, 2,      a      i 
+174,    t1aim_l, 2,      a      i 
+175,    t1bjp_r, 2,      b      j 
+176,    t1bjm_l, 2,      b      j 
+177,    t2aip_r, 2,      a      i 
+178,    t2aim_l, 2,      a      i 
+179,    t2bjp_r, 2,      b      j 
+180,    t2bjm_l, 2,      b      j 
+181, target_roots, 0.000000
+182, conv_tolerance, 0.000000
+183,    omega_p, 0.000000
+184,    omega_m, 0.000000
+185,       stwo, 0.000000
+186,       half, 0.000000
+187, inv_sqr_two, 0.000000
+188,     rcount, 0.000000
+189,     mcount, 0.000000
+190,     ncount, 0.000000
+191,     kcount, 0.000000
+192, count_no_roots, 0.000000
+193, iter_count, 0.000000
+194,  subsp_dim, 0.000000
+195,        tmp, 0.000000
+196,       sump, 0.000000
+197,       summ, 0.000000
+198, ovlpa_p_max_r, 0.000000
+199, ovlpa_m_max_l, 0.000000
+200, ovlpb_p_max_r, 0.000000
+201, ovlpb_m_max_l, 0.000000
+202, ovlpa_p_r_intmd, 0.000000
+203, ovlpa_m_l_intmd, 0.000000
+204, ovlpb_p_r_intmd, 0.000000
+205, ovlpb_m_l_intmd, 0.000000
+206,  ovlpa_p_r, 0.000000
+207,  ovlpa_m_l, 0.000000
+208,  ovlpb_p_r, 0.000000
+209,  ovlpb_m_l, 0.000000
+210, evecs_a_p_r, 0.000000
+211, evecs_a_m_l, 0.000000
+212, evecs_b_p_r, 0.000000
+213, evecs_b_m_l, 0.000000
+214, norm_intmd_p_r, 0.000000
+215, norm_intmd_m_l, 0.000000
+216,  norma_p_r, 0.000000
+217,  norma_m_l, 0.000000
+218,  normb_p_r, 0.000000
+219,  normb_m_l, 0.000000
+220, norma_intmd_p_r_new, 0.000000
+221, norma_intmd_m_l_new, 0.000000
+222, norma_p_r_new, 0.000000
+223, norma_m_l_new, 0.000000
+224, normb_intmd_p_r_new, 0.000000
+225, normb_intmd_m_l_new, 0.000000
+226, normb_p_r_new, 0.000000
+227, normb_m_l_new, 0.000000
+228,   rlp_norm, 0.000000
+229,   rlm_norm, 0.000000
+230,       rank, 0.000000
+231,       temp, 2.000000
+232,       temp, 0.500000
+233,       temp, 1.000000
+234,       temp, 0.000000
+235,       temp, -1.000000
+Writing tables to rpa/rpa_uhf.sio
 
-SIO (Super Instruction Object) file is saved to "scf/scf_uhf_ainit_aguess.sio".
+SIO (Super Instruction Object) file is saved to "rpa/rpa_uhf.sio".

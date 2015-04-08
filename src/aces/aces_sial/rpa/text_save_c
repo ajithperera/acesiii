@@ -1,4 +1,4 @@
-     PROC SAVE_HC_VECTORS
+     PROC SAVE_C_VECTORS
 #    --------------------
 
      MCOUNT = 0.0
@@ -49,7 +49,7 @@
 
      execute sip_barrier
 
-    ENDPROC SAVE_HC_VECTORS
+    ENDPROC SAVE_C_VECTORS
 #   -----------------------
 
 

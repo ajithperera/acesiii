@@ -1,4 +1,4 @@
-                          SIAL DIRECT_RPA_UHF
+                          SIAL DIRECT_RPA_UHF  
 #                         -------------------
 
 # Template definitions of simple and block indices.
@@ -10,7 +10,7 @@
       index kindex20          = 1, 20
       index MAXIMUM_SUBSP_DIM = 1, 20
       index MAX_NO_ROOTS      = 1, 10
-#
+
       aoindex mu     = 1, norb
       aoindex nu     = 1, norb
       aoindex lambda = 1, norb
@@ -48,6 +48,7 @@
 
 # Destributed arrays
 
+
       DISTRIBUTED R1A_MO_P_START_R(A,I,MAX_NO_ROOTS)
       DISTRIBUTED R1A_MO_M_START_L(A,I,MAX_NO_ROOTS)
       DISTRIBUTED R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
@@ -73,9 +74,9 @@
       DISTRIBUTED R1B_MO_P_HIST_R(B,J,MINDEX20)
       DISTRIBUTED R1B_MO_M_HIST_L(B,J,MINDEX20)
       DISTRIBUTED HR1A_MO_P_HIST_R(A,I,MINDEX20)
-      DISTRIBUTED HR1A_MO_M_HIST_R(A,I,MINDEX20)
+      DISTRIBUTED HR1A_MO_M_HIST_L(A,I,MINDEX20)
       DISTRIBUTED HR1B_MO_P_HIST_R(B,J,MINDEX20)
-      DISTRIBUTED HR1B_MO_M_HIST_R(B,J,MINDEX20)
+      DISTRIBUTED HR1B_MO_M_HIST_L(B,J,MINDEX20)
       DISTRIBUTED R1A_MO_P_NEW_R(A,I,NINDEX20)
       DISTRIBUTED R1A_MO_M_NEW_L(A,I,NINDEX20)
       DISTRIBUTED R1B_MO_P_NEW_R(B,J,NINDEX20)
@@ -100,22 +101,34 @@
       DISTRIBUTED CORR_VECA_INTMD_M_L(A,I)
       DISTRIBUTED CORR_VECB_INTMD_P_R(B,J)
       DISTRIBUTED CORR_VECB_INTMD_M_L(B,J)
+      DISTRIBUTED ORTHO_COEFSA_P_RL(MINDEX20,NINDEX20)
+      DISTRIBUTED ORTHO_COEFSA_M_RL(MINDEX20,NINDEX20)
+      DISTRIBUTED ORTHO_COEFSB_P_RL(MINDEX20,NINDEX20)
+      DISTRIBUTED ORTHO_COEFSB_M_RL(MINDEX20,NINDEX20)
+      DISTRIBUTED H_A_DIAGONAL(A,I)
+      DISTRIBUTED H_B_DIAGONAL(B,J)
 
 # Local and static arrays 
 
-      LOCAL GUESS_A(A,I,MAX_NO_ROOTS)
-      LOCAL GUESS_B(B,J,MAX_NO_ROOTS)
+      STATIC GUESS_A(A,I,MAX_NO_ROOTS)
+      STATIC GUESS_B(B,J,MAX_NO_ROOTS)
 
       STATIC A_A_MATRIX_P(NINDEX20,MINDEX20)
       STATIC A_A_MATRIX_M(NINDEX20,MINDEX20)
       STATIC B_A_MATRIX_P(NINDEX20,MINDEX20)
       STATIC B_A_MATRIX_M(NINDEX20,MINDEX20)
       STATIC TMNP_R(NINDEX20,MINDEX20)
-      STATIC TMNM_L(NINDEX20,MNDEX20)
+      STATIC TMNM_L(NINDEX20,MINDEX20)
       STATIC EIG_VECS_A_P_R(NINDEX20,MINDEX20)
       STATIC EIG_VECS_A_M_R(NINDEX20,MINDEX20)
       STATIC EIG_VECS_B_P_R(NINDEX20,MINDEX20)
       STATIC EIG_VECS_B_M_R(NINDEX20,MINDEX20)
+      STATIC TNORM_P_R(NINDEX20,MINDEX20)
+      STATIC TNORM_M_L(NINDEX20,MINDEX20)
+      STATIC OVLPA_HISTORY_P_R(NINDEX20)
+      STATIC OVLPA_HISTORY_M_L(NINDEX20)
+      STATIC OVLPB_HISTORY_P_R(NINDEX20)
+      STATIC OVLPB_HISTORY_M_L(NINDEX20)
      
 # Served arrays
 
@@ -129,18 +142,21 @@
       TEMP TAIM_L(A,I)
       TEMP TBJP_R(B,J)
       TEMP TBJM_L(B,J) 
-      TEMP TXAP_T(MU,A)
-      TEMP TXAM_T(MU,A)
+#      TEMP TXAP_T(MU,A)
+#      TEMP TXAM_T(MU,A)
       TEMP TXAP(MU,A)
       TEMP TXAM(MU,A)
+      
       TEMP TXXP_T(MU,NU)
       TEMP TXXM_T(MU,NU)
       TEMP TXXP(MU,NU) 
       TEMP TXXM(MU,NU) 
-      TEMP TXBP_T(MU,B)
-      TEMP TXBM_T(MU,B)
+
+#      TEMP TXBP_T(MU,B)
+#      TEMP TXBM_T(MU,B)
       TEMP TXBP(MU,B)
       TEMP TXBM(MU,B)
+
       TEMP TXXXX(MU,NU,LAMBDA,SIGMA)
       TEMP TP1XXXX(MU,NU,LAMBDA,SIGMA)
       TEMP TP2XXXX(MU,NU,LAMBDA,SIGMA)
@@ -170,13 +186,25 @@
       TEMP TAIM_T(A,I)
       TEMP TBJP_T(B,J)
       TEMP TBJM_T(B,J)
+      TEMP TAP_R_T(A,I)
       TEMP TAP_R(A,I)
+      TEMP TAM_L_T(A,I)
       TEMP TAM_L(A,I)
-      TEMP T1AP_R(A,I)
-      TEMP T1AM_L(A,I)
+      TEMP TBP_R_T(B,J)
       TEMP TBP_R(B,J)
+      TEMP TBM_L_T(B,J)
       TEMP TBM_L(B,J)
+      TEMP TAI(A,I)
+      TEMP TBJ(B,J)
+      TEMP T1AI(A,I)
+      TEMP T1BJ(B,J)
+      TEMP T1AP_R_T(A,I)
+      TEMP T1AP_R(A,I)
+      TEMP T1AM_L_T(A,I)
+      TEMP T1AM_L(A,I)
+      TEMP T1BP_R_T(B,J)
       TEMP T1BP_R(B,J)
+      TEMP T1BM_L_T(B,J)
       TEMP T1BM_L(B,J)
       TEMP T1AIP_R(A,I)
       TEMP T1AIM_L(A,I)
@@ -187,10 +215,14 @@
       TEMP T2BJP_R(B,J)
       TEMP T2BJM_L(B,J)
 
+ 
+
 # Scalars 
 
+      SCALAR TARGET_ROOTS
+      SCALAR CONV_TOLERANCE
       SCALAR OMEGA_P
-      SCALAR OMEGA_L
+      SCALAR OMEGA_M
       SCALAR STWO
       SCALAR HALF 
       SCALAR INV_SQR_TWO
@@ -212,11 +244,15 @@
       SCALAR OVLPA_P_R_INTMD
       SCALAR OVLPA_M_L_INTMD
       SCALAR OVLPB_P_R_INTMD
-      SCALAR OVLPN_M_L_INTMD
+      SCALAR OVLPB_M_L_INTMD
       SCALAR OVLPA_P_R
       SCALAR OVLPA_M_L
       SCALAR OVLPB_P_R
-      SCALAR OVLPN_M_L
+      SCALAR OVLPB_M_L
+      SCALAR EVECS_A_P_R
+      SCALAR EVECS_A_M_L
+      SCALAR EVECS_B_P_R
+      SCALAR EVECS_B_M_L
 
 #      SCALAR OVLPA_P_MAX_R
 #      SCALAR OVLPA_M_MAX_L
@@ -224,6 +260,8 @@
       SCALAR NORM_INTMD_M_L  
       SCALAR NORMA_P_R
       SCALAR NORMA_M_L
+      SCALAR NORMB_P_R
+      SCALAR NORMB_M_L
       SCALAR NORMA_INTMD_P_R_NEW
       SCALAR NORMA_INTMD_M_L_NEW
       SCALAR NORMA_P_R_NEW
@@ -232,6 +270,11 @@
       SCALAR NORMB_INTMD_M_L_NEW
       SCALAR NORMB_P_R_NEW
       SCALAR NORMB_M_L_NEW
+      SCALAR RLP_NORM
+      SCALAR RLM_NORM
+      SCALAR RANK
+      SCALAR SUMA
+      SCALAR SUMB
 
       PROC FORM_INTIAL_GUESS
 #     ----------------------
@@ -244,15 +287,29 @@
 
       RCOUNT = 0.0
 
+      PARDO A, I
+            DO MAX_NO_ROOTS
+               GUESS_A(A,I,MAX_NO_ROOTS) = 0.0
+            ENDDO MAX_NO_ROOTS 
+      ENDPARDO A, I
+
+      PARDO B, J
+            DO MAX_NO_ROOTS
+               GUESS_B(B,J,MAX_NO_ROOTS) = 0.0
+            ENDDO MAX_NO_ROOTS 
+      ENDPARDO B, J
+
+      execute sip_barrier 
+
       PARDO A, I 
 
-            ALLOCATE GUESS_A(A,I,*)
-            EXECUTE PLACE_CONSTANT GUESS_A INV_SQR_TWO
 
             DO MAX_NO_ROOTS
                RCOUNT += 1.0
 
                IF RCOUNT == COUNT_NO_ROOTS
+
+                  EXECUTE PLACE_CONSTANTA GUESS_A INV_SQR_TWO
 
                   TAIP_R(A,I) = GUESS_A(A,I,MAX_NO_ROOTS)
                   TAIM_L(A,I) = GUESS_A(A,I,MAX_NO_ROOTS)
@@ -270,13 +327,13 @@
 
       PARDO B, J
 
-            ALLOCATE GUESS_B(B,J,*)
-            EXECUTE PLACE_CONSTANT GUESS_B INV_SQR_TWO
 
             DO MAX_NO_ROOTS
                RCOUNT += 1.0
 
                IF RCOUNT == COUNT_NO_ROOTS
+
+                  EXECUTE PLACE_CONSTANTB GUESS_B INV_SQR_TWO
 
                   TBJP_R(B,J) = GUESS_B(B,J,MAX_NO_ROOTS)
                   TBJM_L(B,J) = GUESS_B(B,J,MAX_NO_ROOTS)
@@ -291,6 +348,34 @@
       ENDPARDO B, J
 
       execute sip_barrier 
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     suma = 0.0
+     sumb = 0.0
+     do a 
+     do i 
+     do MAX_NO_ROOTS
+        get R1A_MO_P_START_R(A,I,MAX_NO_ROOTS)
+        tmp = R1A_MO_P_START_R(A,I,MAX_NO_ROOTS) * R1A_MO_P_START_R(A,I,MAX_NO_ROOTS)
+        suma += tmp
+     enddo MAX_NO_ROOTS
+     enddo i 
+     enddo a 
+     do b
+     do j
+     do MAX_NO_ROOTS
+        get R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
+        tmp = R1B_MO_P_START_R(B,J,MAX_NO_ROOTS) * R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)   
+        sumb += tmp
+     enddo MAX_NO_ROOTS
+     enddo j 
+     enddo b 
+     execute print_scalar  suma 
+     execute print_scalar  sumb
+     endif 
+#end_debug
 
       ENDPROC FORM_INTIAL_GUESS
 #     -------------------------
@@ -403,12 +488,72 @@
      ENDPROC MOVE_HISTORY_2CURRENT
 #    -----------------------------
 
+     PROC SAVE_C_VECTORS
+#    --------------------
+
+     MCOUNT = 0.0
+     PARDO A, I
+
+           GET R1A_MO_P_CURRENT_R(A,I)
+           GET R1A_MO_M_CURRENT_L(A,I)
+
+           TAIP_R(A,I) = R1A_MO_P_CURRENT_R(A,I)
+           TAIM_L(A,I) = R1A_MO_M_CURRENT_L(A,I)
+
+           DO MINDEX20
+              MCOUNT  += 1.0
+
+              IF MCOUNT == ITER_COUNT
+
+                 PUT R1A_MO_P_HIST_R(A,I,MINDEX20) = TAIP_R(A,I)
+                 PUT R1A_MO_M_HIST_L(A,I,MINDEX20) = TAIM_L(A,I)
+
+              ENDIF
+
+            ENDDO MINDEX20
+
+     ENDPARDO A, I
+
+     MCOUNT = 0.0
+     PARDO B, J
+
+           GET R1B_MO_P_CURRENT_R(B,J)
+           GET R1B_MO_M_CURRENT_L(B,J)
+
+           TBJP_R(B,J) = R1B_MO_P_CURRENT_R(B,J)
+           TBJM_L(B,J) = R1B_MO_M_CURRENT_L(B,J)
+
+           DO MINDEX20
+              MCOUNT  += 1.0
+
+              IF MCOUNT == ITER_COUNT
+
+                 PUT R1B_MO_P_HIST_R(B,J,MINDEX20) = TBJP_R(B,J)
+                 PUT R1B_MO_M_HIST_L(B,J,MINDEX20) = TBJM_L(B,J)
+ 
+              ENDIF
+
+           ENDDO MINDEX20
+
+     ENDPARDO B, J
+
+     execute sip_barrier
+
+    ENDPROC SAVE_C_VECTORS
+#   -----------------------
+
      PROC FORM_AO_R1AB_OLD
 #    ---------------------
 
       PARDO MU, NU
 
+        TXXP(MU,NU) = 0.0
+        TXXM(MU,NU) = 0.0
+
         DO I
+
+           TXIP(MU,I) = 0.0
+           TXIM(MU,I) = 0.0
 
            DO A
 
@@ -418,16 +563,16 @@
               TAIP_R(A,I) = R1A_MO_P_CURRENT_R(A,I)
               TAIM_L(A,I) = R1A_MO_M_CURRENT_L(A,I)
 
-              TXAP_T(MU,A) = TAIP_R(A,I) * CA(MU,I)
-              TXAM_T(MU,A) = TAIM_L(A,I) * CA(MU,I)
+              TXIP_T(MU,I) = TAIP_R(A,I) * CA(MU,A)
+              TXIM_T(MU,I) = TAIM_L(A,I) * CA(MU,A)
 
-              TXAP(MU,A)  += TXAP_T(MU,A)
-              TXAM(MU,A)  += TXAM_T(MU,A)
+              TXIP(MU,I)  += TXIP_T(MU,I)
+              TXIM(MU,I)  += TXIM_T(MU,I)
 
            ENDDO A
 
-           TXXP_T(MU,NU) = TXAP(MU,A) * CA(NU,A)
-           TXXM_T(MU,NU) = TXAM(MU,A) * CA(NU,A)
+           TXXP_T(MU,NU) = TXIP(MU,I) * CA(NU,I)
+           TXXM_T(MU,NU) = TXIM(MU,I) * CA(NU,I)
 
            TXXP(MU,NU)  += TXXP_T(MU,NU)
            TXXM(MU,NU)  += TXXM_T(MU,NU)
@@ -440,8 +585,14 @@
       ENDPARDO MU, NU
 
       PARDO MU, NU
+ 
+       TXXP(MU,NU) = 0.0
+       TXXM(MU,NU) = 0.0
 
         DO J
+
+           TXJP(MU,J) = 0.0
+           TXJM(MU,J) = 0.0
 
            DO B
 
@@ -451,16 +602,16 @@
               TBJP_R(B,J) = R1B_MO_P_CURRENT_R(B,J)
               TBJM_L(B,J) = R1B_MO_M_CURRENT_L(B,J)
 
-              TXBP_T(MU,B) = TBJP_R(B,J) * CB(MU,J)
-              TXBM_T(MU,B) = TBJM_L(B,J) * CB(MU,J)
+              TXJP_T(MU,J) = TBJP_R(B,J) * CB(MU,B)
+              TXJM_T(MU,J) = TBJM_L(B,J) * CB(MU,B)
 
-              TXBP(MU,B)  += TXBP_T(MU,B)
-              TXBM(MU,B)  += TXBM_T(MU,B)
+              TXJP(MU,J)  += TXJP_T(MU,J)
+              TXJM(MU,J)  += TXJM_T(MU,J)
 
            ENDDO B
 
-           TXXP_T(MU,NU) = TXBP(MU,B) * CB(NU,B)
-           TXXM_T(MU,NU) = TXBM(MU,B) * CB(NU,B)
+           TXXP_T(MU,NU) = TXJP(MU,J) * CB(NU,J)
+           TXXM_T(MU,NU) = TXjM(MU,J) * CB(NU,J)
 
            TXXP(MU,NU)  += TXXP_T(MU,NU)
            TXXM(MU,NU)  += TXXM_T(MU,NU)
@@ -480,6 +631,17 @@
     PROC FORM_AO_APLUSB_AMINUSB
 #   ---------------------------
 
+     PARDO MU, NU, LAMBDA, SIGMA
+
+           TXXXX(MU,NU,LAMBDA,SIGMA) = 0.0
+
+           PREPARE APBXXXX(MU,NU,LAMBDA,SIGMA) = TXXXX(MU,NU,LAMBDA,SIGMA)
+           PREPARE AMBXXXX(MU,NU,LAMBDA,SIGMA) = TXXXX(MU,NU,LAMBDA,SIGMA)
+
+     ENDPARDO MU, NU, LAMBDA, SIGMA
+
+     EXECUTE SERVER_BARRIER
+
      PARDO MU, NU, LAMBDA
 
            DO SIGMA
@@ -487,23 +649,23 @@
               COMPUTE_INTEGRALS AOINT(MU,NU,LAMBDA,SIGMA)
 
               TXXXX(MU,NU,LAMBDA,SIGMA) = AOINT(MU,NU,LAMBDA,SIGMA)
-              TXXXX(MU,NU,LAMBDA,SIGMA) *= 2.0
 
               TP1XXXX(MU,SIGMA,LAMBDA,NU) = TXXXX(MU,NU,LAMBDA,SIGMA)
               TP2XXXX(MU,LAMBDA,SIGMA,NU) = TP1XXXX(MU,SIGMA,LAMBDA,NU)
 
-              TP1XXXX(MU,NU,SIGMA,LAMBDA) -= TP2XXXX(MU,SIGMA,LAMBDA,NU)
-              TPXXXX(MU,NU,LAMBDA,SIGMA)  += TP1XXXX(MU,NU,SIGMA,LAMBDA)
+              TP1XXXX(MU,SIGMA,LAMBDA,NU) *= -1.0
 
-              PREPARE APBXXXX(MU,NU,LAMBDA,SIGMA) =  TXXXX(MU,NU,LAMBDA,SIGMA)
+              PREPARE AMBXXXX(MU,NU,LAMBDA,SIGMA) += TP1XXXX(MU,LAMBDA,SIGMA,NU)
+              PREPARE AMBXXXX(MU,LAMBDA,SIGMA,NU) += TP2XXXX(MU,LAMBDA,SIGMA,NU)
 
-              TMXXXX(MU,LAMBDA,SIGMA,NU)  = TP2XXXX(MU,LAMBDA,SIGMA,NU)
-              TMXXXX(MU,LAMBDA,SIGMA,NU) -= TP1XXXX(MU,SIGMA,LAMBDA,NU)
+              TP2XXXX(MU,LAMBDA,SIGMA,NU) *= -1.0
+              TXXXX(MU,NU,LAMBDA,SIGMA)   *=  2.0
 
-              PREPARE AMBXXXX(MU,NU,LAMBDA,SIGMA) =  TMXXXX(MU,NU,LAMBDA,SIGMA)
+              PREPARE APBXXXX(MU,NU,LAMBDA,SIGMA) += TXXXX(MU,NU,LAMBDA,SIGMA)
+              PREPARE APBXXXX(MU,SIGMA,LAMBDA,NU) += TP1XXXX(MU,SIGMA,LAMBDA,NU)
+              PREPARE APBXXXX(MU,LAMBDA,SIGMA,NU) += TP1XXXX(MU,LAMBDA,SIGMA,NU)
 
            ENDDO SIGMA
-
 
      ENDPARDO MU, NU, LAMBDA
 
@@ -515,7 +677,7 @@
      PROC HC_MULTIPLY
 #    ----------------
 
-     PARDO MU, NU, LAMBDA 
+     PARDO MU, NU, LAMBDA, SIGMA
 
            GET R1A_AO_P_CURRENT_R(MU,NU) 
            GET R1A_AO_M_CURRENT_L(MU,NU)
@@ -523,9 +685,9 @@
            GET R1B_AO_M_CURRENT_L(MU,NU) 
 
            TAXXP(MU,NU) = R1A_AO_P_CURRENT_R(MU,NU)
-           TAXXM(MU,NU) = R1A_AO_M_CURRENT_M(MU,NU)
+           TAXXM(MU,NU) = R1A_AO_M_CURRENT_L(MU,NU)
            TBXXP(MU,NU) = R1B_AO_P_CURRENT_R(MU,NU)
-           TBXXM(MU,NU) = R1B_AO_M_CURRENT_M(MU,NU)
+           TBXXM(MU,NU) = R1B_AO_M_CURRENT_L(MU,NU)
 
            REQUEST APBXXXX(MU,NU,LAMBDA,SIGMA) SIGMA 
            REQUEST AMBXXXX(MU,NU,LAMBDA,SIGMA) SIGMA 
@@ -545,12 +707,12 @@
            TBMXX_INT(LAMBDA,SIGMA)  = TBXXM(MU,NU) * TMXXXX(MU,NU,LAMBDA,SIGMA)
            TBMXX(LAMBDA,SIGMA)     += TBMXX_INT(LAMBDA,SIGMA)
 
-           PUT HR1A_AO_P_CURRENT_R(MU,NU) = TAPXX(LAMBDA,SIGMA) 
-           PUT HR1A_AO_M_CURRENT_L(MU,NU) = TAMXX(LAMBDA,SIGMA)
-           PUT HR1B_AO_P_CURRENT_R(MU,NU) = TBPXX(LAMBDA,SIGMA)
-           PUT HR1B_AO_M_CURRENT_L(MU,NU) = TBMXX(LAMBDA,SIGMA)
+           PUT HR1A_AO_P_CURRENT_R(LAMBDA,SIGMA) = TAPXX(LAMBDA,SIGMA) 
+           PUT HR1A_AO_M_CURRENT_L(LAMBDA,SIGMA) = TAMXX(LAMBDA,SIGMA)
+           PUT HR1B_AO_P_CURRENT_R(LAMBDA,SIGMA) = TBPXX(LAMBDA,SIGMA)
+           PUT HR1B_AO_M_CURRENT_L(LAMBDA,SIGMA) = TBMXX(LAMBDA,SIGMA)
 
-     ENDPARDO MU, NU, LAMBDA 
+     ENDPARDO MU, NU, LAMBDA, SIGMA
          
      ENDPROC HC_MULTIPLY
 #    -------------------
@@ -560,9 +722,6 @@
 
      PARDO MU, NU
 
-            TAIP_R(A,I) = 0.0
-            TAIM_L(A,I) = 0.0
-
             GET HR1A_AO_P_CURRENT_R(NU,MU)
             GET HR1A_AO_M_CURRENT_L(NU,MU)
 
@@ -570,33 +729,25 @@
             TXXM(NU,MU) = HR1A_AO_M_CURRENT_L(NU,MU)
 
             DO A
+
+               TXAP(NU,A) = TXXP(NU,MU) * CA(MU,A)
+               TXAM(NU,A) = TXXP(NU,MU) * CA(MU,A)
+                
                DO I
 
-                  TXIP_T(NU,I) = TXXP(NU,MU) * CA(MU,I)
-                  TXIM_T(NU,I) = TXXP(NU,MU) * CA(MU,I)
+                  TAIP_R(A,I) = TXAP(NU,A) * CA(NU,I)
+                  TAIM_L(A,I) = TXAM(NU,A) * CA(NU,I)
 
-	          TXIP(NU,I)  += TXIP_T(NU,I)
-                  TXIM(NU,I)  += TXIM_T(NU,I)
+                  PUT HR1A_MO_P_CURRENT_R(A,I) += TAIP_R(A,I)
+                  PUT HR1A_MO_M_CURRENT_L(A,I) += TAIM_L(A,I)
 
                ENDDO I
 
-               TAIP_T(A,I) = TXIP(NU,I) * CA(NU,A)
-               TAIM_T(A,I) = TXIM(NU,I) * CA(NU,A)
-
-               TAIP_R(A,I)  += TAIP_T(A,I)
-               TAIM_L(A,I)  += TAIM_T(A,I)
-
             ENDDO A
-
-        PUT HR1A_MO_P_CURRENT_R(A,I) = TAIP_R(A,I)
-        PUT HR1A_MO_M_CURRENT_L(A,I) = TAIM_L(A,I)
 
      ENDPARDO MU, NU
 
      PARDO MU, NU
-
-            TBJP_R(B,J) = 0.0
-            TBJM_L(B,J) = 0.0
 
             GET R1B_AO_P_CURRENT_R(NU,MU)
             GET R1B_AO_M_CURRENT_L(NU,MU)
@@ -605,26 +756,21 @@
             TXXM(NU,MU) = R1B_AO_M_CURRENT_L(NU,MU)
 
             DO B
+
+               TXBP(NU,B) = TXXP(NU,MU) * CB(MU,B)
+               TXBM(NU,B) = TXXP(NU,MU) * CB(MU,B)
+
                DO J
 
-                  TXJP_T(NU,J) = TXXP(NU,MU) * CB(MU,J)
-                  TXJM_T(NU,J) = TXXP(NU,MU) * CB(MU,J)
+                  TBJP_R(B,J) = TXBP(NU,B) * CB(NU,J)
+                  TBJM_L(B,J) = TXBM(NU,B) * CB(NU,J)
 
-                  TXJP(NU,J)  += TXJP_T(NU,J)
-                  TXJM(NU,J)  += TXJM_T(NU,J)
+                  PUT HR1B_MO_P_CURRENT_R(B,J) += TBJP_R(B,J)
+                  PUT HR1B_MO_M_CURRENT_L(B,J) += TBJM_L(B,J)
 
                ENDDO J
 
-               TBJP_T(B,J) = TXJP(NU,J) * CB(NU,B)
-               TBJM_T(B,J) = TXJM(NU,J) * CB(NU,B)
-
-               TBJP_R(B,J)  += TBJP_T(B,J)
-               TBJM_L(B,J)  += TBJM_T(B,J)
-
             ENDDO B
-
-        PUT HR1B_MO_P_CURRENT_R(B,J) =  TBJP_R(B,J)
-        PUT HR1B_MO_M_CURRENT_L(B,J) =  TBJM_L(B,J)
 
      ENDPARDO MU, NU
 
@@ -639,8 +785,8 @@
      CALL FORM_AO_R1AB_OLD
      execute sip_barrier 
 
-     CALL FORM_AO_APLUSB_AMINUSB
-     execute server_barrier 
+#     CALL FORM_AO_APLUSB_AMINUSB
+#     execute server_barrier 
      
      CALL HC_MULTIPLY
      execute server_barrier 
@@ -1079,6 +1225,9 @@
 
                          TMNP_R(MINDEX20,NINDEX20) = EIG_VECS_A_P_R(MINDEX20,NINDEX20)   
                          TMNM_L(MINDEX20,NINDEX20) = EIG_VECS_A_M_R(MINDEX20,NINDEX20)
+                         EXECUTE RETURN_SVAL TMNP_R EVECS_A_P_R 
+                         EXECUTE RETURN_SVAL TMNM_L EVECS_A_M_L
+                         
                          DO KINDEX20 
                             KCOUNT += 1.0
                         
@@ -1090,11 +1239,14 @@
                                TAP_R(A,I) = R1A_MO_P_HIST_R(A,I,KINDEX20)
                                TAM_L(A,I) = R1A_MO_M_HIST_L(A,I,KINDEX20)
 
-                               TAP_R(A,I) *= TMNP_R(MINDEX20,NINDEX20)
-                               TAM_L(A,I) *= TMNM_R(MINDEX20,NINDEX20)
+                               TAP_R_T(A,I) *= EVECS_A_P_R
+                               TAM_L_T(A,I) *= EVECS_A_M_L
+  
+                               TAP_R(A,I)   += TAP_R_T(A,I)
+                               TAM_L(A,I)   += TAM_L_T(A,I)
 
-                               PUT R1A_MO_P_NEW_R(A,I,NINDEX20) += TAP_R(A,I)
-                               PUT R1A_MO_M_NEW_L(A,I,NINDEX20) += TAM_L(A,I)
+                               PUT R1A_MO_P_NEW_R(A,I,NINDEX20) = TAP_R(A,I)
+                               PUT R1A_MO_M_NEW_L(A,I,NINDEX20) = TAM_L(A,I)
 
                                GET HR1A_MO_P_HIST_R(A,I,KINDEX20)
                                GET HR1A_MO_M_HIST_L(A,I,KINDEX20)
@@ -1102,11 +1254,14 @@
                                T1AP_R(A,I) = HR1A_MO_P_HIST_R(A,I,KINDEX20)
                                T1AM_L(A,I) = HR1A_MO_M_HIST_L(A,I,KINDEX20)
 
-                               T1AP_R(A,I) *= TMNP_R(MINDEX20,NINDEX20)
-                               T1AM_L(A,I) *= TMNM_R(MINDEX20,NINDEX20)
+                               T1AP_R_T(A,I) *= EVECS_A_P_R
+                               T1AM_L_T(A,I) *= EVECS_A_M_L
+ 
+                               TAP_R(A,I)    += T1AP_R_T(A,I)
+                               TAM_L(A,I)    += T1AM_L_T(A,I)
 
-                               PUT HR1A_MO_P_NEW_R(A,I,NINDEX20) += TAP_R(A,I)
-                               PUT HR1A_MO_M_NEW_L(A,I,NINDEX20) += TAM_L(A,I)
+                               PUT HR1A_MO_P_NEW_R(A,I,NINDEX20) = TAP_R(A,I)
+                               PUT HR1A_MO_M_NEW_L(A,I,NINDEX20) = TAM_L(A,I)
 
                             ENDIF 
 
@@ -1139,6 +1294,8 @@
 
                          TMNP_R(MINDEX20,NINDEX20) = EIG_VECS_B_P_R(MINDEX20,NINDEX20)
                          TMNM_L(MINDEX20,NINDEX20) = EIG_VECS_B_M_R(MINDEX20,NINDEX20)
+                         EXECUTE RETURN_SVAL TMNP_R EVECS_B_P_R 
+                         EXECUTE RETURN_SVAL TMNM_L EVECS_B_M_L
 
                          DO KINDEX20 
                             KCOUNT += 1.0
@@ -1151,11 +1308,14 @@
                                TBP_R(B,J) = R1B_MO_P_HIST_R(B,J,KINDEX20)
                                TBM_L(B,J) = R1B_MO_M_HIST_L(B,J,KINDEX20)
 
-                               TBP_R(B,J) *= TMNP_R(MINDEX20,NINDEX20)
-                               TBM_L(B,J) *= TMNM_R(MINDEX20,NINDEX20)
+                               TBP_R_T(B,J) *= EVECS_B_P_R
+                               TBM_L_T(B,J) *= EVECS_B_M_L
+  
+                               TBP_R(B,J)   += TBP_R_T(B,J)
+                               TBM_L(B,J)   += TBM_L_T(B,J)
 
-                               PUT R1B_MO_P_NEW_R(B,J,NINDEX20) += TBP_R(B,J)
-                               PUT R1B_MO_M_NEW_L(B,J,NINDEX20) += TBM_L(B,J)
+                               PUT R1B_MO_P_NEW_R(B,J,NINDEX20) = TBP_R(B,J)
+                               PUT R1B_MO_M_NEW_L(B,J,NINDEX20) = TBM_L(B,J)
 
                                GET HR1B_MO_P_HIST_R(B,J,KINDEX20)
                                GET HR1B_MO_M_HIST_L(B,J,KINDEX20)
@@ -1163,11 +1323,14 @@
                                T1BP_R(B,J) = HR1B_MO_P_HIST_R(B,J,KINDEX20)
                                T1BM_L(B,J) = HR1B_MO_M_HIST_L(B,J,KINDEX20)
 
-                               T1BP_R(B,J) *= TMNP_R(MINDEX20,NINDEX20)
-                               T1BM_L(B,J) *= TMNM_R(MINDEX20,NINDEX20)
+                               T1BP_R_T(B,J) *= EVECS_B_P_R
+                               T1BM_L_T(B,J) *= EVECS_B_M_L
 
-                               PUT HR1B_MO_P_NEW_R(B,J,NINDEX20) += TBP_R(B,J)
-                               PUT HR1B_MO_M_NEW_L(B,J,NINDEX20) += TBM_L(B,J)
+                               TBP_R(B,J)  += T1BP_R_T(B,J)
+                               TBM_L(B,J)  += T1BM_L_T(B,J)
+
+                               PUT HR1B_MO_P_NEW_R(B,J,NINDEX20) = TBP_R(B,J)
+                               PUT HR1B_MO_M_NEW_L(B,J,NINDEX20) = TBM_L(B,J)
 
                             ENDIF 
 
@@ -1288,7 +1451,7 @@
                            DO MINDEX20
                               MCOUNT += 1.0
           
-                              IF MINDEX20 <= ITER_COUNT 
+                              IF MCOUNT <= ITER_COUNT 
 
                                  GET R1A_MO_P_NEW_R(A,I,MINDEX20)
                                  GET R1A_MO_M_NEW_L(A,I,MINDEX20)
@@ -1313,8 +1476,8 @@
 
                         ENDIF 
 
-                           OVLPA_P_R(NINDEX20) = OVLPA_P_R
-                           OVLPA_M_L(NINDEX20) = OVLPA_M_L
+                           OVLPA_HISTORY_P_R(NINDEX20) = OVLPA_P_R
+                           OVLPA_HISTORY_M_L(NINDEX20) = OVLPA_M_L
 
                      ENDDO NINDEX20
 
@@ -1352,7 +1515,7 @@
                               IF MCOUNT == NCOUNT 
 
                                  GET R1B_MO_P_NEW_R(B,J,MINDEX20)
-                                 GET R1B_MO_N_NEW_L(B,J,MINDEX20)
+                                 GET R1B_MO_M_NEW_L(B,J,MINDEX20)
 
                                  TBP_R(B,J) = R1B_MO_P_NEW_R(B,J,MINDEX20)
                                  TBM_L(B,J) = R1B_MO_M_NEW_L(B,J,MINDEX20)
@@ -1374,8 +1537,8 @@
 
                         ENDIF
 
-                           OVLPB_P_R(NINDEX20) = OVLPB_P_R
-                           OVLPB_M_L(NINDEX20) = OVLPB_M_L
+                           OVLPB_HISTORY_P_R(NINDEX20) = OVLPB_P_R
+                           OVLPB_HISTORY_M_L(NINDEX20) = OVLPB_M_L
 
                      ENDDO NINDEX20
 
@@ -1383,7 +1546,7 @@
 
               ENDDO MAX_NO_ROOTS
 
-        ENDPARDO A, I
+        ENDPARDO B, J
 
         execute sip_barrier 
 #
@@ -1397,11 +1560,10 @@
          OVLPB_P_MAX_R = 0.0
          OVLPB_M_MAX_L = 0.0
    
-         EXECUTE OVLPA_P_R OVLPA_P_MAX_R
-         EXECUTE OVLPA_M_L OVLPA_M_MAX_L
-         EXECUTE OVLPB_P_R OVLPB_P_MAX_R
-         EXECUTE OVLPB_M_L OVLPB_M_MAX_L
-
+         EXECUTE REPORT_MAXIMUM OVLPA_HISTORY_P_R OVLPA_P_MAX_R
+         EXECUTE REPORT_MAXIMUM OVLPA_HISTORY_M_L OVLPA_M_MAX_L
+         EXECUTE REPORT_MAXIMUM OVLPB_HISTORY_P_R OVLPB_P_MAX_R
+         EXECUTE REPORT_MAXIMUM OVLPB_HISTORY_M_L OVLPB_M_MAX_L
 #
 # Get vectors corresponding to the maximum overlap and put them
 # in the distributed arrrays labelled as _PICKED_ and return.
@@ -1499,11 +1661,11 @@
              TAIP_R(A,I) = R1A_MO_P_PICKED_R(A,I)
              TAIM_L(A,I) = R1A_MO_M_PICKED_L(A,I)
 
-             TAIP_R(A,I) += OMEGA_P
-             TAIM_L(A,I) += OMEGA_M
+             TAIP_R(A,I) *= OMEGA_P
+             TAIM_L(A,I) *= OMEGA_M
 
-             TAIP_R(A,I) += -1.0
-             TAIM_L(A,I) += -1.0
+             TAIP_R(A,I) *= -1.0
+             TAIM_L(A,I) *= -1.0
 
              T1AIP_R(A,I) = HR1A_MO_P_PICKED_R(A,I)
              T1AIM_L(A,I) = HR1A_MO_M_PICKED_L(A,I)
@@ -1527,11 +1689,11 @@
              TBJP_R(B,J) = R1B_MO_P_PICKED_R(B,J)
              TBJM_L(B,J) = R1B_MO_M_PICKED_L(B,J)
 
-             TBJP_R(B,J) += OMEGA_P
-             TBJM_L(B,J) += OMEGA_M
+             TBJP_R(B,J) *= OMEGA_P
+             TBJM_L(B,J) *= OMEGA_M
 
-             TBJP_R(B,J) += -1.0
-             TBJM_L(B,J) += -1.0
+             TBJP_R(B,J) *= -1.0
+             TBJM_L(B,J) *= -1.0
 
              T1BJP_R(B,J) = HR1B_MO_P_PICKED_R(B,J)
              T1BJM_L(B,J) = HR1B_MO_M_PICKED_L(B,J)
@@ -1556,8 +1718,8 @@
              GET RESIDUEA_P_VEC_R(A,I)
              GET RESIDUEA_M_VEC_L(A,I)
              
-             TAP_R(A,I) = RESIDUE_P_VEC_R(A,I)
-             TAM_L(A,I) = RESIDUE_M_VEC_L(A,I)
+             TAP_R(A,I) = RESIDUEA_P_VEC_R(A,I)
+             TAM_L(A,I) = RESIDUEA_M_VEC_L(A,I)
 
              TMP = TAP_R(A,I) * TAP_R(A,I)
              NORM_INTMD_P_R += TMP
@@ -1582,21 +1744,21 @@
              GET RESIDUEB_P_VEC_R(B,J)
              GET RESIDUEB_M_VEC_L(B,J)
 
-             TBP_R(B,J) = RESIDUEB_P_VEC_R(A,I)
+             TBP_R(B,J) = RESIDUEB_P_VEC_R(B,J)
              TBM_L(B,J) = RESIDUEB_M_VEC_L(B,J)
 
              TMP = TBP_R(B,J) * TBP_R(B,J)
              NORM_INTMD_P_R += TMP
 
-             TMP = TBM_L(B,J) * TBN_L(B,J)
+             TMP = TBM_L(B,J) * TBM_L(B,J)
              NORM_INTMD_M_L += TMP
 
-       ENDPARDO A, I
+       ENDPARDO B, J
 
        execute sip_barrier
 
-       COLLECTIVE NORMB_P_R =+ NORM_INTMD_P_R
-       COLLECTIVE NORMB_M_L =+ NORM_INTMD_M_L
+       COLLECTIVE NORMB_P_R += NORM_INTMD_P_R
+       COLLECTIVE NORMB_M_L += NORM_INTMD_M_L
 
       ENDPROC FORM_RESIDUAL_VECTOR
 #     ----------------------------
@@ -1609,7 +1771,7 @@
              GET RESIDUEA_P_VEC_R(A,I)
              GET RESIDUEA_M_VEC_L(A,I)
 
-             GET H_DIAGONAL(A,I)
+             GET H_A_DIAGONAL(A,I)
 
              TAIP_R(A,I) = RESIDUEA_P_VEC_R(A,I)
              TAIM_L(A,I) = RESIDUEA_M_VEC_L(A,I)
@@ -1617,16 +1779,17 @@
              TAIP_R(A,I) *= OMEGA_P
              TAIM_L(A,I) *= OMEGA_M
 
-             T1AI(A,I)   =  H_DIAGONAL(A,I)
-             T1AI(A,I)  -=  -1.0
-             T1AI_P(A,I) = OMEGA_P
-             T1AI_M(A,I) = OMEGA_M
+             T1AI(A,I)   =  H_A_DIAGONAL(A,I)
+             T1AI(A,I)  *=  -1.0
 
-             T1AI_P(A,I) += T1AI(A,I)
-             T1AI_M(A,I) += T1AI(A,I)
+             T1AIP_R(A,I) = OMEGA_P
+             T1AIM_L(A,I) = OMEGA_M
 
-             EXECUTE APPLY_DEN2 TAIP_R(A,I) T1AI_P(A,I)
-             EXECUTE APPLY_DEN2 TAIM_L(A,I) T1AI_M(A,I)
+             T1AIP_R(A,I) += T1AI(A,I)
+             T1AIM_L(A,I) += T1AI(A,I)
+
+             EXECUTE APPLY_DEN2 TAIP_R T1AIP_R
+             EXECUTE APPLY_DEN2 TAIM_L T1AIM_L
 
              T2AIP_R(A,I) = TAIP_R(A,I)
              T2AIM_L(A,I) = TAIM_L(A,I)
@@ -1634,14 +1797,14 @@
              PUT CORR_VECA_INTMD_P_R(A,I) = TAIP_R(A,I)
              PUT CORR_VECA_INTMD_M_L(A,I) = TAIM_L(A,I)
 
-       ENDARDO A, I
+       ENDPARDO A, I
 
        PARDO B, J
 
              GET RESIDUEB_P_VEC_R(B,J)
              GET RESIDUEB_M_VEC_L(B,J)
 
-             GET H_DIAGONAL(B,J)
+             GET H_B_DIAGONAL(B,J)
 
              TBJP_R(B,J) = RESIDUEB_P_VEC_R(B,J)
              TBJM_L(B,J) = RESIDUEB_M_VEC_L(B,J)
@@ -1649,16 +1812,17 @@
              TBJP_R(B,J) *= OMEGA_P
              TBJM_L(B,J) *= OMEGA_M
 
-             T1BJ(B,J)   =  H_DIAGONAL(A,I)
-             T1BJ(B,J)  -=  -1.0
-             T1BJ_P(B,J) = OMEGA_P
-             T1BJ_M(B,J) = OMEGA_M
+             T1BJ(B,J)   =  H_B_DIAGONAL(B,J)
+             T1BJ(B,J)  *=  -1.0
 
-             T1BJ_P(B,J) += T1BJ(B,J)
-             T1BJ_M(B,J) += T1BJ(B,J)
+             T1BJP_R(B,J) = OMEGA_P
+             T1BJM_L(B,J) = OMEGA_M
 
-             EXECUTE APPLY_DEN2 TBJP_R(B,J) T1BJ_P(B,J)
-             EXECUTE APPLY_DEN2 TBJM_L(B,J) T1BJ_M(B,J`)
+             T1BJP_R(B,J) += T1BJ(B,J)
+             T1BJM_L(B,J) += T1BJ(B,J)
+
+             EXECUTE APPLY_DEN2 TBJP_R T1BJP_R
+             EXECUTE APPLY_DEN2 TBJM_L T1BJM_L
 
              T2BJP_R(B,J) = TBJP_R(B,J)
              T2BJM_L(B,J) = TBJM_L(B,J)
@@ -1666,7 +1830,7 @@
              PUT CORR_VECB_INTMD_P_R(B,J) = TBJP_R(B,J)
              PUT CORR_VECB_INTMD_M_L(B,J) = TBJM_L(B,J)
 
-       ENDARDO B, J
+       ENDPARDO B, J
 
        execute sip_barrier
 
@@ -1686,13 +1850,14 @@
        NORMB_P_R_NEW = 0.0
        NORMB_M_L_NEW = 0.0
 
+       MCOUNT = 0.0
        PARDO A, I
 
              GET CORR_VECA_INTMD_P_R(A,I)
              GET CORR_VECA_INTMD_M_L(A,I)
 
-             TAP_R(A,I) = CORR_VEC_INTMD_P_R(A,I)
-             TAM_L(A,I) = CORR_VEC_INTMD_M_L(A,I)
+             TAP_R(A,I) = CORR_VECA_INTMD_P_R(A,I)
+             TAM_L(A,I) = CORR_VECA_INTMD_M_L(A,I)
 
              TMP = TAP_R(A,I) * TAP_R(A,I)
              NORMA_INTMD_P_R_NEW += TMP
@@ -1701,8 +1866,9 @@
              NORMA_INTMD_M_L_NEW += TMP
 
              DO MINDEX20
+                MCOUNT += 1.0
 
-                IF MINDEX20 < SUBSP_DIM
+                IF MCOUNT < SUBSP_DIM
 
                    GET R1A_MO_P_HIST_R(A,I,MINDEX20)
                    GET R1A_MO_M_HIST_L(A,I,MINDEX20)
@@ -1718,10 +1884,13 @@
                    TMP *= -1.0
                    PUT ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20) += TMP
 
+                ENDIF 
+
              ENDDO MINDEX20
 
        ENDPARDO A, I
 
+       MCOUNT = 0.0 
        PARDO B, J
 
              GET CORR_VECB_INTMD_P_R(B,J)
@@ -1737,22 +1906,25 @@
              NORMB_INTMD_M_L_NEW += TMP
 
              DO MINDEX20
+                MCOUNT += 1.0
 
-                IF MINDEX20 < SUBSP_DIM
+                IF MCOUNT < SUBSP_DIM
 
                    GET R1B_MO_P_HIST_R(B,J,MINDEX20)
                    GET R1B_MO_M_HIST_L(B,J,MINDEX20)
 
-                   T1BP_R(A,I) = R1B_MO_P_HIST_R(B,J,MINDEX20)
-                   T1BM_L(A,I) = R1B_MO_M_HIST_L(B,J,MINDEX20)
+                   T1BP_R(B,J) = R1B_MO_P_HIST_R(B,J,MINDEX20)
+                   T1BM_L(B,J) = R1B_MO_M_HIST_L(B,J,MINDEX20)
 
                    TMP  = T1BM_L(B,J) * TBP_R(B,J)
                    TMP *= -1.0
                    PUT ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20) += TMP
 
-                   TMP = T1BP_R(A,I) * TBM_L(A,I)
+                   TMP = T1BP_R(B,J) * TBM_L(B,J)
                    TMP *= -1.0
                    PUT ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20) += TMP
+
+                ENDIF 
 
              ENDDO MINDEX20
 
@@ -1770,22 +1942,22 @@
              GET CORR_VECA_INTMD_P_R(A,I)
              GET CORR_VECA_INTMD_M_L(A,I)
 
-             TAP_R(A,I) = CORR_VEC_INTMD_P_R(A,I)
-             TAM_L(A,I) = CORR_VEC_INTMD_M_L(A,I)
+             TAP_R(A,I) = CORR_VECA_INTMD_P_R(A,I)
+             TAM_L(A,I) = CORR_VECA_INTMD_M_L(A,I)
 
              TAP_R(A,I) *= NORMA_P_R_NEW
              TAM_L(A,I) *= NORMA_M_L_NEW
 
              DO MINDEX20
 
-                   GET  ORTHO_COEFSA_P_R(MCOUNT,MCOUNT)
-                   GET  ORTHO_COEFSA_M_L(MCOUNT,MCOUNT)
+                   GET  ORTHO_COEFSA_P_RL(MINDEX20,MINDEX20)
+                   GET  ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20)
 
-                   TNORM_P_R(MCOUNT, MCOUNT) = ORTHO_COEFSA_P_R(MCOUNT,MCOUNT)
-                   TNORM_M_L(MCOUNT, MCOUNT) = ORTHO_COEFSA_M_L(MCOUNT,MCOUNT)
+                   TNORM_P_R(MINDEX20,MINDEX20) = ORTHO_COEFSA_P_RL(MINDEX20,MINDEX20)
+                   TNORM_M_L(MINDEX20,MINDEX20) = ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20)
 
-                   EXECUTE RETURN_SVAL TNORM_P_RL(MCOUNT, MCOUNT) RLP_NORM
-                   EXECUTE RETURN_SVAL TNORM_M_RL(MCOUNT, MCOUNT) RLM_NORM
+                   EXECUTE RETURN_SVAL TNORM_P_R RLP_NORM
+                   EXECUTE RETURN_SVAL TNORM_M_L RLM_NORM
 
                    GET R1A_MO_P_HIST_R(A,I,MINDEX20)
                    GET R1A_MO_M_HIST_L(A,I,MINDEX20)
@@ -1793,10 +1965,10 @@
                    T1AP_R(A,I) = R1A_MO_P_HIST_R(A,I,MINDEX20)
                    T1AM_L(A,I) = R1A_MO_M_HIST_L(A,I,MINDEX20)
 
-                   T1AP_R(A,I) *= RLRP_NORM
-                   T1AM_L(A,I) *= RLRM_NORM
+                   T1AP_R(A,I) *= RLP_NORM
+                   T1AM_L(A,I) *= RLM_NORM
 
-                   TAP_R(A,I) += T1AP_L(A,I)
+                   TAP_R(A,I) += T1AP_R(A,I)
                    TAM_L(A,I) += T1AM_L(A,I)
 
               ENDDO MINDEX20
@@ -1811,22 +1983,22 @@
              GET CORR_VECB_INTMD_P_R(B,J)
              GET CORR_VECB_INTMD_M_L(B,J)
 
-             TBP_R(A,I) = CORR_VECB_INTMD_P_R(B,J)
-             TBM_L(A,I) = CORR_VECB_INTMD_M_L(B,J)
+             TBP_R(B,J) = CORR_VECB_INTMD_P_R(B,J)
+             TBM_L(B,J) = CORR_VECB_INTMD_M_L(B,J)
 
-             TBP_R(A,I) *= NORMB_P_R_NEW
-             TBM_L(A,I) *= NORMB_M_L_NEW
+             TBP_R(B,J) *= NORMB_P_R_NEW
+             TBM_L(B,J) *= NORMB_M_L_NEW
 
              DO MINDEX20
 
-                   GET  ORTHO_COEFSA_P_R(MCOUNT,MCOUNT)
-                   GET  ORTHO_COEFSA_M_L(MCOUNT,MCOUNT)
+                   GET  ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20)
+                   GET  ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20)
 
-                   TNORM_P_R(MCOUNT, MCOUNT) = ORTHO_COEFSB_P_R(MCOUNT,MCOUNT)
-                   TNORM_M_L(MCOUNT, MCOUNT) = ORTHO_COEFSB_M_L(MCOUNT,MCOUNT)
+                   TNORM_P_R(MINDEX20,MINDEX20) = ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20)
+                   TNORM_M_L(MINDEX20,MINDEX20) = ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20)
 
-                   EXECUTE RETURN_SVAL TNORM_P_RL(MCOUNT, MCOUNT) RLP_NORM
-                   EXECUTE RETURN_SVAL TNORM_M_RL(MCOUNT, MCOUNT) RLM_NORM
+                   EXECUTE RETURN_SVAL TNORM_P_R RLP_NORM
+                   EXECUTE RETURN_SVAL TNORM_M_L RLM_NORM
 
                    GET R1B_MO_P_HIST_R(B,J,MINDEX20)
                    GET R1B_MO_M_HIST_L(B,J,MINDEX20)
@@ -1834,11 +2006,11 @@
                    T1BP_R(B,J) = R1B_MO_P_HIST_R(B,J,MINDEX20)
                    T1BM_L(B,J) = R1B_MO_M_HIST_L(B,J,MINDEX20)
 
-                   T1BP_R(B,J) *= RLRP_NORM
-                   T1BM_L(B,J) *= RLRM_NORM
+                   T1BP_R(B,J) *= RLP_NORM
+                   T1BM_L(B,J) *= RLM_NORM
 
-                   TBP_R(A,I) += T1BP_L(B,J)
-                   TBM_L(A,I) += T1BM_L(B,J)
+                   TBP_R(B,J) += T1BP_R(B,J)
+                   TBM_L(B,J) += T1BM_L(B,J)
 
               ENDDO MINDEX20
 
@@ -1865,13 +2037,77 @@
        EXECUTE  PRINT_SCALAR  TARGET_ROOTS
        EXECUTE  PRINT_SCALAR  CONV_TOLERANCE
 
+       CREATE R1A_MO_P_START_R(A,I,MAX_NO_ROOTS)
+       CREATE R1A_MO_M_START_L(A,I,MAX_NO_ROOTS)
+       cREATE R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
+       CREATE R1B_MO_M_START_L(B,J,MAX_NO_ROOTS)
+       CREATE R1A_MO_P_CURRENT_R(A,I)
+       CREATE R1A_MO_M_CURRENT_L(A,I)
+       CREATE R1B_MO_P_CURRENT_R(B,J)
+       CREATE R1B_MO_M_CURRENT_L(B,J)
+       CREATE R1A_AO_P_CURRENT_R(MU,NU)
+       CREATE R1A_AO_M_CURRENT_L(MU,NU)
+       CREATE R1B_AO_P_CURRENT_R(MU,NU)
+       CREATE R1B_AO_M_CURRENT_L(MU,NU)
+       CREATE HR1A_AO_P_CURRENT_R(MU,NU) 
+       CREATE HR1A_AO_M_CURRENT_L(MU,NU) 
+       CREATE HR1B_AO_P_CURRENT_R(MU,NU) 
+       CREATE HR1B_AO_M_CURRENT_L(MU,NU) 
+       CREATE HR1A_MO_P_CURRENT_R(A,I) 
+       CREATE HR1A_MO_M_CURRENT_L(A,I) 
+       CREATE HR1B_MO_P_CURRENT_R(B,J) 
+       CREATE HR1B_MO_M_CURRENT_L(B,J) 
+       CREATE R1A_MO_P_HIST_R(A,I,MINDEX20)
+       CREATE R1A_MO_M_HIST_L(A,I,MINDEX20)
+       CREATE R1B_MO_P_HIST_R(B,J,MINDEX20)
+       CREATE R1B_MO_M_HIST_L(B,J,MINDEX20)
+       CREATE HR1A_MO_P_HIST_R(A,I,MINDEX20)
+       CREATE HR1A_MO_M_HIST_L(A,I,MINDEX20)
+       CREATE HR1B_MO_P_HIST_R(B,J,MINDEX20)
+       CREATE HR1B_MO_M_HIST_L(B,J,MINDEX20)
+       CREATE R1A_MO_P_NEW_R(A,I,NINDEX20)
+       CREATE R1A_MO_M_NEW_L(A,I,NINDEX20)
+       CREATE R1B_MO_P_NEW_R(B,J,NINDEX20)
+       CREATE R1B_MO_M_NEW_L(B,J,NINDEX20)
+       CREATE HR1A_MO_P_NEW_R(A,I,NINDEX20)
+       CREATE HR1A_MO_M_NEW_L(A,I,NINDEX20)
+       CREATE HR1B_MO_P_NEW_R(B,J,NINDEX20)
+       CREATE HR1B_MO_M_NEW_L(B,J,NINDEX20)
+       CREATE R1A_MO_P_PICKED_R(A,I)
+       CREATE R1A_MO_M_PICKED_L(A,I)
+       CREATE R1B_MO_P_PICKED_R(B,J)
+       CREATE R1B_MO_M_PICKED_L(B,J)
+       CREATE HR1A_MO_P_PICKED_R(A,I)
+       CREATE HR1A_MO_M_PICKED_L(A,I)
+       CREATE HR1B_MO_P_PICKED_R(B,J)
+       CREATE HR1B_MO_M_PICKED_L(B,J)
+       CREATE RESIDUEA_P_VEC_R(A,I)
+       CREATE RESIDUEA_M_VEC_L(A,I)
+       CREATE RESIDUEB_P_VEC_R(B,J)
+       CREATE RESIDUEB_M_VEC_L(B,J)
+       CREATE CORR_VECA_INTMD_P_R(A,I)
+       CREATE CORR_VECA_INTMD_M_L(A,I)
+       CREATE CORR_VECB_INTMD_P_R(B,J)
+       CREATE CORR_VECB_INTMD_M_L(B,J)
+       CREATE ORTHO_COEFSA_P_RL(MINDEX20,MINDEX20)
+       CREATE ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20)
+       CREATE ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20)
+       CREATE ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20)
+       CREATE H_A_DIAGONAL(A,I)
+       CREATE H_B_DIAGONAL(B,J)
+#  
+       CALL FORM_AO_APLUSB_AMINUSB
+       execute server_barrier 
+
+       COUNT_NO_ROOTS = 0.0
+
        DO MAX_NO_ROOTS
 
           COUNT_NO_ROOTS += 1.0
 
           IF COUNT_NO_ROOTS > TARGET_ROOTS
              EXIT
-          END IF
+          ENDIF 
 
           ITER_COUNT = 0.0
           CALL FORM_INTIAL_GUESS
@@ -1898,7 +2134,7 @@
 # Chemical Physics,61,385,1981 and J. Olsen and co-workers,
 # Chemical Physics,119,297,1988.
 
-             CALL AO_DIRECT_HCMULT
+             CALL DIRECT_AO_HC_MULT
 
              CALL SAVE_HC_VECTORS
 
@@ -1931,9 +2167,68 @@
 
           ENDDO MAXIMUM_SUBSP_DIM
 
-        ENDDO MAX_NO_ROOTS
+       ENDDO MAX_NO_ROOTS
 
 
+       DELETE R1A_MO_P_START_R(A,I,MAX_NO_ROOTS)
+       DELETE R1A_MO_M_START_L(A,I,MAX_NO_ROOTS)
+       DELETE R1B_MO_P_START_R(B,J,MAX_NO_ROOTS)
+       DELETE R1B_MO_M_START_L(B,J,MAX_NO_ROOTS)
+       DELETE R1A_MO_P_CURRENT_R(A,I)
+       DELETE R1A_MO_M_CURRENT_L(A,I)
+       DELETE R1B_MO_P_CURRENT_R(B,J)
+       DELETE R1B_MO_M_CURRENT_L(B,J)
+       DELETE R1A_AO_P_CURRENT_R(MU,NU)
+       DELETE R1A_AO_M_CURRENT_L(MU,NU)
+       DELETE R1B_AO_P_CURRENT_R(MU,NU)
+       DELETE R1B_AO_M_CURRENT_L(MU,NU)
+       DELETE HR1A_AO_P_CURRENT_R(MU,NU) 
+       DELETE HR1A_AO_M_CURRENT_L(MU,NU) 
+       DELETE HR1B_AO_P_CURRENT_R(MU,NU) 
+       DELETE HR1B_AO_M_CURRENT_L(MU,NU) 
+       DELETE HR1A_MO_P_CURRENT_R(A,I) 
+       DELETE HR1A_MO_M_CURRENT_L(A,I) 
+       DELETE HR1B_MO_P_CURRENT_R(B,J) 
+       DELETE HR1B_MO_M_CURRENT_L(B,J) 
+       DELETE R1A_MO_P_HIST_R(A,I,MINDEX20)
+       DELETE R1A_MO_M_HIST_L(A,I,MINDEX20)
+       DELETE R1B_MO_P_HIST_R(B,J,MINDEX20)
+       DELETE R1B_MO_M_HIST_L(B,J,MINDEX20)
+       DELETE HR1A_MO_P_HIST_R(A,I,MINDEX20)
+       DELETE HR1A_MO_M_HIST_L(A,I,MINDEX20)
+       DELETE HR1B_MO_P_HIST_R(B,J,MINDEX20)
+       DELETE HR1B_MO_M_HIST_L(B,J,MINDEX20)
+       DELETE R1A_MO_P_NEW_R(A,I,NINDEX20)
+       DELETE R1A_MO_M_NEW_L(A,I,NINDEX20)
+       DELETE R1B_MO_P_NEW_R(B,J,NINDEX20)
+       DELETE R1B_MO_M_NEW_L(B,J,NINDEX20)
+       DELETE HR1A_MO_P_NEW_R(A,I,NINDEX20)
+       DELETE HR1A_MO_M_NEW_L(A,I,NINDEX20)
+       DELETE HR1B_MO_P_NEW_R(B,J,NINDEX20)
+       DELETE HR1B_MO_M_NEW_L(B,J,NINDEX20)
+       DELETE R1A_MO_P_PICKED_R(A,I)
+       DELETE R1A_MO_M_PICKED_L(A,I)
+       DELETE R1B_MO_P_PICKED_R(B,J)
+       DELETE R1B_MO_M_PICKED_L(B,J)
+       DELETE HR1A_MO_P_PICKED_R(A,I)
+       DELETE HR1A_MO_M_PICKED_L(A,I)
+       DELETE HR1B_MO_P_PICKED_R(B,J)
+       DELETE HR1B_MO_M_PICKED_L(B,J)
+       DELETE RESIDUEA_P_VEC_R(A,I)
+       DELETE RESIDUEA_M_VEC_L(A,I)
+       DELETE RESIDUEB_P_VEC_R(B,J)
+       DELETE RESIDUEB_M_VEC_L(B,J)
+       DELETE CORR_VECA_INTMD_P_R(A,I)
+       DELETE CORR_VECA_INTMD_M_L(A,I)
+       DELETE CORR_VECB_INTMD_P_R(B,J)
+       DELETE CORR_VECB_INTMD_M_L(B,J)
+       DELETE ORTHO_COEFSA_P_RL(MINDEX20,MINDEX20)
+       DELETE ORTHO_COEFSA_M_RL(MINDEX20,MINDEX20)
+       DELETE ORTHO_COEFSB_P_RL(MINDEX20,MINDEX20)
+       DELETE ORTHO_COEFSB_M_RL(MINDEX20,MINDEX20)
+       DELETE H_A_DIAGONAL(A,I)
+       DELETE H_B_DIAGONAL(B,J)
+#  
 
                           ENDSIAL DIRECT_RPA_UHF
 #                         ----------------------
