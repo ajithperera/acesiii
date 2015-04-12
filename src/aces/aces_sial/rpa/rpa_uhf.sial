@@ -107,6 +107,10 @@
       DISTRIBUTED ORTHO_COEFSB_M_RL(MINDEX20,NINDEX20)
       DISTRIBUTED H_A_DIAGONAL(A,I)
       DISTRIBUTED H_B_DIAGONAL(B,J)
+      DISTRIBUTED FOCK_A_OO(I1,I)
+      DISTRIBUTED FOCK_B_OO(J1,J)
+      DISTRIBUTED FOCK_A_VV(A1,A)
+      DISTRIBUTED FOCK_B_VV(B1,B)
 
 # Local and static arrays 
 
@@ -214,9 +218,20 @@
       TEMP T2AIM_L(A,I)
       TEMP T2BJP_R(B,J)
       TEMP T2BJM_L(B,J)
-
+      TEMP TII(I,I1)
+      TEMP TAA(A,A1)
+      TEMP TJJ(J,J1)
+      TEMP TBB(B,B1)
+      TEMP TXI(MU,I)
+      TEMP TXA(MU,A)
+      TEMP TXJ(MU,J)
+      TEMP TXB(MU,B)
+      TEMP TAI_P(A,I)
+      TEMP TAI_M(A,I)
+      TEMP TBJ_P(B,J)
+      TEMP TBJ_M(B,J)
+    
  
-
 # Scalars 
 
       SCALAR TARGET_ROOTS
@@ -275,6 +290,10 @@
       SCALAR RANK
       SCALAR SUMA
       SCALAR SUMB
+      SCALAR SUMAP
+      SCALAR SUMAM
+      SCALAR SUMBP
+      SCALAR SUMBM
 
       PROC FORM_INTIAL_GUESS
 #     ----------------------
@@ -295,7 +314,7 @@
 
       PARDO B, J
             DO MAX_NO_ROOTS
-               GUESS_B(B,J,MAX_NO_ROOTS) = 0.0
+               GUESS_B(B,J,MAX_NO_ROOTS) = 1.0
             ENDDO MAX_NO_ROOTS 
       ENDPARDO B, J
 
@@ -542,6 +561,146 @@
     ENDPROC SAVE_C_VECTORS
 #   -----------------------
 
+     PROC FORM_MO_FOCK
+#    -----------------
+
+     PARDO I, I1
+
+           TII(I1,I) = FOCK_A(I1,I) 
+           PUT FOCK_A_OO(I1,I) = TII(I1,I)
+
+     ENDPARDO I, I1
+
+     PARDO A, A1
+
+           TAA(A1,A)   = FOCK_A(A,A1)
+           PUT FOCK_A_VV(A1,A) = TAA(A1,A)
+
+     ENDPARDO A, A1
+
+     PARDO J, J1
+
+           TJJ(J1,J)   = FOCK_B(J,J1)
+           PUT FOCK_B_OO(J1,J) = TJJ(J1,J)
+
+     ENDPARDO J, J1
+
+     PARDO B, B1
+
+           TBB(B1,B)   = FOCK_B(B,B1)
+           PUT FOCK_B_VV(B1,B) = TBB(B1,B)
+
+     ENDPARDO B, B1
+
+     execute sip_barrier 
+
+     ENDPROC FORM_MO_FOCK
+#    --------------------
+
+     PROC FORM_FOCK_CONTRIBUTION
+#    ---------------------------
+
+     PARDO A, I
+
+           TAIP_R(A,I) = 0.0
+           TAIM_L(A,I) = 0.0
+
+           DO I1
+
+              GET R1A_MO_P_CURRENT_R(A,I1)
+              GET R1A_MO_M_CURRENT_L(A,I1)
+  
+              TAIP_R(A,I1) = R1A_MO_P_CURRENT_R(A,I1)
+              TAIM_L(A,I1) = R1A_MO_M_CURRENT_L(A,I1)
+
+              GET FOCK_A_OO(I1,I)
+              TII(I1,I) = FOCK_A_OO(I1,I)
+
+              TAI_P(A,I) = TAIP_R(A,I1) * TII(I1,I)
+              TAI_M(A,I) = TAIM_L(A,I1) * TII(I1,I)
+     
+              TAIP_R(A,I) += TAI_P(A,I)
+              TAIM_L(A,I) += TAI_M(A,I)
+
+           ENDDO I1
+
+           DO A1
+
+              GET R1A_MO_P_CURRENT_R(A1,I)
+              GET R1A_MO_M_CURRENT_L(A1,I)
+  
+              TAIP_R(A1,I) = R1A_MO_P_CURRENT_R(A1,I)
+              TAIM_L(A1,I) = R1A_MO_M_CURRENT_L(A1,I)
+
+              GET FOCK_A_VV(A1,A)
+              TAA(A1,A) = FOCK_A_VV(A1,A)
+
+              TAI_P(A,I) = TAIP_R(A1,I) * TAA(A1,A)
+              TAI_M(A,I) = TAIM_L(A1,I) * TAA(A1,A)
+    
+              TAIP_R(A,I) += TAI_P(A,I)
+              TAIM_L(A,I) += TAI_M(A,I)
+
+           ENDDO A1
+
+           PUT HR1A_MO_P_CURRENT_R(A,I) += TAIP_R(A,I)
+           PUT HR1A_MO_M_CURRENT_L(A,I) += TAIM_L(A,I)
+
+     ENDPARDO A, I
+
+     PARDO B, J
+
+           TBJP_R(B,J) = 0.0
+           TBJM_L(B,J) = 0.0
+
+           DO J1
+
+              GET R1B_MO_P_CURRENT_R(B,J1)
+              GET R1B_MO_M_CURRENT_L(B,J1)
+ 
+              TBJP_R(B,J1) = R1B_MO_P_CURRENT_R(B,J1)
+              TBJM_L(B,J1) = R1B_MO_M_CURRENT_L(B,J1)
+
+              GET FOCK_B_OO(J1,J)
+              TJJ(J1,J) = FOCK_B_OO(J1,J)
+
+              TBJ_P(B,J) = TBJP_R(B,J1) * TJJ(J1,J)
+              TBJ_M(B,J) = TBJM_L(B,J1) * TJJ(J1,J)
+    
+              TBJP_R(B,J) += TBJ_P(B,J)
+              TBJM_L(B,J) += TBJ_M(B,J)
+
+           ENDDO J1
+
+           DO B1
+
+              GET R1B_MO_P_CURRENT_R(B1,J)
+              GET R1B_MO_M_CURRENT_L(B1,J)
+ 
+              TBJP_R(B1,J) = R1B_MO_P_CURRENT_R(B1,J)
+              TBJM_L(B1,J) = R1B_MO_M_CURRENT_L(B1,J)
+
+              GET FOCK_B_VV(B1,B)
+              TBB(B1,B) = FOCK_B_VV(B1,B)
+
+              TBJ_P(B,J) = TBJP_R(B1,J) * TBB(B1,B)
+              TBJ_M(B,J) = TBJM_L(B1,J) * TBB(B1,B)
+   
+              TBJP_R(B,J) += TBJ_P(B,J)
+              TBJM_L(B,J) += TBJ_M(B,J)
+
+           ENDDO B1
+
+           PUT HR1B_MO_P_CURRENT_R(B,J) += TBJP_R(B,J)
+           PUT HR1B_MO_M_CURRENT_L(B,J) += TBJM_L(B,J)
+
+     ENDPARDO B, J
+
+     execute sip_barrier 
+
+     ENDPROC FORM_FOCK_CONTRIBUTION
+#    ---------------------------
+
      PROC FORM_AO_R1AB_OLD
 #    ---------------------
 
@@ -775,6 +934,41 @@
      ENDPARDO MU, NU
 
      execute sip_barrier 
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get HR1A_MO_P_CURRENT_R(A,I)
+        get HR1A_MO_M_CURRENT_L(A,I)
+        tmp   = HR1A_MO_P_CURRENT_R(A,I) * HR1A_MO_P_CURRENT_R(A,I)
+        sumap += tmp
+        tmp   = HR1A_MO_M_CURRENT_L(A,I) * HR1A_MO_M_CURRENT_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+      
+        get HR1B_MO_P_CURRENT_R(B,J)
+        get HR1B_MO_M_CURRENT_L(B,J)
+        tmp = HR1B_MO_P_CURRENT_R(B,J) * HR1B_MO_P_CURRENT_r(B,J)
+        sumbp += tmp
+        tmp = HR1B_MO_M_CURRENT_L(B,J) * HR1B_MO_P_CURRENT_r(B,J)
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
 
      ENDPROC FORM_MO_R1AB_NEW
 #    -------------------------
@@ -783,16 +977,15 @@
 #    ----------------------
 
      CALL FORM_AO_R1AB_OLD
-     execute sip_barrier 
 
 #     CALL FORM_AO_APLUSB_AMINUSB
 #     execute server_barrier 
      
      CALL HC_MULTIPLY
-     execute server_barrier 
+
+     CALL FORM_FOCK_CONTRIBUTION
 
      CALL FORM_MO_R1AB_NEW
-     execute sip_barrier 
 
      ENDPROC DIRECT_AO_HC_MULT
 #    ----------------------
@@ -1170,6 +1363,21 @@
 
     ENDIF
 
+#bgn_debug
+    sumap = 0.0
+    sumam = 0.0
+    do MINDEX20
+    do NINDEX20
+       tmp = B_A_MATRIX_P(NINDEX20,MINDEX20) * B_A_MATRIX_P(NINDEX20,MINDEX20)
+       sumap += tmp
+       tmp = B_A_MATRIX_M(NINDEX20,MINDEX20) * B_A_MATRIX_M(NINDEX20,MINDEX20)
+       sumam += tmp
+    enddo NINDEX20
+    enddo MINDEX20
+    execute print_scalar sumap
+    execute print_scalar sumam
+#end_debug
+
      ENDPROC CONSTRUCT_A_MATRIX
 #    ------------------------
 
@@ -1343,10 +1551,58 @@
                 ENDIF
 
              ENDDO  NINDEX20
-
+ 
        ENDPARDO B, J
 
        execute sip_barrier
+
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     ncount = 0.0
+     do a
+     do i
+        do nindex20 
+        ncount += 1.0
+        if ncount == iter_count 
+        get HR1A_MO_P_NEW_R(A,I,nindex20)
+        get HR1A_MO_M_NEW_L(A,I,nindex20)
+        tmp   = HR1A_MO_P_NEW_R(A,I,nindex20) * HR1A_MO_P_NEW_R(A,I,nindex20)
+        sumap += tmp
+        tmp   = HR1A_MO_M_NEW_L(A,I,nindex20) * HR1A_MO_M_NEW_L(A,I,nindex20)
+        sumam += tmp
+        endif 
+        enddo nindex20
+     enddo i
+     enddo a
+     ncount=0.0
+     do b
+     do j
+        do nindex20
+        ncount += 1.0
+        if ncount == iter_count
+        get HR1B_MO_P_NEW_R(B,J,nindex20)
+        get HR1B_MO_M_NEW_L(B,J,nindex20)
+        tmp = HR1B_MO_P_NEW_R(B,J,nindex20) * HR1B_MO_P_NEW_R(B,J,nindex20)
+        sumbp += tmp
+        tmp = HR1B_MO_M_NEW_L(B,J,nindex20) * HR1B_MO_M_NEW_L(B,J,nindex20)
+        sumbm += tmp
+        endif 
+        enddo nindex20
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
+
 
        ENDPROC FORM_NEW_VECTORS 
 #      ------------------------
@@ -1644,6 +1900,69 @@
 
      ENDIF 
 
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get HR1A_MO_P_PICKED_R(A,I)
+        get HR1A_MO_M_PICKED_L(A,I)
+        tmp   = HR1A_MO_P_PICKED_R(A,I) * HR1A_MO_P_PICKED_R(A,I)
+        sumap += tmp
+        tmp   = HR1A_MO_M_PICKED_L(A,I) * HR1A_MO_M_PICKED_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+        get HR1B_MO_P_PICKED_R(B,J)
+        get HR1B_MO_M_PICKED_L(B,J)
+        tmp = HR1B_MO_P_PICKED_R(B,J) * HR1B_MO_P_PICKED_R(B,J)
+        sumbp += tmp
+        tmp = HR1B_MO_M_PICKED_L(B,J) * HR1B_MO_M_PICKED_L(B,J)
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get R1A_MO_P_PICKED_R(A,I)
+        get R1A_MO_M_PICKED_L(A,I)
+        tmp   = R1A_MO_P_PICKED_R(A,I) * R1A_MO_P_PICKED_R(A,I)
+        sumap += tmp
+        tmp   = R1A_MO_M_PICKED_L(A,I) * R1A_MO_M_PICKED_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+        get R1B_MO_P_PICKED_R(B,J)
+        get R1B_MO_M_PICKED_L(B,J)
+        tmp = R1B_MO_P_PICKED_R(B,J) * R1B_MO_P_PICKED_R(B,J)
+        sumbp += tmp
+        tmp = R1B_MO_M_PICKED_L(B,J) * R1B_MO_M_PICKED_L(B,J)
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
+
      ENDPROC SELECT_VECTOR_TOGO
 #    --------------------------
 
@@ -1760,6 +2079,42 @@
        COLLECTIVE NORMB_P_R += NORM_INTMD_P_R
        COLLECTIVE NORMB_M_L += NORM_INTMD_M_L
 
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get RESIDUEA_P_VEC_R(A,I)
+        get RESIDUEA_M_VEC_L(A,I)
+        tmp   = RESIDUEA_P_VEC_R(A,I) * RESIDUEA_P_VEC_R(A,I)
+        sumap += tmp
+        tmp   = RESIDUEA_M_VEC_L(A,I) *  RESIDUEA_M_VEC_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+        get RESIDUEB_P_VEC_R(B,J)
+        get RESIDUEB_M_VEC_L(B,J)
+        tmp = RESIDUEB_P_VEC_R(B,J) *  RESIDUEB_P_VEC_R(B,J)
+        sumbp += tmp
+        tmp = RESIDUEB_M_VEC_L(B,J) *  RESIDUEB_M_VEC_L(B,J)
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
+
+
       ENDPROC FORM_RESIDUAL_VECTOR
 #     ----------------------------
 
@@ -1833,6 +2188,41 @@
        ENDPARDO B, J
 
        execute sip_barrier
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get CORR_VECA_INTMD_P_R(A,I)
+        get CORR_VECA_INTMD_M_L(A,I)
+        tmp   = CORR_VECA_INTMD_P_R(A,I) * CORR_VECA_INTMD_P_R(A,I)
+        sumap += tmp
+        tmp   = CORR_VECA_INTMD_M_L(A,I) * CORR_VECA_INTMD_M_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+        get CORR_VECB_INTMD_P_R(B,J)
+        get CORR_VECB_INTMD_M_L(B,J)
+        tmp = CORR_VECB_INTMD_P_R(B,J) *  CORR_VECB_INTMD_P_R(B,J)
+        sumbp += tmp
+        tmp = CORR_VECB_INTMD_M_L(B,J) *  CORR_VECB_INTMD_M_L(B,J)
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
+
 
       ENDPROC FORM_CORRECTION_VECTOR
 #     ------------------------------
@@ -2021,6 +2411,42 @@
 
        execute sip_barrier
 
+#bgn_debug
+     execute get_my_rank rank
+     execute print_scalar rank
+     if rank == 0.0
+     sumap = 0.0
+     sumam = 0.0
+     sumbp = 0.0
+     sumbm = 0.0
+     do a
+     do i
+        get R1A_MO_P_CURRENT_R(A,I)
+        get R1A_MO_M_CURRENT_L(A,I)
+        tmp   = R1A_MO_P_CURRENT_R(A,I) * R1A_MO_P_CURRENT_R(A,I)
+        sumap += tmp
+        tmp   = R1A_MO_M_CURRENT_L(A,I) * R1A_MO_M_CURRENT_L(A,I)
+        sumam += tmp
+     enddo i
+     enddo a
+     do b
+     do j
+        get R1B_MO_P_CURRENT_R(B,J)
+        get R1B_MO_M_CURRENT_L(B,J)
+        tmp = R1B_MO_P_CURRENT_R(B,J) * R1B_MO_P_CURRENT_R(B,J)
+        sumbp += tmp
+        tmp = R1B_MO_M_CURRENT_L(B,J) * R1B_MO_M_CURRENT_L(B,J) 
+        sumbm += tmp
+     enddo j
+     enddo b
+     execute print_scalar  sumap
+     execute print_scalar  sumam
+     execute print_scalar  sumbp
+     execute print_scalar  sumbm
+     endif
+#end_debug
+
+
        ENDPROC FORM_BIORTHOGANAL_VECS
 #      ------------------------------
 
@@ -2096,6 +2522,7 @@
        CREATE H_A_DIAGONAL(A,I)
        CREATE H_B_DIAGONAL(B,J)
 #  
+       CALL FORM_MO_FOCK
        CALL FORM_AO_APLUSB_AMINUSB
        execute server_barrier 
 
