@@ -14241,23 +14241,23 @@
      ENDPROC GET_2P_ERI_INTS
 #    -----------------------
 
+#     PROC GET_2P_DSHIELD_INTS
+#    ------------------------
+#
+#     PARDO mu, nu, lambda, sigma
+#
+## XX, XY, XZ components 
+#
+#               EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
+#               PREPARE AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
+#     ENDPARDO mu, nu, lambda, sigma
+#
+#     EXECUTE SERVER_BARRIER
+#     ENDPROC GET_2P_DSHIELD_INTS
+#    ------------------------
+
      PROC GET_2P_DSHIELD_INTS
 #    ------------------------
-
-     PARDO mu, nu, lambda, sigma
-
-# XX, XY, XZ components 
-
-               EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-               PREPARE AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-     ENDPARDO mu, nu, lambda, sigma
-
-     EXECUTE SERVER_BARRIER
-     ENDPROC GET_2P_DSHIELD_INTS
-#    ------------------------
-
-     PROC GET_2P_DSHIELD_INTS_SAVE
-#    --------------------------------
 
      PARDO mu, nu, lambda, sigma
 
@@ -14298,8 +14298,8 @@
 
      EXECUTE SERVER_BARRIER
 
-     ENDPROC GET_2P_DSHIELD_INTS_SAVE
-#    --------------------------------
+     ENDPROC GET_2P_DSHIELD_INTS
+#    ---------------------------
 
 #bgn_debug
      PROC PICK_TL
@@ -14711,8 +14711,8 @@
          if property == 10.0
             CALL GET_2P_SPIN_ORBIT_INTS
 # 
-            CALL GET_2P_ERI_INTS
-            CALL GET_2P_DSHIELD_INTS
+#            CALL GET_2P_ERI_INTS
+#            CALL GET_2P_DSHIELD_INTS
          endif
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle
@@ -14720,7 +14720,7 @@
 # contrbutions are from the second-order interactions (two-particle 
 # diamagnetic shielding operator). 
 
-         CALL PDCONT 
+#         CALL PDCONT 
 #
 #bgn_debug
       suma=0.0
@@ -14950,43 +14950,52 @@
           D2SO_ZZ *= -1.0
           D2SO_ZX *= -1.0
           D2SO_ZY *= -1.0
-#          D2SO_ZZ *= -1.0
+          D2SO_ZZ *= -1.0
 
           DO XYZ 
              DO XYZ1
                 IF XYZ == 1
                    IF XYZ1 == 1
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_XX
                    ENDIF 
                    IF XYZ1 == 2
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XY
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_XY
                    ENDIF 
                    IF XYZ1 == 3
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XZ
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_XZ
                    ENDIF 
                 ENDIF 
 
                 IF XYZ == 2
                    IF XYZ1 == 1
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YX
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_YX
                    ENDIF 
                    IF XYZ1 == 2
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YY
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_YY
                    ENDIF 
                    IF XYZ1 == 3
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YZ
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_YZ
                    ENDIF 
                 ENDIF 
 
                 IF XYZ == 3
                    IF XYZ1 == 1
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZX
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_ZX
                    ENDIF 
                    IF XYZ1 == 2
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZY
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_ZY
                    ENDIF 
                    IF XYZ1 == 3
                       G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZZ
+                      G_TENSOR_2E_DSH(XYZ, XYZ1) = E2GC_ZZ 
                    ENDIF 
                 ENDIF 
              ENDDO XYZ1
@@ -14994,6 +15003,8 @@
 
           IPOL = 716.0
           EXECUTE PRINT_REL_INFO IPOL G_TENSOR_2E_SOI
+          IPOL = 717.0
+          EXECUTE PRINT_REL_INFO IPOL G_TENSOR_2E_DSH
 
           ENDIF
 

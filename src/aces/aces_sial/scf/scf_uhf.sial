@@ -4840,8 +4840,8 @@
  
       DO KITER 
       DO KPTR1 
-         tpinf(kiter,kptr1) = 0
-         tpinf(kiter,kptr1) = tpinf(kiter,kptr1)
+         tpinf(kiter,kptr1) = 0.0
+         pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
       ENDDO KPTR1 
       ENDDO KITER 
 
@@ -5485,7 +5485,7 @@
       endif
 #
 #
-      scfeneg  = energy2 
+      scfeneg  = energy
       totenerg = scfeneg
       execute sip_barrier
 #

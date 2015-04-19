@@ -4763,7 +4763,7 @@
       endif
 
 
-      scfeneg  = energy2
+      scfeneg  = energy
       totenerg = scfeneg
       execute sip_barrier
 #                         
