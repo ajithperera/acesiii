@@ -130,12 +130,13 @@ C             ...the case P = p-shell and Q = p-shell.
 C                (here we know that NGQP = 2)
 C
 C
-    4    N = 1
+    4    N = 0
          DO 400 M = 1,MIJKL
             TWOPQ = HALF * PQPINV (M)
-            B00 (N)   = RTS (N)   * TWOPQ
-            B00 (N+1) = RTS (N+1) * TWOPQ
-            N = N + 2
+            DO NG = 1, NGQP
+               N = N + 1
+               B00 (N)   = RTS (N)   * TWOPQ
+            ENDDo 
   400    CONTINUE
 
          RETURN

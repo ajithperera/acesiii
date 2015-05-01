@@ -11540,33 +11540,33 @@
             GET DpqB(mu,sigma)
             GET DpqB(nu,lambda)
 
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-##
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-##
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-##
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-##
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-##
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
 
 #           Fully transform Diixx
@@ -14241,20 +14241,20 @@
      ENDPROC GET_2P_ERI_INTS
 #    -----------------------
 
-#     PROC GET_2P_DSHIELD_INTS
-#    ------------------------
+     PROC GET_2P_DSHIELD_INTS_DEBG
+#    --------------------------
 #
-#     PARDO mu, nu, lambda, sigma
+     PARDO mu, nu, lambda, sigma
 #
-## XX, XY, XZ components 
-#
-#               EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-#               PREPARE AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-#     ENDPARDO mu, nu, lambda, sigma
-#
-#     EXECUTE SERVER_BARRIER
-#     ENDPROC GET_2P_DSHIELD_INTS
-#    ------------------------
+# XX, XY, XZ components 
+
+               EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
+               PREPARE AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
+     ENDPARDO mu, nu, lambda, sigma
+
+     EXECUTE SERVER_BARRIER
+     ENDPROC GET_2P_DSHIELD_INTS_DEBG
+#    --------------------------------
 
      PROC GET_2P_DSHIELD_INTS
 #    ------------------------
@@ -14265,6 +14265,7 @@
 
                EXECUTE COMPUTE_2DSHIELD_XXBATCH TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_XX(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
+               execute print_scalar one
 
                EXECUTE COMPUTE_2DSHIELD_XYBATCH TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_XY(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
@@ -14280,7 +14281,7 @@
                EXECUTE COMPUTE_2DSHIELD_YYBATCH TAO_2P_DSHIELD_YY(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_YY(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_YY(mu, nu, lambda, sigma)
 
-               EXECUTE COMPUTE_2DSHIELD_YZBATCH TAO_2P_DSHIELD_YX(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_YZBATCH TAO_2P_DSHIELD_YZ(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_YZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_YZ(mu, nu, lambda, sigma)
 
 # ZX, ZY, ZZ components 
@@ -14710,8 +14711,9 @@
 
          if property == 10.0
             CALL GET_2P_SPIN_ORBIT_INTS
-# 
+ 
 #            CALL GET_2P_ERI_INTS
+            CALL GET_2P_DSHIELD_INTS_DEBG
 #            CALL GET_2P_DSHIELD_INTS
          endif
 #

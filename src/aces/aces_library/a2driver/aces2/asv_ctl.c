@@ -373,9 +373,11 @@ const ASV_nl_t ASV_nl[] =
 {/*257*/ "DKHORDER",    "DKH_ORD#ER",   h_ICHAR_f_int,  0,      ""},
 {/*258*/ "UNCONTRACT",  "UNCONT#RACT",  h_ICHAR_handle, 0,      ""},
 {/*259*/ "IOPT_CTRL",   "OPT_CONT#ROL", h_ICHAR_handle, 0,      ""},
-{/*260*/ "","",0,0,""}
+{/*260*/ "ILOCK_ORBS",  "LOCK_ORBITALS",h_ICHAR_handle, 0,      ""},
+{/*261*/ "IDAMP_END",   "DAMP_END"     ,h_ICHAR_handle, 20,     ""},
+{/*262*/ "",   ""     ,h_ICHAR_handle,0,""},
 }; /* end ASV_nl[] definition */
-#define MAX_ASVs 260
+#define MAX_ASVs 262
 
 /******************************************************************************/
 

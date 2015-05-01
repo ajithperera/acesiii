@@ -381,34 +381,50 @@ c Note that above is not used in printing anything?
        if (scalar_table(sind) .eq. 711) then
           call print_pol_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
-
        endif
+
+C Polarizablity
+
        if (scalar_table(sind) .eq. 712) then
           call print_pol_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
        endif
 
+C g-tensor: mass correction
+
        if (scalar_table(sind) .eq. 713) then
           call print_gten_mc_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
        endif
+C g-tensor: 1-el gauge correction
 
        if (scalar_table(sind) .eq. 714) then
           call print_gten_1egc_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
         endif
 
+C g-tensor: 1-el spin-orbit
+
        if (scalar_table(sind) .eq. 715) then
           call print_gten_1bl_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
         endif
+
+C g-tensor: 2-el spin-orbit
 
        if (scalar_table(sind) .eq. 716) then
           call print_gten_2bl_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
         endif
 
+C g-tensor: 2-el gauge correction
+
        if (scalar_table(sind) .eq. 717) then
+          call print_gten_2egc_info(x(iarray),scalar_table(sind),
+     *             1,n1,1,n2)
+        endif
+
+       if (scalar_table(sind) .eq. 718) then
           call print_dipole_info(x(iarray),scalar_table(sind),
      *             1,n1,1,n2)
         endif
@@ -2007,9 +2023,79 @@ c          enddo
 104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
       Return
       End
-c................END Prakash...............................    
+c
+c---------------------------------------------------------------------
+c
+      subroutine print_gten_2egc_info(array1,sval,a1,a2,b1,b2)
+      implicit none
+      include 'interpreter.h'
+      include 'int_gen_parms.h'
+      include 'parallel_info.h'
+      integer i, ival, amax, a, a1, a2, b, b1, b2
+      integer Nunpaired
+      double precision array1(a1:a2,b1:b2), sval, stemp, FNS, PPM
+      double precision efinal, conv, Fac, Gfac, Refspin
+      open(66,file='summary.out')
+      ival = sval
+      conv = 27.21138505
 
+c Fine structure constant and parts per million
+
+       FNS = 7.29735308D-03
+       GFAC= 2.0023193044D0
+       PPM = 1.0D+06
+c
+c External multiplication constant for diamagentic spin-orbit
+c contribution.
+
+      Nunpaired = Nalpha_occupied - Nbeta_occupied
+
+      If (Nunpaired .EQ. 0) Then
+         Write(6, "(a)") "Invalid input: A closed shell EPR calculation"
+         Call abort_job()
+      Endif
+
+      Refspin   = Dble(Nunpaired)
+
+      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
+
+       if (me .eq. 0)then
+       if (ival .eq. 717) then
+          do a = a2, a1, -1
+            if (a .eq. 1.0) then
+               write(66,*)
+               write(66,*)
+               write(66,101)
+               write(66,*)
+               write(66,98)
+               write(66,*)
+               write(66,101)
+            endif
+          enddo
+       endif
+
+       if (ival .eq. 717) then
+          write(66,97)
+c          do a = a1, a2
+               write(66,102)  (Fac*array1(1,i), i=b1, b2)
+               write(66,103)  (Fac*array1(2,i), i=b1, b2)
+               write(66,104)  (Fac*array1(3,i), i=b1, b2)
+               write(66,*)
+c          enddo
+       endif
+      endif
+97    format(17x," X                        Y                      Z")
+98    format(26x,"CCSD g-tensor: 2el-diamagnetic shielding (ppm)")
+99    format(2x,I8,5x,F20.10,2x,F20.10)
+101   format(2x,75('-'))
+102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)
+103   format(2x,"Y",F20.7,4x,F20.7,4x,F20.7)
+104   format(2x,"Z",F20.7,4x,F20.7,4x,F20.7)
+      Return
+      End
+c
 c...............................................................
+c`
       subroutine print_dipole_info(array1,sval,a1,a2,b1,b2)
       implicit none
       include 'interpreter.h'

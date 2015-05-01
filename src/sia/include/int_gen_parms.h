@@ -126,6 +126,8 @@ c nContAOs : total number of contracted functions
       double precision scf_energy, totenerg
       double precision damp_init, cc_conv, scf_conv, bcc_conv
       double precision guess, lshft_a1, lshft_b1, damp_type, damp_tol
+      double precision lindep_tol, lock_orbitals, intgrl_tol, damp_end
+      double precision lock_orbocc
 
       double precision excite, eom_tol, eom_roots ! Watson Added
       double precision  polarizability, a_tensor, g_tensor, d_tensor
@@ -191,8 +193,10 @@ c nContAOs : total number of contracted functions
      &                     init_scf, if_fno,
      &                     polarizability,a_tensor,g_tensor,
      &                     d_tensor, bcc_conv, guess, lshft_a1, 
-     &                     lshft_b1, damp_type, damp_tol, 
-     &                     last 
+     &                     lshft_b1, damp_type, damp_tol, lindep_tol,
+     &                     lock_orbitals, lock_orbocc, intgrl_tol, 
+     &                     damp_end, last 
+
 
       logical managers_are_workers, master_is_worker
  

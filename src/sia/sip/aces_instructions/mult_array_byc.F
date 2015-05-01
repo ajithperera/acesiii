@@ -152,7 +152,7 @@ C
       double precision yyy(1:pb1)
       double precision z
 C
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVL0
       if (me .eq. master) then
       write(6,"(a)") "Checking the input arrays"
       Write(*,"(a,1x,i4,1x,i4)") "The input dimensions: ", pb1, pa2
@@ -162,7 +162,7 @@ C#ifdef _DEBUG_LVL0
       Write(*,"(6(1x,F3.1))") (yyy(i),i=1,pa1)
       write(6,"(a)") "End checking input array"
       endif 
-C#endif 
+#endif 
    
       Do j = 1, pa2
          Z = yyy(j) 
@@ -171,15 +171,15 @@ C#endif
          Enddo 
 
       Enddo
-
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVL0
       if (me .eq. master) then
       write(*,*)
       write(*,"(a)") "The scalled array"
       call output(xxx, 1, pa1, 1, pa2, pa1, pa2, 1)
       Write(*,*)
       endif
-C#endif
+#endif
+
 
       return
       end

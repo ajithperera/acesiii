@@ -115,7 +115,7 @@ c--------------------------------------------------------------------------
 
          nind  = array_table(c_nindex,array)
          if (nind .ne. 2) then
-            print *,'Error: Spin-orbit ints. requires a 2-index'
+            print *,'Error: Kinetic ints. requires a 2-index'
             Print *,' argument array.' 
             print *,'Array ',array,' is defined with ',nind,' indices.'
             call abort_job()

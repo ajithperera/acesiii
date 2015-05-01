@@ -150,11 +150,12 @@ C
       integer company_comm, pst_get_company_comm,master,pst_get_master
       double precision xxx(1:pa1,1:pa2)
       double precision yyy(1:pb1)
+      double precision scr(1:pa1)
       double precision z
 C
 C#ifdef _DEBUG_LVL0
       if (me .eq. master) then
-      Write(*,*) pb1, pb2
+      Write(*,*) pa1, pa2
       write(6,"(a)") "Checking the overlap map"
       call output(xxx, 1, pa1, 1, pa2, pa1, pa2,1)
       write(6,"(a)") "End checking the overlap map"
@@ -178,6 +179,7 @@ C#ifdef _DEBUG_LVL0
 C#endif 
          Do i = 1, pb1
             If (Z .EQ. Dabs(xxx(i,j)))  yyy(i) = 1.0D0
+             
          Enddo
 
 C#ifdef _DEBUG_LVL0

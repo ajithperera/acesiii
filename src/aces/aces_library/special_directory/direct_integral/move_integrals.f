@@ -291,3 +291,112 @@ c---------------------------------------------------------------------------
       return
       end
 
+      subroutine add_4cent_integrals(v, va1,va2,vb1,vb2,vc1,vc2,vd1,vd2,
+     *                 intblk, a1, a2, b1, b2, c1, c2, d1, d2, fact)
+
+      implicit none
+      integer va1, va2, vb1,vb2, vc1, vc2, vd1, vd2
+      integer a1, a2, b1, b2, c1, c2, d1, d2
+      integer a,b,c,d
+      integer flag
+      integer drange1, drange2
+      integer crange1, crange2
+      integer brange1, brange2
+      integer arange1, arange2
+
+      double precision v(va1:va2,vb1:vb2,vc1:vc2,vd1:vd2)
+      double precision intblk(a1:a2,b1:b2,c1:c2,d1:d2), fact
+
+      drange1 = max(vd1, d1)
+      drange2 = min(vd2, d2)
+      crange1 = max(vc1, c1)
+      crange2 = min(vc2, c2)
+      brange1 = max(vb1, b1)
+      brange2 = min(vb2, b2)
+      arange1 = max(va1, a1)
+      arange2 = min(va2, a2)
+
+      do d = drange1, drange2
+      do c = crange1, crange2
+      do b = brange1, brange2
+      do a = arange1, arange2
+         v(a,b,c,d) = intblk(a,b,c,d)*fact + v(a,b,c,d)
+      enddo
+      enddo
+      enddo
+      enddo
+
+      if (flag .eq. 1) then
+      do a = arange1, arange2
+         do b = brange1, brange2
+         do c = crange1, crange2
+         do d = drange1, drange2
+         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
+     &             v(a,b,c,d)
+
+         enddo
+         enddo
+         enddo
+         enddo
+       endif 
+
+      return
+      end
+
+      subroutine add_4cent_integrals_dbg(v, va1,va2,vb1,vb2,vc1,
+     *                 vc2,vd1,vd2,
+     *                 intblk, a1, a2, b1, b2, c1, c2, d1, d2, fact,
+     *                 flag)
+
+      implicit none
+      integer va1, va2, vb1,vb2, vc1, vc2, vd1, vd2
+      integer a1, a2, b1, b2, c1, c2, d1, d2
+      integer a,b,c,d
+      integer flag
+      integer drange1, drange2
+      integer crange1, crange2
+      integer brange1, brange2
+      integer arange1, arange2
+
+      double precision v(va1:va2,vb1:vb2,vc1:vc2,vd1:vd2)
+      double precision intblk(a1:a2,b1:b2,c1:c2,d1:d2), fact
+
+      drange1 = max(vd1, d1)
+      drange2 = min(vd2, d2)
+      crange1 = max(vc1, c1)
+      crange2 = min(vc2, c2)
+      brange1 = max(vb1, b1)
+      brange2 = min(vb2, b2)
+      arange1 = max(va1, a1)
+      arange2 = min(va2, a2)
+
+      do d = drange1, drange2
+      do c = crange1, crange2
+      do b = brange1, brange2
+      do a = arange1, arange2
+         v(a,b,c,d) = intblk(a,b,c,d)*fact + v(a,b,c,d)
+      enddo
+      enddo
+      enddo
+      enddo
+
+      Write(*,*)
+      write(*,*) "Printing from add_4cent_integrals"
+      if (flag .eq. 1) then
+      do a = arange1, arange2
+         do b = brange1, brange2
+         do c = crange1, crange2
+         do d = drange1, drange2
+         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
+     &             v(a,b,c,d)
+
+         enddo
+         enddo
+         enddo
+         enddo
+       endif 
+
+      return
+      end
+
+

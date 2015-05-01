@@ -36,7 +36,7 @@ C      1     - yes
       include 'machine_types.h'
       include 'parallel_info.h'
       include 'trace.h'
-      include 'scflindep.h'
+      include 'int_gen_parms.h'
 
       integer junk, n, sort, dosq, doinv,NLINDEP  
       double precision a(n,n),b(n,n),tresh,qqq

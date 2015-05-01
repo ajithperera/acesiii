@@ -22,7 +22,6 @@ c-------------------------------------------------------------------------
       include 'int_gen_parms.h'
       include 'machine_types.h'
       include 'mxatms.par' 
-      include 'scflindep.h'
 
       integer ierr
       common /flags/ iflags
@@ -53,8 +52,10 @@ c-------------------------------------------------------------------------
       else 
 
 c Sets the linear dependence tolerance in cases when JOBARC exists so that 
-c it does not become 1.0!! 
-          lindep_tol = 9 
+c it does not become 1.0!!  This is no longer required since lindep_tol
+c was moved to int_gen_parms.h and set in init_data.F
+C
+C          lindep_tol = 9 
 
       endif
 

@@ -177,11 +177,19 @@ C Ajith Perera, SOI instructions
      &         compute_dshield_yxbatch, compute_dshield_zxbatch,
      &         compute_dshield_zybatch
 
+      external compute_2dshield_xxbatch, compute_2dshield_xybatch,
+     &         compute_2dshield_xzbatch, compute_2dshield_yybatch,
+     &         compute_2dshield_yzbatch, compute_2dshield_zzbatch,
+     &         compute_2dshield_yxbatch, compute_2dshield_zxbatch,
+     &         compute_2dshield_zybatch
+
       external write_vecs2jarc, compute_kin_batch
       external antihermitize_pqrs, fock_denominator_dynamic,
      &         init_fockdiags
       external level_shift, return_occupation
       external get_init_occupation, mult_array_byc
+      external david_damp_factor, report_maximum
+      external place_constanta, place_constantb
 c -------------------------------------------------------------------
 c Prakash Instructions needed for delta integraks
 c -------------------------------------------------------------------
@@ -751,6 +759,9 @@ c-------------------------------------------------------------------
       dummy = load_user_sub('mult_array_byc'//char(0),
      &                       mult_array_byc)
 
+      dummy = load_user_sub('david_damp_factor'//char(0),
+     &                       david_damp_factor)
+
       dummy = load_user_sub('antihermitize_pqrs'//char(0), 
      &                       antihermitize_pqrs)
       call set_upgrade_flag(dummy)
@@ -758,7 +769,31 @@ c-------------------------------------------------------------------
       dummy = load_user_sub('init_fockdiags'//char(0),init_fockdiags)
       dummy = load_user_sub('fock_denominator_dynamic'//char(0),
      &                        fock_denominator_dynamic)
-c
+
+      dummy = load_user_sub('compute_2dshield_xxbatch'//char(0),
+     &                       compute_2dshield_xxbatch)
+      dummy = load_user_sub('compute_2dshield_xybatch'//char(0),
+     &                       compute_2dshield_xybatch)
+      dummy = load_user_sub('compute_2dshield_yxbatch'//char(0),
+     &                       compute_2dshield_yxbatch)
+      dummy = load_user_sub('compute_2dshield_xzbatch'//char(0),
+     &                       compute_2dshield_xzbatch)
+      dummy = load_user_sub('compute_2dshield_zxbatch'//char(0),
+     &                       compute_2dshield_zxbatch)
+      dummy = load_user_sub('compute_2dshield_yybatch'//char(0),
+     &                       compute_2dshield_yybatch)
+      dummy = load_user_sub('compute_2dshield_yzbatch'//char(0),
+     &                       compute_2dshield_yzbatch)
+      dummy = load_user_sub('compute_2dshield_zybatch'//char(0),
+     &                       compute_2dshield_zybatch)
+      dummy = load_user_sub('compute_2dshield_zzbatch'//char(0),
+     &                       compute_2dshield_zzbatch)
+      dummy = load_user_sub('report_maximum'//char(0),
+     &                       report_maximum)
+      dummy = load_user_sub('place_constanta'//char(0),
+     &                       place_constanta)
+      dummy = load_user_sub('place_constantb'//char(0),
+     &                       place_constantb)
 c-----------------------------------------------------------------------
 c Prakash instructions for delta integrals
 c----------------------------------------------------------------------

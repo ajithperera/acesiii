@@ -180,6 +180,7 @@ C             ...the case P = p-shell and Q = s-shell.
 C                (no B00,B01,B10,D00)
 C
 C
+
     2    IF (ATOMAB) THEN
              M = 0
              N = 0

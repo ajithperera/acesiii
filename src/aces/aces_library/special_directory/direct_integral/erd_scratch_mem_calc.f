@@ -73,7 +73,7 @@ c--------------------------------------------------------------------------
       integer der_flags(12), iflag, jflag 
       integer lmax, ncmax, npmax
       integer m1, m2, mrange, mleft
-
+   
       logical spherical
 
       imax = 0
@@ -117,8 +117,8 @@ c-------------------------------------------------------------------------
      *                   imin, iblk, zmin, zblk)
          imax = max0(imax, imin)
          zmax = max0(zmax, zmin)
-      enddo
 
+      enddo
 
       do m = m1, m2
       do n = m, nshells

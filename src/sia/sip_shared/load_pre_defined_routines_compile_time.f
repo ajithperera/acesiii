@@ -390,10 +390,26 @@ C Ajith Perera, miscellaneous developments.
 
       dummy = load_user_sub('mult_array_byc'//char(0),0)
 
+      dummy = load_user_sub('david_damp_factor'//char(0),0)
+
       dummy = load_user_sub('antihermitize_pqrs'//char(0),0)
 
       dummy = load_user_sub('init_fockdiags'//char(0),0)
       dummy = load_user_sub('fock_denominator_dynamic'//char(0),0)
+
+      dummy = load_user_sub('compute_2dshield_xxbatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_xybatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_yxbatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_xzbatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_zxbatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_yybatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_yzbatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_zybatch'//char(0),0)
+      dummy = load_user_sub('compute_2dshield_zzbatch'//char(0),0)
+
+      dummy = load_user_sub('report_maximum'//char(0),0)
+      dummy = load_user_sub('place_constanta'//char(0),0)
+      dummy = load_user_sub('place_constantb'//char(0),0)
 c -----------------------------------------------------------------
 c Prakash instructions need for delta integrals
 c ------------------------------------------------------------------

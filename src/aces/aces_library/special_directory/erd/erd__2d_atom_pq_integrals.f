@@ -123,6 +123,18 @@ C                The case present has been evaluated outside this
 C                routine and is transmitted via argument.
 C
 C
+         
+         DO N = 1, NGQEXQ
+            DO i = 0, SHELLP
+              DO K = 0, SHELLQ
+                 INT2DX (N,I,K) = 0.0D0
+                 INT2DY (N,I,K) = 0.0D0
+                 INT2DZ (N,I,K) = 0.0D0
+               ENDDO
+             ENDDO
+         ENDDO 
+
+         Write(*,*) "ERD__2D_ATOM_PQ_INTEGRALS", CASE2D
          GOTO (1,3,3,2,4,4,2,4,4) CASE2D
 C
 C

@@ -338,7 +338,9 @@ c------------------------------------------------------------------------
      *                    excite, eom_tol, eom_roots, ! Watson Added
      *                    polarizability, a_tensor, g_tensor, d_tensor,
      *                    bcc_conv, guess, lshft_a1, lshft_b1, 
-     *                    damp_type, damp_tol,
+     *                    damp_type, damp_tol, lindep_tol, 
+     *                    lock_orbitals, lock_orbocc, intgrl_tol, 
+     *                    damp_end,
      *
      *                    io_company_id, niocompany, need_predef,
      *                    npre_defined, dryrun)

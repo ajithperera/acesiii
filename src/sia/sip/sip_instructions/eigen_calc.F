@@ -34,6 +34,8 @@ c--------------------------------------------------------------------------
       implicit none
       include 'interpreter.h'
       include 'trace.h'
+      include 'mpif.h'
+      include 'parallel_info.h'
 
       double precision x(*)
       integer nindex, type(*), bval(*), eval(*)
@@ -41,7 +43,7 @@ c--------------------------------------------------------------------------
       double precision x2(*)
       integer nindex2, type2(*), bval2(*), eval2(*)
       integer bdim2(*), edim2(*)
-
+      integer company_comm, pst_get_company_comm,master,pst_get_master
       integer n, ierr, junk
 
       ierr = 0
@@ -78,4 +80,4 @@ c--------------------------------------------------------------------------
       enddo
 
       return
-      end
+      End

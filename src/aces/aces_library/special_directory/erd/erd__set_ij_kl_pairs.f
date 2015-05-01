@@ -883,6 +883,11 @@ C                               WRITE (*,*) ' Skip K L = ',K,L
              EMPTY = .TRUE.
              RETURN
          END IF
+
+C         write(6,*) (PRIMA(k),k=1,NPGTOAB)
+C         write(6,*) (PRIMB(k),k=1,NPGTOAB)
+C         write(6,*) (PRIMC(k),k=1,NPGTOCD)
+C         write(6,*) (PRIMD(k),k=1,NPGTOCD)
 C
 C
 C             ...ready!

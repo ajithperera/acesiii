@@ -24,7 +24,6 @@ c-------------------------------------------------------------------------
       include 'int_gen_parms.h'
       include 'machine_types.h'
       include 'fmo.h'
-      include 'scflindep.h'
 
       integer ierr, len
       integer*8 ixx, c_loc64
@@ -73,10 +72,11 @@ c---------------------------------------------------------------------------
 
 c---------------------------------------------------------------------------
 c     basis linear dependency threshold for SCF calculation
+C     No longer needed,moved to the int_gen_parm common block.
 c---------------------------------------------------------------------------
-
-      call mpi_bcast(lindep_tol,1,mpi_integer,0,mpi_comm_world, ierr)
-
+C
+C      call mpi_bcast(lindep_tol,1,mpi_integer,0,mpi_comm_world, ierr)
+C
 c---------------------------------------------------------------------------
 c     Integral threshold for SCF calculation
 c---------------------------------------------------------------------------

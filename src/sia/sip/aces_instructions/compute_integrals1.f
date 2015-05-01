@@ -276,7 +276,7 @@ c     enddo
       subroutine set_itol(delta,itol) 
 
       implicit none
-      include 'scflindep.h' 
+      include 'int_gen_parms.h' 
       double precision delta, itol  
 
 C

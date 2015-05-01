@@ -27,8 +27,9 @@ C  in the file COPYRIGHT.
      *                       polarizability, a_tensor, g_tensor, 
      *                       d_tensor, bcc_conv, ! Ajith Perera
      *                       guess, lshft_a1, lshft_b1, damp_type,
-     *                       damp_tol,
-     *
+     *                       damp_tol,lindep_tol,lock_orbitals,
+     *                       lock_orbocc, intgrl_tol, damp_end, 
+     * 
      *                       io_company_id, niocompany, need_predef,
      *                       npre_defined, dryrun)
       implicit none
@@ -103,6 +104,8 @@ C  in the file COPYRIGHT.
       integer ipolarizability, ia_tensor, ig_tensor, id_tensor ! Ajith Perera
       integer ibcc_conv ! Ajith Perera
       integer iguess, ilshft_a1, ilshft_b1, idamp_type, idamp_tol ! Ajith perera
+      integer ilock_orbitals,ilindep_tol,iintgrl_tol, idamp_end
+      integer ilock_orbocc
       integer timertype
       integer index, val1, val2
       integer occ_index, index_type, ind, nindex
@@ -114,6 +117,8 @@ C  in the file COPYRIGHT.
       double precision excite, eom_tol, eom_roots ! Watson Added
       double precision polarizability, a_tensor, g_tensor, d_tensor
       double precision guess, lshft_a1, lshft_b1, damp_type, damp_tol
+      double precision lindep_tol,lock_orbitals,intgrl_tol, damp_end
+      double precision lock_orbocc 
 
       double precision xxx(2)
 #ifdef ALTIX
@@ -717,6 +722,21 @@ C Ajith Perera, 05/2014  added
 
       idamp_tol       = array_table(c_scalar_index,32)
       scalar_table(idamp_tol)  = damp_tol
+
+      ilindep_tol     = array_table(c_scalar_index,33)
+      scalar_table(ilindep_tol) = lindep_tol
+
+      ilock_orbitals  = array_table(c_scalar_index,34)
+      scalar_table(ilock_orbitals)  = lock_orbitals
+
+      iintgrl_tol     = array_table(c_scalar_index,35)
+      scalar_table(iintgrl_tol) = intgrl_tol
+
+      idamp_end       = array_table(c_scalar_index,36)
+      scalar_table(idamp_end)   = damp_end
+
+      ilock_orbocc     = array_table(c_scalar_index,37)
+      scalar_table(ilock_orbocc) = lock_orbocc
 C 
       next = 0
       next_server = 0
@@ -726,7 +746,7 @@ C Tom Watson, Changed to 22.
 C Ajith Perera, changed to 27, 05/2014. 
 C Ajith Perera, changed to 28, 12/2014. 
 C
-      do i = 33, narray_table   ! 1st 19 arrays are pre-defined.
+      do i = 38, narray_table   ! 1st 19 arrays are pre-defined.
          type = array_table(c_array_type,i) 
          if (type .eq. static_array) then
 

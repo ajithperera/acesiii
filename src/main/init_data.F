@@ -44,7 +44,8 @@ C  in the file COPYRIGHT.
       integer          ipolarizability, ig_tensor, ia_tensor! perera Added
       integer          id_tensor                            ! perera Added
       integer          iguess, ilshfta,  ilshftb
-      integer          idamp_type, idamp_tol
+      integer          idamp_type, idamp_tol,ilindep_tol,ilock_orbitals 
+      integer          iintgrl_tol, ilock_orbocc, idamp_end
       character*4      atmnam(max_centers)
       logical          cartesian
       logical          uhf
@@ -203,10 +204,16 @@ c------------------------------------------------------------------------
       scf_beg  = ijunk(40)
 
 c     Kluggy way of dealing with this VFL 1/2/2013 
-      if (scf_beg .ge. 8) then 
-         write(6,*) ' Resetting scf_beg to 2 '
-         scf_beg = 2 
-      endif 
+C     No longer needed
+C      if (scf_beg .ge. 8) then 
+C         write(6,*) ' Resetting scf_beg to 2 '
+C         scf_beg = 2 
+C      endif 
+C    The integral tolerance is moved to here from scflindep.h
+C    Ajith Perera, 2/2015.
+C    
+      iintgrl_tol = iflags(108)
+      intgrl_tol  = iintgrl_tol
 
       vib_freq_calc = .false. 
       if (ijunk(54) .ne. 0) vib_freq_calc = .true.
@@ -266,12 +273,21 @@ C
         lshft_a1 = DBLE(ilshfta)
         lshft_b1 = DBLE(ilshftb)
 
-        Idamp_type = iflags(109)
-        Idamp_tol  = iflags(110)
+        Idamp_type     = iflags(109)
+        Idamp_tol      = iflags(110)
+        Ilindep_tol    = ijunk(8)
+        Ilock_orbitals = iflags(160)
+        Ilock_orbocc   = ijunk(41)
+        Idamp_end      = iflags(161)
   
-        Damp_type = DBLE(Idamp_type)
-        Damp_tol  = DBLE(Idamp_tol)
-
+  
+        Damp_type     = DBLE(Idamp_type)
+        Damp_tol      = DBLE(Idamp_tol)
+        Lindep_tol    = DBLE(Ilindep_tol)
+        Lock_orbitals = DBLE(Ilock_orbitals)
+        Lock_orbocc   = DBLE(Ilock_orbocc)
+        Damp_end      = DBLE(Idamp_end)
+   
 c-------------------------------------------------------------------------
 c   Read IFLAGS2 off JOBARC.
 c-------------------------------------------------------------------------
