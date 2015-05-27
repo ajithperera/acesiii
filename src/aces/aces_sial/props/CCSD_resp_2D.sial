@@ -14241,21 +14241,6 @@
      ENDPROC GET_2P_ERI_INTS
 #    -----------------------
 
-     PROC GET_2P_DSHIELD_INTS_DEBG
-#    --------------------------
-#
-     PARDO mu, nu, lambda, sigma
-#
-# XX, XY, XZ components 
-
-               EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-               PREPARE AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
-     ENDPARDO mu, nu, lambda, sigma
-
-     EXECUTE SERVER_BARRIER
-     ENDPROC GET_2P_DSHIELD_INTS_DEBG
-#    --------------------------------
-
      PROC GET_2P_DSHIELD_INTS
 #    ------------------------
 
@@ -14712,9 +14697,9 @@
          if property == 10.0
             CALL GET_2P_SPIN_ORBIT_INTS
  
-#            CALL GET_2P_ERI_INTS
-            CALL GET_2P_DSHIELD_INTS_DEBG
-#            CALL GET_2P_DSHIELD_INTS
+            CALL GET_2P_ERI_INTS
+            CALL GET_2P_DSHIELD_INTS
+
          endif
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle
@@ -14722,7 +14707,7 @@
 # contrbutions are from the second-order interactions (two-particle 
 # diamagnetic shielding operator). 
 
-#         CALL PDCONT 
+         CALL PDCONT 
 #
 #bgn_debug
       suma=0.0

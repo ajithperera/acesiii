@@ -62,18 +62,18 @@
 #
 # XX, XY, XZ components
 
-#               EXECUTE COMPUTE_2DSHIELD_XXBATCH TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
-#               EXECUTE COMPUTE_2DSHIELD_XYBATCH TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_XXBATCH TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_XYBATCH TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
                EXECUTE COMPUTE_2DSHIELD_XZBATCH TAO_2P_DSHIELD_XZ(mu, nu, lambda, sigma)
 
 
-#               EXECUTE COMPUTE_2DSHIELD_YXBATCH TAO_2P_DSHIELD_YX(mu, nu, lambda, sigma)
-#               EXECUTE COMPUTE_2DSHIELD_YYBATCH TAO_2P_DSHIELD_YY(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_YXBATCH TAO_2P_DSHIELD_YX(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_YYBATCH TAO_2P_DSHIELD_YY(mu, nu, lambda, sigma)
                EXECUTE COMPUTE_2DSHIELD_YZBATCH TAO_2P_DSHIELD_YZ(mu, nu, lambda, sigma)
 
 
-#               EXECUTE COMPUTE_2DSHIELD_ZXBATCH TAO_2P_DSHIELD_ZX(mu, nu, lambda, sigma)
-#               EXECUTE COMPUTE_2DSHIELD_ZYBATCH TAO_2P_DSHIELD_ZY(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_ZXBATCH TAO_2P_DSHIELD_ZX(mu, nu, lambda, sigma)
+               EXECUTE COMPUTE_2DSHIELD_ZYBATCH TAO_2P_DSHIELD_ZY(mu, nu, lambda, sigma)
                EXECUTE COMPUTE_2DSHIELD_ZZBATCH TAO_2P_DSHIELD_ZZ(mu, nu, lambda, sigma)
 
      ENDPARDO mu, nu, lambda, sigma
