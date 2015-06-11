@@ -4721,11 +4721,41 @@
             REQUEST                              VSaaai(a,a1,a2,i) i 
             tpppp(a,a1,a2,i)                   = VSaaai(a,a1,a2,i) 
             PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += tpppp(a,a1,a2,i) 
-#
+
       ENDPARDO a, a2, a1, i 
+
+#execute server_barrier
+#esum = 0.0
+#pardo a,a1,a2,i
+#    request HBAR_ABCI_aaaa(a,a1,a2,i) i
+#    Taaai(a,a1,a2,i) = HBAR_ABCI_aaaa(a,a1,a2,i)
+#    etemp = Taaai(a,a1,a2,i)*HBAR_ABCI_aaaa(a,a1,a2,i)
+#    esum += etemp
+#endpardo a,a1,a2,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+
+#
+      PARDO i, a2, a1, i1
+#
+            REQUEST WHIAAI(i1,a1,a2,i) i
+#
+            DO a
+               t1pppp(a,a1,a2,i)                  = WHIAAI(i1,a1,a2,i)*St1a(a,i1)
+               t2pppp(a2,a1,a,i)                  = t1pppp(a,a1,a2,i)
+               t1pppp(a,a1,a2,i)                 *= -1.0
+               PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += t1pppp(a,a1,a2,i)
+               PREPARE HBAR_ABCI_aaaa(a2,a1,a,i) += t2pppp(a2,a1,a,i)
+            ENDDO a
+#
+      ENDPARDO i, a2, a1, i1
+#
 #
       PARDO a, a2, i, i1 
-#
+
             REQUEST T2aa(a,i1,a2,i) i1 
 #
             DO a1 
@@ -4737,9 +4767,9 @@
             ENDDO a1 
 #
       ENDPARDO a, a2, i, i1 
-#
+
       PARDO a, a2, i1, i2  
-#
+
             REQUEST               T2aa(a,i1,a2,i2) i2 
             tpp(a2,i2)          = St1a(a2,i2) 
             t1pp(a2,i1)         = St1a(a2,i1) 
@@ -4760,27 +4790,13 @@
 #
             ENDDO i 
             ENDDO a1 
-#
+
       ENDPARDO a, a2, i1, i2  
 #
-      PARDO i, a2, a1, i1  
-#
-            REQUEST WHIAAI(i1,a1,a2,i) i 
-#
-            DO a 
-               t1pppp(a,a1,a2,i)                  = WHIAAI(i1,a1,a2,i)*St1a(a,i1) 
-               t2pppp(a2,a1,a,i)                  = t1pppp(a,a1,a2,i)  
-               t1pppp(a,a1,a2,i)                 *= -1.0  
-               PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += t1pppp(a,a1,a2,i) 
-               PREPARE HBAR_ABCI_aaaa(a2,a1,a,i) += t2pppp(a2,a1,a,i) 
-            ENDDO a 
-#
-      ENDPARDO i, a2, a1, i1 
-#
       PARDO i, a, a1, i1 
-#
+
             REQUEST  NIAAI(i,a1,a,i1) i1
-#
+
             DO a2 
                t1pppp(a,a1,a2,i)                  = NIAAI(i,a1,a,i1)*St1a(a2,i1)
                t2pppp(a2,a1,a,i)                  = t1pppp(a,a1,a2,i)  
@@ -4790,21 +4806,21 @@
             ENDDO a2  
 #
       ENDPARDO i, a, a1, i1 
-#
+
       PARDO a, a1, a3, i1  
-#
+
             REQUEST  VSaaai(a1,a,a3,i1) i1
-#
+
             DO a2
             DO i
-#
+
                REQUEST                              T2aa(a2,i,a3,i1) i1
                t1pppp(a,a1,a2,i)                  = VSaaai(a1,a,a3,i1)*T2aa(a2,i,a3,i1)
                t2pppp(a2,a1,a,i)                  = t1pppp(a,a1,a2,i)
                t2pppp(a2,a1,a,i)                 *= -1.0  
                PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += t1pppp(a,a1,a2,i) 
                PREPARE HBAR_ABCI_aaaa(a2,a1,a,i) += t2pppp(a2,a1,a,i) 
-#
+
             ENDDO i 
             ENDDO a2 
 #
@@ -4828,10 +4844,10 @@
             ENDDO a2  
 #
       ENDPARDO a, a1, b, j 
-#
+
 #     BBBB spin component. 
 #     -------------------- 
-#
+
       PARDO b, b2, b1, j 
 #
             REQUEST                              VSbbbj(b,b1,b2,j) j 
@@ -35753,6 +35769,63 @@
       execute server_barrier
        CALL HBAR 
       execute server_barrier
+
+
+execute server_barrier
+esum = 0.0
+pardo a,a1,a2,i
+    request HBAR_ABCI_aaaa(a,a1,a2,i) i
+    Taaai(a,a1,a2,i) = HBAR_ABCI_aaaa(a,a1,a2,i)
+    etemp = Taaai(a,a1,a2,i)*HBAR_ABCI_aaaa(a,a1,a2,i)
+    esum += etemp
+endpardo a,a1,a2,i
+execute server_barrier
+sum1 = 0.0
+collective sum1 += esum
+execute print_scalar sum1
+execute server_barrier
+
+esum=0.0
+pardo b,b1,b2,j
+    request HBAR_ABCI_bbbb(b,b1,b2,j) j
+    Tbbbj(b,b1,b2,j) = HBAR_ABCI_bbbb(b,b1,b2,j)
+    etemp = Tbbbj(b,b1,b2,j)*HBAR_ABCI_bbbb(b,b1,b2,j)
+    esum += etemp
+endpardo b,b1,b2,j
+execute server_barrier
+sum1 = 0.0
+collective sum1 += esum
+execute print_scalar sum1
+execute server_barrier
+
+
+
+execute server_barrier
+esum = 0.0
+pardo a,a1,b2,j
+    request HBAR_ABCI_aabb(a,a1,b2,j) j
+    Taabj(a,a1,b2,j) = HBAR_ABCI_aabb(a,a1,b2,j)
+    etemp = Taabj(a,a1,b2,j)*HBAR_ABCI_aabb(a,a1,b2,j)
+    esum += etemp
+endpardo a,a1,b2,j
+execute server_barrier
+sum1 = 0.0
+collective sum1 += esum
+execute print_scalar sum1
+execute server_barrier
+
+esum = 0.0
+pardo b,b1,a2,i
+    request HBAR_ABCI_bbaa(b,b1,a2,i) i
+    Tbbai(b,b1,a2,i) = HBAR_ABCI_bbaa(b,b1,a2,i)
+    etemp = Tbbai(b,b1,a2,i)*HBAR_ABCI_bbaa(b,b1,a2,i)
+    esum += etemp
+endpardo b,b1,a2,i
+execute server_barrier
+sum1 = 0.0
+collective sum1 += esum
+execute print_scalar sum1
+execute server_barrier
 #
 # Create arrays used and zero out some scalars 
 # -------------------------------------------- 

@@ -13,7 +13,7 @@
 #  The GNU General Public License is included in this distribution
 #  in the file COPYRIGHT.
 #
-			SIAL EOMCCSD_UHF_AO
+			SIAL EOMLCCSD_UHF_AO
 #
 #***********************************************************
 #
@@ -32087,6 +32087,6 @@
        delete VSTART1A1
        delete VSTART1A2
        execute sip_barrier
-       ENDSIAL EOMCCSD_UHF_AO
+       ENDSIAL EOMLCCSD_UHF_AO
 
 #

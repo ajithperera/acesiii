@@ -3136,8 +3136,9 @@
                REQUEST           T2ab(a,i,b,j) j 
                REQUEST           Vpiqj(a,i1,b,j) j  
                tppqq(a,i,b,j)  = T2ab(a,i,b,j)
-               t1ppqq(a,i,b,j) = St1a(a,i)^St1b(b,j) 
-               tppqq(a,i,b,j) += t1ppqq(a,i,b,j) 
+
+#               t1ppqq(a,i,b,j) = St1a(a,i)^St1b(b,j) 
+#               tppqq(a,i,b,j) += t1ppqq(a,i,b,j) 
 
                t1pp(i1,i)      = tppqq(a,i,b,j)*Vpiqj(a,i1,b,j) 
                tpp(i1,i)      += t1pp(i1,i) 
@@ -3883,8 +3884,8 @@
 # Notice that here this is a bare W(IJKL) integral for LCCSD
 #
             DO i3
-               REQUEST             VSpipi(i,i1,i2,i3) i3
-               T1iiai(i,i1,a,i2) = VSpipi(i,i1,i2,i3)*St1a(a,i3)
+               REQUEST             VSpipi(i,i1,i3,i2) i3
+               T1iiai(i,i1,a,i2) = VSpipi(i,i1,i3,i2)*St1a(a,i3)
                Tiiai(i,i1,a,i2) -= T1iiai(i,i1,a,i2)
             ENDDO i3
 #
@@ -4342,12 +4343,12 @@
 
       PARDO i, a, a2, i2  
 #
-            REQUEST               T2aa(a2,i,a,i2) a2 
+            REQUEST              T2aa(a2,i,a,i2) a2 
             T1aiai(a2,i,a,i2)  = T2aa(a2,i,a,i2)
 
 #            tai(a,i2)           = St1a(a,i2)
 #            T1aiai(a2,i,a,i2)   = St1a(a2,i)^tai(a,i2)
-#            T1aiai(a2,i,a,i2)   = T2aa(a2,i,a,i2)
+#            T1aiai(a2,i,a,i2)   += T2aa(a2,i,a,i2)
 #
             DO a1 
             DO i1
@@ -4818,21 +4819,16 @@
 #            t1pppp(a,i1,a2,i2) = T2aa(a,i1,a2,i2)  
 #            t1pppp(a,i1,a2,i2) -= t2pppp(a,i1,a2,i2) 
 #
-            DO a1 
-            DO i 
+            DO a1
+            DO i
 #
-# Only the two electron Integral for LCCSD (double check).
-
-               REQUEST VSpipi(i,i1,a1,i2) i
-               tpppp(i,i1,a1,i2)  = VSpipi(i,i1,a1,i2)
-               t3pppp(i1,i,i2,a1) = tpppp(i,i1,a1,i2)
-
-               t2pppp(a,a1,a2,i) = t1pppp(a,i1,a2,i2)*t3pppp(i1,i,i2,a1)
-               t2pppp(a,a1,a2,i)*=-0.5 
-               PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += t2pppp(a,a1,a2,i) 
+               REQUEST                              VSpipi(i,i1,a1,i2) a1
+               t2pppp(a,a1,a2,i)                  = t1pppp(a,i1,a2,i2)*VSpipi(i,i1,a1,i2)
+               t2pppp(a,a1,a2,i)                 *=-0.5
+               PREPARE HBAR_ABCI_aaaa(a,a1,a2,i) += t2pppp(a,a1,a2,i)
 #
-            ENDDO i 
-            ENDDO a1 
+            ENDDO i
+            ENDDO a1
 #
       ENDPARDO a, a2, i1, i2  
 #
@@ -4948,19 +4944,16 @@
 #            t1qqqq(b,j1,b2,j2) = T2bb(b,j1,b2,j2)  
 #            t1qqqq(b,j1,b2,j2) -= t2qqqq(b,j1,b2,j2) 
 #
-            DO b1 
-            DO j 
+            DO b1
+            DO j
 #
-            REQUEST              VSqjqj(j1,j,b1,j2) j
-            tqqqq(j1,j,b1,j2)   = VSqjqj(j1,j,b1,j2)
-            t3qqqq(j1,j,j2,b1) = tqqqq(j1,j,b1,j2)
-  
-               t2qqqq(b,b1,b2,j)  = t1qqqq(b,j1,b2,j2)*t3qqqq(j1,j,j2,b1)
-               t2qqqq(b,b1,b2,j) *=-0.5 
-               PREPARE HBAR_ABCI_bbbb(b,b1,b2,j) += t2qqqq(b,b1,b2,j) 
+               REQUEST                              VSqjqj(j,j1,b1,j2) b1
+               t2qqqq(b,b1,b2,j)                  = t1qqqq(b,j1,b2,j2)*VSqjqj(j,j1,b1,j2)
+               t2qqqq(b,b1,b2,j)                 *=-0.5
+               PREPARE HBAR_ABCI_bbbb(b,b1,b2,j) += t2qqqq(b,b1,b2,j)
 #
-            ENDDO j 
-            ENDDO b1 
+            ENDDO j
+            ENDDO b1
 #
       ENDPARDO b, b2, j1, j2 
 #
@@ -5689,8 +5682,8 @@
      CALL HBAR_IJ # COMPARES WITH ACES  
      CALL HBAR_IB # COMPARES WITH ACES 
      execute sip_barrier 
-     delete HBAR_ii 
-     delete HBAR_jj 
+    #delete HBAR_ii 
+    #delete HBAR_jj 
     #delete HBAR_ia 
     #delete HBAR_jb 
 # 
@@ -5876,16 +5869,17 @@
             ENDDO b
 #
            #PUT Fia_a(i,a) = tia(i,a)
+
+# Should not be in for LCCSD
+#            DO a1  
+#               taa(a1,a)     = ST1a(a1,i)*tia(i,a)
+#               LFae_a(a1,a) -= taa(a1,a)
+#            ENDDO a1  
 #
-            DO a1  
-               taa(a1,a)     = ST1a(a1,i)*tia(i,a)
-               LFae_a(a1,a) -= taa(a1,a)
-            ENDDO a1  
-#
-            DO i1  
-               tii(i,i1)     = tia(i,a)*ST1a(a,i1)
-               LFmi_a(i,i1) += tii(i,i1)
-            ENDDO i1  
+#            DO i1  
+#               tii(i,i1)     = tia(i,a)*ST1a(a,i1)
+#               LFmi_a(i,i1) += tii(i,i1)
+#            ENDDO i1  
 #
       ENDPARDO i, a
 #
@@ -5920,17 +5914,18 @@
             ENDDO i
             ENDDO a
 #
+# Should not be in for LCCSD
            #PUT Fia_b(j,b) = tjb(j,b)
 #
-            DO b1  
-               tbb(b1,b)     = ST1b(b1,j)*tjb(j,b)
-               LFae_b(b1,b) -= tbb(b1,b)
-            ENDDO b1  
+#            DO b1  
+#              tbb(b1,b)     = ST1b(b1,j)*tjb(j,b)
+#               LFae_b(b1,b) -= tbb(b1,b)
+#            ENDDO b1  
 #
-            DO j1  
-               tjj(j,j1)     = tjb(j,b)*ST1B(b,j1)
-               LFmi_b(j,j1) += tjj(j,j1)
-            ENDDO j1  
+#           DO j1  
+#              tjj(j,j1)     = tjb(j,b)*ST1B(b,j1)
+#               LFmi_b(j,j1) += tjj(j,j1)
+#           ENDDO j1  
 #
       ENDPARDO j, b
 #
@@ -6297,7 +6292,69 @@
            enddo j2  
            enddo j
 #
-     ENDPARDO j1, j3, b, b1  
+     ENDPARDO j1, j3, b, b1 
+#
+#bgn_debug
+#      DO i
+#      DO i1
+#         tii(i,i1)        = 0.0
+#         PUT Fmi_a(i,i1) += tii(i,i1)
+#      ENDDO i1
+#      ENDDO i
+#      DO j
+#      DO j1
+#         tjj(j,j1)        = 0.0
+#         PUT Fmi_b(j,j1) += tjj(j,j1)
+#      ENDDO j1
+#      ENDDO j
+#      DO a
+#      DO a1
+#         taa(a,a1)        = 0.0
+#         PUT Fae_a(a,a1) += taa(a,a1)
+#      ENDDO a1
+#      ENDDO a
+#      DO b
+#      DO b1
+#         tbb(b,b1)        = 0.0
+#         PUT Fae_b(b,b1) += tbb(b,b1)
+#      ENDDO b1
+#      ENDDO b
+#      PARDO a, i, j, j1
+#           Tjjai(j1,j,a,i)         = 0.0
+#           PREPARE Njjai(j1,a,i,j) = Tjjai(j1,j,a,i)
+#     ENDPARDO a, i, j, j1
+#
+#     PARDO i, i1, j, b
+#           T1pqpq(i1,b,i,j)        = 0.0
+#           PREPARE Niibj(i1,b,i,j) = T1pqpq(i1,b,i,j)
+#     ENDPARDO i, i1, j, b
+#
+#     PARDO i, i1, i2, a
+#           T1pppp(i1,a,i,i2)        = 0.0
+#           prepare Niiai(i1,a,i,i2) = T1pppp(i1,a,i,i2)
+#     ENDPARDO i, i1, i2, a
+#
+#     PARDO j, j1, j2, b
+#           T1qqqq(j1,b,j,j2)        = 0.0
+#           prepare Njjbj(j1,b,j,j2) = T1qqqq(j1,b,j,j2)
+#     ENDPARDO j, j1, j2, b
+#
+#     PARDO i, i1, j, j1
+#           tiijj(i,i1,j,j1) = 0.0
+#           put Niijj(i,i1,j,j1) = tiijj(i,i1,j,j1)
+#     ENDPARDO i, i1, j, j1
+#
+#     PARDO i, i1, i2, i3
+#           tiiii(i,i1,i2,i3) = 0.0
+#           PUT Niiii(i,i1,i2,i3) = tiiii(i,i1,i2,i3)
+#     ENDPARDO i, i1, i2, i3
+#
+#     PARDO j, j1, j2, j3
+#           tjjjj(j,j1,j2,j3) = 0.0
+#           PUT Njjjj(j,j1,j2,j3) = tjjjj(j,j1,j2,j3)
+#     ENDPARDO j, j1, j2, j3
+#
+##end_debug
 #
       execute sip_barrier 
       execute server_barrier 
@@ -35884,6 +35941,412 @@
       execute server_barrier
        CALL HBAR 
       execute server_barrier
+
+#bgn_debug
+#execute server_barrier
+#esum=0
+#    do a
+#    do a1
+#       get hbar_aa(a,a1)
+#       taa(a,a1) = hbar_aa(a,a1)
+#       etemp = hbar_aa(a,a1) * taa(a,a1) 
+#       esum += etemp
+#    enddo a1
+#    enddo a
+#    execute print_scalar esum
+#esum=0
+#    do b 
+#    do b1
+#       get hbar_bb(b,b1)
+#       tbb(b,b1) = hbar_bb(b,b1)
+#       etemp = hbar_bb(b,b1) * tbb(b,b1)
+#       esum += etemp
+#    enddo b1
+#    enddo b
+#    execute print_scalar esum
+#esum=0
+#    do i
+#    do i1
+#       get hbar_ii(i,i1)
+#       tii(i,i1) = hbar_ii(i,i1)
+#       etemp = hbar_ii(i,i1) * tii(i,i1)
+#       esum += etemp
+#    enddo i1
+#    enddo i
+#    execute print_scalar esum
+#esum=0
+#    do j
+#    do j1
+#       get hbar_jj(j,j1)
+#       tjj(j,j1) = hbar_jj(j,j1)
+#       etemp = hbar_jj(j,j1) * tjj(j,j1)
+#       esum += etemp
+#    enddo j1
+#    enddo j
+#    execute print_scalar esum
+#esum=0
+#    do i
+#    do a
+#       get hbar_ia(i,a)
+#       tia(i,a) = hbar_ia(i,a)
+#       etemp = hbar_ia(i,a) * tia(i,a)
+#       esum += etemp
+#    enddo a
+#    enddo i
+#    execute print_scalar esum
+#esum=0
+#    do j
+#    do b
+#       get Hbar_jb(j,b)
+#       tjb(j,b) = hbar_jb(j,b)
+#       etemp = hbar_jb(j,b) * tjb(j,b)
+#       esum += etemp
+#    enddo b
+#    enddo j
+#    execute print_scalar esum
+#esum = 0.0
+#pardo i,i1,i2,i3
+#      request hbar_iiii(i,i1,i2,i3) i3
+#      tiiii(i,i1,i2,i3) =hbar_iiii(i,i1,i2,i3)
+#      etemp = tiiii(i,i1,i2,i3) * hbar_iiii(i,i1,i2,i3)
+#      esum +=etemp
+#endpardo i,i1,i2,i3
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo j,j1,j2,j3
+#      request hbar_jjjj(j,j1,j2,j3) j3
+#      tjjjj(j,j1,j2,j3) = hbar_jjjj(j,j1,j2,j3)
+#      etemp = tjjjj(j,j1,j2,j3) * hbar_jjjj(j,j1,j2,j3)
+#      esum +=etemp
+#endpardo j,j1,j2,j3
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo i,i1,j2,j3
+#      request hbar_iijj(i,i1,j2,j3) j3
+#      tiijj(i,i1,j2,j3) =hbar_iijj(i,i1,j2,j3)
+#      etemp = tiijj(i,i1,j2,j3) * hbar_iijj(i,i1,j2,j3)
+#      esum +=etemp
+#endpardo i,i1,j2,j3
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo i,a1,a2,a
+#      request hbar_aibc_aaaa(a,a1,i,a2) a2
+#      t1pppp(a,a1,i,a2) = hbar_aibc_aaaa(a,a1,i,a2)
+#      etemp =  t1pppp(a,a1,i,a2) * hbar_aibc_aaaa(a,a1,i,a2)
+#      esum +=etemp
+#endpardo i,a1,a2,a
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo b,b1,j,b2
+#      request hbar_aibc_bbbb(b,b1,j,b2) b2
+#      t1qqqq(b,b1,j,b2) = hbar_aibc_bbbb(b,b1,j,b2)
+#      etemp =  t1qqqq(b,b1,j,b2) * hbar_aibc_bbbb(b,b1,j,b2)
+#      esum +=etemp
+#endpardo  b,b1,j,b2
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo a,a1,j,b2
+#      request hbar_aibc_aabb(a,a1,j,b2) b2
+#      t1ppqq(a,a1,j,b2) = hbar_aibc_aabb(a,a1,j,b2)
+#      etemp = hbar_aibc_aabb(a,a1,j,b2) * t1ppqq(a,a1,j,b2)
+#      esum +=etemp
+#endpardo  a,a1,j,b2
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo  b,b1,a2,i
+#      request hbar_aibc_bbaa(b,b1,i,a2) i
+#      t1qqpp(b,b1,i,a2) = hbar_aibc_bbaa(b,b1,i,a2)
+#      etemp = hbar_aibc_bbaa(b,b1,i,a2) * t1qqpp(b,b1,i,a2)
+#      esum +=etemp
+#endpardo b,b1,a2,i
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#
+#esum = 0.0
+#pardo i,i1,i2,a 
+#      request hbar_jkia_aaaa(i,i1,i2,a) a
+#      t1pppp(i,i1,i2,a) = hbar_jkia_aaaa(i,i1,i2,a)
+#      etemp =   hbar_jkia_aaaa(i,i1,i2,a) * t1pppp(i,i1,i2,a)
+#      esum +=etemp
+#endpardo i,i1,i2,a  
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo j,j1,j2,b
+#      request hbar_jkia_bbbb(j,j1,j2,b) b
+#      t1qqqq(j,j1,j2,b) = hbar_jkia_bbbb(j,j1,j2,b)
+#      etemp =   hbar_jkia_bbbb(j,j1,j2,b) * t1qqqq(j,j1,j2,b)
+#      esum +=etemp
+#endpardo j,j1,j2,b
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#esum = 0.0
+#pardo i,i1,j2,b
+#      request hbar_jkia_aabb(i,i1,j2,b) b
+#      t1ppqq(i,i1,j2,b) = hbar_jkia_aabb(i,i1,j2,b)
+#      etemp =   hbar_jkia_aabb(i,i1,j2,b) * t1ppqq(i,i1,j2,b)
+#      esum +=etemp
+#endpardo i,i1,j2,b
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo j,j1,i2,a
+#      request hbar_jkia_bbaa(j,j1,i2,a) a
+#      t1qqpp(j,j1,i2,a) = hbar_jkia_bbaa(j,j1,i2,a)
+#      etemp =   hbar_jkia_bbaa(j,j1,i2,a) * t1qqpp(j,j1,i2,a)
+#      esum +=etemp
+#endpardo j,j1,i2,a
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum=0.0
+#pardo b,b1,b2,j
+#    request HBAR_ABCI_bbbb(b,b1,b2,j) j
+#    Tbbbj(b,b1,b2,j) = HBAR_ABCI_bbbb(b,b1,b2,j)
+#    etemp = Tbbbj(b,b1,b2,j)*HBAR_ABCI_bbbb(b,b1,b2,j)
+#    esum += etemp
+#endpardo b,b1,b2,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#execute server_barrier
+#esum = 0.0
+#pardo a,a1,a2,i
+#    request HBAR_ABCI_aaaa(a,a1,a2,i) i
+#    Taaai(a,a1,a2,i) = HBAR_ABCI_aaaa(a,a1,a2,i)
+#    etemp = Taaai(a,a1,a2,i)*HBAR_ABCI_aaaa(a,a1,a2,i)
+#    esum += etemp
+#endpardo a,a1,a2,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#execute server_barrier
+#esum = 0.0
+#pardo a,a1,b2,j
+#    request HBAR_ABCI_aabb(a,a1,b2,j) j
+#    Taabj(a,a1,b2,j) = HBAR_ABCI_aabb(a,a1,b2,j)
+#    etemp = Taabj(a,a1,b2,j)*HBAR_ABCI_aabb(a,a1,b2,j)
+#    esum += etemp
+#endpardo a,a1,b2,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo b,b1,a2,i
+#    request HBAR_ABCI_bbaa(b,b1,a2,i) i
+#    Tbbai(b,b1,a2,i) = HBAR_ABCI_bbaa(b,b1,a2,i)
+#    etemp = Tbbai(b,b1,a2,i)*HBAR_ABCI_bbaa(b,b1,a2,i)
+#    esum += etemp
+#endpardo b,b1,a2,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i,a,i1,i2
+#    request HBAR_IAJK_aaaa(i,i1,a,i2) i
+#    Tpppp(i,i1,a,i2) = HBAR_IAJK_aaaa(i,i1,a,i2)
+#    etemp = Tpppp(i,i1,a,i2)*HBAR_IAJK_aaaa(i,i1,a,i2)
+#    esum += etemp
+#endpardo i,a,i1,i2
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#execute server_barrier
+#esum = 0.0
+#pardo j,b,j1,j2
+#    request HBAR_IAJK_bbbb(j,j1,b,j2) j
+#    Tqqqq(j,j1,b,j2) = HBAR_IAJK_bbbb(j,j1,b,j2)
+#    etemp = Tqqqq(j,j1,b,j2)*HBAR_IAJK_bbbb(j,j1,b,j2)
+#    esum += etemp
+#endpardo j,b,j1,j2
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i,i1,b,j
+#    request HBAR_IAJK_aabb(i,i1,b,j) j
+#    Tiibj(i,i1,b,j) = HBAR_IAJK_aabb(i,i1,b,j)
+#    etemp = Tiibj(i,i1,b,j)*HBAR_IAJK_aabb(i,i1,b,j)
+#    esum += etemp
+#endpardo i,i1,b,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo j,j1,a,i
+#    request HBAR_IAJK_bbaa(j,j1,a,i) i
+#    Tjjai(j,j1,a,i) = HBAR_IAJK_bbaa(j,j1,a,i)
+#    etemp = Tjjai(j,j1,a,i) * HBAR_IAJK_bbaa(j,j1,a,i)
+#    esum += etemp
+#endpardo j,j1,a,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i1,a1,a,i 
+#    request  HBAR_AJIB_aaaa(i1,a1,a,i) i
+#    Tiaai(i1,a1,a,i) = HBAR_AJIB_aaaa(i1,a1,a,i)
+#    etemp = Tiaai(i1,a1,a,i) * HBAR_AJIB_aaaa(i1,a1,a,i)
+#    esum += etemp
+#endpardo i1,a1,a,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo j,b1,j1,b
+#    request  HBAR_AJIB_bbbb(j1,b1,b,j) b
+#    Tjbbj(j1,b1,b,j) = HBAR_AJIB_bbbb(j1,b1,b,j)
+#    etemp = Tjbbj(j1,b1,b,j) * HBAR_AJIB_bbbb(j1,b1,b,j)
+#    esum += etemp
+#endpardo j,b1,j1,b
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i,a,b,j
+#    request  HBAR_AJIB_aabb(i,a,b,j) j
+#    Tiabj(i,a,b,j) = HBAR_AJIB_aabb(i,a,b,j)
+#    etemp = Tiabj(i,a,b,j) * HBAR_AJIB_aabb(i,a,b,j)
+#    esum += etemp
+#endpardo i,a,b,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i,a,b,j
+#    request  HBAR_AJIB_bbaa(j,b,a,i) i
+#    Tjbai(j,b,a,i) = HBAR_AJIB_bbaa(j,b,a,i)
+#    etemp = Tjbai(j,b,a,i) * HBAR_AJIB_bbaa(j,b,a,i)
+#    esum += etemp
+#endpardo i,a,b,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo i1,b1,b,i
+#    request  HBAR_AJIB_iibb(i1,i,b,b1) b1
+#    Tiibb(i1,i,b,b1) = HBAR_AJIB_iibb(i1,i,b,b1)
+#    etemp = Tiibb(i1,i,b,b1) * HBAR_AJIB_iibb(i1,i,b,b1)
+#    esum += etemp
+#endpardo i1,b1,b,i
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#esum = 0.0
+#pardo j1,a1,a,j
+#    request  HBAR_AJIB_jjaa(j1,j,a,a1) a1
+#    T1jjaa(j1,j,a,a1) = HBAR_AJIB_jjaa(j1,j,a,a1)
+#    etemp = T1jjaa(j1,j,a,a1) * HBAR_AJIB_jjaa(j1,j,a,a1)
+#    esum += etemp
+#endpardo j1,a1,a,j
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#execute server_barrier
+#esum = 0.0
+#pardo i,a,a1,i1
+#    request WHIAAI(i,a,a1,i1) i
+#    Tpppp(i,a,a1,i1) = WHIAAI(i,a,a1,i1)
+#    etemp = Tpppp(i,a,a1,i1)*WHIAAI(i,a,a1,i1)
+#    esum += etemp
+#endpardo i,a,a1,i1
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#
+#execute server_barrier
+#esum = 0.0
+#pardo j,b,b1,j1
+#    request WHJBBJ(j,b,b1,j1) j
+#    Tqqqq(j,b,b1,j1) = WHJBBJ(j,b,b1,j1)
+#    etemp = Tqqqq(j,b,b1,j1)*WHJBBJ(j,b,b1,j1)
+#    esum += etemp
+#endpardo j,b,b1,j1
+#execute server_barrier
+#sum1 = 0.0
+#collective sum1 += esum
+#execute print_scalar sum1
+#execute server_barrier
+#end_debug
 #
 # Create arrays used and zero out some scalars 
 # -------------------------------------------- 
