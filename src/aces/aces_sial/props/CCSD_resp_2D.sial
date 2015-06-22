@@ -432,6 +432,12 @@
       distributed Djj_x(j,j1)
       distributed Dbb_x(b1,b)
 
+      distributed HF_SPN_DEN(mu,nu)
+      distributed COR_SPN_DEN(mu,nu)
+
+      distributed HF_TOT_DEN(mu,nu)
+      distributed COR_TOT_DEN(mu,nu)
+
       Temp TAO_2P_SOI_X(mu, nu, lambda, sigma)
       Temp TAO_2P_SOI_Y(mu, nu, lambda, sigma)
       Temp TAO_2P_SOI_Z(mu, nu, lambda, sigma)
@@ -11479,9 +11485,213 @@
             PUT DhfB(mu,nu) += Tpq(mu,nu) 
       ENDPARDO mu, nu, j  
       ENDPROC HFDENS  
-#______________________________________________________________________________
-      PROC PDCONT
 
+#______________________________________________________________________________
+
+      PROC FORM_SPN_TOT_DENS
+#     ----------------------
+
+      PARDO mu, nu
+
+            GET DhfA(mu,nu)
+            GET DhfB(mu,nu)
+            
+            GET DpqA(mu,nu)  
+            GET DpqB(mu,nu)  
+
+            Tpq(mu,nu)  = DhfA(mu,nu)
+            Tpq(mu,nu) -= DhfB(mu,nu)
+
+            PUT HF_SPN_DEN(mu,nu) = Tpq(mu,nu)
+            
+            Tpq(mu,nu)  = DhfA(mu,nu)
+            Tpq(mu,nu) += DpqA(mu,nu) 
+            Tpq(mu,nu) -= DhfB(mu,nu) 
+            Tpq(mu,nu) -= DpqB(mu,nu) 
+
+            PUT COR_SPN_DEN(mu,nu) = Tpq(mu,nu)
+
+            Tpq(mu,nu)  = DhfA(mu,nu)
+            Tpq(mu,nu) += DhfB(mu,nu)
+
+            PUT HF_TOT_DEN(mu,nu) = Tpq(mu,nu)
+
+            Tpq(mu,nu)  = DhfA(mu,nu)
+            Tpq(mu,nu) += DpqA(mu,nu) 
+            Tpq(mu,nu) += DhfB(mu,nu) 
+            Tpq(mu,nu) += DpqB(mu,nu) 
+
+            PUT COR_SPN_DEN(mu,nu) = Tpq(mu,nu)
+
+      ENDPARDO mu, nu
+      execute sip_barrier 
+ 
+      ENDPROC FORM_SPN_TOT_DENS
+#     -------------------------
+
+      PROC PDCONT_HF
+#     --------------
+       E2GC_INTMD    = 0.0
+       E2GC_XX_YY_ZZ = 0.0
+       E2GC_XX_INTMD = 0.0
+       E2GC_XY_INTMD = 0.0
+       E2GC_XZ_INTMD = 0.0
+       E2GC_YX_INTMD = 0.0
+       E2GC_YY_INTMD = 0.0
+       E2GC_YZ_INTMD = 0.0
+       E2GC_ZX_INTMD = 0.0
+       E2GC_ZY_INTMD = 0.0
+       E2GC_ZZ_INTMD = 0.0
+
+       E2GC_XX = 0.0
+       E2GC_XY = 0.0
+       E2GC_XZ = 0.0
+       E2GC_YX = 0.0
+       E2GC_YY = 0.0
+       E2GC_YZ = 0.0
+       E2GC_ZX = 0.0
+       E2GC_ZY = 0.0
+       E2GC_ZZ = 0.0
+      
+       PARDO mu, nu, lambda, sigma
+#
+            Txxxx(mu,nu,lambda,sigma) = 0.0
+
+            REQUEST AO_ERI_INTS(mu, nu, lambda, sigma) sigma   
+
+            REQUEST AO_2P_DSHIELD_XX(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XY(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YX(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YY(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YZ(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZX(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZY(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZZ(mu, nu, lambda, sigma) sigma
+
+            GET HF_SPN_DEN(mu,lambda)
+            GET HF_SPN_DEN(nu,lambda)
+            GET HF_SPN_DEN(nu,sigma)
+            GET HF_SPN_DEN(mu,sigma)
+
+            GET HF_TOT_DEN(mu,lambda)
+            GET HF_TOT_DEN(nu,lambda)
+            GET HF_TOT_DEN(nu,sigma)
+            GET HF_TOT_DEN(mu,sigma)
+
+            Txx(mu,lambda)             = HF_SPN_DEN(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^HF_SPN_DEN(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,sigma)              = HF_SPN_DEN(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^HF_SPN_DEN(nu,sigma)
+#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+#            GET DHFA(nu,sigma)
+#            GET DHFA(mu,sigma)
+#            GET DHFA(nu,lambda)
+#            GET DHFB(mu,lambda)
+#            GET DHFB(nu,sigma)
+#            GET DHFB(mu,sigma)
+#            GET DHFB(nu,lambda)
+#            Txx(mu,lambda)             = DHFa(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            Txx(mu,lambda)             = DHFb(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            Txx(mu,sigma)              = DHFa(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
+#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+#            Txx(mu,sigma)              = DHFb(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
+#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma)  = Txxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_ERI_INTS(mu,nu,lambda,sigma)
+            E2GC_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XX(mu,nu,lambda,sigma)
+            E2GC_XX_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XY(mu,nu,lambda,sigma)
+            E2GC_XY_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XZ(mu,nu,lambda,sigma)
+            E2GC_XZ_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YX(mu,nu,lambda,sigma)
+            E2GC_YX_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YY(mu,nu,lambda,sigma)
+            E2GC_YY_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YZ(mu,nu,lambda,sigma)
+            E2GC_YZ_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZX(mu,nu,lambda,sigma)
+            E2GC_ZX_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZY(mu,nu,lambda,sigma)
+            E2GC_ZY_INTMD += tmp
+
+            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZZ(mu,nu,lambda,sigma)
+            E2GC_ZZ_INTMD += tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+
+      execute server_barrier
+
+      COLLECTIVE E2GC_XX_YY_ZZ += E2GC_INTMD
+
+      COLLECTIVE E2GC_XX += E2GC_XX_INTMD
+      COLLECTIVE E2GC_XY += E2GC_XY_INTMD
+      COLLECTIVE E2GC_XZ += E2GC_XZ_INTMD
+      COLLECTIVE E2GC_YX += E2GC_YX_INTMD
+      COLLECTIVE E2GC_YY += E2GC_YY_INTMD
+      COLLECTIVE E2GC_YZ += E2GC_YZ_INTMD
+      COLLECTIVE E2GC_ZX += E2GC_ZX_INTMD
+      COLLECTIVE E2GC_ZY += E2GC_ZY_INTMD
+      COLLECTIVE E2GC_ZZ += E2GC_ZZ_INTMD
+
+      execute server_barrier
+
+#bgn_debug
+      execute print_scalar  E2GC_XX_YY_ZZ
+      execute print_scalar  E2GC_XX
+      execute print_scalar  E2GC_XY
+      execute print_scalar  E2GC_XZ
+      execute print_scalar  E2GC_YX
+      execute print_scalar  E2GC_YY
+      execute print_scalar  E2GC_YZ
+      execute print_scalar  E2GC_ZX
+      execute print_scalar  E2GC_ZY
+      execute print_scalar  E2GC_ZZ
+#enddebug
+
+      ONETHIRD       = 1.0/3.0
+      E2GC_XX_YY_ZZ *= ONETHIRD
+      
+      E2GC_XX += E2GC_XX_YY_ZZ
+      E2GC_YY += E2GC_XX_YY_ZZ
+      E2GC_ZZ += E2GC_XX_YY_ZZ
+
+      ENDPROC PDCONT_HF
+#     -----------------
+#--------------------------------------------------------------------
+      PROC PDCONT
+#     -----------
        E2GC_INTMD    = 0.0
        E2GC_XX_YY_ZZ = 0.0
        E2GC_XX_INTMD = 0.0
@@ -11803,34 +12013,34 @@
 #
             T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma)
 #
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu,lambda,nu,sigma)
             E2GC_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XX(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XX(mu,lambda,nu,sigma)
             E2GC_XX_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XY(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XY(mu,lambda,nu,sigma)
             E2GC_XY_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XZ(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XZ(mu,lambda,nu,sigma)
             E2GC_XZ_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YX(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YX(mu,lambda,nu,sigma)
             E2GC_YX_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YY(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YY(mu,lambda,nu,sigma)
             E2GC_YY_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YZ(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YZ(mu,lambda,nu,sigma)
             E2GC_YZ_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZX(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZX(mu,lambda,nu,sigma)
             E2GC_ZX_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZY(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZY(mu,lambda,nu,sigma)
             E2GC_ZY_INTMD += tmp
 
-            tmp = Txxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZZ(mu,lambda,nu,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZZ(mu,lambda,nu,sigma)
             E2GC_ZZ_INTMD += tmp
 
       ENDPARDO mu, nu, lambda, sigma
@@ -14250,7 +14460,6 @@
 
                EXECUTE COMPUTE_2DSHIELD_XXBATCH TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_XX(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XX(mu, nu, lambda, sigma)
-               execute print_scalar one
 
                EXECUTE COMPUTE_2DSHIELD_XYBATCH TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
                PREPARE AO_2P_DSHIELD_XY(mu, nu, lambda, sigma) = TAO_2P_DSHIELD_XY(mu, nu, lambda, sigma)
@@ -14640,6 +14849,10 @@
          CREATE L1A_OLD_X
          CREATE T1B_OLD_X
          CREATE L1B_OLD_X
+         CREATE HF_SPN_DEN
+         CREATE COR_SPN_DEN
+         CREATE HF_TOT_DEN
+         CREATE COR_TOT_DEN
 
          EXECUTE SIP_BARRIER
 
@@ -14705,9 +14918,15 @@
 # Compute the contributions to g-tensor from the zeroth-order two-particle
 # density. Overall, the g-tensor is second-order property, so for these 
 # contrbutions are from the second-order interactions (two-particle 
-# diamagnetic shielding operator). 
+# diamagnetic shielding operator). Form the spin-densities. 
 
-         CALL PDCONT 
+        CALL FORM_SPN_TOT_DENS
+
+#ifdef _DEBUG
+        CALL PDCONT_HF
+#endof 
+
+#         CALL PDCONT 
 #
 #bgn_debug
       suma=0.0
