@@ -160,9 +160,8 @@ C                The case present has been evaluated outside this
 C                routine and is transmitted via argument.
 C
 C
-        
          N = 0
-         DEBUG = .TRUE.
+         DEBUG = .FALSE.
          IF (DEBUG) THEN
          DO IJ = 1,MIJ
             PIJZ = PZ(IJ)

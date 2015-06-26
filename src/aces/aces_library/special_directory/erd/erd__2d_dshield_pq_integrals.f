@@ -196,6 +196,9 @@ C     +               ZX, ZY, ZZ
          xzx = 0.0d0
          xzy = 0.0d0
          xzz = 0.0d0
+         d0x = 0.0d0
+         d0y = 0.0d0
+         d0z = 0.0d0
 
          IF      (XX .EQ. 1) THEN
               COMPONENT = 1
@@ -249,7 +252,7 @@ C     +               ZX, ZY, ZZ
      +                                INT2DZ )
      +
      +
-C         Write(*,*) "Zeroth order 2Ds"
+C         Write(*,*) "Zeroth order 2Ds", NGQEXQ
 C         do n=1, NGQEXQ
 C         do i=0,shellp
 C         do k=0,shellq+1
@@ -267,7 +270,7 @@ C         Write(*,"(F15.10)") d0x
 C         Write(*,"(F15.10)") d0y
 C         Write(*,"(F15.10)") d0z
 C         Write(*,*) "ERD__2D_DSHIELD_PQ_INTEGRALS", COMPONENT 
-
+C
          GOTO (1,2,3,4,5,6,7,8,9) COMPONENT 
 C
    1     CALL   ERD__2D_DSHIELDXX_PQ_INTEGRALS
@@ -529,7 +532,7 @@ C
      +                                INT2DY1,
      +                                INT2DZ1 )
 
-C        Write(*,*) "printing zz-1"
+C         Write(*,*) "printing zz-1"
 C         do n=1,  NGQEXQ
 C         do i=0,shellp
 C         do k=0,shellq
@@ -541,7 +544,6 @@ C         enddo
 C         enddo
 C
          RETURN
-
 C
 C
 C             ...ready!

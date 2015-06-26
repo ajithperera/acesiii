@@ -2543,19 +2543,20 @@ c  a RHF reference.  If not, then bomb out!
 cJDW 3/31/94
 c Stop NMR calculations (apart from CCSDeH) which cannot use sphericals.
 c Also, always stop if PROP=TDHF has been specified.
-      if (ioppar(h_IOPPAR_spherical).eq. 1.and.
-     &    ioppar(h_IOPPAR_props    ).ne. 7.and.
-     &    ioppar(h_IOPPAR_props    ).ne.11.and.
-     &    ioppar(h_IOPPAR_props    ).ge. 3     ) then
-         print *, '@GTFLGS: SPHERICAL=ON impossible for this',
-     &            ' kind of NMR calculation.'
-         call errex
-      end if
-      if (ioppar(h_IOPPAR_props).eq.7) then
-         print *, '@GTFLGS: Use TDHF=ON and $INPUT namelist for',
-     &            ' TDHF calculations (see manual).'
-         call errex
-      end if
+C These are no-longer applicable or unused in ACES III.
+CSSS      if (ioppar(h_IOPPAR_spherical).eq. 1.and.
+CSSS     &    ioppar(h_IOPPAR_props    ).ne. 7.and.
+CSSS     &    ioppar(h_IOPPAR_props    ).ne.11.and.
+CSSS     &    ioppar(h_IOPPAR_props    ).ge. 3     ) then
+CSSS         print *, '@GTFLGS: SPHERICAL=ON impossible for this',
+CSSS     &            ' kind of NMR calculation.'
+CSSS         call errex
+CSSS      end if
+CSSS      if (ioppar(h_IOPPAR_props).eq.7) then
+CSSS         print *, '@GTFLGS: Use TDHF=ON and $INPUT namelist for',
+CSsS     &            ' TDHF calculations (see manual).'
+CSSS         call errex
+CSSS      end if
 
 c   o SYM=FULL
       if (ioppar(h_IOPPAR_sym).eq.3) then

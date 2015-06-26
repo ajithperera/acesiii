@@ -546,6 +546,7 @@
       scalar deavg_old
       scalar icount
       scalar damp_factor
+      scalar damp_constant 
       scalar kill_damp
       scalar lock_orbs 
       scalar lock_occs 
@@ -678,7 +679,7 @@
             PUT Dhfb(mu,nu) = Tpq(mu,nu)
 #
       ENDPARDO mu, nu 
-#
+
       ENDPROC HFIDENS
 #     ---------------
 #bgn_debug
@@ -1819,6 +1820,8 @@
 #      First put the transposed Fock arrays into static arrays 
 #      ------------------------------------------------------- 
 #
+       execute get_my_rank rank
+       if rank == 0.0
        DO mu   
        DO nu  
 #
@@ -1833,10 +1836,26 @@
        ENDDO mu   
 
        execute eig FSpq_a ca
+
+       endif 
+       execute sip_barrier
+       execute broadcast_array ca
+       
 #bgn_debug
        esuma=0.0
        execute sum_2d_array ca esuma
        execute print_scalar esuma 
+       execute get_my_rank rank
+       esuma = 0.0
+       if rank == 0.0
+       DO mu
+       DO p
+          etemp  = Ca(mu,p) * Ca(mu,p)
+          esuma += etemp
+       ENDDO p
+       ENDDO mu
+       execute print_scalar esuma
+      endif
 #end_debug
 
        ENDPROC FOCK_DIAG 
@@ -2080,7 +2099,7 @@
 
          execute print_scalar four
 
-         IF NATOMS > 3
+         IF NATOMS >= 3
             etemp = 0.0
             DO katom
             DO jatom
@@ -2117,7 +2136,7 @@
          DO mu
          DO nu
             txx(mu,nu) = Fockrohf_a(mu,nu)
-            IF Natoms <= 3
+            IF Natoms < 3
                txx(mu,nu) = 0.0
             ENDIF
             PUT IDHFA(mu,nu) += txx(mu,nu)
@@ -2127,7 +2146,7 @@
          DO mu
          DO nu
             txx(mu,nu) = Fockrohf_b(mu,nu)
-            IF Natoms <= 3
+            IF Natoms < 3
                txx(mu,nu) = 0.0
             ENDIF
             PUT IDHFB(mu,nu) += txx(mu,nu)
@@ -2603,6 +2622,7 @@
           n1 = 0.0 
           DO d1 
              n1 += 1.0 
+             execute print_scalar n1
              GET          Fa(mu,nu,d1) 
              tpq(mu,nu) = Fa(mu,nu,d1) 
              n2 = 0.0 
@@ -3504,9 +3524,9 @@
 #  choosen 
 #
       DAMP_DENOM  = 1.0
-      DAMP_DENOM += DAMP_FACTOR
+      DAMP_DENOM += DAMP_CONSTANT 
       DAMP_FACTOR  = 1.0/DAMP_DENOM
-#bgn_debug
+#bgn_debu
      execute print_scalar damp_factor 
 #end_debug
 #
@@ -4020,7 +4040,7 @@
           ATOMIC = 1.0
       Endif
 
-      IF NATOMS <= 3
+      IF NATOMS < 3
          COREH  = 1.0
          ATOMIC = 0.0
       ENDIF
@@ -4036,8 +4056,7 @@
 
       If Damping == 2.0
          constant_damping = 1.0
-         damp_factor      = damp_thres 
-         damp_factor     += 0.125
+         damp_constant      = damp
       Endif
 
       If Damping == 3.0
@@ -4104,8 +4123,8 @@
 #
       DO mu
       DO p
-         Txp(mu,p) = 0.0
-          ca(mu,p) = Txp(mu,p)
+          Txp(mu,p) = 0.0
+          ca(mu,p)      = Txp(mu,p)
           CA_Prev(mu,p) = Txp(mu,p)
           CA_TEMP(mu,p) = Txp(mu,p)
       ENDDO p
@@ -4116,13 +4135,6 @@
          ORB_OVLP_A(p,i) = Tpi(p,i)
       ENDDO i
       ENDDO p
-
-      DO q
-      DO j
-         Tqj(q,j) = 0.0
-         ORB_OVLP_B(q,j) = Tqj(q,j)
-      ENDDO j
-      ENDDO q
 
       DO q
       DO j
@@ -4166,8 +4178,8 @@
 
       DO MU
       DO NU
-         txx(mu,nu) = 0.0
-         x1(mu,nu)  = txx(mu,nu)
+         txx(mu,nu)    = 0.0
+         x1(mu,nu)     = txx(mu,nu)
          FSpq_a(mu,nu) = txx(mu,nu)
          FSpq_b(mu,nu) = txx(mu,nu)
       ENDDO NU
@@ -4176,8 +4188,18 @@
       DO nbfnsA
           A_OCC_NUMS (nbfnsA) = 0.0
       ENDDO nbfnsA
-      execute sip_barrier 
 
+      PARDO mu, nu
+            Txx(mu,nu)        = 0.0
+            Fockrohf_a(mu,nu) = txx(mu,nu)
+            Fockrohf_b(mu,nu) = txx(mu,nu)
+            Txx(mu,nu)        = oed_ovl(mu,nu)    
+            Txx(mu,nu)        = oed_nai(mu,nu)    
+            Txx(mu,nu)        = oed_kin(mu,nu)    
+      ENDPARDO mu, nu
+
+
+      execute sip_barrier 
 #
 #     Perform initial (aa|bb) integral computation to set Schwartz paramaters 
 #     ----------------------------------------------------------------------- 
@@ -4198,8 +4220,68 @@
 
 #     Construct the initial guess of the density matrix
 #     -----------------------------------------------
-#   
-      CALL IGUESS
+
+#bgn_debug
+#       if rank==0.0
+#       esuma = 0.0
+#       DO mu
+#       DO nu
+#          etemp  = oed_ovl(mu,nu) * oed_ovl(mu,nu)
+#          esuma += etemp
+#       ENDDO nu
+#       ENDDO mu
+#       execute print_scalar esuma
+#       endif
+#end_debug
+
+      etemp = -1.0
+      execute scf_atom etemp
+#
+      if etemp == 1.0
+         execute get_my_rank rank
+
+         if rank == 0.0
+   
+            DO mu
+            DO nu
+               txx(mu,nu)      = Fockrohf_a(mu,nu)
+               PUT Dhfa(mu,nu) = txx(mu,nu)
+               txx(mu,nu)      = Fockrohf_b(mu,nu)
+               PUT Dhfb(mu,nu) = txx(mu,nu)
+            ENDDO nu
+            ENDDO mu
+
+         endif 
+
+         execute sip_barrier
+#bgn_debug
+       if rank==0.0
+       esuma = 0.0
+       esumb = 0.0
+       DO mu
+       DO nu
+          get Dhfa(mu,nu)
+          get Dhfb(mu,nu)
+          etemp  = Dhfa(mu,nu) * Dhfa(mu,nu)
+          esuma += etemp
+          etemp  = Dhfb(mu,nu) * Dhfb(mu,nu)
+          esumb += etemp
+       ENDDO nu
+       ENDDO mu
+       execute print_scalar esuma
+       execute print_scalar esumb
+       endif
+#end_debug
+
+         CALL OVER_HALF
+         execute sip_barrier
+         EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+
+      endif
+
+      If etemp == 9.0
+         CALL IGUESS
+      Endif 
 #
 # Delete the distributed arrays used in initial guess routines
 #
@@ -4585,15 +4667,24 @@
          execute sip_barrier
 
 #bgn_debug
+         execute get_my_rank rank
+         if rank == 0.0
          esuma= 0.0
+         esumb= 0.0
          DO mu
          DO nu
          GET           DHFa(mu,nu)
+         GET           DHFb(mu,nu)
+#         execute dump_amp DHFa(mu,nu)
          etemp = DHFa(mu,nu) * DHFa(mu,nu)
          esuma += etemp
+         etemp = DHFb(mu,nu) * DHFb(mu,nu)
+         esumb += etemp
          ENDDO nu
          ENDDO mu
          execute print_scalar esuma
+         execute print_scalar esumb
+         endif 
 #end_debug
    
 #
@@ -4612,22 +4703,26 @@
             Txx(mu,nu)  = DHFa(mu,nu) 
             Txx(mu,nu) -= DHFa_Prev(mu,nu) 
             execute check_dconf Txx donea  
+#            execute print_scalar donea
+
+            doneb = donea 
             if donea > done 
                done = donea 
             endif 
+           
 #
 #           Beta component 
 #           -------------- 
 #
-            GET           DHFb_Prev(mu,nu) 
-            GET           DHFb(mu,nu) 
+#            GET           DHFb_Prev(mu,nu) 
+#            GET           DHFb(mu,nu) 
 #
-            Txx(mu,nu)  = DHFb(mu,nu) 
-            Txx(mu,nu) -= DHFb_Prev(mu,nu) 
-            execute check_dconf Txx doneb  
-            if doneb > done 
-               done = doneb 
-            endif 
+#            Txx(mu,nu)  = DHFb(mu,nu) 
+#            Txx(mu,nu) -= DHFb_Prev(mu,nu) 
+#            execute check_dconf Txx doneb  
+#            if doneb > done 
+#               done = doneb 
+#            endif 
 #
          ENDDO nu 
          ENDDO mu 
@@ -4756,6 +4851,7 @@
          DO mu
          DO p
             txp(mu,p) = ca(mu,p)
+#            execute dump_amp txp(mu,p)
          ENDDO p
          ENDDO mu
       execute print_rel_info zero ca

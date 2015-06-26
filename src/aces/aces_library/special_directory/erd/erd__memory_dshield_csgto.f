@@ -125,7 +125,7 @@ C------------------------------------------------------------------------
 C
 C
 C             ...set initial memory values.
-C
+C        
 C
          IMIN = 0
          IOPT = 0
@@ -399,5 +399,9 @@ C
 C             ...ready!
 C
 C
+         
+CSSS       Write(6,'(a,4I4)") "ERD__MEMORY_DSHIELD_CSGTO,IOPT & ZOPT: ", 
+CSSS            IOPT, ZOPT, IMIN, ZMIN
+
          RETURN
          END

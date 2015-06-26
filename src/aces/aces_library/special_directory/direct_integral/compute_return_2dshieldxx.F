@@ -236,7 +236,7 @@ c      Write(6,"(3(1x,F10.5))") x4, y4, z4
      *                                 a1,a2,b1,b2,c1,
      *                                 c2,d1,d2,scr(nfirst),
      *                                 aa1,aa2,bb1,bb2,cc1,cc2,
-     *                                 dd1,dd2,1.d0)
+     *                                 dd1,dd2,1.d0,0)
            endif 
 
       enddo   ! s
@@ -255,8 +255,12 @@ C#ifdef _DEBUG_LVL0
       do a = a1,a2
 
 C      Write(6, "(5(1x,F15.10))") (DSHIELD_XX(a,b,c,d), a=a1, a2)
+      if (Dabs(DSHIELD_XX(a,b,c,d)) .gt. 10D-12) then
+      if (d .le. c .and. b .le. a) then
       xx_s = xx_s + DSHIELD_XX(a,b,c,d) * DSHIELD_XX(a,b,c,d)
       xx_l = xx_l + DSHIELD_XX(a,b,c,d)
+      endif 
+      endif 
 C      write(*,*)
       enddo 
       enddo 

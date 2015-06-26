@@ -52,7 +52,7 @@ c--------------------------------------------------------------------------
       integer ierr, handle
       integer blk, blkndx, maxblk
       integer*8 iarray, farray, indblk, get_block_index
-      integer*8 ibarray, fbarray 
+      integer*8 ibarray, fbarray, caarray, cbarray
       integer*8 nai_array, kin_array, ovl_array 
       integer*8 integral_scr
       integer ind, seg, val1(mx_array_index), val2(mx_array_index)
@@ -73,9 +73,6 @@ c--------------------------------------------------------------------------
       common dbuf, x
       equivalence (ibuf(1), dbuf(1))
 #endif
-
-      common /d2int_com/jatom, jx, jcenter
-      integer jatom, jx, jcenter
 
 #ifdef ALTIX
       iptr = ishptr
@@ -206,7 +203,7 @@ c----------------------------------------------------------------------------
       array_type = array_table(c_array_type, array)
 
       if (array_type .ne. static_array) then
-         print *,'Error: Fock arrays in integral calc
+         print *,'Error: Fock arrays in scf_atom
      *            must be static.'
          call abort_job()
       endif
@@ -234,7 +231,7 @@ c----------------------------------------------------------------------------
       array_type = array_table(c_array_type, array)
 
       if (array_type .ne. static_array) then
-         print *,'Error: Fock arrays in integral calc
+         print *,'Error: Fock arrays in scf_atom
      *            must be static.'
          call abort_job()
       endif
@@ -256,12 +253,64 @@ c----------------------------------------------------------------------------
 
 c---------------------------------------------------------------------------
 c---------------------------------------------------------------------------
+C get the pointers for CA and CB.
+
+      array = 2 ! CA , placeholder
+      array_type = array_table(c_array_type, array)
+
+      if (array_type .ne. static_array) then
+         print *,'Error: CA array in scf_atom
+     *            must be static.'
+         call abort_job()
+      endif
+
+      nindex      = array_table(c_nindex, array)
+
+      if (nindex .ne. 2) then
+         print *,'Error: Fock array must have ',
+     *           'two indices.'
+         call abort_job()
+      endif
+
+      do i = 1, nindex
+         na = array_table(c_index_array1+i-1,array)
+         indb(i) = index_table(c_index_size, na)  ! pick up length of index
+      enddo
+
+      caarray = get_index_from_base(address_table(array), x, 2)
+
+      array = 3 ! CB , placeholder
+      array_type = array_table(c_array_type, array)
+
+      if (array_type .ne. static_array) then
+         print *,'Error: CB array in scf_atom
+     *            must be static.'
+         call abort_job()
+      endif
+
+      nindex      = array_table(c_nindex, array)
+
+      if (nindex .ne. 2) then
+         print *,'Error: Fock array must have ',
+     *           'two indices.'
+         call abort_job()
+      endif
+
+      do i = 1, nindex
+         na = array_table(c_index_array1+i-1,array)
+         indb(i) = index_table(c_index_size, na)  ! pick up length of index
+      enddo
+
+      cbarray = get_index_from_base(address_table(array), x, 2)
+C----------------------------------------------------------------------
 
 c     write(6,*) '  x(nai_array), x(kin_array), x(ovl_array),
 c    *                 x(farray), x(fbarray)) ', 
 c    *                 nai_array, kin_array, ovl_array,
 c    *                 farray, fbarray 
-
+c      write(6,*) caarray, cbarray, farray, fbarray, nai_array
+C      write(6,*) kin_array, ovl_array  
+      
       if (.not. dryrun) then  
          norbmax = inda(1) 
          vmax    = inda(1) 
@@ -287,16 +336,27 @@ c        call determine_frags()
 
          if (scalar_table(sind) .lt. 0.0) then 
 
-         call read_density(scalar_table(sind), 
-     *                 dbuf(integral_scr),maxblk, ibuf(ipkgscr),
-     *                 dbuf(icoord),dbuf(ipcoeff),dbuf(ialpha), 
-     *                 ibuf(iccbeg), ibuf(iccend), 
-     *                 1, inda(1), 1,inda(2), 
-     *                 x(nai_array), x(kin_array), x(ovl_array),
-     *                 x(farray), x(fbarray)) 
+            INQUIRE(file='ca.data',exist=aExist)
+            INQUIRE(file='cb.data',exist=bExist)
+        
+         If (aexist .and. .not. bexist) then
+            call read_densitya(1, inda(1), 1,inda(2), 
+     *                         x(caarray),x(farray), x(fbarray)) 
+            scalar_table(sind) = 1.0
 c
-         else 
+         else if (aexist .and. bexist) then
 
+            call read_densityab(1, inda(1), 1,inda(2), 
+     *                          x(caarray), x(cbarray),
+     *                          x(farray), x(fbarray)) 
+            scalar_table(sind) = 1.0
+
+         endif 
+
+            scalar_table(sind) = 9.0
+
+         else
+   
          INQUIRE(file='ca.data',exist=aExist)
          INQUIRE(file='cb.data',exist=bExist)
 

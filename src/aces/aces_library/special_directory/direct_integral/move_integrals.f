@@ -292,7 +292,8 @@ c---------------------------------------------------------------------------
       end
 
       subroutine add_4cent_integrals(v, va1,va2,vb1,vb2,vc1,vc2,vd1,vd2,
-     *                 intblk, a1, a2, b1, b2, c1, c2, d1, d2, fact)
+     *                 intblk, a1, a2, b1, b2, c1, c2, d1, d2, fact,
+     *                 flag)
 
       implicit none
       integer va1, va2, vb1,vb2, vc1, vc2, vd1, vd2
@@ -306,6 +307,7 @@ c---------------------------------------------------------------------------
 
       double precision v(va1:va2,vb1:vb2,vc1:vc2,vd1:vd2)
       double precision intblk(a1:a2,b1:b2,c1:c2,d1:d2), fact
+      double precision tmp
 
       drange1 = max(vd1, d1)
       drange2 = min(vd2, d2)
@@ -327,18 +329,24 @@ c---------------------------------------------------------------------------
       enddo
 
       if (flag .eq. 1) then
+      Write(*,*)
+      write(*,*) "Printing from add_4cent_integrals"
+      tmp = 0.0D0
       do a = arange1, arange2
          do b = brange1, brange2
          do c = crange1, crange2
          do d = drange1, drange2
          write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
      &             v(a,b,c,d)
+         tmp = tmp + v(a,b,c,d) * v(a,b,c,d)
+         enddo
+         enddo
+         enddo
+         enddo
 
-         enddo
-         enddo
-         enddo
-         enddo
-       endif 
+      Write(6,"(a,1x,F20.10)")"Check sum of the shell quadra. = :",
+     &                      tmp
+      endif
 
       return
       end
@@ -360,6 +368,7 @@ c---------------------------------------------------------------------------
 
       double precision v(va1:va2,vb1:vb2,vc1:vc2,vd1:vd2)
       double precision intblk(a1:a2,b1:b2,c1:c2,d1:d2), fact
+      double precision tmp
 
       drange1 = max(vd1, d1)
       drange2 = min(vd2, d2)
@@ -383,18 +392,22 @@ c---------------------------------------------------------------------------
       Write(*,*)
       write(*,*) "Printing from add_4cent_integrals"
       if (flag .eq. 1) then
+      tmp = 0.0D0
       do a = arange1, arange2
          do b = brange1, brange2
          do c = crange1, crange2
          do d = drange1, drange2
-         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
-     &             v(a,b,c,d)
+CSSS         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
+CSSS     &             v(a,b,c,d)
+         tmp = tmp + v(a,b,c,d) * v(a,b,c,d)
+         enddo
+         enddo
+         enddo
+         enddo
 
-         enddo
-         enddo
-         enddo
-         enddo
-       endif 
+      Write(6,"(a,1x,F20.10)")"Check sum of the shell quadra. = :",
+     &                      tmp
+      endif 
 
       return
       end

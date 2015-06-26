@@ -688,8 +688,9 @@ CSSS         ATOMIC = .FALSE.
 
          IF (.NOT.ATOMIC) THEN
 
-CSSS             write(*,*) "Enter  ERD__2D_DSHIELD_PQ_INTEGRALS"
-CSSS             write(*,*) "CASE2D", CASE2D_0,CASE2D_1
+CSSS            write(*,*) "Enter  ERD__2D_DSHIELD_PQ_INTEGRALS"
+CSSS            write(*,*) "CASE2D", CASE2D_0,CASE2D_1
+CSSS            Write(*,*) "XC,YC,ZC", XC,YC,ZC
 
              CALL    ERD__2D_DSHIELD_PQ_INTEGRALS
      +

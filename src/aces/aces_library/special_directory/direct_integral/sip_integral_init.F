@@ -228,12 +228,12 @@ C become available.
 
         if (g_tensor .eq. 1.0) then
             
-            soi    = .FALSE.
+            soi    = .TRUE.
             dsh_2p = .TRUE.
             Write(6,"(1x,a,a)") "In sip_integral_init both SOI and",
      *                       " dsh_2p flags are turned on"
 
-         endif 
+        endif 
 
          if (do_erd_scratch_calc) then
             do_erd_scratch_calc = .false.   ! only 1 time EVER!
@@ -257,7 +257,6 @@ C g-tensor and spin-orbit couplings (only spin-orbit coupling
 C should be handled in this block). Note that calc_2der_integrals
 C is set to true (need to compute 2-particle SOIs)
 C
-
                    call erd_soi_scratch_mem_calc(nshells, ivangmom, 
      *                          ncfps, npfps,
      *                          atom, dbuf(icoord), dbuf(ialpha),
@@ -281,12 +280,12 @@ C Currently rarely needed all by itself
      *                          intmax, zmax, me, company_size)  
 
               else if (dsh_2p .and. soi) then
-
+C
 C g-tensor calcs, both groups are needed. In fact here, the SOIs
 C memory requirment is much larger than that is for two-particle
 C diagmagnetic shielding. So, lets allocate what is needed for
-C SOI and let deshielding take care of itself. 
-
+C SOI and let the deshielding take care of itself. 
+C
                    call erd_combo_scratch_mem_calc(nshells, ivangmom, 
      *                          ncfps, npfps,
      *                          atom, dbuf(icoord), dbuf(ialpha),
@@ -314,6 +313,7 @@ c-------------------------------------------------------------------------
 c   Add correction for memory needed in the HRR transformation.
 c-------------------------------------------------------------------------
 
+            
             call erd__memory_hrr_correction(ivAngMom, nshells, 
      *                  spherical, ihrr, zhrr)
             intmax = intmax + ihrr
@@ -323,7 +323,8 @@ c-------------------------------------------------------------------------
          itemp = intmax
          ztemp = zmax
 
-         Write(*,*) "In sip_intmem_init", itemp,ztemp
+CSSS         Write(*,*) "In sip_intmem_init", itemp,ztemp
+
          call mpi_barrier(company_comm, ierr)
          call mpi_reduce(itemp, intmax, 1,
      *          mpi_integer, mpi_max, 0,

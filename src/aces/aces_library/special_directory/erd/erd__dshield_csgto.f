@@ -517,6 +517,8 @@ C
 C
          REORDER = .TRUE.
 
+CSSS         Write(*,*) "NIJ, NIJBLK, NKL, NKLBLK",NIJ,NIJBLK,NKL,NKLBLK
+
          DO 1000 NIJBEG = 1,NIJ,NIJBLK
             NIJEND = MIN0 (NIJBEG+NIJBLK-1,NIJ)
             MIJ = NIJEND - NIJBEG + 1

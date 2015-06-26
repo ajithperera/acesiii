@@ -105,8 +105,6 @@ C
      +
      +                              IMIN,IOPT,
      +                              ZMIN,ZOPT )
-     +
-     +
 C
 C
 C             ...ready!

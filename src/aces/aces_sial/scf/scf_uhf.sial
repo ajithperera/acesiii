@@ -574,6 +574,7 @@
       scalar deavg_old
       scalar icount
       scalar damp_factor
+      scalar damp_constant 
       scalar can_damp
       scalar kill_damp
       scalar lock_orbs
@@ -1879,6 +1880,8 @@
 #      First put the transposed Fock arrays into static arrays 
 #      ------------------------------------------------------- 
 #
+       execute get_my_rank rank
+       if rank == 0.0
        DO mu   
        DO nu  
 #
@@ -1892,8 +1895,9 @@
 #
        ENDDO nu  
        ENDDO mu   
-       execute sip_barrier 
+
 #bgn_debug
+       execute sip_barrier 
        esuma=0.0
        esumb=0.0
        execute sum_2d_array FSpq_a esuma 
@@ -1901,8 +1905,15 @@
        execute print_scalar esuma
        execute print_scalar esumb
 #end_debug
+
        execute eig FSpq_a CA
        execute eig FSpq_b CB
+
+       endif 
+       execute sip_barrier 
+
+       execute broadcast_array cB
+       execute broadcast_array cA
 
 #       DO mu 
 #       DO p
@@ -4151,10 +4162,10 @@
 #  choosen
 #
       DAMP_DENOM  = 1.0
-      DAMP_DENOM += DAMP_FACTOR
+      DAMP_DENOM += DAMP_CONSTANT 
       DAMP_FACTOR  = 1.0/DAMP_DENOM
 #bgn_debug
-#     execute print_scalar damp_factor
+     execute print_scalar damp_factor
 #end_debug
 
       PARDO mu, nu
@@ -4697,11 +4708,10 @@
 
       If Damping == 2.0
          constant_damping = 1.0
-         damp_factor      = damp_thres
-         damp_factor     += 0.125
+         damp_constant      = damp
       Endif
 
-      If Damping == 2.0
+      If Damping == 3.0
          Karls_dynamic = 1.0
       Endif
 
@@ -4840,8 +4850,8 @@
  
       DO KITER 
       DO KPTR1 
-         tpinf(kiter,kptr1) = 0.0
-         pinf(kiter,kptr1)  = tpinf(kiter,kptr1)
+         tpinf(kiter,kptr1) = 0
+         tpinf(kiter,kptr1) = tpinf(kiter,kptr1)
       ENDDO KPTR1 
       ENDDO KITER 
 
@@ -4859,6 +4869,26 @@
          FSpq_b(mu,nu) = txx(mu,nu)
       ENDDO NU
       ENDDO MU
+
+      PARDO mu, nu
+            Txx(mu,nu)        = 0.0
+            Fockrohf_a(mu,nu) = txx(mu,nu)
+            Fockrohf_b(mu,nu) = txx(mu,nu)
+            Txx(mu,nu)        = oed_ovl(mu,nu)
+            Txx(mu,nu)        = oed_nai(mu,nu)
+            Txx(mu,nu)        = oed_kin(mu,nu)
+      ENDPARDO mu, nu
+
+      PARDO mu, p
+            Txp(mu,p)       = 0.0
+            Txp(mu,p)       = Ca(mu,p)
+      ENDPARDO mu, p
+
+      PARDO mu, q
+            Txq(mu,q)       = 0.0
+            Txq(mu,q)       = Cb(mu,q)
+      ENDPARDO mu, q
+
       execute sip_barrier 
 #
 #     Perform initial (aa|bb) integral computation to set Schwartz paramaters
@@ -4880,8 +4910,38 @@
 #
 #     Construct the initial guess of the density matrix
 #     -----------------------------------------------
-     CALL IGUESS
+#
+      etemp = -1.0
+      execute scf_atom etemp
+#
+      if etemp == 1.0
+         execute get_my_rank rank
 
+         if rank == 0.0
+
+            DO mu
+            DO nu
+               txx(mu,nu)      = Fockrohf_a(mu,nu)
+               PUT Dhfa(mu,nu) = txx(mu,nu)
+               txx(mu,nu)      = Fockrohf_b(mu,nu)
+               PUT Dhfb(mu,nu) = txx(mu,nu)
+            ENDDO nu
+            ENDDO mu
+
+         endif
+         execute sip_barrier
+
+         CALL OVER_HALF
+         execute sip_barrier
+         EXECUTE GET_INIT_OCCUPATION A_OCC_NUMS ZERO
+         EXECUTE GET_INIT_OCCUPATION B_OCC_NUMS ONE
+
+      endif
+
+      If etemp == 9.0
+         CALL IGUESS
+      Endif
+#
 # Delete the distributed arrays used in initial guess routines
 
       DELETE IDHFa

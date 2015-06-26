@@ -119,7 +119,8 @@ c-------------------------------------------------------------------------
          imax = max0(imax, imin)
          zmax = max0(zmax, zmin)
 
-           call ERD__MEMORY_DSHIELD_BATCH(
+           
+           call ERD__MEMORY_DSHIELD_BATCH( 
      *                   nalpha, ncoeff,
      *                   ncfps(m), ncfps(n), ncfps(r), ncfps(s),
      *                   npfps(m), npfps(n), npfps(r), npfps(s),
@@ -130,6 +131,7 @@ c-------------------------------------------------------------------------
      *                   coords(1,s),coords(2,s),coords(3,s),
      *                   alpha_pack, pcoeff_pack, spherical,
      *                   imin, iblk, zmin, zblk)
+
          imax = max0(imax, imin)
          zmax = max0(zmax, zmin)
 
@@ -235,7 +237,6 @@ c----------------------------------------------------------------------------
 c   Second-derivative integrals. Loop through all possible flag combinations.  
 c----------------------------------------------------------------------------
 C 
-         Write(6,*) "Check for the 2nd der ints flag:", calc_2der
 C
          if (.not. calc_2der) go to 2000
          do iflag = 1, 12
@@ -319,7 +320,6 @@ c--------------------------------------------------------------------------
      *                 der_flags(10),der_flags(11), der_flags(12),    
      *                   alpha_pack, pcoeff_pack, spherical,
      *                   imin, iblk, zmin, zblk)   
-
             imax = max0(imax, imin)
             zmax = max0(zmax, zmin)
          enddo
@@ -427,6 +427,9 @@ c------------------------------------------------------------------------
  1000    continue
       enddo
       enddo
+
+CSSS      Write(6,"(a,1x,2I4)") "The final memory requirements :", 
+CSSS                             imax, zmax
  
       return
       end

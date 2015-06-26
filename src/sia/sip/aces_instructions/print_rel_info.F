@@ -2055,9 +2055,9 @@ c contribution.
          Call abort_job()
       Endif
 
-      Refspin   = Dble(Nunpaired)
+      Refspin   = Dble(Nunpaired) * 0.50D0
 
-      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
+      Fac = FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 717) then
