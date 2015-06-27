@@ -520,6 +520,7 @@
 
       temp Tpq(mu,nu) 
       temp Txx(mu,nu) 
+      temp T1xx(mu,nu) 
       temp Txi(mu,i) 
       temp Txj(mu,j) 
 #
@@ -1106,6 +1107,10 @@
       Scalar E2GC_ZY_INTMD
       Scalar E2GC_ZZ_INTMD
 
+      Scalar E2GC_XX_SAVE
+      Scalar E2GC_YY_SAVE
+      Scalar E2GC_ZZ_SAVE
+
       Scalar E2GC_XX
       Scalar E2GC_XY
       Scalar E2GC_XZ
@@ -1116,7 +1121,7 @@
       Scalar E2GC_ZY
       Scalar E2GC_ZZ
       Scalar ONETHIRD
-# 
+
       PROC CREATE1ARRAY 
 #     -----------------
            CREATE Gmi_a 
@@ -11569,54 +11574,45 @@
             REQUEST AO_2P_DSHIELD_ZY(mu, nu, lambda, sigma) sigma
             REQUEST AO_2P_DSHIELD_ZZ(mu, nu, lambda, sigma) sigma
 
-            GET HF_SPN_DEN(mu,lambda)
-            GET HF_SPN_DEN(nu,lambda)
-            GET HF_SPN_DEN(nu,sigma)
-            GET HF_SPN_DEN(mu,sigma)
+            GET DHFA(mu,lambda)
+            GET DHFB(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFB(nu,sigma)
 
-            GET HF_TOT_DEN(mu,lambda)
-            GET HF_TOT_DEN(nu,lambda)
-            GET HF_TOT_DEN(nu,sigma)
-            GET HF_TOT_DEN(mu,sigma)
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
+#
+# Coulomb terms (Notice the negative sign in the 2nd and the
+# forth terms. That comes from the operator S_z(1)I_z(2) (opposed 
+# to the I_z(1)I_z(2) in gradient theory).
+#
 
-            Txx(mu,lambda)             = HF_SPN_DEN(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^HF_SPN_DEN(nu,sigma)
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
-            Txx(mu,sigma)              = HF_SPN_DEN(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^HF_SPN_DEN(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-#            GET DHFA(nu,sigma)
-#            GET DHFA(mu,sigma)
-#            GET DHFA(nu,lambda)
-#            GET DHFB(mu,lambda)
-#            GET DHFB(nu,sigma)
-#            GET DHFB(mu,sigma)
-#            GET DHFB(nu,lambda)
-#            Txx(mu,lambda)             = DHFa(mu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            Txx(mu,lambda)             = DHFb(mu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            Txx(mu,sigma)              = DHFa(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-#            Txx(mu,sigma)              = DHFb(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma)  = Txxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+# Exchange terms
+
+            Txx(mu,sigma)              = DHFa(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,sigma)              = DHFb(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
             T1xxxx(mu,nu,lambda,sigma) *= 0.5
 
             tmp = T1xxxx(mu,nu,lambda,sigma) * AO_ERI_INTS(mu,nu,lambda,sigma)
@@ -11687,6 +11683,19 @@
       E2GC_YY += E2GC_XX_YY_ZZ
       E2GC_ZZ += E2GC_XX_YY_ZZ
 
+      E2GC_XX_SAVE = E2GC_XX
+      E2GC_YY_SAVE = E2GC_YY
+      E2GC_ZZ_SAVE = E2GC_ZZ
+
+      E2GC_XX   = E2GC_YY_SAVE
+      E2GC_XX  += E2GC_ZZ_SAVE
+
+      E2GC_YY   = E2GC_XX_SAVE
+      E2GC_YY  += E2GC_ZZ_SAVE
+
+      E2GC_ZZ   = E2GC_XX_SAVE
+      E2GC_ZZ  += E2GC_YY_SAVE
+
       ENDPROC PDCONT_HF
 #     -----------------
 #--------------------------------------------------------------------
@@ -11749,18 +11758,24 @@
             GET DpqB(nu,sigma)
             GET DpqB(mu,sigma)
             GET DpqB(nu,lambda)
-
+#
+# Coulomb terms (Notice the negative sign in the 2nd and the
+# forth terms. That comes from the operator S_z(1)I_z(2) (opposed
+# to the I_z(1)I_z(2) in gradient theory).
+#
             T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+# Exchange terms 
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
             T1xxxx(mu,nu,lambda,sigma)*= 0.5
@@ -12080,6 +12095,19 @@
       E2GC_XX += E2GC_XX_YY_ZZ
       E2GC_YY += E2GC_XX_YY_ZZ
       E2GC_ZZ += E2GC_XX_YY_ZZ
+
+      E2GC_XX_SAVE = E2GC_XX
+      E2GC_YY_SAVE = E2GC_YY
+      E2GC_ZZ_SAVE = E2GC_ZZ
+
+      E2GC_XX   = E2GC_YY_SAVE
+      E2GC_XX  += E2GC_ZZ_SAVE
+
+      E2GC_YY   = E2GC_XX_SAVE
+      E2GC_YY  += E2GC_ZZ_SAVE
+
+      E2GC_ZZ   = E2GC_XX_SAVE
+      E2GC_ZZ  += E2GC_YY_SAVE
 
       ENDPROC PDCONT 
 #     --------------

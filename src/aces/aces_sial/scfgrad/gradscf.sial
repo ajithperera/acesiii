@@ -410,8 +410,8 @@
                  execute der_int_setup dz4(mu,lambda,nu,sigma)
 #
 #                Compute integral block
-#                ----------------------
-                 execute compute_derivative_integrals
+#              ----------------------
+                 Execute compute_derivative_integrals
 #
 #                Contract density with integral derivatives
 #                ------------------------------------------
