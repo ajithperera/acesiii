@@ -2057,7 +2057,7 @@ c contribution.
 
       Refspin   = Dble(Nunpaired) * 0.50D0
 
-      Fac = FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
+      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 717) then
@@ -2085,7 +2085,9 @@ c          enddo
        endif
       endif
 97    format(17x," X                        Y                      Z")
-98    format(26x,"CCSD g-tensor: 2el-diamagnetic shielding (ppm)")
+98    format(26x,"CCSD g-tensor: 2el-diamagnetic shielding ", 
+     &       58x, "Gauge Correction (ppm)")
+
 99    format(2x,I8,5x,F20.10,2x,F20.10)
 101   format(2x,75('-'))
 102   format(2x,"X",F20.7,4x,F20.7,4x,F20.7)

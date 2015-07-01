@@ -11562,17 +11562,17 @@
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
-            REQUEST AO_ERI_INTS(mu, nu, lambda, sigma) sigma   
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma   
 
-            REQUEST AO_2P_DSHIELD_XX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_XY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YZ(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZZ(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XZ(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YZ(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZZ(mu, lambda, nu, sigma) sigma
 
             GET DHFA(mu,lambda)
             GET DHFB(mu,lambda)
@@ -11613,36 +11613,38 @@
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+	    Txxxx(mu,nu,lambda,sigma) *= 0.5
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_ERI_INTS(mu,nu,lambda,sigma)
+            T1xxxx(mu,lambda,nu,sigma) = Txxxx(mu,nu,lambda,sigma)
+
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu,lambda,nu,sigma)
             E2GC_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XX(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XX(mu,lambda,nu,sigma)
             E2GC_XX_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XY(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XY(mu,lambda,nu,sigma)
             E2GC_XY_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_XZ(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_XZ(mu,lambda,nu,sigma)
             E2GC_XZ_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YX(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YX(mu,lambda,nu,sigma)
             E2GC_YX_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YY(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YY(mu,lambda,nu,sigma)
             E2GC_YY_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_YZ(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_YZ(mu,lambda,nu,sigma)
             E2GC_YZ_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZX(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZX(mu,lambda,nu,sigma)
             E2GC_ZX_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZY(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZY(mu,lambda,nu,sigma)
             E2GC_ZY_INTMD += tmp
 
-            tmp = T1xxxx(mu,nu,lambda,sigma) * AO_2P_DSHIELD_ZZ(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_2P_DSHIELD_ZZ(mu,lambda,nu,sigma)
             E2GC_ZZ_INTMD += tmp
 
       ENDPARDO mu, nu, lambda, sigma
@@ -11674,10 +11676,11 @@
       execute print_scalar  E2GC_ZX
       execute print_scalar  E2GC_ZY
       execute print_scalar  E2GC_ZZ
-#enddebug
+#end_debug
 
       ONETHIRD       = 1.0/3.0
       E2GC_XX_YY_ZZ *= ONETHIRD
+      E2GC_XX_YY_ZZ *= -1.0
       
       E2GC_XX += E2GC_XX_YY_ZZ
       E2GC_YY += E2GC_XX_YY_ZZ
@@ -11695,6 +11698,13 @@
 
       E2GC_ZZ   = E2GC_XX_SAVE
       E2GC_ZZ  += E2GC_YY_SAVE
+
+
+#bgn_debug
+      execute print_scalar  E2GC_XX
+      execute print_scalar  E2GC_YY
+      execute print_scalar  E2GC_ZZ
+#end_debug
 
       ENDPROC PDCONT_HF
 #     -----------------
@@ -11727,17 +11737,17 @@
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
-            REQUEST AO_ERI_INTS(mu, nu, lambda, sigma) sigma   
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma   
 
-            REQUEST AO_2P_DSHIELD_XX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_XY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_XZ(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_YZ(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZX(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZY(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_DSHIELD_ZZ(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_XZ(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_YZ(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZX(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZY(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_DSHIELD_ZZ(mu, lambda, nu, sigma) sigma
 
             GET DHFA(mu,lambda)
             GET DHFA(nu,sigma)
@@ -12091,6 +12101,7 @@
 
       ONETHIRD       = 1.0/3.0
       E2GC_XX_YY_ZZ *= ONETHIRD
+      E2GC_XX_YY_ZZ *= -1.0
       
       E2GC_XX += E2GC_XX_YY_ZZ
       E2GC_YY += E2GC_XX_YY_ZZ
@@ -12144,9 +12155,9 @@
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
-            REQUEST AO_2P_SOI_X(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Y(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Z(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Z(mu, lambda, nu, sigma) sigma
 
             GET DHFA(mu,lambda)
             GET DHFA(nu,sigma)
@@ -12691,9 +12702,9 @@
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
-            REQUEST AO_2P_SOI_X(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Y(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Z(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Z(mu, lambda, nu, sigma) sigma
 
             GET DHFa(mu,lambda)
             GET DHFa(nu,sigma)
@@ -13224,9 +13235,9 @@
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
-            REQUEST AO_2P_SOI_X(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Y(mu, nu, lambda, sigma) sigma
-            REQUEST AO_2P_SOI_Z(mu, nu, lambda, sigma) sigma
+            REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
+            REQUEST AO_2P_SOI_Z(mu, lambda, nu, sigma) sigma
 #
             GET DHFa(mu,lambda)
             GET DHFa(nu,sigma)
