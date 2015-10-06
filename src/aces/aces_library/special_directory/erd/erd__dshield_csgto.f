@@ -333,7 +333,7 @@ C
          LCC3 = LCC2 + NPGTO2 * NCGTO2
          LCC4 = LCC3 + NPGTO3 * NCGTO3
 
-         CALL  ERD__SET_ABCD
+         CALL  ERD__SET_DSHIELD_ABCD
      +
      +              ( NCGTO1,NCGTO2,NCGTO3,NCGTO4,
      +                NPGTO1,NPGTO2,NPGTO3,NPGTO4,
@@ -371,7 +371,8 @@ C
 C         WRITE (*,*) ' Finished set abcd '
 C         WRITE (*,*) ' Index A,B,C,D = ',INDEXA,INDEXB,INDEXC,INDEXD
 C         WRITE (*,*) ' EQUALAB = ',EQUALAB
-C         WRITE (*,*) ' EQUALCD = ',EQUALCD
+C         WRITE (*,*) ' EQUALCD = ',EQUALCD  
+C         WRITE (*,*) ' EMPTY   = ',EMPTY
 
          IF (EMPTY) THEN
              NBATCH = 0
@@ -431,7 +432,7 @@ C         Write(*,*) "ENTER ERD__SET_IJ_KL_PAIRS"
      +                         ZCORE (1) )
      +
      +
-C         Write(*,*) "END ERD__SET_IJ_KL_PAIRS"
+C         Write(*,*) "END ERD__SET_IJ_KL_PAIRS", empty
 
          IF (EMPTY) THEN
              NBATCH = 0
@@ -517,7 +518,7 @@ C
 C
          REORDER = .TRUE.
 
-CSSS         Write(*,*) "NIJ, NIJBLK, NKL, NKLBLK",NIJ,NIJBLK,NKL,NKLBLK
+C         Write(*,*) "NIJ, NIJBLK, NKL, NKLBLK",NIJ,NIJBLK,NKL,NKLBLK
 
          DO 1000 NIJBEG = 1,NIJ,NIJBLK
             NIJEND = MIN0 (NIJBEG+NIJBLK-1,NIJ)
@@ -529,10 +530,9 @@ CSSS         Write(*,*) "NIJ, NIJBLK, NKL, NKLBLK",NIJ,NIJBLK,NKL,NKLBLK
                MIJKL = MIJ * MKL
                MGQIJKL = NGQP * MIJKL
 
-CSSS               Write(*,*) "ENTER ERD__E0F0_PCGTO_DSHIELD_BLOCKS",
-CSSS     +                      MGQIJKL, MIJ, MKL, NGQP
-CSSS               Write(*,*) "NIJBEG,NKLBEG", NIJBEG,NKLBEG
-
+C               Write(*,*) "ENTER ERD__E0F0_PCGTO_DSHIELD_BLOCKS",
+C     +                      MGQIJKL, MIJ, MKL, NGQP
+C               Write(*,*) "NIJBEG,NKLBEG", NIJBEG,NKLBEG
                CALL  ERD__E0F0_PCGTO_DSHIELD_BLOCK
      +
      +                    ( NPSIZE,NINT2D,
