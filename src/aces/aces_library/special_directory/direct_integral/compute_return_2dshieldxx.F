@@ -173,8 +173,8 @@ c   Calling sequence for ERD version 2.
 c---------------------------------------------------------------------------
        ncsum = ncfps(m) + ncfps(n) + ncfps(r) + ncfps(s)
 C
-C      Write(6,*) "@-entry to DSHIELD_BATCH"
-C      Write(6,"((a,4(1x,i4)))") "m, n, r, s:", m, n, r, s
+C       Write(6,*) "@-entry to DSHIELD_BATCH"
+C       Write(6,"((a,4(1x,i4)))") "m, n, r, s:", m, n, r, s
 C      Write(6,"(a,2(1x,I4))") "The Nalpha_pack and Npcoeff_pack:",
 C     &                         nalpha_pack, npcoeff_pack
 C      Write(6,"((a,4(1x,i4)))") "Ivanagmom:", Ivangmom(m),

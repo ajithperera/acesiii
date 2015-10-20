@@ -7491,7 +7491,7 @@ PARDO j, i, i1, j1
            delete Gmi_b_x
       ENDPROC CLEANLITER
 #_____________________________________________________________________
-      PROC UPDATEL2
+      PROC UPDATEL12
       PARDO a, a1, i, i1
 
             REQUEST                    L2old_aa_y(i,a,i1,a1) a
@@ -7588,9 +7588,9 @@ PARDO j, i, i1, j1
             execute energy_denominator L2new_ab_y
             PREPARE L2old_ab_y(i,a,j,b)= L2new_ab_y(i,a,j,b)
       ENDPARDO b, a, j, i
-      ENDPROC UPDATEL2
+#      ENDPROC UPDATEL12
 #_____________________________________________________________________
-    PROC UPDATEL1
+#    PROC UPDATEL1
     PARDO a, i
             GET                        l1a_new_y(i,a)
             GET                        l1a_old_y(i,a)
@@ -7662,9 +7662,9 @@ PARDO j, i, i1, j1
             execute energy_denominator tjb(j,b)
             PUT l1b_old_y(j,b)         = tjb(j,b)
       ENDPARDO b, j
-      ENDPROC UPDATEL1
+      ENDPROC UPDATEL12
 #______________________________________________________________________
-      PROC UPDATEL2x
+      PROC UPDATEL12x
       PARDO a, a1, i, i1
             REQUEST                           L2old_aa_y(i,a,i1,a1) a
             t2iaia(i,a,i1,a1)               = L2old_aa_y(i,a,i1,a1)
@@ -7682,9 +7682,9 @@ PARDO j, i, i1, j1
             t2iajb(i,a,j,b)             = L2old_ab_y(i,a,j,b)
             PREPARE IL2old_ab_y(i,a,j,b)= t2iajb(i,a,j,b)
       ENDPARDO b, a, j, i
-      ENDPROC UPDATEL2x
+#      ENDPROC UPDATEL2x
 #_____________________________________________________________________________
-       PROC UPDATEL1x
+#       PROC UPDATEL1x
        PARDO a, i
             GET                           l1a_old_y(i,a)
             tia(i,a)                    = l1a_old_y(i,a)
@@ -7695,7 +7695,7 @@ PARDO j, i, i1, j1
             tjb(j,b)                    = l1b_old_y(j,b)
             PUT Il1b_old_y(j,b)         = tjb(j,b)
       ENDPARDO b, j
-      ENDPROC UPDATEL1x
+      ENDPROC UPDATEL12x
 #__________________________________________________________________________
       PROC ADDL2
       PARDO a, a1, i, i1
@@ -7866,36 +7866,6 @@ PARDO j, i, i1, j1
            PUT D0jb(j,b) = tjb(j,b)
      ENDPARDO b, j 
      ENDPROC LIGUESS
-#____________________________________________________________________________
-#
-     PROC LIGUESS0
-     PARDO a, a1, i, i1
-           REQUEST T2old_aa_y(a,i,a1,i1) a
-           Tiaia(i,a,i1,a1) = 0.0
-           PREPARE L2old_aa_y(i,a,i1,a1) = Tiaia(i,a,i1,a1)
-     ENDPARDO a, a1, i, i1
-     PARDO b, b1, j, j1
-           REQUEST T2old_bb_y(b,j,b1,j1) b
-           Tjbjb(j,b,j1,b1) = 0.0
-           PREPARE L2old_bb_y(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
-     ENDPARDO b, b1, j, j1
-     PARDO b, a, j, i
-           REQUEST T2old_ab_y(a,i,b,j) a
-           Tiajb(i,a,j,b) = 0.0
-           PREPARE L2old_ab_y(i,a,j,b) = Tiajb(i,a,j,b)
-     ENDPARDO b, a, j, i
-     PARDO a, i
-           GET T1a_old_y(a,i)
-           tia(i,a) = 0.0
-           PUT l1a_old_y(i,a) = tia(i,a)
-     ENDPARDO a, i
-     PARDO b, j
-           GET T1b_old_y(b,j)
-           tjb(j,b) = 0.0
-           PUT l1b_old_y(j,b) = tjb(j,b)
-     ENDPARDO b, j
-     ENDPROC LIGUESS0
-
 #...................................................
      PROC LOLDENERGY
 
@@ -12633,13 +12603,33 @@ PARDO j, i, i1, j1
       execute sip_barrier 
       execute server_barrier 
 
-
-      CALL LIGUESS0
-      execute sip_barrier
+      PARDO a, a1, i, i1
+           REQUEST T2old_aa_y(a,i,a1,i1) a
+           Tiaia(i,a,i1,a1) = 0.0
+           PREPARE L2old_aa_y(i,a,i1,a1) = Tiaia(i,a,i1,a1)
+      ENDPARDO a, a1, i, i1
+      PARDO b, b1, j, j1
+           REQUEST T2old_bb_y(b,j,b1,j1) b
+           Tjbjb(j,b,j1,b1) = 0.0
+           PREPARE L2old_bb_y(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
+      ENDPARDO b, b1, j, j1
+      PARDO b, a, j, i
+           REQUEST T2old_ab_y(a,i,b,j) a
+           Tiajb(i,a,j,b) = 0.0
+           PREPARE L2old_ab_y(i,a,j,b) = Tiajb(i,a,j,b)
+      ENDPARDO b, a, j, i
+      PARDO a, i
+           GET T1a_old_y(a,i)
+           tia(i,a) = 0.0
+           PUT l1a_old_y(i,a) = tia(i,a)
+      ENDPARDO a, i
+      PARDO b, j
+           GET T1b_old_y(b,j)
+           tjb(j,b) = 0.0
+           PUT l1b_old_y(j,b) = tjb(j,b)
+      ENDPARDO b, j
       execute server_barrier
-      CALL LOLDENERGY
-      execute server_barrier
-
+#
       CALL GAE
       CALL GMI
       execute sip_barrier
@@ -12732,8 +12722,7 @@ PARDO j, i, i1, j1
       execute sip_barrier
       execute server_barrier
 
-      CALL UPDATEL1x
-      CALL UPDATEL2x
+      CALL UPDATEL12x
       CALL LIGUESS
 
       execute sip_barrier
@@ -12811,13 +12800,10 @@ PARDO j, i, i1, j1
       CALL W1EAFM_x
       call W1MEBJ_x
 
-
       execute sip_barrier
       execute server_barrier
 
-
-      CALL UPDATEL1
-      CALL UPDATEL2
+      CALL UPDATEL12
       execute sip_barrier
       execute server_barrier
       CALL LOLDENERGY
@@ -12908,12 +12894,12 @@ PARDO j, i, i1, j1
        endif
 
        if property == 20.0
-#          call get_HBx_Angmom
+          call get_HBx_Angmom
        endif
 
        if property == 30.0
           beta_is_minus = 100.0
-#          call get_HBx_Spin_orbit
+          call get_HBx_Spin_orbit
        endif
 
        Call Trans2_MO

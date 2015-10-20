@@ -1881,7 +1881,7 @@
 #      ------------------------------------------------------- 
 #
        execute get_my_rank rank
-       if rank == 0.0
+#       if rank == 0.0
        DO mu   
        DO nu  
 #
@@ -1909,7 +1909,7 @@
        execute eig FSpq_a CA
        execute eig FSpq_b CB
 
-       endif 
+#       endif 
        execute sip_barrier 
 
        execute broadcast_array cB

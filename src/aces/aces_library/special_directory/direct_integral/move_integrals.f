@@ -332,20 +332,28 @@ c---------------------------------------------------------------------------
       Write(*,*)
       write(*,*) "Printing from add_4cent_integrals"
       tmp = 0.0D0
+      do d = drange1, drange2
+      do c = crange1, crange2
+      do b = brange1, brange2
       do a = arange1, arange2
-         do b = brange1, brange2
-         do c = crange1, crange2
-         do d = drange1, drange2
+      if (d .le. c .or. b .le.a) then
+      if (v(a,b,c,d) .ne. 0.0d0) then
+
          write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
      &             v(a,b,c,d)
          tmp = tmp + v(a,b,c,d) * v(a,b,c,d)
-         enddo
-         enddo
-         enddo
-         enddo
+      endif 
+      endif 
+      enddo
+      enddo
+      enddo
+      enddo
 
+      if (tmp .ne. 0.0d0) then
       Write(6,"(a,1x,F20.10)")"Check sum of the shell quadra. = :",
      &                      tmp
+      endif 
+
       endif
 
       return
@@ -397,8 +405,8 @@ c---------------------------------------------------------------------------
          do b = brange1, brange2
          do c = crange1, crange2
          do d = drange1, drange2
-CSSS         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
-CSSS     &             v(a,b,c,d)
+         write(*,'(I3,1x,I3,1x,I3,1x,I3,1x,F15.10)')a,b,c,d,
+     &             v(a,b,c,d)
          tmp = tmp + v(a,b,c,d) * v(a,b,c,d)
          enddo
          enddo

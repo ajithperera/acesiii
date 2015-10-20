@@ -190,6 +190,7 @@ c   Make a pass through the index table to count the number of segments needed.
 c----------------------------------------------------------------------------
 
       nsegs = 0
+
       do 100 i = 1, nindex_table
 
 c------------------------------------------------------------------------------
@@ -493,6 +494,34 @@ c----------------------------------------------------------------------------
          enddo       ! j
   300 continue       ! i
 
+C      Write(6,*) "@-build_segment_table print begins"
+C      write(6,*) "---------------------------------"
+C      Write(6,*) "@-build_segment_table index table begin"
+C      write(6,*) "---------------------------------"
+C      Write(6,"(8(1x,i4))") ((index_table(i,j),i=1,lindex_table_entry),
+C     &                        j=1, nindex_table)
+C      Write(6,*) "@-build_segment_table no. segments", nsegs
+C
+C      Write(6,*) "@-build_segment_table index table end"
+C      write(6,*) "-------------------------------------"
+C      Write(6,*) "@-build_segment_table segment table begin"
+C
+C
+C      l = 0 
+C      do i = 1, nindex_table
+C          superindex = index_table(c_subindex_ptr,i)
+C
+C         bseg = index_table(c_bseg, superindex)
+C         eseg = index_table(c_eseg, superindex)
+C         do j = bseg, eseg
+C            ktable = itable + nsegment_table * lsegment_table_entry
+C            Write(6,"(6(1x,I4))") (segtable(k+ktable),k=0,5)
+C         enddo
+C         l = l + 1
+C      enddo 
+C   
+C      Write(6,*) "@-build_segment_table segment table ends"
+C      write(6,*) "----------------------------------------"
 c-----------------------------------------------------------------------------
 c   Now make another pass, indexing the subsegment ranges for each superindex
 c   segment.  This will be used later in "do ii in i" constructs.      

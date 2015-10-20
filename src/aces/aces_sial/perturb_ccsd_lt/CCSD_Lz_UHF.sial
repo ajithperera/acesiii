@@ -12477,6 +12477,33 @@ PARDO j, i, i1, j1
       execute sip_barrier 
       execute server_barrier 
 
+      PARDO a, a1, i, i1
+           REQUEST T2old_aa_z(a,i,a1,i1) a
+           Tiaia(i,a,i1,a1) = 0.0
+           PREPARE L2old_aa_z(i,a,i1,a1) = Tiaia(i,a,i1,a1)
+      ENDPARDO a, a1, i, i1
+      PARDO b, b1, j, j1
+           REQUEST T2old_bb_z(b,j,b1,j1) b
+           Tjbjb(j,b,j1,b1) = 0.0
+           PREPARE L2old_bb_z(j,b,j1,b1) = Tjbjb(j,b,j1,b1)
+      ENDPARDO b, b1, j, j1
+      PARDO b, a, j, i
+           REQUEST T2old_ab_z(a,i,b,j) a
+           Tiajb(i,a,j,b) = 0.0
+           PREPARE L2old_ab_z(i,a,j,b) = Tiajb(i,a,j,b)
+      ENDPARDO b, a, j, i
+      PARDO a, i
+           GET T1a_old_z(a,i)
+           tia(i,a) = 0.0
+           PUT l1a_old_z(i,a) = tia(i,a)
+      ENDPARDO a, i
+      PARDO b, j
+           GET T1b_old_z(b,j)
+           tjb(j,b) = 0.0
+           PUT l1b_old_z(j,b) = tjb(j,b)
+      ENDPARDO b, j
+      execute server_barrier
+
       CALL GAE
       CALL GMI
       execute sip_barrier
@@ -12667,12 +12694,12 @@ PARDO j, i, i1, j1
        endif
 
        if property == 20.0
-#          call get_HBx_Angmom
+          call get_HBx_Angmom
        endif
 
        if property == 30.0
           beta_is_minus = 100.0
-#          call get_HBx_Spin_orbit
+          call get_HBx_Spin_orbit
        endif
 
        Call Trans2_MO

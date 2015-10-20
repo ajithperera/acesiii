@@ -1018,7 +1018,7 @@
                REQUEST T2old_bb_x(b,j1,b1,j2) j2
             DO j
                REQUEST L2old_bb(j,b,j2,b1)  j2
-               REQUEST T2old_bb_x(b,j1,b1,j2) j2
+               REQUEST L2old_bb_x(j,b,j2,b1) j2
                Tjj(j1,j)   = T2old_bb_x(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
                TjjT(j1,j)  = T2old_bb(b,j1,b1,j2)*L2old_bb_x(j,b,j2,b1)
                Tjj(j1,j)  += TjjT(j1,j)
@@ -1418,7 +1418,7 @@
                REQUEST L2old_ab_x(i,a,j,b)  j   
 
                Tbb(b1,b)  = T2old_ab_x(a,i,b1,j)*L2old_ab(i,a,j,b)
-               T1bb(b1,b) = Tbb(b,b1)
+#               T1bb(b1,b) = Tbb(b,b1)
                PUT Dab_b_x_U(b1,b) += Tbb(b1,b)
 
                Tbb(b,b1)  = T2old_ab(a,i,b1,j)*L2old_ab_x(i,a,j,b)
@@ -4761,6 +4761,7 @@
 #bgn_debug
 #               NCOUNT = 2.0 
 #end_debug      
+               execute print_scalar ncount
                IF NCOUNT == 1.0
                   CALL PICK_PERT_T_X
                ENDIF
@@ -4772,8 +4773,10 @@
                IF NCOUNT == 3.0
                   CALL PICK_PERT_T_Z
                ENDIF
-
-               CALL CHECK_TL_ARRAYS
+               
+#bgn_debug
+#               CALL CHECK_TL_ARRAYS
+#end
                CALL FILL_LT1_ARRAYS
 
                call GAEAB_x
@@ -4792,12 +4795,12 @@
                call DAI_x
                execute sip_barrier
 
-               CALL CHECK_AO_DENS
+#               CALL CHECK_AO_DENS
 
                CALL D1TRANS_x
 #bgn_debug
-               CALL SO2AO_TRANS_ALPHA
-               CALL SO2AO_TRANS_BETA
+#               CALL SO2AO_TRANS_ALPHA
+#               CALL SO2AO_TRANS_BETA
 #end_debug
 
 # Save the pert. density matrices

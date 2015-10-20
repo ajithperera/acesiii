@@ -87,6 +87,11 @@ c-----------------------------------------------------------------------------
       go to 100
 
   200 continue
+      
+C      Write(6,*) "@-shells_to_segments: The segment sizes"
+C      Write(6,"(a,I4)") "The number of segments: ", nsegs 
+C      Write(6,"(1x,I4)") (segs(i),i=1,nsegs)
+C      Write(6,*)
 
       return
       end

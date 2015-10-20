@@ -134,7 +134,6 @@ C
              ENDDO
          ENDDO 
 
-         Write(*,*) "ERD__2D_ATOM_PQ_INTEGRALS", CASE2D
          GOTO (1,3,3,2,4,4,2,4,4) CASE2D
 C
 C

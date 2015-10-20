@@ -45,6 +45,8 @@ c----------------------------------------------------------------------------
       virtmax = 0
       aomax = 0
 
+      dbg = .false.
+
       do i = 1, nsegment_table
          index = segment_table(c_index,i)
          index_type = index_table(c_index_type,index)

@@ -113,9 +113,9 @@ c---------------------------------------------------------------------------
             if (scr(i,j) .gt. stack_blocks(i)) then
                stack_blocks(i) = scr(i,j)
                stack_line(i)   = optable(c_lineno,j)
-c               print *,'Task ',me,' New max. for stack ',i,' instr. ',
-c     *           j,' opcode ',optable(c_opcode,j),' line ',
-c     *           optable(c_lineno,j),' blocks = ',stack_blocks(i)
+CSSS               print *,'Task ',me,' New max. for stack ',i,' instr. ',
+CSSS     *           j,' opcode ',optable(c_opcode,j),' line ',
+CSSS     *           optable(c_lineno,j),' blocks = ',stack_blocks(i)
             endif
          enddo 
 

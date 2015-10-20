@@ -72,6 +72,21 @@ c---------------------------------------------------------------------------
 c   Set up the stack blocks.
 c---------------------------------------------------------------------------
 
+C     
+C      write(6,"(a)") "@-blkmgr_init printing BEGINS"
+C      write(6,"(a)") "-----------------------------"
+C      write(6,"(a)") "@-blkmgr_init printing; stack_blocks etc."
+C      write(6,*)
+C      write(6,"(a,6(1x,I6))")"stack_blocks:", 
+C     &                        (stack_blocks(i),i=1,nstacks)
+C      write(6,"(a,6(1x,I6))") "stack_size:", 
+C     &                        (stack_size(i),i=1,nstacks)
+C      write(6,"(a,6(1x,I6))") "blksize:", 
+C     &                        (blksize(i),i=1,nstacks)
+C      write(6,*)
+C      write(6,"(a)") "@-blkmgr_init printing ENDS"
+C      write(6,"(a)") "----------------------------"
+
       count_block = 0
       count_word  = 0
       do i = 1, nstacks
@@ -85,6 +100,7 @@ c---------------------------------------------------------------------------
 c--------------------------------------------------------------------------
 c   Inform the user about the actual stack sizes.
 c--------------------------------------------------------------------------
+      dbg = .true. 
 
       if (dbg) then
          do i = 1, nstacks
