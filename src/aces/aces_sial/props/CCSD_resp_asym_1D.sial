@@ -1229,13 +1229,15 @@
                REQUEST T2old_ab_x(a,i,b,j) j    
                REQUEST L2old_ab_x(i,a1,j,b) j  
 
-               Taa(a,a1)   = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
-               T1aa(a,a)   = Taa(a,a1)
+               Taa(a,a1)    = T2old_ab_x(a,i,b,j)*L2old_ab(i,a1,j,b)
+#               T1aa(a,a1)   = Taa(a,a1)
                PUT Dab_a_x_U(a,a1) += Taa(a,a1)
 
                Taa(a1,a)   = T2old_ab(a,i,b,j)*L2old_ab_x(i,a1,j,b)
                Taa(a1,a)  *= -1.0
-               PUT Dab_a_x_L(a,a1) += Taa(a,a1)
+               T1aa(a,a1) = Taa(a1,a)
+
+               PUT Dab_a_x_L(a,a1) += T1aa(a,a1)
 
             ENDDO j
             ENDDO b

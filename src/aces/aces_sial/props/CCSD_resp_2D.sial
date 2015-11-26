@@ -11723,15 +11723,15 @@
        E2GC_ZY_INTMD = 0.0
        E2GC_ZZ_INTMD = 0.0
 
-       E2GC_XX = 0.0
-       E2GC_XY = 0.0
-       E2GC_XZ = 0.0
-       E2GC_YX = 0.0
-       E2GC_YY = 0.0
-       E2GC_YZ = 0.0
-       E2GC_ZX = 0.0
-       E2GC_ZY = 0.0
-       E2GC_ZZ = 0.0
+#       E2GC_XX = 0.0
+#       E2GC_XY = 0.0
+#       E2GC_XZ = 0.0
+#       E2GC_YX = 0.0
+#       E2GC_YY = 0.0
+#       E2GC_YZ = 0.0
+#       E2GC_ZX = 0.0
+#       E2GC_ZY = 0.0
+#       E2GC_ZZ = 0.0
       
        PARDO mu, nu, lambda, sigma
 #
@@ -14961,16 +14961,13 @@
 
         CALL FORM_SPN_TOT_DENS
 
-#ifdef _DEBUG
-#        CALL PDCONT_HF
-#endof 
-
-         CALL PDCONT 
+        CALL PDCONT_HF
+        CALL PDCONT 
 #
 #bgn_debug
 #      suma=0.0
 #      sumb=0.0
-#     
+#   
 #      PARDO mu, nu, lambda, sigma
 #            Txxxx(mu,nu,lambda,sigma) = 0.0
 #
