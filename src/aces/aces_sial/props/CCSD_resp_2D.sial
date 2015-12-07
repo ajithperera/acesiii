@@ -11586,9 +11586,8 @@
 #
 # Coulomb terms (Notice the negative sign in the 2nd and the
 # forth terms. That comes from the operator S_z(1)I_z(2) (opposed 
-# to the I_z(1)I_z(2) in gradient theory).
+# to the I_z(1)I_z(2) in gradient theory; I_z is the unit operator).
 #
-
             Txx(mu,lambda)             = DHFa(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)

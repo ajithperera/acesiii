@@ -98,7 +98,6 @@ C             ...call special memory routine for only s- and p-type
 C                integrals.
 C
 C
-         Write(*,*) "In ERD__MEMORY_CSGTO"
          IF (MAX0(SHELL1,SHELL2,SHELL3,SHELL4).LT.2) THEN
 
              CALL  ERD__MEMORY_1111_CSGTO

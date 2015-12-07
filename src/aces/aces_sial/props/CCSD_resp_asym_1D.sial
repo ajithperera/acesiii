@@ -4714,9 +4714,9 @@
             do_dten = d_tensor
 
             if do_gten == 1.0
-               property = 20.0
+#               property = 20.0
 #bgn_debug
-#               property = 30.0
+               property = 30.0
 #end_debug
             endif
 #
@@ -4747,11 +4747,11 @@
 
             endif
 #bgn_debug
-#            if property == 30.0
-#               ASYM     = 1.0
-#               SPIN_DEN = 0.0
-#               call get_HBXYZ_Angmom
-#            endif
+            if property == 30.0
+               ASYM     = 1.0
+               SPIN_DEN = 0.0
+               call get_HBXYZ_Angmom
+             endif
 #end_debug
 
             NCOUNT = 0.0

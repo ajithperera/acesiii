@@ -9846,12 +9846,13 @@
       endif 
 
       if do_gten == one
-         ASYM = 1.0
-         property = 20.0
-         beta_is_minus = 0.0
+#         ASYM = 1.0
+#         property = 20.0
+#         beta_is_minus = 0.0
 #bgn_debug
-#         property = 30.0
-#         beta_is_minus = 100.0
+         ASYM = 1.0
+         property = 30.0
+         beta_is_minus = 100.0
 #end_debug
       endif 
 

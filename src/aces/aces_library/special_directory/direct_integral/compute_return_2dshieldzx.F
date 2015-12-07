@@ -244,7 +244,7 @@ c      Write(6,"(3(1x,F10.5))") x4, y4, z4
       enddo   ! n
       enddo   ! m
 
-C#ifdef _DEBUG_LVL0
+#ifdef _DEBUG_LVL0
       Write(6,*) "The <munu |(r1-r2)*r2/r12| lam sig> integral matrix"
       zx_s = 0.0d0
       zx_l = 0.0d0
@@ -268,7 +268,7 @@ C      write(*,*)
       Write(6,"(a,a,F20.10,1x,F20.10)")"Check sum of the ZX-DSHIELD",
      &                      " integrals = " ,ZX_s,ZX_l
 
-C#endif
+#endif
 
       return
       end

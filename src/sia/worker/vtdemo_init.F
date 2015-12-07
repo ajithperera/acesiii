@@ -981,32 +981,32 @@ c---------------------------------------------------------------------------
       endif
 
       if (my_company_rank .eq. 0) then
-c         print *,'INDEX_TABLE:'
-c         do i = 1, nindex_table
-c            print *,i,': ',(index_table(j,i),j=1,lindex_table_entry)
-c         enddo
+         print *,'INDEX_TABLE:'
+         do i = 1, nindex_table
+            print *,i,': ',(index_table(j,i),j=1,lindex_table_entry)
+         enddo
 
-c         print *,'ARRAY TABLE:'
-c         do i = 1, narray_table
-c            print *,i,': ',(array_table(j,i),j=1,larray_table_entry)
-c         enddo
+         print *,'ARRAY TABLE:'
+         do i = 1, narray_table
+            print *,i,': ',(array_table(j,i),j=1,larray_table_entry)
+         enddo
 
-c         print *,'BLOCK_MAP_TABLE: nblock_map_table ',
-c     *           nblock_map_table
-c         do i = 1, nblock_map_table
-c            print 10101,i,(block_map_table(j,i),j=1,lblock_map_entry)
-c         enddo
+         print *,'BLOCK_MAP_TABLE: nblock_map_table ',
+     *           nblock_map_table
+         do i = 1, nblock_map_table
+            print 10101,i,(block_map_table(j,i),j=1,lblock_map_entry)
+         enddo
 10101 format(' ',i6,': ',10(i6,1x))
  
-c         print *,'OPTABLE:'
-c         do i = 1, noptable
-c            print *,i,': ',(optable(j,i),j=1,loptable_entry)
-c         enddo
+         print *,'OPTABLE:'
+         do i = 1, noptable
+            print *,i,': ',(optable(j,i),j=1,loptable_entry)
+         enddo
  
-c         print *,'SEGMENT_TABLE:'
-c         do i = 1, nsegment_table
-c            print *,i,': ',(segment_table(j,i),j=1,lsegment_table_entry)
-c         enddo
+         print *,'SEGMENT_TABLE:'
+         do i = 1, nsegment_table
+            print *,i,': ',(segment_table(j,i),j=1,lsegment_table_entry)
+         enddo
 
 c         print *,'ADDRESS TABLE: '
 c         do i = 1,narray_table 
