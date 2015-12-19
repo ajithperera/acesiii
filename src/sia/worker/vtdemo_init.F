@@ -981,39 +981,39 @@ c---------------------------------------------------------------------------
       endif
 
       if (my_company_rank .eq. 0) then
-         print *,'INDEX_TABLE:'
-         do i = 1, nindex_table
-            print *,i,': ',(index_table(j,i),j=1,lindex_table_entry)
-         enddo
-
-         print *,'ARRAY TABLE:'
-         do i = 1, narray_table
-            print *,i,': ',(array_table(j,i),j=1,larray_table_entry)
-         enddo
-
-         print *,'BLOCK_MAP_TABLE: nblock_map_table ',
-     *           nblock_map_table
-         do i = 1, nblock_map_table
-            print 10101,i,(block_map_table(j,i),j=1,lblock_map_entry)
-         enddo
+C         print *,'INDEX_TABLE:'
+C         do i = 1, nindex_table
+C            print *,i,': ',(index_table(j,i),j=1,lindex_table_entry)
+C         enddo
+C
+C         print *,'ARRAY TABLE:'
+C         do i = 1, narray_table
+C            print *,i,': ',(array_table(j,i),j=1,larray_table_entry)
+C         enddo
+C
+C         print *,'BLOCK_MAP_TABLE: nblock_map_table ',
+C     *           nblock_map_table
+C         do i = 1, nblock_map_table
+C            print 10101,i,(block_map_table(j,i),j=1,lblock_map_entry)
+C         enddo
 10101 format(' ',i6,': ',10(i6,1x))
  
-         print *,'OPTABLE:'
-         do i = 1, noptable
-            print *,i,': ',(optable(j,i),j=1,loptable_entry)
-         enddo
- 
-         print *,'SEGMENT_TABLE:'
-         do i = 1, nsegment_table
-            print *,i,': ',(segment_table(j,i),j=1,lsegment_table_entry)
-         enddo
-
+C         print *,'OPTABLE:'
+C         do i = 1, noptable
+C            print *,i,': ',(optable(j,i),j=1,loptable_entry)
+C         enddo
+C 
+C         print *,'SEGMENT_TABLE:'
+C         do i = 1, nsegment_table
+C            print *,i,': ',(segment_table(j,i),j=1,lsegment_table_entry)
+C         enddo
+C
 c         print *,'ADDRESS TABLE: '
 c         do i = 1,narray_table 
 c            if (address_table(i) .ne. 0) 
 c     *          print *,'Entry ',i,': ',address_table(i)
 c         enddo
-
+C
 c         print *,'Initial scalar table:'
 c         do i = 1, nscalar_table
 c            print *,'Scalar entry ',i,': ',scalar_table(i)

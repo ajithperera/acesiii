@@ -1,0 +1,3 @@
+-bash: .out: command not found
+ifort: error #10236: File not found:  'nlo__rotate_atom_ogroup_nbo.f'
+ifort: command line error: no files specified; for help type "ifort -help"

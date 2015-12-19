@@ -146,6 +146,7 @@
       distributed l1b_old(j,b)
 
       temp tpol(xyz,xyz1)
+      static dmom(xyz)
       static pol(xyz,xyz1)
       scalar ipol
 
@@ -365,6 +366,7 @@
       Scalar sum
       Scalar rank
       Scalar Ncount
+      Scalar Dipole 
  
 #PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
         PROC READ_2EL
@@ -2439,6 +2441,23 @@
       EXECUTE  PRINT_SCALAR  PX
       EXECUTE  PRINT_SCALAR  PY
       EXECUTE  PRINT_SCALAR  PZ
+
+      do xyz
+         if xyz == 1
+            dmom(xyz) = PZ
+         endif
+
+         if xyz == 2
+            dmom(xyz) = PY
+         endif
+
+         if xyz == 1
+            dmom(xyz) = PZ
+         endif
+      enddo xyz
+      dipole = 718
+
+      execute print_rel_info dipole dmom
 
       ENDPROC DMAIN
 

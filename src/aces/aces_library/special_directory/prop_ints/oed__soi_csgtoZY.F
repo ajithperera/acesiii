@@ -1000,7 +1000,7 @@ C                 WRITE (*,*) ' Finished sph quart a '
      +                                ZCORE (IN) )
      +
      +
-                 WRITE (*,*) ' Finished normalized cart a '
+C                 WRITE (*,*) ' Finished normalized cart a '
              END IF
          END IF
 C

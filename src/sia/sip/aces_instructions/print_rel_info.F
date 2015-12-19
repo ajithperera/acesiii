@@ -2105,14 +2105,14 @@ c`
       include 'parallel_info.h'
       integer i, ival, amax, a, a1, a2, b, b1, b2
       double precision array1(a1:a2,b1:b2),sval
+      open(66,file='summary.out')
       ival = sval
 
        if (me .eq. 0)then
-           write(*,*) "What is the ival"
 
 C Write the DIPOLE file; Ajith Perera, 12/2014.
 
-         if (ival .eq. 717) then
+         if (ival .eq. 718) then
             open (unit=80,file='DIPOL',status='unknown',
      &            form="formatted")
             write(6,"(a)") ' Archiving Dipole moments'
@@ -2120,9 +2120,25 @@ C Write the DIPOLE file; Ajith Perera, 12/2014.
             write(80,"(3F20.10)") array1(1,1), array1(2,2),
      &                            array1(3,3)
             close(80)
+
+         Write(66,*) 
+         Write(66,*) 
+         write(66,101)
+         write(66,98)
+         write(66,101)
+         write(66,97)
+         write(66,102) array1(1,1), array1(2,2), array1(3,3)
+         Write(66,*) 
+         Write(66,*) 
+         write(66,101)
          endif
 
        endif
+97    format(17x," X                        Y                      Z")
+98    format(17x,"Correlated (CCSD or MBPT(2) Dipole Moments (a.u.)")
+101   format(2x,75('-'))
+102   format(2x,F20.7,4x,F20.7,4x,F20.7)
+
        Return
        end
 C----------------------------------------------------------

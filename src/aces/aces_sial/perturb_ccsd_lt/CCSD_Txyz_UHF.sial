@@ -947,6 +947,17 @@
          ENDPARDO mu,nu
         
         execute sip_barrier
+#bgn_debug
+        suma = 0.0
+        do mu
+        do nu 
+           get HBx(mu,nu)
+           tmp = HBx(mu,nu) * HBx(mu,nu)
+           suma += tmp
+        enddo nu
+        enddo mu
+        execute print_scalar suma 
+#end_debug
        
        ENDPROC get_HBx_Angmom
 #      ----------------------
@@ -9846,13 +9857,13 @@
       endif 
 
       if do_gten == one
-#         ASYM = 1.0
-#         property = 20.0
-#         beta_is_minus = 0.0
-#bgn_debug
          ASYM = 1.0
-         property = 30.0
-         beta_is_minus = 100.0
+         property = 20.0
+         beta_is_minus = 0.0
+#bgn_debug
+#         ASYM = 1.0
+#         property = 30.0
+#         beta_is_minus = 100.0
 #end_debug
       endif 
 
