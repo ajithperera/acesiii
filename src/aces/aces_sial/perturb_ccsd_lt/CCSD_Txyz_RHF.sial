@@ -1089,7 +1089,8 @@
      ENDPARDO a, b, i, j
      PARDO a, i
            get HBa_me_x(i,a)
-           tai(a,i) = HBa_me_x(i,a)
+           t1ia(i,a) = HBa_me_x(i,a)
+           tai(a,i)  = t1ia(i,a) 
            IF ASYM == 1.0
               tai(a,i) *= -1.0
            ENDIF 
@@ -1108,6 +1109,8 @@
          sum0 +=tmp
       enddo i
       enddo a
+      execute print_scalar sum0
+      execute print_scalar asym
 #end_debug
 
      ENDPROC IGUESS_UHF
@@ -1331,6 +1334,19 @@
 
     PROC FAEA_X
 #   -----------
+#bgn_debug
+     execute sip_barrier
+     sum=0.0
+     do a
+     do i
+     get t1a_old(a,i)
+     tmp = t1a_old(a,i) * t1a_old(a,i)
+     sum += tmp
+     enddo i
+     enddo a
+     execute print_scalar sum 
+#end_debug
+
       PARDO a,a1
            get HBa_ae_x(a,a1)
            taa(a,a1)           = HBa_ae_x(a,a1)
@@ -1348,12 +1364,14 @@
              tai(a,i) = t1a_old(a,i) 
              T1aa(a,a1)  = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
-             Taa(a,a1) *= -0.5
+
+# Wrong;fixed on Dec,2015 Taa(a,a1) *= -0.5
+           ENDDO i 
+
+           Taa(a,a1) *= -0.5
 #bgn_debug
            taa(a,a1) *= 1.0
 #end_debug
-
-           ENDDO i 
            put Fae_a_x (a,a1) +=Taa(a,a1) 
       ENDPARDO a,a1 
 
@@ -1367,8 +1385,10 @@
                   taaai(a1,a,a2,i) = Vaaai(a1,a,a2,i)
                   t1aaai(a1,a,a2,i)= Vaaai(a2,a,a1,i)
                   taaai(a1,a,a2,i)-= t1aaai(a1,a,a2,i)
-
                   Taa(a,a1)        = taaai(a1,a,a2,i)*t1a_old_x(a2,i)
+#bgn_debug 
+               Taa(a,a1) *= 1.0
+#end_debug
                    PUT Fae_a_X(a,a1) += Taa(a,a1)
                   DO i1
                      GET                  t1a_old_x(a1,i1)
@@ -1394,6 +1414,9 @@
                   LWaibj(a,i,b,j) += taibj(a,i,b,j)
                ENDDO i
                Taa(a,a1)        = Vaaai(a1,a,b,j)*t1a_old_x(b,j)
+#bgn_debug 
+               Taa(a,a1) *= 1.0
+#end_debug
                PUT Fae_a_X(a,a1) += Taa(a,a1)
             ENDDO a1
             DO i
@@ -1411,6 +1434,9 @@
               REQUEST Taup_ab_x(a,i,b,j) j
               Taa(a,a1)        = Taup_ab_x(a,i,b,j)*Vpiqj(a1,i,b,j)
               Taa(a,a1)       *= -1.0
+#bgn_debug 
+               Taa(a,a1) *= 1.0
+#end_debug
               PUT Fae_a_X(a,a1) += Taa(a,a1)
            ENDDO a
       ENDPARDO a1, i, b, j
@@ -1420,6 +1446,9 @@
                REQUEST Taup_aa_X(a,i,a2,i1) i
                Taa(a,a1)        = Taup_aa_X(a,i,a2,i1)*VSpipi(a1,i1,a2,i)
                Taa(a,a1)       *= 0.5
+#bgn_debug 
+               Taa(a,a1) *= 1.0
+#end_debug
                PUT Fae_a_X(a,a1) += Taa(a,a1)
             ENDDO a
       ENDPARDO a1, i, a2, i1
@@ -1895,7 +1924,8 @@
             Tiijj(i1,i,j1,j)  = Vpiqj(i,i1,b,j1)*t1a_old(b,j)
             T1iijj(j1,j,i1,i) = Tiijj(i1,i,j1,j)
             PUT Wminj_ab(i1,i,j1,j) += Tiijj(i1,i,j1,j)
-            PUT Wminj_ab(j1,j,i,i1) +=  T1iijj(j1,j,i1,i) 
+#Wrong;fixed Dec,2015 PUT Wminj_ab(j1,j,i,i1) +=  T1iijj(j1,j,i1,i) 
+            PUT Wminj_ab(j1,j,i1,i) +=  T1iijj(j1,j,i1,i) 
          ENDDO j
       ENDPARDO i,i1,b,j1
 

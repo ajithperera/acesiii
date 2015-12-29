@@ -1357,12 +1357,12 @@
              tai(a,i) = t1a_old(a,i) 
              T1aa(a,a1)  = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
-             Taa(a,a1) *= -0.5
+           ENDDO i 
+
+           Taa(a,a1) *= -0.5
 #bgn_debug
 #           taa(a,a1) *= 1.0
 #end_debug
-
-           ENDDO i 
            put Fae_a_x (a,a1) +=Taa(a,a1) 
       ENDPARDO a,a1 
 
@@ -1874,7 +1874,7 @@
             Tiijj(i1,i,j1,j)  = Vpiqj(i,i1,b,j1)*t1a_old(b,j)
             T1iijj(j1,j,i1,i) = Tiijj(i1,i,j1,j)
             PUT Wminj_ab(i1,i,j1,j) += Tiijj(i1,i,j1,j)
-            PUT Wminj_ab(j1,j,i,i1) +=  T1iijj(j1,j,i1,i) 
+            PUT Wminj_ab(j1,j,i1,i) +=  T1iijj(j1,j,i1,i) 
          ENDDO j
       ENDPARDO i,i1,b,j1
 

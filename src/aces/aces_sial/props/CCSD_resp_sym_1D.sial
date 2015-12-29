@@ -1126,8 +1126,12 @@
             TaaT(a1,a) += T1aaT(a1,a)
             TaaT1(a,a1) = TaaT(a1,a) 
             
-            taa(a,a1) += TaaT1(a,a1)
-            taa(a,a1) *= 0.5
+#            taa(a,a1) += TaaT1(a,a1)
+#            taa(a,a1) *= 0.5
+
+            taa(a,a1)   *= 0.5
+            TaaT1(a,a1) *= 0.5
+            taa(a,a1)   += TaaT1(a,a1)
             
             PUT Dab_a_x(a,a1) = taa(a,a1)
 
@@ -1283,9 +1287,13 @@
             TbbT(b1,b) += T1bbT(b1,b)  
             T1bbT(b,b1) = TbbT(b1,b) 
             
-            tbb(b,b1) += T1bbT(b,b1)
-            tbb(b,b1) *= 0.5
-             
+#            tbb(b,b1) += T1bbT(b,b1)
+#            tbb(b,b1) *= 0.5
+
+            tbb(b,b1)   *= 0.5
+            T1bbT(b,b1) *= 0.5
+            tbb(b,b1)   += T1bbT(b,b1)
+
             PUT Dab_b_x(b,b1) = tbb(b,b1)
 
       ENDPARDO b, b1
@@ -1613,8 +1621,12 @@
             TiiT(i,i1) +=  T1iiT(i,i1) 
             TiiT1(i1,i) =  TiiT(i,i1) 
             
+#            tii(i1,i) += TiiT1(i1,i)
+#            tii(i1,i) *= 0.5
+
+            tii(i1,i)   *= 0.5
+            TiiT1(i1,i) *= 0.5
             tii(i1,i) += TiiT1(i1,i)
-            tii(i1,i) *= 0.5
 
             PUT Dij_a_x(i1,i) = tii(i1,i)
 
@@ -1807,10 +1819,14 @@
             TjjT(j,j1) +=  T1jjT(j,j1)
             TjjT1(j1,j) =  TjjT(j,j1)
              
-            Tjj(j1,j)  += TjjT1(j1,j)  
-            Tjj(j1,j)  *= 0.5
+#            Tjj(j1,j)  += TjjT1(j1,j)  
+#            Tjj(j1,j)  *= 0.5
 
-           PUT Dij_b_x(j1,j) = tjj(j1,j)
+            tjj(j1,j)   *= 0.5
+            TjjT1(j1,j) *= 0.5
+            Tjj(j1,j)   += TjjT1(j1,j)  
+
+            PUT Dij_b_x(j1,j) = tjj(j1,j)
       ENDPARDO j, j1
 
 #bgn_debug
@@ -2193,17 +2209,18 @@
       execute print_scalar suma
 #end_debug
 
-
       PARDO  a, i
               GET t1a_old_x(a,i)
               GET l1a_old_x(i,a)
-              tai (a,i)  = l1a_old_x(i,a)
-              tai (a,i) += t1a_old_x(a,i)
-              tai (a,i) *=0.5
+              tai (a,i)   = l1a_old_x(i,a)
+              tai1 (a,i)  = t1a_old_x(a,i)
+              tai (a,i)  *= 0.5
+              tai1 (a,i) *= 0.5
+              tai (a,i)  += tai1 (a,i)
               PUT  Doldai_a_x(a,i) += tai (a,i)
       ENDPARDO  a, i
       EXECUTE  SIP_BARRIER
-# 
+#
 #bgn_debug
       suma = 0.0
       do a
@@ -2414,13 +2431,16 @@
 # First and second term of Dai
 
       PARDO  b, j
-              GET t1b_old_x(b,j)
-              GET l1b_old_x(j,b)
-               tbj (b,j ) = l1b_old_x(j,b)
-               tbj (b,j)  += t1b_old_x(b,j)
-               tbj (b,j) *=0.5
-               PUT  Doldai_b_x(b,j) += tbj (b,j)
+             GET t1b_old_x(b,j)
+             GET l1b_old_x(j,b)
+             tbj (b,j)  = l1b_old_x(j,b)
+             tbj1 (b,j) = t1b_old_x(b,j)
+             tbj (b,j ) *= 0.5
+             tbj1 (b,j) *= 0.5
+             tbj (b,j)  += tbj1 (b,j)
+             PUT  Doldai_b_x(b,j) += tbj (b,j)
       ENDPARDO  b, j
+      EXECUTE  SIP_BARRIER
 
 #bgn_debug
       execute sip_barrier

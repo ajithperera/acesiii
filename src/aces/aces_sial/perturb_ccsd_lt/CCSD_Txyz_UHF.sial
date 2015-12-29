@@ -1662,15 +1662,17 @@
              tai(a,i) = t1a_old(a,i) 
              T1aa(a,a1)  = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
-             Taa(a,a1) *= -0.5
+
+#Wrong;fixed Dec,2025 Taa(a,a1) *= -0.5
+
+           ENDDO i
+
+           taa(a,a1) *= -0.5 
 #bgn_debug
            taa(a,a1) *= 1.0
 #end_debug
-
-           ENDDO i
            put Fae_a_x (a,a1) +=Taa(a,a1)
        ENDPARDO a,a1
-
 
       PARDO a, a2, i
                allocate LWaiai(a2,i,a,*)
@@ -1758,14 +1760,15 @@
              tbj(b,j) = t1b_old(b,j)
              T1bb(b,b1)  = tbj(b,j) * HBb_me_x(j,b1)
              Tbb(b,b1)  +=T1bb(b,b1)   
-             Tbb(b,b1) *= -0.5
-#bgn_debug
-             Tbb(b,b1) *= 1.0
-#end_debug
+#Wrong;fixed Dec,2025Tbb(b,b1) *= -0.5
            ENDDO j
-             put Fae_b_x (b,b1) +=Tbb(b,b1)
-       ENDPARDO b,b1
 
+           Tbb(b,b1) *= -0.5
+#bgn_debug
+           Tbb(b,b1) *= 1.0
+#end_debug
+           put Fae_b_x (b,b1) +=Tbb(b,b1)
+       ENDPARDO b,b1
 
       PARDO b, b2, j
                allocate LWbjbj(b2,j,b,*)

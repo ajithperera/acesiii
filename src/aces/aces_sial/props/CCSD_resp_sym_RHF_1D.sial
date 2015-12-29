@@ -474,7 +474,7 @@
       CREATE T1L1_OO_A_x
       CREATE T2L2_OO_A_x
 
-      EXECUTE  SERVER_BARRIER
+      EXECUTE SERVER_BARRIER
 
       ENDPROC CREATE_XARRAYS
 #     ----------------------
@@ -501,7 +501,7 @@
 
       DELETE  L1A_OLD_X(i,a)
 
-      DELETE LT1A_x(a,i)
+      DELETE  LT1A_x(a,i)
 
       DELETE  Dij_a_x(i,i1)
 
@@ -885,8 +885,12 @@
             TaaT(a1,a) += T1aaT(a1,a)
             TaaT1(a,a1) = TaaT(a1,a) 
             
-            taa(a,a1) += TaaT1(a,a1)
-            taa(a,a1) *= 0.5
+#            taa(a,a1) += TaaT1(a,a1)
+#            taa(a,a1) *= 0.5
+             
+            taa(a,a1)   *= 0.5
+            TaaT1(a,a1) *= 0.5
+            taa(a,a1)   += TaaT1(a,a1)
             
             PUT Dab_a_x(a,a1) = taa(a,a1)
 
@@ -1168,8 +1172,12 @@
             TiiT(i,i1) +=  T1iiT(i,i1) 
             TiiT1(i1,i) =  TiiT(i,i1) 
             
-            tii(i1,i) += TiiT1(i1,i)
-            tii(i1,i) *= 0.5
+#            tii(i1,i) += TiiT1(i1,i)
+#            tii(i1,i) *= 0.5
+
+            tii(i1,i)   *= 0.5
+            TiiT1(i1,i) *= 0.5
+            tii(i1,i)   += TiiT1(i1,i)
 
             PUT Dij_a_x(i1,i) = tii(i1,i)
 
@@ -1473,17 +1481,18 @@
       execute print_scalar suma
 #end_debug
 
-
       PARDO  a, i
               GET t1a_old_x(a,i)
               GET l1a_old_x(i,a)
               tai (a,i)  = l1a_old_x(i,a)
-              tai (a,i) += t1a_old_x(a,i)
-              tai (a,i) *=0.5
+              tai1(a,i)  = t1a_old_x(a,i)
+              tai (a,i) *= 0.5
+              tai1(a,i) *= 0.5
+              tai (a,i) += tai1 (a,i)
               PUT  Doldai_a_x(a,i) += tai (a,i)
       ENDPARDO  a, i
       EXECUTE  SIP_BARRIER
-# 
+
 #bgn_debug
       suma = 0.0
       do a

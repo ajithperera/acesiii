@@ -1442,8 +1442,8 @@
              tai(a,i) = t1a_old(a,i)
              T1aa(a,a1)  = tai(a,i)*HBa_me_x(i,a1)
              Taa(a,a1) += T1aa(a,a1)
-             Taa(a,a1) *= -0.5
            ENDDO i
+           Taa(a,a1) *= -0.5
            put Fae_a_x (a,a1) +=Taa(a,a1)
        ENDPARDO a,a1
 
@@ -1522,8 +1522,8 @@
              tbj(b,j) = t1b_old(b,j)
              T1bb(b,b1)  = tbj(b,j) * HBb_me_x(j,b1)
              Tbb(b,b1)  +=T1bb(b,b1)
-             Tbb(b,b1) *= -0.5
            ENDDO j
+             Tbb(b,b1) *= -0.5
              put Fae_b_x (b,b1) +=Tbb(b,b1)
       ENDPARDO b,b1
       PARDO b, b2, j

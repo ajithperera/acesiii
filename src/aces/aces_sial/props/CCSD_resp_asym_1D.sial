@@ -1039,8 +1039,10 @@
                TjjT(j1,j)  = T2old_bb(b,j1,b1,j2)*L2old_bb_x(j,b,j2,b1)
                Tjj(j1,j)  += TjjT(j1,j)
                Tjj(j1,j)  *= -0.5
-# Dec,17
+
+# A bug fix on Dec. 2015.
 #               PUT  T2L2_OO_B_x(j,j1) += Tjj(j1,j)
+
                PUT  T2L2_OO_B_x(j1,j) += Tjj(j1,j)
             ENDDO j
             ENDDO j1
@@ -1057,7 +1059,10 @@
                   TjjT(j1,j)       = T2old_ab(a,i,b,j1)*L2old_ab_x(i,a,j,b)
                   Tjj(j1,j)       += TjjT(j1,j)
                   Tjj(j1,j)       *= -1.0
-                  PUT  T2L2_OO_B_x(j,j1) += Tjj(j1,j)
+# A bug fix on Dec. 2015
+#                  PUT  T2L2_OO_B_x(j,j1) += Tjj(j1,j)
+
+                  PUT  T2L2_OO_B_x(j1,j) += Tjj(j1,j)
                ENDDO j
             ENDDO j1
       ENDPARDO b, a, i
@@ -1320,16 +1325,20 @@
 
             taa(a,a1)  =  Dab_a_x_U(a,a1) 
             t1aa(a,a1) =  Dab_a_x_L(a,a1) 
+            taa(a,a1) *=  0.5
+            t1aa(a,a1)*=  0.5 
 
             TaaT(a1,a)  = Dab_a_x_U(a1,a)
             T1aaT(a1,a) = Dab_a_x_L(a1,a)
+            TaaT(a1,a) *= 0.5
+            T1aaT(a1,a)*= 0.5
 
             taa(a,a1)  += t1aa(a,a1)
             TaaT(a1,a) += T1aaT(a1,a)
             TaaT1(a,a1) = TaaT(a1,a)
 
             taa(a,a1) -= TaaT1(a,a1)
-            taa(a,a1) *= 0.5
+#            taa(a,a1) *= 0.5
 
             PUT Dab_a_x(a,a1) = taa(a,a1)
 
@@ -1483,16 +1492,20 @@
             
             tbb(b,b1)  =  Dab_b_x_U(b,b1)
             t1bb(b,b1) =  Dab_b_x_L(b,b1)
+            tbb(b,b1) *=  0.5
+            t1bb(b,b1)*=  0.5
 
             TbbT(b1,b)  =  Dab_b_x_U(b1,b)
             T1bbT(b1,b) =  Dab_b_x_L(b1,b)
+            TbbT(b1,b) *=  0.5
+            T1bbT(b1,b)*=  0.5
 
             tbb(b,b1)  += t1bb(b,b1)
             TbbT(b1,b) += T1bbT(b1,b)
             TbbT1(b,b1) = TbbT(b1,b)
 
             tbb(b,b1) -= TbbT1(b,b1)
-            tbb(b,b1) *= 0.5
+#            tbb(b,b1) *= 0.5
             
             PUT Dab_b_x(b,b1) = tbb(b,b1)
 
@@ -1827,16 +1840,20 @@
 
             Tii(i1,i)  = Dij_a_x_U(i1,i)
             T1ii(i1,i) = Dij_a_x_L(i1,i)
+            Tii(i1,i) *= 0.5
+            T1ii(i1,i)*= 0.5
 
             TiiT(i,i1)  = Dij_a_x_U(i,i1)
             T1iiT(i,i1) = Dij_a_x_L(i,i1)
+            TiiT(i,i1) *= 0.5
+            T1iiT(i,i1)*= 0.5
 
             tii(i1,i)  +=  t1ii(i1,i)
             TiiT(i,i1) +=  T1iiT(i,i1)
             TiiT1(i1,i) =  TiiT(i,i1)
 
             tii(i1,i) -=  TiiT1(i1,i)
-            tii(i1,i) *= 0.5
+#            tii(i1,i) *= 0.5
 
             PUT Dij_a_x(i1,i) = tii(i1,i) 
 
@@ -1844,6 +1861,7 @@
 
 #bgn_debug
       execute sip_barrier
+      execute get_my_rank rank 
       suma=0.0
       do i
       do i1
@@ -2025,16 +2043,20 @@
 
             Tjj(j1,j)  = Dij_b_x_U(j1,j)
             T1jj(j1,j) = Dij_b_x_L(j1,j)
-
+            Tjj(j1,j) *= 0.5
+            T1jj(j1,j)*= 0.5
+          
             TjjT(j,j1)  = Dij_b_x_U(j,j1)
             T1jjT(j,j1) = Dij_b_x_L(j,j1)
+            TjjT(j,j1) *= 0.5
+            T1jjT(j,j1)*= 0.5
 
             tjj(j1,j)  +=  t1jj(j1,j)
             TjjT(j,j1) +=  T1jjT(j,j1)
             TjjT1(j1,j) =  TjjT(j,j1)
 
             tjj(j1,j) -=  TjjT1(j1,j)
-            tjj(j1,j) *=  0.5
+#            tjj(j1,j) *=  0.5
 
             PUT Dij_b_x(j1,j) = tjj(j1,j)
       ENDPARDO j, j1
@@ -2411,32 +2433,39 @@
       execute print_scalar suma 
 #end_debug
 
+      execute sip_barrier 
       PARDO  a, i
+              GET Doldai_a_x(a,i)
               GET t1a_old_x(a,i)
               GET l1a_old_x(i,a)
 #bgn_debug
 #              execute dump_amp t1a_old_x(a,i) 
 #              execute dump_amp l1a_old_x(i,a) 
 #end_debug
-              tai (a,i)  = l1a_old_x(i,a)
-              tai (a,i) *= -1.0
-              tai (a,i)  += t1a_old_x(a,i)
-#              tai(a,i) *= 0.5
-              PUT  Doldai_a_x(a,i) += tai (a,i)
+              taiT(a,i)   = Doldai_a_x(a,i)
+              taiT(a,i)  *= 0.5
+              tai (a,i)   = l1a_old_x(i,a)
+              tai (a,i)  *= -0.5
+              tai1 (a,i)  = t1a_old_x(a,i)
+              tai1 (a,i) *= 0.5
+              tai(a,i)   += tai1 (a,i)
+              tai(a,i)   += taiT(a,i)
+
+              PUT  Dhold_a_x(a,i) += tai (a,i)
       ENDPARDO  a, i
       EXECUTE  SIP_BARRIER
 
-      PARDO  a, i
-           GET  Doldai_a_x(a,i)
-           tai(a,i) = Doldai_a_x(a,i)
-           PUT Dhold_a_x(a,i) =  tai(a,i)
-      ENDPARDO  a, i
-      execute sip_barrier 
-
-      PARDO  a, i
-           GET  Dhold_a_x(a,i)
-           tai(a,i) = Dhold_a_x(a,i)  
-           tai(a,i) *= 0.5
+#      PARDO  a, i
+#           GET  Doldai_a_x(a,i)
+#           tai(a,i) = Doldai_a_x(a,i)
+#           PUT Dhold_a_x(a,i) =  tai(a,i)
+#     ENDPARDO  a, i
+#     execute sip_barrier 
+#
+     PARDO  a, i
+          GET  Dhold_a_x(a,i)
+          tai(a,i) = Dhold_a_x(a,i)  
+#          tai(a,i) *= 0.5
            PUT Doldai_a_x(a,i) = tai(a,i) 
       ENDPARDO  a, i
       execute sip_barrier 
@@ -2608,50 +2637,55 @@
       ENDPARDO  i, a
 
 #bgn_debug
-    execute sip_barrier
-    sumb=0.0
-   do b
-   do j
-       get Doldai_b_x(b,j)
+#    execute sip_barrier
+#    sumb=0.0
+#   do b
+#   do j
+#       get Doldai_b_x(b,j)
 #       if rank == 0.0
 #          execute dump_amp Doldai_b_x(b,j)
 #       endif
-       tmp = Doldai_b_x(b,j) * Doldai_b_x(b,j)
-       sumb += tmp
-    enddo j
-    enddo b
-    execute print_scalar sumb
+#       tmp = Doldai_b_x(b,j) * Doldai_b_x(b,j)
+#       sumb += tmp
+#    enddo j
+#    enddo b
+#    execute print_scalar sumb
 #end_debug
 
-
+      execute sip_barrier 
       PARDO  b, j
+              GET Doldai_b_x(b,j)
               GET t1b_old_x(b,j)
               GET l1b_old_x(j,b)
+             
+              tbjT(b,j)   = Doldai_b_x(b,j)
+              tbjT(b,j)  *= 0.5
+              tbj (b,j)   = l1b_old_x(j,b)
+              tbj (b,j)  *= -0.5
+              tbj1(b,j)   = t1b_old_x(b,j)
+              tbj1(b,j)  *= 0.5
+              tbj (b,j)  += tbj1(b,j)
+              tbj (b,j)  += tbjT(b,j)
 
-               tbj (b,j ) = l1b_old_x(j,b)
-               tbj (b,j ) *= -1.0
-               tbj (b,j)  += t1b_old_x(b,j)
-#               tbj(b,j)  *= 0.5
-
-               PUT  Doldai_b_x(b,j) += tbj (b,j)
+              PUT  Dhold_b_x(b,j) += tbj (b,j)
       ENDPARDO  b, j
       EXECUTE  SIP_BARRIER
 
-      PARDO  b, j
-           GET  Doldai_b_x(b,j)
-           tbj(b,j) = Doldai_b_x(b,j)
-           PUT Dhold_b_x(b,j) =  tbj(b,j)
-      ENDPARDO  b, j
-      execute sip_barrier
-
+#      PARDO  b, j
+#           GET  Doldai_b_x(b,j)
+#           tbj(b,j) = Doldai_b_x(b,j)
+#           PUT Dhold_b_x(b,j) =  tbj(b,j)
+#      ENDPARDO  b, j
+#      execute sip_barrier
+#
       PARDO  b, j
            GET  Dhold_b_x(b,j)
            tbj(b,j)  = Dhold_b_x(b,j)
-           tbj(b,j) *= 0.5
+#           tbj(b,j) *= 0.5
            PUT Doldai_b_x(b,j) = tbj(b,j)
       ENDPARDO  b, j
       execute sip_barrier
-
+#
 #bgn_debug
       sumb=0.0
       do b
@@ -3480,6 +3514,16 @@
       collective PXX +=Axx
       execute print_scalar Pxx
 
+       XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
+
 
       PARDO a, a1
             GET SOX_VV_A(a,a1)
@@ -3497,6 +3541,16 @@
       execute sip_barrier
       collective PXX +=Axx
       execute print_scalar Pxx
+
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
 
 
       PARDO i, a
@@ -3520,7 +3574,15 @@
       execute sip_barrier
       collective PXX +=Axx
       execute print_scalar Pxx
-
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
 
       PARDO j, j1
             GET SOX_OO_B(j,j1)
@@ -3539,6 +3601,15 @@
       collective PXX +=Axx
       execute print_scalar Pxx
 
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
 
       PARDO b, b1
             GET SOX_VV_B(b,b1)
@@ -3557,6 +3628,16 @@
       execute sip_barrier
       collective PXX +=Axx
       execute print_scalar Pxx
+
+      XX =0.0
+      Axx=0.0
+      YY =0.0
+      Ayy=0.0
+      ZZ =0.0
+      Azz=0.0
+      Pxx=0.0
+      Pxy=0.0
+      Pxz=0.0
 
       PARDO j, b
             GET SOX_VO_B(b,j)
@@ -4964,6 +5045,7 @@
                CALL SO2AO_TRANS_ALPHA
                CALL SO2AO_TRANS_BETA
 #bgn_debug
+      execute get_my_rank rank
       sumx = 0.0
       sumy = 0.0
       sumz = 0.0
@@ -4972,7 +5054,6 @@
          get  SOX_OO_A(i1,i)
          get  SOY_OO_A(i1,i)
          get  SOZ_OO_A(i1,i)
-
          tmp = SOX_OO_A(i1,i) * SOX_OO_A(i1,i)
          sumx +=tmp
          tmp = SOY_OO_A(i1,i) * SOY_OO_A(i1,i)

@@ -1309,8 +1309,8 @@
              Tai(a,i) = t1a_old(a,i)
              T1aa(a,a1)  = HBa_me_x(i,a1)* Tai(a,i)
              Taa(a,a1)  +=T1aa(a,a1)
-             Taa(a,a1) *= -0.5
            ENDDO i
+           Taa(a,a1) *= -0.5
            put F1ae_a_x (a,a1) +=Taa(a,a1)
        ENDPARDO a,a1
 #bgn_debug
