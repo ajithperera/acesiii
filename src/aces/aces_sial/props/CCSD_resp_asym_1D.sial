@@ -1654,7 +1654,7 @@
                   REQUEST L2old_aa(i1,a,i2,a1) a1
 
                   Tii(i,i1)   = T2old_aa_x(a,i,a1,i2)*L2old_aa(i1,a,i2,a1)
-                  Tii(i,i1)  *= -0.5
+                  Tii(i,i1)  *= 0.5
 #bgn_debug
 #                  Tii(i,i1) *= 1.0
 #end_debug
@@ -1670,9 +1670,9 @@
                   REQUEST L2old_aa_x(i1,a,i2,a1) a1
                
                   Tii(i1,i)  = L2old_aa_x(i1,a,i2,a1)*T2old_aa(a,i,a1,i2)
-                  Tii(i1,i) *= 0.5
+                  Tii(i1,i) *= -0.5
 #bgn_debug
-#                  Tii(i,i1) *= 1.0
+#                  Tii(i1,i) *= 1.0
 #end_debug
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
                   
@@ -1687,7 +1687,7 @@
                   REQUEST L2old_ab(i1,a,j,b) b
                   
                   Tii(i,i1)   = T2old_ab_x(a,i,b,j)*L2old_ab(i1,a,j,b)
-                  Tii(i,i1)  *= -1.0
+                  Tii(i,i1)  *= 1.0
 #bgn_debug
 #                  Tii(i,i1) *=1.0
 #bgn_debug
@@ -1721,8 +1721,9 @@
                   REQUEST L2old_ab_x(i1,a,j,b) b
 
                   Tii(i1,i)  = L2old_ab_x(i1,a,j,b)*T2old_ab(a,i,b,j)
+                  Tii(i1,i)  *= -1.0
 #bgn_debug
-#                  Tii(i,i1) *=1.0
+#                  Tii(i1,i) *=1.0
 #bgn_debug
                   PUT Dij_a_x_L(i1,i)   += Tii(i1,i)
 
@@ -1769,9 +1770,9 @@
             GET l1a_old(i1,a)
 
             Tii(i,i1)        = t1a_old_x(a,i)*l1a_old(i1,a)
-            Tii(i,i1)       *= -1.0
+            Tii(i,i1)       *= 1.0
 #bgn_debug
-#                  Tii(i,i1) *=1.0
+#            Tii(i,i1) *=1.0
 #bgn_debug
             PUT Dij_a_x_U(i,i1)   += Tii(i,i1)
 
@@ -1798,12 +1799,12 @@
             GET t1a_old(a,i)
             GET l1a_old_x(i1,a)
 
-            Tii(i,i1)  = t1a_old(a,i) * l1a_old_x(i1,a)
-            Tii(i,i1) *= -1.0
+            Tii(i1,i)  = t1a_old(a,i) * l1a_old_x(i1,a)
+            Tii(i1,i) *= -1.0
 #bgn_debug
-#                  Tii(i,i1) *= 1.0
+#            Tii(i1,i) *= 1.0
 #bgn_debug
-            PUT Dij_a_x_L(i,i1)  += Tii(i,i1)
+            PUT Dij_a_x_L(i1,i)  += Tii(i1,i)
 
       ENDPARDO a, i, i1
 
@@ -1853,7 +1854,6 @@
             TiiT1(i1,i) =  TiiT(i,i1)
 
             tii(i1,i) -=  TiiT1(i1,i)
-#            tii(i1,i) *= 0.5
 
             PUT Dij_a_x(i1,i) = tii(i1,i) 
 
@@ -1873,6 +1873,7 @@
 #         execute dump_amp Dij_a_x_L(i1,i)
 #         execute dump_amp Dij_a_x(i1,i) 
 #         endif 
+#         execute dump_amp Dij_a_x(i1,i)
          tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
          suma += tmp
       enddo i1
@@ -1891,7 +1892,7 @@
                REQUEST T2old_bb_x(b,j1,b1,j2) j2
 
                Tjj(j1,j)    = T2old_bb_x(b,j1,b1,j2)*L2old_bb(j,b,j2,b1)
-               Tjj(j1,j)   *= -0.5
+               Tjj(j1,j)   *= 0.5
                PUT  Dij_b_x_U(j1,j)   += Tjj(j1,j)
 
             ENDDO j
@@ -1906,7 +1907,7 @@
                REQUEST T2old_bb(b,j1,b1,j2) j2
 
                Tjj(j,j1)     = L2old_bb_x(j,b,j2,b1)*T2old_bb(b,j1,b1,j2)
-               Tjj(j,j1)    *= 0.5
+               Tjj(j,j1)    *= -0.5
                PUT  Dij_b_x_L(j,j1)   += Tjj(j,j1)
 
             ENDDO j
@@ -1943,7 +1944,7 @@
 
                   REQUEST L2old_ab(i,a,j,b) b
                   Tjj(j1,j)   = T2old_ab_x(a,i,b,j1)*L2old_ab(i,a,j,b)
-                  Tjj(j1,j)  *= -1.0
+                  Tjj(j1,j)  *= 1.0
                   PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
 
                ENDDO j
@@ -1957,6 +1958,7 @@
 
                   REQUEST L2old_ab_x(i,a,j,b) b
                   Tjj(j,j1)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
+                  Tjj(j,j1)  *= -1.0
                   PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
 
                ENDDO j
@@ -1992,7 +1994,7 @@
             GET t1b_old_x(b,j1)
 
             Tjj(j1,j)    = t1b_old_x(b,j1)*l1b_old(j,b)
-            Tjj(j1,j)   *= -1.0
+            Tjj(j1,j)   *= 1.0
             PUT Dij_b_x_U(j1,j)   += Tjj(j1,j)
 
       ENDPARDO b, j, j1
@@ -2001,9 +2003,9 @@
             GET t1b_old(b,j1)
             GET l1b_old_x(j,b)
 
-            Tjj(j1,j)   = t1b_old(b,j1)*l1b_old_x(j,b)
-            Tjj(j1,j)   *= -1.0
-            PUT Dij_b_x_L(j1,j)   += Tjj(j1,j)
+            Tjj(j,j1)   = t1b_old(b,j1)*l1b_old_x(j,b)
+            Tjj(j,j1)   *= -1.0
+            PUT Dij_b_x_L(j,j1)   += Tjj(j,j1)
 
       ENDPARDO b, j, j1
 
@@ -2056,7 +2058,6 @@
             TjjT1(j1,j) =  TjjT(j,j1)
 
             tjj(j1,j) -=  TjjT1(j1,j)
-#            tjj(j1,j) *=  0.5
 
             PUT Dij_b_x(j1,j) = tjj(j1,j)
       ENDPARDO j, j1
@@ -3510,19 +3511,19 @@
             ZZ =  SOY_OO_A(i,i1) * DiJ_A_X(i,i1)
            AZZ += ZZ
       ENDPARDO i, i1
-      execute sip_barrier
-      collective PXX +=Axx
-      execute print_scalar Pxx
-
-       XX =0.0
-      Axx=0.0
-      YY =0.0
-      Ayy=0.0
-      ZZ =0.0
-      Azz=0.0
-      Pxx=0.0
-      Pxy=0.0
-      Pxz=0.0
+#      execute sip_barrier
+#      collective PXX +=Axx
+#      execute print_scalar Pxx
+#
+#       XX =0.0
+#      Axx=0.0
+#      YY =0.0
+#      Ayy=0.0
+#      ZZ =0.0
+#      Azz=0.0
+#      Pxx=0.0
+#      Pxy=0.0
+#      Pxz=0.0
 
 
       PARDO a, a1
@@ -3538,19 +3539,19 @@
             ZZ  = SOZ_VV_A(a,a1) * Dab_A_X(a,a1)
            AZZ += ZZ
       ENDPARDO a, a1
-      execute sip_barrier
-      collective PXX +=Axx
-      execute print_scalar Pxx
-
-      XX =0.0
-      Axx=0.0
-      YY =0.0
-      Ayy=0.0
-      ZZ =0.0
-      Azz=0.0
-      Pxx=0.0
-      Pxy=0.0
-      Pxz=0.0
+#      execute sip_barrier
+#      collective PXX +=Axx
+#      execute print_scalar Pxx
+#
+#      XX =0.0
+#      Axx=0.0
+#      YY =0.0
+#      Ayy=0.0
+#      ZZ =0.0
+#      Azz=0.0
+#      Pxx=0.0
+#      Pxy=0.0
+#      Pxz=0.0
 
 
       PARDO i, a
@@ -3571,19 +3572,19 @@
            AZZ += ZZ
 
       ENDPARDO i, a
-      execute sip_barrier
-      collective PXX +=Axx
-      execute print_scalar Pxx
-      XX =0.0
-      Axx=0.0
-      YY =0.0
-      Ayy=0.0
-      ZZ =0.0
-      Azz=0.0
-      Pxx=0.0
-      Pxy=0.0
-      Pxz=0.0
-
+#      execute sip_barrier
+#      collective PXX +=Axx
+#      execute print_scalar Pxx
+#      XX =0.0
+#      Axx=0.0
+#      YY =0.0
+#      Ayy=0.0
+#      ZZ =0.0
+#      Azz=0.0
+#      Pxx=0.0
+#      Pxy=0.0
+#      Pxz=0.0
+#
       PARDO j, j1
             GET SOX_OO_B(j,j1)
             GET SOY_OO_B(j,j1)
@@ -3597,19 +3598,19 @@
             ZZ =  SOY_OO_B(j,j1) * DiJ_B_X(j,j1)
            AZZ -= ZZ
       ENDPARDO j, j1
-      execute sip_barrier
-      collective PXX +=Axx
-      execute print_scalar Pxx
-
-      XX =0.0
-      Axx=0.0
-      YY =0.0
-      Ayy=0.0
-      ZZ =0.0
-      Azz=0.0
-      Pxx=0.0
-      Pxy=0.0
-      Pxz=0.0
+#      execute sip_barrier
+#      collective PXX +=Axx
+#      execute print_scalar Pxx
+#
+#      XX =0.0
+#      Axx=0.0
+#      YY =0.0
+#      Ayy=0.0
+#      ZZ =0.0
+#      Azz=0.0
+#      Pxx=0.0
+#      Pxy=0.0
+#      Pxz=0.0
 
       PARDO b, b1
             GET SOX_VV_B(b,b1)
@@ -3625,19 +3626,19 @@
             ZZ  = SOZ_VV_B(b,b1) * Dab_B_X(b,b1)
            AZZ -= ZZ
       ENDPARDO b, b1
-      execute sip_barrier
-      collective PXX +=Axx
-      execute print_scalar Pxx
-
-      XX =0.0
-      Axx=0.0
-      YY =0.0
-      Ayy=0.0
-      ZZ =0.0
-      Azz=0.0
-      Pxx=0.0
-      Pxy=0.0
-      Pxz=0.0
+#      execute sip_barrier
+#      collective PXX +=Axx
+#      execute print_scalar Pxx
+#
+#      XX =0.0
+#      Axx=0.0
+#      YY =0.0
+#      Ayy=0.0
+#      ZZ =0.0
+#      Azz=0.0
+#      Pxx=0.0
+#      Pxy=0.0
+#      Pxz=0.0
 
       PARDO j, b
             GET SOX_VO_B(b,j)
@@ -5042,132 +5043,131 @@
 
                CALL D1TRANS_x
 #bgn_debug
-               CALL SO2AO_TRANS_ALPHA
-               CALL SO2AO_TRANS_BETA
+#               CALL SO2AO_TRANS_ALPHA
+#               CALL SO2AO_TRANS_BETA
 #bgn_debug
-      execute get_my_rank rank
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do i
-      do i1
-         get  SOX_OO_A(i1,i)
-         get  SOY_OO_A(i1,i)
-         get  SOZ_OO_A(i1,i)
-         tmp = SOX_OO_A(i1,i) * SOX_OO_A(i1,i)
-         sumx +=tmp
-         tmp = SOY_OO_A(i1,i) * SOY_OO_A(i1,i)
-         sumy +=tmp
-         tmp = SOZ_OO_A(i1,i) * SOZ_OO_A(i1,i)
-         sumz +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do j
-      do j1
-         get  SOX_OO_B(j,j1)
-         get  SOY_OO_B(j,j1)
-         get  SOZ_OO_B(j,j1)
-         tmp = SOX_OO_B(j,j1) * SOX_OO_B(j,j1)
-         sumx +=tmp
-         tmp = SOY_OO_B(j,j1) * SOY_OO_B(j,j1)
-         sumy +=tmp
-         tmp = SOZ_OO_B(j,j1) * SOZ_OO_B(j,j1)
-         sumz +=tmp
-      enddo j1
-      enddo j
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do a
-      do a1
-         get  SOX_VV_A(a,a1)
-         get  SOY_VV_A(a,a1)
-         get  SOZ_VV_A(a,a1)
-
-         tmp =  SOX_VV_A(a,a1) * SOX_VV_A(a,a1)
-         sumx +=tmp
-         tmp =  SOY_VV_A(a,a1) * SOY_VV_A(a,a1)
-         sumy +=tmp
-         tmp =  SOZ_VV_A(a,a1) * SOZ_VV_A(a,a1)
-         sumz +=tmp
-      enddo a1
-      enddo a
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do b
-      do b1
-         get  SOX_VV_B(b,b1)
-         get  SOY_VV_B(b,b1)
-         get  SOZ_VV_B(b,b1)
-
-         tmp =  SOX_VV_B(b,b1) * SOX_VV_B(b,b1)
-         sumx +=tmp
-         tmp =  SOY_VV_B(b,b1) * SOY_VV_B(b,b1)
-         sumy +=tmp
-         tmp =  SOZ_VV_B(b,b1) * SOZ_VV_B(b,b1)
-         sumz +=tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do a
-      do i
-         get  SOX_VO_A(a,i)
-         get  SOY_VO_A(a,i)
-         get  SOZ_VO_A(a,i)
-         tmp = SOX_VO_A(a,i) * SOX_VO_A(a,i)
-         sumx += tmp
-         tmp = SOY_VO_A(a,i) * SOY_VO_A(a,i)
-         sumy += tmp
-         tmp = SOZ_VO_A(a,i) * SOZ_VO_A(a,i)
-         sumz += tmp
-      enddo i
-      enddo a
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-      sumx = 0.0
-      sumy = 0.0
-      sumz = 0.0
-      do b
-      do j
-         get  SOX_VO_B(b,j)
-         get  SOY_VO_B(b,j)
-         get  SOZ_VO_B(b,j)
-         tmp = SOX_VO_B(b,j) * SOX_VO_B(b,j)
-         sumx += tmp
-         tmp = SOY_VO_B(b,j) * SOY_VO_B(b,j)
-         sumy += tmp
-         tmp = SOZ_VO_B(b,j) * SOZ_VO_B(b,j) 
-         sumz += tmp
-      enddo j
-      enddo b
-      execute print_scalar sumx
-      execute print_scalar sumy
-      execute print_scalar sumz
-#end_debug
-
+#      execute get_my_rank rank
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do i
+#      do i1
+#         get  SOX_OO_A(i1,i)
+#         get  SOY_OO_A(i1,i)
+#         get  SOZ_OO_A(i1,i)
+#         tmp = SOX_OO_A(i1,i) * SOX_OO_A(i1,i)
+#         sumx +=tmp
+#         tmp = SOY_OO_A(i1,i) * SOY_OO_A(i1,i)
+#         sumy +=tmp
+#         tmp = SOZ_OO_A(i1,i) * SOZ_OO_A(i1,i)
+#         sumz +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do j
+#      do j1
+#         get  SOX_OO_B(j,j1)
+#         get  SOY_OO_B(j,j1)
+#         get  SOZ_OO_B(j,j1)
+#         tmp = SOX_OO_B(j,j1) * SOX_OO_B(j,j1)
+#         sumx +=tmp
+#         tmp = SOY_OO_B(j,j1) * SOY_OO_B(j,j1)
+#         sumy +=tmp
+#         tmp = SOZ_OO_B(j,j1) * SOZ_OO_B(j,j1)
+#         sumz +=tmp
+#      enddo j1
+#      enddo j
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do a
+#      do a1
+#         get  SOX_VV_A(a,a1)
+#         get  SOY_VV_A(a,a1)
+#         get  SOZ_VV_A(a,a1)
+#
+#         tmp =  SOX_VV_A(a,a1) * SOX_VV_A(a,a1)
+#         sumx +=tmp
+#         tmp =  SOY_VV_A(a,a1) * SOY_VV_A(a,a1)
+#         sumy +=tmp
+#         tmp =  SOZ_VV_A(a,a1) * SOZ_VV_A(a,a1)
+#         sumz +=tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do b
+#      do b1
+#         get  SOX_VV_B(b,b1)
+#         get  SOY_VV_B(b,b1)
+#         get  SOZ_VV_B(b,b1)
+#
+#         tmp =  SOX_VV_B(b,b1) * SOX_VV_B(b,b1)
+#         sumx +=tmp
+#         tmp =  SOY_VV_B(b,b1) * SOY_VV_B(b,b1)
+#         sumy +=tmp
+#         tmp =  SOZ_VV_B(b,b1) * SOZ_VV_B(b,b1)
+#         sumz +=tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do a
+#      do i
+#         get  SOX_VO_A(a,i)
+#         get  SOY_VO_A(a,i)
+#         get  SOZ_VO_A(a,i)
+#         tmp = SOX_VO_A(a,i) * SOX_VO_A(a,i)
+#         sumx += tmp
+#         tmp = SOY_VO_A(a,i) * SOY_VO_A(a,i)
+#         sumy += tmp
+#         tmp = SOZ_VO_A(a,i) * SOZ_VO_A(a,i)
+#         sumz += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+#      sumx = 0.0
+#      sumy = 0.0
+#      sumz = 0.0
+#      do b
+#      do j
+#         get  SOX_VO_B(b,j)
+#         get  SOY_VO_B(b,j)
+#         get  SOZ_VO_B(b,j)
+#         tmp = SOX_VO_B(b,j) * SOX_VO_B(b,j)
+#         sumx += tmp
+#         tmp = SOY_VO_B(b,j) * SOY_VO_B(b,j)
+#         sumy += tmp
+#         tmp = SOZ_VO_B(b,j) * SOZ_VO_B(b,j) 
+#         sumz += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumx
+#      execute print_scalar sumy
+#      execute print_scalar sumz
+##end_debug
+#
 # Save the pert. density matrices
-
+#
                IF NCOUNT == 1.0
-                 execute print_scalar one
                  CALL PUT_DENS_X
                  EXECUTE SIP_BARRIER
                ENDIF
@@ -5185,25 +5185,25 @@
 # compute the 2nd order terms that involve 1st order response.
 #
               IF NCOUNT == 1.0
-#                  CALL CCSD_RESPONSE_X
+                  CALL CCSD_RESPONSE_X
 #bgn_debug
-                  CALL CCSD_MO_RESPONSE_X
+#                  CALL CCSD_MO_RESPONSE_X
 #                  CALL RESPONSE_X
 #end_debu
               ENDIF 
 
               IF NCOUNT == 2.0
-#                  CALL CCSD_RESPONSE_Y
+                  CALL CCSD_RESPONSE_Y
 #bgn_debug
-                  CALL CCSD_MO_RESPONSE_Y
+#                  CALL CCSD_MO_RESPONSE_Y
 #                  CALL RESPONSE_Y
 #end_debug
               ENDIF 
 
               IF NCOUNT == 3.0
-#                  CALL CCSD_RESPONSE_Z
+                  CALL CCSD_RESPONSE_Z
 #bgn_debug
-                  CALL CCSD_MO_RESPONSE_Z
+#                  CALL CCSD_MO_RESPONSE_Z
 #                  CALL RESPONSE_Z
 #end_debug
               ENDIF 
