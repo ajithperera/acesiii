@@ -523,8 +523,8 @@
     PARDO I, I1, I2, A
            REQUEST DIJKA_AAAA_M(I, I1, I2, A) A
            REQUEST DIJKA_AAAA_P(I, I1, I2, A) A
-           execute dump_amp DIJKA_AAAA_P(I, I1, I2, A) 
-           execute dump_amp DIJKA_AAAA_M(I, I1, I2, A) 
+#           execute dump_amp DIJKA_AAAA_P(I, I1, I2, A) 
+#           execute dump_amp DIJKA_AAAA_M(I, I1, I2, A) 
 
            Tijkaaa_am(I, I1, I2, A) = DIJKA_AAAA_M(I, I1, I2, A)
            Tijkaaa_ap(I, I1, I2, A) = DIJKA_AAAA_P(I, I1, I2, A)

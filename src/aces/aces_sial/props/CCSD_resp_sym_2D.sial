@@ -2935,8 +2935,12 @@
 #               Tiiaa(i,i1,a,a1) *=1.0
 #               Taaii(a,a1,i,i1) *=1.0
 #end_debug
+
+            T1AHiiaa(i,i1,a,a1) = Taaii(a,a1,i,i1) 
+            Tiiaa(i,i1,a,a1)   += T1AHiiaa(i,i1,a,a1) 
+
             PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
-            PREPARE Dabij_aa_x(a,a1,i,i1) += Taaii(a,a1,i,i1)
+#            PREPARE Dabij_aa_x(a,a1,i,i1) += Taaii(a,a1,i,i1)
       ENDPARDO a, a1, i, i1
 
 # Term  5 in Eqn 33.
@@ -3452,9 +3456,9 @@
 
 # DABIJ_X begin
 
-            T1abij(a,b,i,j) = L2old_ab_x(i,a,j,b)
-            Tijab(i,j,a,b)  = T1abij(a,b,i,j)
-            Tabij(a,b,i,j) *= 0.125
+            T1abij(a,b,i,j)  = L2old_ab_x(i,a,j,b)
+            Tabij(a,b,i,j)  += T1abij(a,b,i,j)
+            Tabij(a,b,i,j)  *= 0.125
 #bgn_debug
 #            Tabij(a,b,i,j) *= 1.0
 #end_debug
@@ -3574,8 +3578,13 @@
                Tijab(i,j,a,b) += T1ijab(i,j,a,b)
 
             ENDDO b1
+            
+            T1AHijab(i,j,a,b)   =  Tabij(a,b,i,j)
+            Tijab(i,j,a,b)     += T1AHijab(i,j,a,b)
+
             PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
-            PREPARE Dabij_ab_x(a,b,i,j) += Tabij(a,b,i,j)
+
+#            PREPARE Dabij_ab_x(a,b,i,j) += Tabij(a,b,i,j)
       ENDPARDO a, b, i, j
 
 # Final term in Eq. 33 
@@ -4467,8 +4476,12 @@
 #              Tjjbb(j,j1,b,b1) *= 1.0
 #              Tbbjj(b,b1,j,j1) *= 1.0
 #end_debug
+         
+            T1AHjjbb(j,j1,b,b1) = Tbbjj(b,b1,j,j1)
+            Tjjbb(j,j1,b,b1)   += T1AHjjbb(j,j1,b,b1)  
+
             PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
-            PREPARE Dabij_bb_x(b,b1,j,j1) += Tbbjj(b,b1,j,j1)
+#            PREPARE Dabij_bb_x(b,b1,j,j1) += Tbbjj(b,b1,j,j1)
       ENDPARDO b, b1, j, j1
 
       PARDO b, b1
@@ -8845,7 +8858,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Taaai(a,a1,a2,i) *= 4.0 
-#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+           T1AHaaai(a,a1,a2,i) =  Taiaa(a,i,a1,a2) 
+           Taaai(a,a1,a2,i)   += T1AHaaai(a,a1,a2,i) 
+
+           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 #           PREPARE Dciab_aaaa_x(a,i,a1,a2) += Taiaa(a,i,a1,a2) 
 #end_debug
 #                                                                   ++
@@ -9036,7 +9052,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tbbbj(b,b1,b2,j) *= 4.0 
-#           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+           T1AHbbbj(b,b1,b2,j) = Tbjbb(b,j,b1,b2) 
+           Tbbbj(b,b1,b2,j)   += T1AHbbbj(b,b1,b2,j)
+
+           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #           PREPARE Dciab_bbbb_x(b,j,b1,b2) += Tbjbb(b,j,b1,b2) 
 #end_debug
 #                                                                   ++
@@ -9252,7 +9271,11 @@
 #
 #bgn_debug
 #           Tbabi(b1,a,b,i) *= 4.0
-#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
+
+           T1AHbabi(b1,a,b,i) = Tbiab(b1,i,a,b) 
+           Tbabi(b1,a,b,i)   += T1AHbabi(b1,a,b,i)
+
+           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #           PREPARE Dciab_baab_x(b1,i,a,b) += Tbiab(b1,i,a,b)
 #end_debug
 #                                                                   ++
@@ -9342,7 +9365,24 @@
       ENDPARDO a, a1, b, j
 
       EXECUTE SERVER_BARRIER
-
+#
+## DABCI_X begin
+##               T1ajba(a,j,b,a1)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
+##               T1ajba(a,j,b,a1) *= 0.125
+##bgn_debug
+##               T1ajba(a,j,b,a1) *=1.0
+##end_debug
+##               Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
+##
+##               Tajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
+##               T1ajba(a,j,b,a1) *= 0.125
+##bgn_debug
+##               T1ajba(a,j,b,a1) *=1.0
+##end_debug
+##               Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
+##end_debug
+## DABCI_X end
+#
       PARDO a, a1, b, j
             Tabaj(a,b,a1,j) = 0.0
             Tajba(a,j,b,a1) = 0.0
@@ -9356,13 +9396,13 @@
             T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-#            T1abaj(a,b,a1,j) *=1.0
+            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
             T1abaj(a,b,a1,j)  = Gae_a_x(a,a1)^t1b_old(b,j)
 #bgn_debug
-#            T1abaj(a,b,a1,j) *=1.0
+            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             T1abaj(a,b,a1,j) *= -0.125
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
@@ -9375,7 +9415,7 @@
                GET l1a_old(i,a1)
                GET t1a_old(a1,i)
                GET t1a_old(a,i)
-    
+
                REQUEST Tau_ab_x(a,i,b,j)      i
                REQUEST L2old_ab_x(i,a,j,b)    i
                REQUEST Vibja_baab_x(j,a1,i,b) i
@@ -9386,17 +9426,34 @@
                T1abaj(a,b,a1,j)  = Tau_ab(a,i,b,j)*l1a_old_x(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Tau_ab_x(a,i,b,j)*l1a_old(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
-
+#--------------------------------------------------
+# Moved to DABCI_X
+#               T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
+#               T1abaj(a,b,a1,j) *= 0.125
+#bgn_debug
+#               T1abaj(a,b,a1,j) *=1.0
+#end_debug
+#               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
+#
+#               T1abaj(a,b,a1,j)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
+#               T1abaj(a,b,a1,j) *= 0.125
+#bgn_debug
+#               T1abaj(a,b,a1,j) *=1.0
+#end_debug
+#               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
+#end_debug
+#
+#-------------------------------------------
 # DABCI_X begin
                T1ajba(a,j,b,a1)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
@@ -9405,25 +9462,26 @@
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 
-               Tajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
+               T1ajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
 #bgn_debug
-#               T1ajba(a,j,b,a1) *=1.0
+               T1ajba(a,j,b,a1) *=1.0
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 #end_debug
 # DABCI_X end
+#
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old_x(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baab_x(j,a1,i,b)*t1a_old(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9438,14 +9496,14 @@
                T1abaj(a,b,a1,j)  = Vibja_baba(j,a1,j1,a)*t1b_old_x(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baba_x(j,a1,j1,a)*t1b_old(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-#               T1abaj(a,b,a1,j) *=1.0
+               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9461,7 +9519,7 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-#                  T1abaj(a,b,a1,j) *=1.0
+                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9470,16 +9528,20 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-#                  T1abaj(a,b,a1,j) *=1.0
+                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
                ENDDO i
             ENDDO j1
-# Multiply by 4 to match aces 
+# Multiply by 4 to match aces
 #bgn_debug
 #           Tabaj(a,b,a1,j) *= 4.0
+
+           T1AHabaj(a,b,a1,j) = Tajba(a,j,b,a1)
+           Tabaj(a,b,a1,j)   += T1AHabaj(a,b,a1,j)
+
            PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
-           PREPARE Dciab_abba_x(a,j,b,a1) += Tajba(a,j,b,a1)
+#           PREPARE Dciab_abba_x(a,j,b,a1) += Tajba(a,j,b,a1)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
@@ -10160,7 +10222,9 @@
 # ---------------------------
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
-#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+            T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2)
+            Tiiia(i,i1,i2,a)   += T1AHiiia(i,i1,i2,a) 
+            PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #           PREPARE Dakij_aaaa_x(a,i,i1,i2) += Taiii(a,i,i1,i2)
 #end_debug
 #                                                                   ++
@@ -10344,7 +10408,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+           T1AHjjjb(j,j1,j2,b) = Tbjjj(b,j,j1,j2)
+           Tjjjb(j,j1,j2,b)   += T1AHjjjb(j,j1,j2,b) 
+
+           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #           PREPARE Dakij_bbbb_x(b,j,j1,j2) += Tbjjj(b,j,j1,j2) 
 #end_debug
 #                                                                   ++
@@ -10530,7 +10597,9 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tijib(i,j,i1,b) *= 4.0 
-#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+           T1AHijib(i,j,i1,b) = Tbiji(b,i,j,i1)
+           Tijib(i,j,i1,b)   += T1AHijib(i,j,i1,b)
+           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
 #           PREPARE Dakij_baba_x(b,i,j,i1) += Tbiji(b,i,j,i1) 
 #end_debug
 #                                                                   ++
@@ -10723,7 +10792,9 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-#           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+           T1AHjija(j,i,j1,a) = Tajij(a,j,i,j1) 
+           Tjija(j,i,j1,a)   += T1AHjija(j,i,j1,a) 
+           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #           PREPARE Dakij_abab_x(a,j,i,j1) += Tajij(a,j,i,j1) 
 #end_debug
 #                                                                   ++
@@ -14190,19 +14261,19 @@
 #      esum *= 0.25 # to match aces
       execute print_scalar esum
 #
-#      esum = 0.0
-#      PARDO i, j, a, b
-#
-#            REQUEST Dijab_ab_x(i,j,a,b) a
+      esum = 0.0
+      PARDO i, j, a, b
+
+            REQUEST Dijab_ab_x(i,j,a,b) a
 #            execute dump_amp Dijab_ab_x(i,j,a,b)
-#            etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
-#            esum += etemp
-#
-#      ENDPARDO i, j, a, b
+            etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
+            esum += etemp
+
+      ENDPARDO i, j, a, b
 #bgn_debug
 #     esum *= 1.0
 #end_debug
-#      execute print_scalar esum
+      execute print_scalar esum
 #
       ENDPROC S2DIJAB_X
 
@@ -14937,11 +15008,11 @@
             property = 10.0
             beta_is_minus = 0.0
             ASYM = 1.0
+      endif
 #bgn_debug
-#         property = 30.0
+         property = 10.0
 #         beta_is_minus = 100.0
 #end_debug
-      endif
 
          execute print_scalar property
 
@@ -14952,7 +15023,11 @@
             CALL GET_2P_DSHIELD_INTS
 
          endif
-#
+
+#bgn_debug
+         property = 20.0
+#         beta_is_minus = 100.0
+#end_debug
 # Compute the contributions to g-tensor from the zeroth-order two-particle
 # density. Overall, the g-tensor is second-order property, so for these 
 # contrbutions are from the second-order interactions (two-particle 
@@ -15129,29 +15204,29 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-#             CALL S2DIJKL_X 
+             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-#             CALL S2DIBJA_X 
+             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-#             CALL S2DIJKA_X 
+             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-#             CALL S2DIJAB_X
+             CALL S2DIJAB_X
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-#             CALL S2ABCI_X 
+             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions

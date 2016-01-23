@@ -2802,8 +2802,8 @@
 
 # DABIJ_X begin
           
-            T1aaii(a,a1,i,i1) = L2old_aa_x(i,a,i1,a1)  
-            Taaii(a,a1,i,i1)  = T1aaii(a,a1,i,i1)
+            T1aaii(a,a1,i,i1)  = L2old_aa_x(i,a,i1,a1)  
+            Taaii(a,a1,i,i1)  += T1aaii(a,a1,i,i1)
             Taaii(a,a1,i,i1) *= 0.125
 #bgn_debug
 #            Taaii(a,a1,i,i1) *=1.0
@@ -9085,7 +9085,7 @@
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 
-               Tajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
+               T1ajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
 #bgn_debug
 #               T1ajba(a,j,b,a1) *=1.0

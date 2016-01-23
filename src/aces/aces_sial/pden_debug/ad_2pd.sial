@@ -427,13 +427,22 @@
       distributed Gae_a(a,a1) 
       distributed Gae_b(b,b1) 
 
+      distributed DpqA(mu,nu)
+      distributed DpqB(mu,nu)
+      distributed DHFA(mu,nu)
+      distributed DHFB(mu,nu)
+
+      distributed DpqA_x(mu,nu)
+      distributed DpqB_x(mu,nu)
+
+      distributed DpqA_y(mu,nu)
+      distributed DpqB_y(mu,nu)
+
+      distributed DpqA_z(mu,nu)
+      distributed DpqB_z(mu,nu)
  
       distributed Doldai_a(a,i)
       distributed Doldai_b(b,j)
-      distributed DpqA(mu,nu) 
-      distributed DpqB(mu,nu) 
-      distributed DHFA(mu,nu) 
-      distributed DHFB(mu,nu) 
       temp Tpq(mu,nu) 
       temp Txx(mu,nu) 
       temp Txi(mu,i) 
@@ -14040,6 +14049,15 @@
       CREATE DhfA
       CREATE DhfB
 
+      CREATE DpqA_x
+      CREATE DpqB_x
+
+      CREATE DpqA_y
+      CREATE DpqB_y
+
+      CREATE DpqA_z
+      CREATE DpqB_z
+
       CREATE t1a_old 
       CREATE t1b_old 
       CREATE l1a_old 
@@ -14063,23 +14081,23 @@
       execute sip_barrier 
       execute server_barrier
 
-      execute server_barrier
-      execute list_to_blocks                VSpipi
-      execute list_to_blocks                Vaaii
-      execute list_to_blocks                Viaai
-      execute list_to_blocks                VSaaai
-      execute list_to_blocks                VSqjqj
-      execute list_to_blocks                Vbbjj
-      execute list_to_blocks                Vjbbj
-      execute list_to_blocks                VSbbbj
-      execute list_to_blocks                Vbbii
-      execute list_to_blocks                Vjbii
-      execute list_to_blocks                Vbbai
-      execute list_to_blocks                Vpiqj
-      execute list_to_blocks                Vaajj
-      execute list_to_blocks                Viabj
-      execute list_to_blocks                Vaabj
-
+#      execute server_barrier
+#      execute list_to_blocks                VSpipi
+#      execute list_to_blocks                Vaaii
+#      execute list_to_blocks                Viaai
+#      execute list_to_blocks                VSaaai
+#      execute list_to_blocks                VSqjqj
+#      execute list_to_blocks                Vbbjj
+#      execute list_to_blocks                Vjbbj
+#      execute list_to_blocks                VSbbbj
+#      execute list_to_blocks                Vbbii
+#      execute list_to_blocks                Vjbii
+#      execute list_to_blocks                Vbbai
+#      execute list_to_blocks                Vpiqj
+#      execute list_to_blocks                Vaajj
+#      execute list_to_blocks                Viabj
+#      execute list_to_blocks                Vaabj
+#
       execute list_to_blocks t1a_old
       execute list_to_blocks t1b_old
       execute list_to_blocks T2old_aa
@@ -14129,6 +14147,18 @@
       execute list_to_blocks L2aa_z
       execute list_to_blocks L2ab_z
       execute list_to_blocks L2bb_z
+#2016
+      execute list_to_blocks Dpqa
+      execute list_to_blocks Dpqb
+
+      execute list_to_blocks Dpqa_x
+      execute list_to_blocks Dpqb_x
+
+      execute list_to_blocks Dpqa_y
+      execute list_to_blocks Dpqb_y
+
+      execute list_to_blocks Dpqa_z
+      execute list_to_blocks Dpqb_z
 
       execute read_list_to_blocks
       execute server_barrier 
