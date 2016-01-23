@@ -2,5 +2,7 @@
 *.o
 *.sio
 xaces3
+xaces2
+xa2proc
 Makefile
 

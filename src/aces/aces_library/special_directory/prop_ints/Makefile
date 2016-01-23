@@ -1,14 +1,14 @@
 include ../../../../../GNUmakefile.chssi
 
 #Compilers
-FC=mpif77
+FC=mpif90
 CC=mpicc
 CPP=mpicxx
 SERIAL_CPP=icpc
 
 #Compiler flags
 FFLAGS=-D__fortran -D__fortran77 -DMPIF2C -Zp8 -zero -traceback -DMPI2 -shared-intel -O2
-CFLAGS=-DMPIF2C -DC_SUFFIX  -DMPI2 -DCB_SUFFIX -shared-intel -O2
+CFLAGS= -DMPIF2C -DC_SUFFIX  -DMPI2 -shared-intel -O2  -DCB_SUFFIX
 CPPFLAGS=-DMPIF2C -DC_SUFFIX -DCB_SUFFIX  -DMPI2 -shared-intel -O2
 
 #ACESLIBS variable will be replaced by the autoconf script with appropriate libraries
