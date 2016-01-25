@@ -1094,6 +1094,7 @@
       Scalar D2DISO_PSUM
       Scalar D2DISO_0
       Scalar ASYM
+      Scalar Fact
 
       Scalar E2GC_INTMD    
       Scalar E2GC_XX_YY_ZZ 
@@ -2803,7 +2804,7 @@
 # DABIJ_X begin
           
             T1aaii(a,a1,i,i1)  = L2old_aa_x(i,a,i1,a1)  
-            Taaii(a,a1,i,i1)  += T1aaii(a,a1,i,i1)
+            Taaii(a,a1,i,i1)   = T1aaii(a,a1,i,i1)
             Taaii(a,a1,i,i1) *= 0.125
 #bgn_debug
 #            Taaii(a,a1,i,i1) *=1.0
@@ -2936,9 +2937,11 @@
 #               Taaii(a,a1,i,i1) *=1.0
 #end_debug
             PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
-            Taaii(a,a1,i,i1)              *= -1.0
             PREPARE Dabij_aa_x(a,a1,i,i1) += Taaii(a,a1,i,i1)
       ENDPARDO a, a1, i, i1
+#bgn_debug
+      execute server_barrier
+#end_debug 
 
 # Term  5 in Eqn 33.
 
@@ -3350,6 +3353,14 @@
 #bgn_debug
 #               T1iiaa(i1,i,a1,a) *= 0.0
 #end_debug
+
+#bgn_debug
+              REQUEST Dabij_aa_x(a,a1,i,i1) i1
+              T1aaii(a,a1,i,i1)    = Dabij_aa_x(a,a1,i,i1)
+              T2AHiiaa(i1,i,a1,a)  = T1aaii(a,a1,i,i1)
+              T2AHiiaa(i1,i,a1,a) *= Fact
+              T1iiaa(i1,i,a1,a)   += T2AHiiaa(i1,i,a1,a)
+#end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
             ENDDO a
             ENDDO i
@@ -3370,14 +3381,10 @@
                T1iiaa(i1,i,a1,a) = Dijab_aa_x(i,i1,a,a1)
                T1aaii(a,a1,i,i1) = Dabij_aa_x(a,a1,i,i1)
 
-               T1iiaa(i1,i,a1,a)  *= 0.5
-               IF ASYM == 1.0
-                  T1aaii(a,a1,i,i1)  *= -0.5
-               ELSE
-                  T1aaii(a,a1,i,i1)  *=  0.5
-               ENDIF
-               T1AHiiaa(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
-               T2AHiiaa(i1,i,a1,a) = T1aaii(a,a1,i,i1)
+               T1AHiiaa(i1,i,a1,a)  = T1iiaa(i1,i,a1,a)
+               T2AHiiaa(i1,i,a1,a)  = T1aaii(a,a1,i,i1)
+               T2AHiiaa(i1,i,a1,a) *= Fact
+
                T1AHiiaa(i1,i,a1,a) += T2AHiiaa(i1,i,a1,a)
 #bgn_debug
 #               T1AHiiaa(i1,i,a1,a) *= 1.5
@@ -3454,7 +3461,7 @@
 # DABIJ_X begin
 
             T1abij(a,b,i,j) = L2old_ab_x(i,a,j,b)
-            Tijab(i,j,a,b)  = T1abij(a,b,i,j)
+            Tabij(a,b,i,j)  = T1abij(a,b,i,j)
             Tabij(a,b,i,j) *= 0.125
 #bgn_debug
 #            Tabij(a,b,i,j) *= 1.0
@@ -3576,9 +3583,11 @@
 
             ENDDO b1
             PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
-            Tabij(a,b,i,j)              *= -1.0
             PREPARE Dabij_ab_x(a,b,i,j) += Tabij(a,b,i,j)
       ENDPARDO a, b, i, j
+#bgn_debug
+      execute server_barrier 
+#end_debug
 
 # Final term in Eq. 33 
 
@@ -4256,6 +4265,14 @@
 #bgn_debug
 #                  Tijab(i,j,a,b) *= 1.0
 #end_debug
+
+#bgn_debug
+                   REQUEST Dabij_ab_x(a,b,i,j) j
+                   Tabij(a,b,i,j)     = Dabij_ab_x(a,b,i,j)
+                   T1AHijab(i,j,a,b)  = Tabij(a,b,i,j)
+                   T1AHijab(i,j,a,b) *= Fact 
+                   Tijab(i,j,a,b)    += T1AHijab(i,j,a,b) 
+#end_debug
                   PREPARE Dijab_ab_x(i,j,a,b) += Tijab(i,j,a,b)
                ENDDO i
             ENDDO b
@@ -4276,14 +4293,11 @@
                Tijab(i,j1,a,b1) = Dijab_ab_x(i,j1,a,b1)
                Tabij(a,b1,i,j1) = Dabij_ab_x(a,b1,i,j1)
 
-               Tijab(i,j1,a,b1)   *=  0.5
-               IF ASYM == 1.0
-                  Tabij(a,b1,i,j1)   *= -0.5
-               ELSE
-                  Tabij(a,b1,i,j1)   *=  0.5
-               ENDIF 
                TAHijab(i,j1,a,b1)  = Tijab(i,j1,a,b1) 
-               T1AHijab(i,j1,a,b1) = Tabij(a,b1,i,j1)
+
+               T1AHijab(i,j1,a,b1)  = Tabij(a,b1,i,j1)
+               T1AHijab(i,j1,a,b1) *= Fact
+
                TAHijab(i,j1,a,b1) += T1AHijab(i,j1,a,b1) 
 #bgn_debug              
 #               TAHijab(i,j1,a,b1) *= -0.5
@@ -4383,7 +4397,7 @@
 # ABIJ_X begin
             T1bbjj(b,b1,j,j1) = L2old_bb_x(j,b,j1,b1) 
             Tbbjj(b,b1,j,j1)  = T1bbjj(b,b1,j,j1)
-            Tbbjj(b,b1,j,j1)  *= 0.125
+            Tbbjj(b,b1,j,j1) *= 0.125
 # ABIJ_X end
 
             DO j2
@@ -4470,9 +4484,11 @@
 #              Tbbjj(b,b1,j,j1) *= 1.0
 #end_debug
             PREPARE Dijab_bb_x(j,j1,b,b1) += Tjjbb(j,j1,b,b1)
-            Tbbjj(b,b1,j,j1)             *= -1.0
             PREPARE Dabij_bb_x(b,b1,j,j1) += Tbbjj(b,b1,j,j1)
       ENDPARDO b, b1, j, j1
+#bgn_debug
+      execute server_barrier 
+#end_debug
 
       PARDO b, b1
             allocate L1bb(b1,*)
@@ -4838,7 +4854,13 @@
 #bgn_debug
 #               T1jjbb(j1,j,b1,b) *= 0.0
 #end_debug
-
+#bgn_debug
+                REQUEST Dabij_bb_x(b,b1,j,j1) j1 
+                T1bbjj(b1,b,j1,j)    = Dabij_bb_x(b,b1,j,j1)
+                T1AHjjbb(j1,j,b1,b)  = T1bbjj(b1,b,j1,j) 
+                T1AHjjbb(j1,j,b1,b) *= Fact
+                T1jjbb(j1,j,b1,b)   += T1AHjjbb(j1,j,b1,b)
+#end_debug
                PREPARE Dijab_bb_x(j1,j,b1,b) += T1jjbb(j1,j,b1,b)
             ENDDO b
             ENDDO j
@@ -4858,14 +4880,11 @@
                T1jjbb(j1,j,b1,b) = Dijab_bb_x(j,j1,b,b1)
                T1bbjj(b1,b,j1,j) = Dabij_bb_x(b,b1,j,j1)
                
-               T1jjbb(j1,j,b1,b)  *=  0.5
-               IF ASYM == 1.0
-                  T1bbjj(b1,b,j1,j)  *= -0.5
-               ELSE
-                  T1bbjj(b1,b,j1,j)  *=  0.5
-               ENDIF 
                TAHjjbb(j1,j,b1,b)  = T1jjbb(j1,j,b1,b)
-               T1AHjjbb(j1,j,b1,b) = T1bbjj(b1,b,j1,j)
+
+               T1AHjjbb(j1,j,b1,b)  = T1bbjj(b1,b,j1,j)
+               T1AHjjbb(j1,j,b1,b) *= Fact
+
                TAHjjbb(j1,j,b1,b) += T1AHjjbb(j1,j,b1,b)
 #bgn_debug
 #               TAH1jjbb(j,j1,b,b1) *= -1.5
@@ -5163,7 +5182,7 @@
                Tiiii(i,i1,i2,i3)          *= 0.25
                T1iiii(i2,i3,i,i1)          = Tiiii(i,i1,i2,i3)
 
-               T1iiii(i2,i3,i,i1)         *= -1.0
+               T1iiii(i2,i3,i,i1)         *= Fact
 
 # Note the factor (1/4 as a result of 2*1/8); is this a problem 
 # for anti-symmetric perturbations?
@@ -5180,7 +5199,7 @@
                Tiiii(i,i1,i2,i3)          *= 0.25
                T1iiii(i2,i3,i,i1)          = Tiiii(i,i1,i2,i3)
 
-               T1iiii(i2,i3,i,i1)         *= -1.0
+               T1iiii(i2,i3,i,i1)         *= Fact
 
                PREPARE Dijkl_aa_x(i,i1,i2,i3)   += Tiiii(i,i1,i2,i3)
                PREPARE Dijkl_aa_x(i2,i3,i,i1)   += T1iiii(i2,i3,i,i1)
@@ -5191,51 +5210,7 @@
             ENDDO i2
       ENDPARDO a, a1, i, i1
       execute server_barrier
-
-#      PARDO  i, i1, i2, i3 
-#            REQUEST  Dijkl_aa_x(i,i1,i2,i3) i3
-#            REQUEST  Dijkl_aa_x(i2,i3,i,i1) i
 #
-#            Tiiii(i,i1,i2,i3)  = Dijkl_aa_x(i,i1,i2,i3)
-#            TAiiii(i2,i3,i,i1) = Dijkl_aa_x(i2,i3,i,i1) 
-#
-#            Tiiii(i,i1,i2,i3)   *= 1.0
-#            IF ASYM == 1.0
-#                TAiiii(i2,i3,i,i1)  *= -1.0
-#            ELSE 
-#                TAiiii(i2,i3,i,i1)  *=  1.0
-#            ENDIF 
-#            TAHiiii(i,i1,i2,i3)  = Tiiii(i,i1,i2,i3)
-#	    T1AHiiii(i,i1,i2,i3) = TAiiii(i2,i3,i,i1)
-#            T1AHiiii(i,i1,i2,i3) *= -1.0
-#            TAHiiii(i,i1,i2,i3) += T1AHiiii(i,i1,i2,i3) 
-#
-#            PREPARE DAHijkl_aa_x(i,i1,i2,i3) = TAHiiii(i,i1,i2,i3) 
-#            
-#      ENDPARDO i, i1, i2, i3
-#      execute server_barrier
-
-#bgn_debug
-#       execute get_my_rank rank
-#       one = 1.0
-#       if rank == 0.0
-#          do i
-#          do i1
-#          do i2 
-#          do i3
-#             REQUEST Dijkl_aa_x(i,i1,i2,i3) i3
-#             REQUEST Dijkl_aa_x(i2,i3,i,i1) i1
-#             execute dump_amp Dijkl_aa_x(i,i1,i2,i3)
-#             execute print_scalar one
-#             execute dump_amp Dijkl_aa_x(i2,i3,i,i1) 
-#          enddo i3
-#          enddo i2
-#          enddo i1
-#          enddo i
-#       endif
-#end_debug
-
-#                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA> 
 #  DAAAA = 1/2 DAAAA + DAAAA
 #
@@ -5308,7 +5283,7 @@
 
 # ABAB+BABA makes the factor 1/4 (1/2 = 1/4 +1/4)
 
-               T1ijij(i1,j1,i,j)          *= -1.0
+               T1ijij(i1,j1,i,j)          *= Fact
 
                PREPARE Dijkl_ab_x(i,j,i1,j1)   += Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_x(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
@@ -5320,7 +5295,7 @@
                Tijij(i,j,i1,j1)               *= 0.5
                T1ijij(i1,j1,i,j)               = Tijij(i,j,i1,j1)
 
-               T1ijij(i1,j1,i,j)          *= -1.0
+               T1ijij(i1,j1,i,j)          *= Fact
 
                PREPARE Dijkl_ab_x(i,j,i1,j1)   += Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_x(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
@@ -5331,30 +5306,7 @@
             ENDDO i1
       ENDPARDO a, b, i, j
       execute server_barrier
-
-#      PARDO i, i1, j, j1
 #
-#            REQUEST Dijkl_ab_x(i,j,i1,j1) j1
-#            REQUEST Dijkl_ab_x(i1,j1,i,j) j
-#          
-#            Tijij(i,j,i1,j1)  = Dijkl_ab_x(i,j,i1,j1)
-#            TAijij(i1,j1,i,j) = Dijkl_ab_x(i1,j1,i,j)
-#
-#            Tijij(i,j,i1,j1)   *= 0.5
-#            IF ASYM == 1.0
-#               TAijij(i1,j1,i,j)  *= -0.5
-#            ELSE
-#               TAijij(i1,j1,i,j)  *=  0.5
-#            ENDIF 
-#            TAHijij(i,j,i1,j1)  = Tijij(i,j,i1,j1)  
-#            T1AHijij(i,j,i1,j1) = TAijij(i1,j1,i,j) 
-#            TAHijij(i,j,i1,j1) += T1AHijij(i,j,i1,j1)
-#
-#            PREPARE DAHijkl_ab_x(i,j,i1,j1) = TAHijij(i,j,i1,j1)
-#            
-#      ENDPARDO i, i1, j, j1
-#      execute server_barrier
-#                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 #  DABAB = 1/2 DABAB - DABAB
 #
@@ -5420,7 +5372,7 @@
                T1jjjj(j2,j3,j,j1)          = Tjjjj(j,j1,j2,j3)
                PREPARE Dijkl_bb_x(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
 
-               T1jjjj(j2,j3,j,j1)               *= -1.0
+               T1jjjj(j2,j3,j,j1)               *= Fact
                PREPARE Dijkl_bb_x(j2,j3,j,j1)   += T1jjjj(j2,j3,j,j1)
 
                T1jjjj(j2,j3,j,j1)         *= 2.0
@@ -5431,7 +5383,7 @@
                T1jjjj(j2,j3,j,j1)          = Tjjjj(j,j1,j2,j3)
                PREPARE Dijkl_bb_x(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
 
-               T1jjjj(j2,j3,j,j1)               *= -1.0
+               T1jjjj(j2,j3,j,j1)               *= Fact 
                PREPARE Dijkl_bb_x(j2,j3,j,j1)   += T1jjjj(j2,j3,j,j1)
 
                T1jjjj(j2,j3,j,j1)         *= 2.0
@@ -5441,28 +5393,6 @@
       ENDPARDO b, b1, j, j1
       execute server_barrier
 
-#      PARDO  j, j1, j2, j3
-#             REQUEST Dijkl_bb_x(j,j1,j2,j3) j3
-#             REQUEST Dijkl_bb_x(j2,j3,j,j1) j1
-#
-#             Tjjjj(j,j1,j2,j3)  = Dijkl_bb_x(j,j1,j2,j3) 
-#             TAjjjj(j2,j3,j,j1) = Dijkl_bb_x(j2,j3,j,j1) 
-#  
-#             Tjjjj(j,j1,j2,j3)   *=  0.5
-#             IF ASYM == 1.0
-#                TAjjjj(j2,j3,j,j1)  *= -0.5
-#             ELSE
-#                TAjjjj(j2,j3,j,j1)  *=  0.5
-#             ENDIF 
-#             TAHjjjj(j,j1,j2,j3)  = Tjjjj(j,j1,j2,j3) 
-#             T1AHjjjj(j,j1,j2,j3) = TAjjjj(j2,j3,j,j1)
-#             TAHjjjj(j,j1,j2,j3) += T1AHjjjj(j,j1,j2,j3)
-#
-#             PREPARE DAHijkl_bb_x(j,j1,j2,j3) = TAHjjjj(j,j1,j2,j3)
-#
-#      ENDPARDO j,j1,j2,j3
-#
-#      execute server_barrier
 #                                                                 ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+S_z(2)pqsr|BB>
 #  -1/2 BBBBB - BBBB
@@ -6621,11 +6551,11 @@
 #           TAiaia(i1,a,i,a1) *= 4.0 
 
             PREPARE Dibja_aaaa_x(i,a1,i1,a) += Tiaia(i,a1,i1,a)
-            TAiaia(i1,a,i,a1)               *= -1.0
+            TAiaia(i1,a,i,a1)               *= Fact
             PREPARE Dibja_aaaa_x(i1,a,i,a1) += TAiaia(i1,a,i,a1)
       ENDPARDO a, a1, i, i1
       execute server_barrier
-
+#
 # Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 # DAAAA = 1/2 DAAAA + DAAAA
 # Backtransform to AO representation 
@@ -6759,7 +6689,7 @@
 #           TAibib(i,b,i1,b1) *= 4.0 
 
             PREPARE Dibja_abab_x(i1,b1,i,b) += Tibib(i1,b1,i,b)
-            TAibib(i,b,i1,b1)               *= -1.0
+            TAibib(i,b,i1,b1)               *= Fact
             PREPARE Dibja_abab_x(i,b,i1,b1) += TAibib(i,b,i1,b1)
 
       ENDPARDO b1, b, i, i1
@@ -6944,7 +6874,7 @@
 #           TAjbjb(j1,b,j,b1) *= 4.0 
 
             PREPARE Dibja_bbbb_x(j,b1,j1,b) += Tjbjb(j,b1,j1,b)
-            TAjbjb(j1,b,j,b1)               *= -1.0
+            TAjbjb(j1,b,j,b1)               *= Fact
             PREPARE Dibja_bbbb_x(j1,b,j,b1) += TAjbjb(j1,b,j,b1)
 
       ENDPARDO b, b1, j, j1
@@ -7095,11 +7025,10 @@
 #           TAjaja(j1,a1,j,a) *= 4.0 
 
             PREPARE Dibja_baba_x(j,a,j1,a1) += Tjaja(j,a,j1,a1)
-            TAjaja(j1,a1,j,a)               *= -1.0
+            TAjaja(j1,a1,j,a)               *= Fact
             PREPARE Dibja_baba_x(j1,a1,j,a) += TAjaja(j1,a1,j,a)
       ENDPARDO a, a1, j1, j
       execute server_barrier
-
 #
 # Backtransform to AO representation 
 #.........................................................................
@@ -7575,7 +7504,7 @@
 # Multiply by 4(VFL) to match aces: Note the 'switched' storage pattern  
 #           Tiajb(i,a,j,b)          *= 4.0 
 
-            Tibja(i,b,j,a)           = Tiajb(i,a,j,b)
+            Tibja(i,b,j,a)                 = Tiajb(i,a,j,b)
             PREPARE Dibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
       ENDPARDO i, a, b, j
       execute server_barrier
@@ -8525,8 +8454,11 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Taaai(a,a1,a2,i) *= 4.0 
-#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i) 
-#           PREPARE Dciab_aaaa_x(a,i,a1,a2) += Taiaa(a,i,a1,a2) 
+#
+           T1AHaaai(a,a1,a2,i)              = Taiaa(a,i,a1,a2)
+           T1AHaaai(a,a1,a2,i)             *= Fact
+           Taaai(a,a1,a2,i)                += T1AHaaai(a,a1,a2,i)
+           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i)  
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -8534,15 +8466,9 @@
 #
             dO mu
 
-               Taaai(a,a1,a2,i)  *=  0.5
-               IF ASYM == 1.0
-                  Taiaa(a,i,a1,a2)  *= -0.5
-               ELSE
-                  Taiaa(a,i,a1,a2)  *=  0.5
-               ENDIF
-               TAHaaai(a,a1,a2,i) =  Taaai(a,a1,a2,i)
-               T1AHaaai(a,a1,a2,i)=  Taiaa(a,i,a1,a2) 
-               TAHaaai(a,a1,a2,i)+=  T1AHaaai(a,a1,a2,i)
+               Taiaa(a,i,a1,a2)   *= Fact
+               T1AHaaai(a,a1,a2,i) =  Taiaa(a,i,a1,a2) 
+               TAHaaai(a,a1,a2,i )+=  T1AHaaai(a,a1,a2,i)
 #bgn_debug
 #               TAHaaai(a,a1,a2,i) *= 1.5
 #               TAHaaai(a,a1,a2,i) *= 1.0
@@ -8716,8 +8642,11 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tbbbj(b,b1,b2,j) *= 4.0 
-#           PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
-#           PREPARE Dciab_bbbb_x(b,j,b1,b2) += Tbjbb(b,j,b1,b2) 
+          
+            T1AHbbbj(b,b1,b2,j)              = Tbjbb(b,j,b1,b2) 
+            T1AHbbbj(b,b1,b2,j)             *= Fact
+            Tbbbj(b,b1,b2,j)                += T1AHbbbj(b,b1,b2,j)
+            PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -8725,15 +8654,9 @@
 #
             DO mu
 
-               Tbbbj(b,b1,b2,j)  *=  0.5
-               IF ASYM == 1.0
-                  Tbjbb(b,j,b1,b2)  *= -0.5
-               ELSE
-                  Tbjbb(b,j,b1,b2)  *=  0.5
-               ENDIF
-               TAHbbbj(b,b1,b2,j) = Tbbbj(b,b1,b2,j)
-               T1AHbbbj(b,b1,b2,j)= Tbjbb(b,j,b1,b2)
-               TAHbbbj(b,b1,b2,j)+= T1AHbbbj(b,b1,b2,j)
+               T1AHbbbj(b,b1,b2,j)  = Tbjbb(b,j,b1,b2)
+               T1AHbbbj(b,b1,b2,j) *= Fact
+               TAHbbbj(b,b1,b2,j)  += T1AHbbbj(b,b1,b2,j)
 #bgn_debug
 #               TAHbbbj(b,b1,b2,j) *= -1.5
 #               TAHbbbj(b,b1,b2,j) *= 1.0
@@ -8932,22 +8855,18 @@
 #
 #bgn_debug
 #           Tbabi(b1,a,b,i) *= 4.0
-#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
-#           PREPARE Dciab_baab_x(b1,i,a,b) += Tbiab(b1,i,a,b)
+           T1AHbabi(b1,a,b,i)              = Tbiab(b1,i,a,b) 
+           T1AHbabi(b1,a,b,i)             *= Fact 
+           Tbabi(b1,a,b,i)                +=  T1AHbabi(b1,a,b,i)
+           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DBABA = -1/2 DBABA + DBABA
 #
-            Tbabi(b1,a,b,i)   *=  0.5
-            IF ASYM == 1.0
-               Tbiab(b1,i,a,b)   *= -0.5
-            ELSE
-               Tbiab(b1,i,a,b)   *=  0.5
-            ENDIF
-            TAHbabi(b1,a,b,i)  = Tbabi(b1,a,b,i)
-            T1AHbabi(b1,a,b,i) = Tbiab(b1,i,a,b)
-            TAHbabi(b1,a,b,i) += T1AHbabi(b1,a,b,i)
+            T1AHbabi(b1,a,b,i)  = Tbiab(b1,i,a,b)
+            T1AHbabi(b1,a,b,i) *= Fact
+            TAHbabi(b1,a,b,i)  += T1AHbabi(b1,a,b,i)
 
             DO mu
 
@@ -9158,22 +9077,19 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tabaj(a,b,a1,j) *= 4.0
+
+           T1AHabaj(a,b,a1,j)              = Tajba(a,j,b,a1)  
+           T1AHabaj(a,b,a1,j)             *= Fact
+           Tabaj(a,b,a1,j)                += T1AHabaj(a,b,a1,j)
            PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
-           PREPARE Dciab_abba_x(a,j,b,a1) += Tajba(a,j,b,a1)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
 #  DABAB = 1/2 DABAB - DABAB
 #
-            Tabaj(a,b,a1,j)  *= 0.5
-            IF ASYM == 1.0
-               Tajba(a,j,b,a1)  *= -0.5
-            ELSE
-               Tajba(a,j,b,a1)  *=  0.5
-            ENDIF 
-            TAHabaj(a,b,a1,j) = Tabaj(a,b,a1,j)
-            T1AHabaj(a,b,a1,j)= Tajba(a,j,b,a1)
-            TAHabaj(a,b,a1,j)+= T1AHabaj(a,b,a1,j)
+            T1AHabaj(a,b,a1,j)  = Tajba(a,j,b,a1)
+            T1AHabaj(a,b,a1,j) *= Fact
+            TAHabaj(a,b,a1,j)  += T1AHabaj(a,b,a1,j)
 
             DO mu
 #bgn_debug
@@ -9840,8 +9756,11 @@
 # ---------------------------
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
-#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
-#           PREPARE Dakij_aaaa_x(a,i,i1,i2) += Taiii(a,i,i1,i2)
+
+           T1AHiiia(i,i1,i2,a)              = Taiii(a,i,i1,i2)
+           T1AHiiia(i,i1,i2,a)             *= Fact
+           Tiiia(i,i1,i2,a)                += T1AHiiia(i,i1,i2,a)
+           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
@@ -9849,15 +9768,10 @@
 #
             DO sigma
 
-                Tiiia(i,i1,i2,a) *=  0.5
-                IF ASYM == 1.0
-                   Taiii(a,i,i1,i2) *= -0.5
-                ELSE
-                   Taiii(a,i,i1,i2) *=  0.5
-                ENDIF
-                TAHiiia(i,i1,i2,a)  = Tiiia(i,i1,i2,a)
-                T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2) 
-                TAHiiia(i,i1,i2,a) += T1AHiiia(i,i1,i2,a)
+                T1AHiiia(i,i1,i2,a)  = Taiii(a,i,i1,i2) 
+                T1AHiiia(i,i1,i2,a) *= Fact
+                Tiiia(i,i1,i2,a)    += T1AHiiia(i,i1,i2,a)
+                TAHiiia(i,i1,i2,a)  +=  Tiiia(i,i1,i2,a)
 
 #bgn_debug
 #                execute dump_amp TAHiiia(i,i1,i2,a)
@@ -10024,8 +9938,11 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
-#           PREPARE Dakij_bbbb_x(b,j,j1,j2) += Tbjjj(b,j,j1,j2) 
+
+           T1AHjjjb(j,j1,j2,b)              = Tbjjj(b,j,j1,j2)
+           T1AHjjjb(j,j1,j2,b)             *= Fact
+           Tjjjb(j,j1,j2,b)                += T1AHjjjb(j,j1,j2,b)
+           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BB|S_z(1)+2S_z(2)pqsr|BB>
@@ -10033,15 +9950,10 @@
 #
             DO sigma
 
-               Tjjjb(j,j1,j2,b) *=  0.5
-               IF ASYM == 1.0
-                  Tbjjj(b,j,j1,j2) *= -0.5
-               ELSE
-                  Tbjjj(b,j,j1,j2) *=  0.5
-               ENDIF 
-               TAHjjjb(j,j1,j2,b)  = Tjjjb(j,j1,j2,b)
                T1AHjjjb(j,j1,j2,b) = Tbjjj(b,j,j1,j2) 
-               TAHjjjb(j,j1,j2,b) += T1AHjjjb(j,j1,j2,b) 
+               T1AHjjjb(j,j1,j2,b) *= Fact
+               Tjjjb(j,j1,j2,b)    += T1AHjjjb(j,j1,j2,b)
+               TAHjjjb(j,j1,j2,b)  += Tjjjb(j,j1,j2,b)
 #bgn_debug
 #               TAHjjjb(j,j1,j2,b) *= -1.5
 #               TAHjjjb(j,j1,j2,b) *= 1.0
@@ -10210,8 +10122,12 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tijib(i,j,i1,b) *= 4.0 
-#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
-#           PREPARE Dakij_baba_x(b,i,j,i1) += Tbiji(b,i,j,i1) 
+
+           T1AHijib(i,j,i1,b)              = Tbiji(b,i,j,i1)
+           T1AHijib(i,j,i1,b)             *= Fact 
+           Tijib(i,j,i1,b)                += T1AHijib(i,j,i1,b) 
+           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
@@ -10219,15 +10135,10 @@
 #
             DO sigma
 
-               Tijib(i,j,i1,b)   *=  0.5
-               IF ASYM == 1.0
-                  Tbiji(b,i,j,i1)   *= -0.5
-               ELSE
-                  Tbiji(b,i,j,i1)   *=  0.5
-               ENDIF 
-               TAHijib(i,j,i1,b)  = Tijib(i,j,i1,b) 
-               T1AHijib(i,j,i1,b) = Tbiji(b,i,j,i1)
-               TAHijib(i,j,i1,b) += T1AHijib(i,j,i1,b)
+               T1AHijib(i,j,i1,b)  = Tbiji(b,i,j,i1)
+               T1AHijib(i,j,i1,b) *= Fact
+               T1AHijib(i,j,i1,b) += Tijib(i,j,i1,b)
+               TAHijib(i,j,i1,b)  += T1AHijib(i,j,i1,b)
 #bgn_debug                  
 #               TAHijib(i,j,i1,b) *= -0.5
 #               TAHijib(i,j,i1,b) *= 1.0
@@ -10403,8 +10314,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-#           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
-#           PREPARE Dakij_abab_x(a,j,i,j1) += Tajij(a,j,i,j1) 
+           T1AHjija(j,i,j1,a)              = Tajij(a,j,i,j1)
+           T1AHjija(j,i,j1,a)             *= Fact
+           Tjija(j,i,j1,a)                += T1AHjija(j,i,j1,a)
+           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
@@ -10412,15 +10325,10 @@
 
             DO sigma
 
-               Tjija(j,i,j1,a)   *=  0.5
-               IF ASYM == 1.0
-                  Tajij(a,j,i,j1)   *= -0.5
-               ELSE 
-                  Tajij(a,j,i,j1)   *=  0.5
-               ENDIF
-               TAHjija(j,i,j1,a)  = Tjija(j,i,j1,a) 
-               T1AHjija(j,i,j1,a) = Tajij(a,j,i,j1)
-               TAHjija(j,i,j1,a) += T1AHjija(j,i,j1,a)
+               T1AHjija(j,i,j1,a)  = Tajij(a,j,i,j1)
+               T1AHjija(j,i,j1,a) *= Fact 
+               T1AHjija(j,i,j1,a) += Tjija(j,i,j1,a)
+               TAHjija(j,i,j1,a)  += T1AHjija(j,i,j1,a)
 #bgn_debug               
 #               TAHjija(j,i,j1,a)  *= 0.5
 #               TAHjija(j,i,j1,a)  *= 1.0
@@ -13527,7 +13435,6 @@
 #bgn_debug
       esum *= 1.0
 #end_debug
-      execute print_scalar asym
       execute print_scalar esum 
 #
       esum = 0.0 
@@ -14642,24 +14549,32 @@
 # polarizablities)
 
          if do_gten == 1.00
-            property = 10.0
-            beta_is_minus = 0.0
-            ASYM = 1.0
+            property      = 10.0
+            beta_is_minus =  0.0
+            ASYM          =  1.0
+            Fact          = -1.0 
 #bgn_debug
 #         property = 30.0
 #         beta_is_minus = 100.0
 #end_debug
-      endif
+         endif
+         property = 10.0
 
          execute print_scalar property
 
          if property == 10.0
+
             CALL GET_2P_SPIN_ORBIT_INTS
  
             CALL GET_2P_ERI_INTS
             CALL GET_2P_DSHIELD_INTS
 
          endif
+
+#bgn_debug
+         property = 20.0
+         Fact     =  1.0
+#end_debug
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle
 # density. Overall, the g-tensor is second-order property, so for these 
@@ -14837,7 +14752,7 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-#             CALL S2DIJKL_X 
+             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
@@ -14849,7 +14764,7 @@
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-#             CALL S2DIJKA_X 
+             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
@@ -14859,7 +14774,7 @@
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-#             CALL S2ABCI_X 
+             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions
