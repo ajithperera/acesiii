@@ -1095,6 +1095,8 @@
       Scalar D2DISO_0
       Scalar ASYM
       Scalar Fact
+      Scalar Pone
+      Scalar Mone
 
       Scalar E2GC_INTMD    
       Scalar E2GC_XX_YY_ZZ 
@@ -2734,7 +2736,58 @@
       ENDPROC DIJABBB 
 #     ---------------
 #--------------------------------------------------------------------
-#
+# 
+      PROC DIJABAA_TEST_X
+#     ------------------
+      PARDO i1,i,a1,a
+            T1iiaa(i1,i,a1,a) = 0.0
+            T1aaii(a1,a,i,i1) = 0.0
+            PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
+            PREPARE Dabij_aa_x(a1,a,i,i1) = T1aaii(a1,a,i,i1)
+      ENDPARDO i1,i,a1,a
+      execute server_barrier 
+
+      PARDO a, a1, i, i1
+
+# DABIJ_X begin
+            REQUEST L2old_aa_x(i,a,i1,a1) i1          
+
+            T1aaii(a,a1,i,i1)  = L2old_aa_x(i,a,i1,a1)  
+            Taaii(a,a1,i,i1)   = T1aaii(a,a1,i,i1)
+            Taaii(a,a1,i,i1)  *= 0.125
+#bgn_debug
+#            Taaii(a,a1,i,i1) *=1.0
+#end_debug
+# DABIJ_X end
+            PREPARE Dabij_aa_x(a,a1,i,i1) += Taaii(a,a1,i,i1)
+       
+      ENDPARDO a, a1, i, i1
+      execute server_barrier 
+
+      PARDO i1,i,a1,a
+            T1iiaa(i1,i,a1,a) = 0.0
+            Tiiaa(i,i1,a,a1) = 0.0
+
+            REQUEST Tau_aa_x(a,i,a1,i1) i1
+            Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
+            Tiiaa(i,i1,a,a1) *= 0.125
+
+            REQUEST Dabij_aa_x(a,a1,i,i1) i1
+            T1aaii(a,a1,i,i1)    = Dabij_aa_x(a,a1,i,i1)
+            T2AHiiaa(i,i1,a,a1)  = T1aaii(a,a1,i,i1)
+#28/2016
+            T2AHiiaa(i,i1,a,a1) *= Pone
+            Tiiaa(i,i1,a,a1)    += T2AHiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1)   += Tiiaa(i,i1,a,a1)
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+      ENDPARDO i1,i,a1,a
+      execute server_barrier 
+      
+      ENDPROC DIJABAA_TEST_X
+#     ------------------
+
       PROC DIJABAA_X
 #     --------------
       PARDO i1,i,a1,a
@@ -3358,7 +3411,8 @@
               REQUEST Dabij_aa_x(a,a1,i,i1) i1
               T1aaii(a,a1,i,i1)    = Dabij_aa_x(a,a1,i,i1)
               T2AHiiaa(i1,i,a1,a)  = T1aaii(a,a1,i,i1)
-              T2AHiiaa(i1,i,a1,a) *= Fact
+#28/2016
+              T2AHiiaa(i1,i,a1,a) *= Pone
               T1iiaa(i1,i,a1,a)   += T2AHiiaa(i1,i,a1,a)
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
@@ -4965,7 +5019,8 @@
            CREATE Dbb_x
            execute sip_barrier
 
-           CALL DIJABAA_X
+#           CALL DIJABAA_X
+           CALL DIJABAA_TEST_X
            CALL DIJABBB_X 
 #           if property == 20.0
               CALL DIJABAB_X
@@ -5283,7 +5338,7 @@
 
 # ABAB+BABA makes the factor 1/4 (1/2 = 1/4 +1/4)
 
-               T1ijij(i1,j1,i,j)          *= Fact
+               T1ijij(i1,j1,i,j)          *= -1.0
 
                PREPARE Dijkl_ab_x(i,j,i1,j1)   += Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_x(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
@@ -5295,7 +5350,7 @@
                Tijij(i,j,i1,j1)               *= 0.5
                T1ijij(i1,j1,i,j)               = Tijij(i,j,i1,j1)
 
-               T1ijij(i1,j1,i,j)          *= Fact
+               T1ijij(i1,j1,i,j)          *= -1.0
 
                PREPARE Dijkl_ab_x(i,j,i1,j1)   += Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_x(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
@@ -6551,7 +6606,7 @@
 #           TAiaia(i1,a,i,a1) *= 4.0 
 
             PREPARE Dibja_aaaa_x(i,a1,i1,a) += Tiaia(i,a1,i1,a)
-            TAiaia(i1,a,i,a1)               *= Fact
+            TAiaia(i1,a,i,a1)               *= Fact 
             PREPARE Dibja_aaaa_x(i1,a,i,a1) += TAiaia(i1,a,i,a1)
       ENDPARDO a, a1, i, i1
       execute server_barrier
@@ -7094,28 +7149,28 @@
             T1jbia(j,b,i,a)  = l1b_old_x(j,b)^t1a_old(a,i)
             T1jbia(j,b,i,a) *= 0.125
 #bgn_debug
-#            T1jbia(j,b,i,a) *= 1.0
+            T1jbia(j,b,i,a) *= Pone
 #end_debug
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a)
 
             T1jbia(j,b,i,a)  = l1b_old(j,b)^t1a_old_x(a,i)
             T1jbia(j,b,i,a) *= 0.125
 #bgn_debug
-#            T1jbia(j,b,i,a) *= 1.0
+            T1jbia(j,b,i,a) *= Pone
 #end_debug
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a)
 
             T1jbia(j,b,i,a)  = l1a_old_x(i,a)^t1b_old(b,j)
             T1jbia(j,b,i,a) *= 0.125
 #bgn_debug
-#            T1jbia(j,b,i,a) *= 1.0
+            T1jbia(j,b,i,a) *= Mone
 #end_debug
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a)
 
             T1jbia(j,b,i,a)  = l1a_old(i,a)^t1b_old_x(b,j)
             T1jbia(j,b,i,a) *= 0.125
 #bgn_debug
-#            T1jbia(j,b,i,a) *= 1.0
+            T1jbia(j,b,i,a) *= Mone
 #end_debug
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a)
 
@@ -7141,7 +7196,7 @@
                   T1jbia(j,b,i,a)          = T2old_ab_x(a1,i1,b,j)*L2old_aa(i1,a1,i,a)
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7152,7 +7207,7 @@
                   T1jbia(j,b,i,a)          = T2old_ab(a1,i1,b,j)*L2old_aa_x(i1,a1,i,a)
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7165,7 +7220,7 @@
                   T1jbia(j,b,i,a)          = Taijb(a,i,j,b)
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7173,7 +7228,7 @@
                   T1jbia(j,b,i,a)          = Taijb(a,i,j,b)
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7182,7 +7237,7 @@
                   T1jbia(j,b,i,a)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1jbia(j,b,i,a)          *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)           += T1jbia(j,b,i,a)
 
@@ -7190,7 +7245,7 @@
                   T1jbia(j,b,i,a)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1jbia(j,b,i,a)          *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)           += T1jbia(j,b,i,a)
 
@@ -7198,7 +7253,7 @@
                   T1jbia(j,b,i,a)          = Tiaia(i,a,i1,a1)*L2old_ab_x(i1,a1,j,b)
                   T1jbia(j,b,i,a)          *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a) *= Pone
 #end_debug
                   Tjbia(j,b,i,a)           += T1jbia(j,b,i,a)
 
@@ -7225,32 +7280,31 @@
 
                   T1jbia(j,b,i,a)          = T2old_bb_x(b,j,b1,j1)*L2old_ab(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= 0.125
-#bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
-#end_debug
-                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
                   Tjaib(j,a,i,b)           = T1jbia(j,b,i,a)
                   Tjaib(j,a,i,b)          *= 4.0
                   PREPARE Vibja_baab_x(j,a,i,b) += Tjaib(j,a,i,b)
+#bgn_debug
+                  T1jbia(j,b,i,a)         *= Mone
+#end_debug
+                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
                   T1jbia(j,b,i,a)          = T2old_bb(b,j,b1,j1)*L2old_ab_x(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= 0.125
-#bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
-#end_debug
-                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
                   Tjaib(j,a,i,b)           = T1jbia(j,b,i,a)
                   Tjaib(j,a,i,b)          *= 4.0
                   PREPARE Vibja_baab_x(j,a,i,b) += Tjaib(j,a,i,b)
+#bgn_debug
+                  T1jbia(j,b,i,a)         *= Mone
+#end_debug
+                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
                   T2jbia(j1,b1,i,a)        = T2old_ab_x(a,i,b1,j1)
                   T1jbia(j,b,i,a)          = L2old_bb(j,b,j1,b1)*T2jbia(j1,b1,i,a)
-
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a)         *= Mone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7259,7 +7313,7 @@
 
                   T1jbia(j,b,i,a)         *= 0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a)         *= Mone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7267,7 +7321,7 @@
                   T1jbia(j,b,i,a)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a)         *= Mone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7275,7 +7329,7 @@
                   T1jbia(j,b,i,a)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a)         *= Mone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 
@@ -7283,7 +7337,7 @@
                   T1jbia(j,b,i,a)          = Tjbjb(j,b,j1,b1)*L2old_ab_x(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= -0.125
 #bgn_debug
-#                  T1jbia(j,b,i,a) *= 1.0
+                  T1jbia(j,b,i,a)         *= Mone
 #end_debug
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
                ENDDO b1
@@ -7361,19 +7415,24 @@
 
             T1iajb(i,a,j,b)  = t1a_old(a,i)^l1b_old_x(j,b)
             T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Pone
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
+            
 
             T1iajb(i,a,j,b)  = t1a_old_x(a,i)^l1b_old(j,b)
             T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Pone
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
            
 
             T1iajb(i,a,j,b)  = l1a_old(i,a)^t1b_old_x(b,j)
             T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Mone
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
 
             T1iajb(i,a,j,b)  = l1a_old_x(i,a)^t1b_old(b,j)
             T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Mone
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
 
             DO i1
@@ -7396,25 +7455,28 @@
 
                   T1iajb(i,a,j,b)          = T2old_aa_x(a,i,a1,i1)*L2old_ab(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)         *= Pone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   T1iajb(i,a,j,b)          = T2old_aa(a,i,a1,i1)*L2old_ab_x(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)         *= Pone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = L2old_aa_x(i1,a1,i,a)
                   T2iajb(i1,a1,j,b)        = T2old_ab(a1,i1,b,j)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*T2iajb(i1,a1,j,b)
 
                   T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = L2old_aa(i1,a1,i,a)
@@ -7422,21 +7484,25 @@
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*T2iajb(i1,a1,j,b)
 
                   T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = t1a_old_x(a1,i)^tai(a,i1)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = t1a_old(a1,i)^tai_x(a,i1)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = t1a_old(a1,i)^tai(a,i1)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*L2old_ab_x(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
                ENDDO a1
             ENDDO i1
@@ -7461,43 +7527,51 @@
 
                   T1iajb(i,a,j,b)          = T2old_ab(a,i,b1,j1)*L2old_bb_x(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)         *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
+
 #                 T1iajb(i,a,j,b)          = T2old_bb(b,j,b1,j1)*L2old_ab(i,a,j1,b1)
                   T1iajb(i,a,j,b)          = T2old_ab_x(a,i,b1,j1)*L2old_bb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)         *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j1,b1,j,b)         = T2old_bb_x(b,j,b1,j1)
                   T1iajb(i,a,j,b)          = L2old_ab(i,a,j1,b1)*Tjbjb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j1,b1,j,b)         = T2old_bb(b,j,b1,j1)
                   T1iajb(i,a,j,b)          = L2old_ab_x(i,a,j1,b1)*Tjbjb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j,b,j1,b1)         = t1b_old_x(b1,j)^tbj(b,j1)
                   T1iajb(i,a,j,b)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j,b,j1,b1)         = t1b_old(b1,j)^tbj_x(b,j1)
                   T1iajb(i,a,j,b)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j,b,j1,b1)         = t1b_old(b1,j)^tbj(b,j1)
                   T1iajb(i,a,j,b)          = Tjbjb(j,b,j1,b1)*L2old_ab_x(i,a,j1,b1)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
                ENDDO b1
             ENDDO j1
@@ -13438,30 +13512,36 @@
       execute print_scalar esum 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO j, j1, j2, j3 
 #
             REQUEST Dijkl_bb_X(j,j1,j2,j3) j  
             etemp = Dijkl_bb_X(j,j1,j2,j3)*Dijkl_bb_X(j,j1,j2,j3)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO j, j1, j2, j3 
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier 
+      collective esum +=etmp
       execute print_scalar esum 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, i1, j, j1 
 #
             REQUEST Dijkl_ab_X(i,j,i1,j1) i  
 #            execute dump_amp Dijkl_ab_X(i,j,i1,j1)
             etemp = Dijkl_ab_X(i,j,i1,j1)*Dijkl_ab_X(i,j,i1,j1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, i1, j, j1 
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier 
+      collective esum +=etmp
       execute print_scalar esum 
 #
       ENDPROC S2DIJKL_X
@@ -13482,23 +13562,29 @@
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO j, j1, j2, j3
 #
             REQUEST Dijkl_bb(j,j1,j2,j3) j
             etemp = Dijkl_bb(j,j1,j2,j3)*Dijkl_bb(j,j1,j2,j3)
-            esum += etemp
+            etmp += etemp
 #     
       ENDPARDO j, j1, j2, j3
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, j, j1
 #
             REQUEST Dijkl_ab(i,j,i1,j1) i
             etemp = Dijkl_ab(i,j,i1,j1)*Dijkl_ab(i,j,i1,j1)
-            esum += etemp
+            etmp+= etemp
 #     
       ENDPARDO i, i1, j, j1
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       ENDPROC S2DIJKL
@@ -14553,6 +14639,8 @@
             beta_is_minus =  0.0
             ASYM          =  1.0
             Fact          = -1.0 
+            Pone          =  1.0
+            Mone          = -1.0
 #bgn_debug
 #         property = 30.0
 #         beta_is_minus = 100.0
@@ -14573,7 +14661,7 @@
 
 #bgn_debug
          property = 20.0
-         Fact     =  1.0
+         Fact     = -1.0
 #end_debug
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle
