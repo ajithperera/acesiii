@@ -3183,6 +3183,7 @@
       execute server_barrier
 
       ENDPROC DIJABAA_X
+#     -----------------
 #
       PROC DIJABAB_X
 #     ---------------

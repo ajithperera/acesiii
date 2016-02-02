@@ -1,0 +1,1312 @@
+
+      PROC DIJABAAOLD_X
+#     --------------
+      PARDO i1,i,a1,a
+            T1iiaa(i1,i,a1,a) = 0.0
+            PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
+      ENDPARDO i1,i,a1,a
+
+      EXECUTE SERVER_BARRIER
+
+# Dim(i,m) = Gmi_a(i,m) + l1a_old(m,e)*t1a_old(e,i)
+# Dea(e,a) = Gae_a(e,a) - l1a_old(m,e)*t1a_old(a,m)
+# Dii_x
+      PARDO i, i1
+            GET Gmi_a_x(i,i1)
+            PUT Dii_x(i,i1) += Gmi_a_x(i,i1)
+      ENDPARDO i, i1
+
+      PARDO i, i1, a
+            GET l1a_old(i1,a)
+            GET t1a_old(a,i)
+            GET l1a_old_x(i1,a)
+            GET t1a_old_x(a,i)
+
+            Tii(i,i1)        = l1a_old(i1,a)*t1a_old_x(a,i)
+            PUT Dii_x(i,i1) += Tii(i,i1)
+
+            Tii(i,i1)        = l1a_old_x(i1,a)*t1a_old(a,i)
+            PUT Dii_x(i,i1) += Tii(i,i1)
+      ENDPARDO i, i1, a
+# Daa_x
+      PARDO a1, a
+            GET Gae_a_x(a1,a)
+            PUT Daa_x(a1,a) += Gae_a_x(a1,a)
+      ENDPARDO a1, a
+      PARDO a1, a, i
+            GET l1a_old(i,a1)
+            GET t1a_old(a,i)
+            GET l1a_old_x(i,a1)
+            GET t1a_old_x(a,i)
+
+            Taa(a1,a)      = t1a_old(a,i)*l1a_old_x(i,a1)
+            Taa(a1,a)     *= -1.0
+            PUT Daa_x(a1,a) += Taa(a1,a)
+
+            Taa(a1,a)      = t1a_old_x(a,i)*l1a_old(i,a1)
+            Taa(a1,a)     *= -1.0
+            PUT Daa_x(a1,a) += Taa(a1,a)
+      ENDPARDO a1, a, i
+      execute sip_barrier
+# Done one-particle intermediates
+# Terms 1-5 in Eq. 33
+      PARDO a, a1, i, i1
+            REQUEST Tau_aa_x(a,i,a1,i1)   i1
+            REQUEST L2old_aa_x(i,a,i1,a1) i1
+
+#--------------------------------------------------------
+# Terms 1 and 2 in Eqn 33.
+#            Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
+#
+#bgn_debug
+# Move to DABIJ_X
+#            T1iiaa(i,i1,a,a1) = L2old_aa_x(i,a,i1,a1)  # PV neeed to rethink
+#            Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#
+# 1/4 [Tau(ij,ab)]
+# Factor??
+#end_debug
+#            Tiiaa(i,i1,a,a1) *= 0.125
+#bgn_debug
+#            Tiiaa(i,i1,a,a1) *=1.0
+#end_debug
+#--------------------------------------------------------
+
+# Terms 1 and 2 in Eqn 33.
+            Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
+            Tiiaa(i,i1,a,a1) *= 0.125
+#bgn_debug
+#            Tiiaa(i,i1,a,a1) *=1.0
+#end_debug
+
+# DABIJ_X begin
+
+            T1aaii(a,a1,i,i1)  = L2old_aa_x(i,a,i1,a1)
+            Taaii(a,a1,i,i1)   = T1aaii(a,a1,i,i1)
+            Taaii(a,a1,i,i1)   *= 0.125
+#bgn_debug
+#            Taaii(a,a1,i,i1) *=1.0
+#end_debug
+# DABIJ_X end
+
+            DO i2
+               REQUEST Tau_aa(a,i2,a1,i)  i2
+               REQUEST Tau_aa(a,i2,a1,i1) i2
+               GET Dii(i1,i2)
+               GET Dii(i,i2)
+
+               REQUEST Tau_aa_x(a,i2,a1,i)  i2
+               REQUEST Tau_aa_x(a,i2,a1,i1) i2
+               GET Dii_x(i1,i2)
+               GET Dii_x(i,i2)
+
+# Term 4:Eqn 33
+# -1/4P_(ij)[Tau(mj,ab)*t1(i,e)*l1_x(e,m)+Tau(mj,ab)*l1(e,m)*t1_x(e,i) +
+#         1/2Tau(mj,ab)*t2(in,ef)*l2_x(ef,mn) + 1/2Tau(mj,ab)*t2_x(mn,af)
+#           *l2(ef,mn)]
+# Factor??
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i)*Dii_x(i1,i2)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i1)*Dii_x(i,i2)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+# -1/4P_ij[Tau_x(mj,ab)*t1(i,e)*l1(e,m) - 1/2Tau_x(mj,ab)*t2(in,ef)*l2(ef,mn)]
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i)*Dii(i1,i2)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i1)*Dii(i,i2)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               DO i3
+                  REQUEST Tau_aa(a,i2,a1,i3)     i3
+                  REQUEST Vijmn_aaaa(i,i1,i2,i3) i3
+                  REQUEST Tau_aa_x(a,i2,a1,i3)     i3
+                  REQUEST Vijmn_aaaa_x(i,i1,i2,i3) i3
+
+#Term 3: Eqn 33.
+# 1/16[Tau(ij,ef)*L2(ef,mn)*Tau_x(mj,ab) + Tau_x(ij,ef)*l2(ef,mn)*Tau(mn,ab) +
+#      Tau(ij,ef)*Tau(mn,ab)L2_x(ef,mn)]
+# Here the factor is right!
+                 T2iiaa(i2,i3,a,a1)    = Tau_aa(a,i2,a1,i3)
+                  T2iiaa_x(i2,i3,a,a1)  = Tau_aa_x(a,i2,a1,i3)
+
+                  T1iiaa(i,i1,a,a1)  = Vijmn_aaaa(i,i1,i2,i3)*T2iiaa_x(i2,i3,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 0.0625
+#bgn_debug
+                  T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+                  Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a,a1)  = Vijmn_aaaa_x(i,i1,i2,i3)*T2iiaa(i2,i3,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 0.0625
+#bgn_debug
+                  T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+                  Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
+               ENDDO i3
+            ENDDO i2
+            DO a2
+               REQUEST Tau_aa(a2,i,a1,i1) i1
+               REQUEST Tau_aa(a2,i,a,i1)  i1
+               GET Daa(a2,a)
+               GET Daa(a2,a1)
+
+               REQUEST Tau_aa_x(a2,i,a1,i1) i1
+               REQUEST Tau_aa_x(a2,i,a,i1)  i1
+               GET Daa_x(a2,a)
+               GET Daa_x(a2,a1)
+# Term:5 Eqn.33
+# -1/4_(ab)[Tau(ij,eb)*l1(e,m)*t1_x(a,m) + Tau(ij,eb)*t1(m,a)*l1_x(e,m) +
+#        1/2Tau_x(ij,eb)*t2(mn,af)*l2(ef,mn) + 1//2Tau(ij,eb)*t2(mn,af)*
+#        l2_x(ef,mn)]
+# Factor??
+               T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a1,i1)*Daa_x(a2,a)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a,i1)*Daa_x(a2,a1)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a1,i1)*Daa(a2,a)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a,i1)*Daa(a2,a1)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+            ENDDO a2
+
+            T1AHiiaa(i,i1,a,a1)  = Taaii(a,a1,i,i1)
+            T1AHiiaa(i,i1,a,a1) *= Fact
+            Tiiaa(i,i1,a,a1)    += T1AHiiaa(i,i1,a,a1)
+
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+      ENDPARDO a, a1, i, i1
+
+# Term  5 in Eqn 33.
+      CREATE L1aa
+      CREATE L1aa_x
+      execute sip_barrier
+      PARDO a1, a2, i
+            GET l1a_old(i,a2)
+            GET t1a_old(a1,i)
+
+            GET l1a_old_x(i,a2)
+            GET t1a_old_x(a1,i)
+
+            Taa(a1,a2)  = t1a_old(a1,i)*l1a_old(i,a2)
+            PUT L1aa(a1,a2) += Taa(a1,a2)
+
+            Taa(a1,a2)  = t1a_old_x(a1,i)*l1a_old(i,a2)
+            PUT L1aa_x(a1,a2) += Taa(a1,a2)
+
+            Taa(a1,a2)  = t1a_old(a1,i)*l1a_old_x(i,a2)
+            PUT L1aa_x(a1,a2) += Taa(a1,a2)
+      ENDPARDO a1, a2, i
+      CREATE L1ai
+      CREATE L1ai_x
+      execute sip_barrier
+
+      PARDO a1, a2, i
+            GET t1a_old(a2,i)
+            GET L1aa(a1,a2)
+
+            GET t1a_old_x(a2,i)
+            GET L1aa_x(a1,a2)
+
+            Tai(a1,i)  = L1aa(a1,a2)*t1a_old(a2,i)
+            PUT L1ai(a1,i) += Tai(a1,i)
+
+            Tai(a1,i)  = L1aa(a1,a2)*t1a_old_x(a2,i)
+            PUT L1ai_x(a1,i) += Tai(a1,i)
+
+            Tai(a1,i)  = L1aa_x(a1,a2)*t1a_old(a2,i)
+            PUT L1ai_x(a1,i) += Tai(a1,i)
+      ENDPARDO a1, a2, i
+      execute sip_barrier
+      DELETE L1aa
+      DELETE L1aa_x
+#bgn_debug
+#      sumaa = 0.0
+#      do a1
+#      do i
+#         get L1ai_x(a1,i)
+#         Tai(a1,i) = L1ai_x(a1,i)
+#         tmp = Tai(a1,i)*Tai(a1,i)
+#         sumaa += tmp
+#       enddo i
+#       enddo a1
+#       sumaa *= 0.111111
+#       execute print_scalar sumaa
+#end_debug
+      PARDO a, a1, i, i1
+            GET t1a_old(a,i)
+            GET L1ai(a1,i1)
+
+            GET t1a_old_x(a,i)
+            GET L1ai_x(a1,i1)
+
+# 3/4P(ij)P(ab)[l1_x(e,m)*t1(i,a)*t1(j,e)*t(m,b) + t1_x(m,b)*l1(e,m)*
+#               t1(i,a)*t1(j,e) + t1_x(i,a)*t1(j,e)*l1(e,m)*t(m,b) +
+#               t1(i,a)*t1_x(j,e)*l1(e,m)*t1(m,b)]
+# Factor is right; no assumptions
+
+            Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai_x(a1,i1)
+            Tiiaa(i,i1,a,a1)        *= 0.375
+#bgn_debug
+            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) *= 1.0
+            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+            T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+            T1iiaa(i,i1,a1,a) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+            T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+            T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+            T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+            T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+            Tiiaa(i,i1,a,a1)         = t1a_old_x(a,i)^L1ai(a1,i1)
+            Tiiaa(i,i1,a,a1)        *= 0.375
+#bgn_debug
+            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) *= 1.0
+            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+            T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+            T1iiaa(i,i1,a1,a) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+            T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+            T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+            T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+            T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+      ENDPARDO a, a1, i, i1
+      execute sip_barrier
+      execute server_barrier
+
+      DELETE L1ai
+      DELETE L1ai_x
+#.
+# Sixth-term in Eq. 33
+
+# 1/8P_(ij)P_(ab){(l1_x(e,m)*t1(m,a) + l1(e,m)*t1_x(m,a) + l2_x(ef,mn)t2(mi,ae)
+#                 + l2(ef,mn)t2_x(mi,ae)] piece
+# A question about factor 2
+
+      PARDO i2, a2, a1, i1
+            GET l1a_old(i2,a2)
+            GET t1a_old(a1,i1)
+            GET l1a_old_x(i2,a2)
+            GET t1a_old_x(a1,i1)
+
+            Liaai(i2,a2,a1,i1)  = l1a_old(i2,a2)^t1a_old(a1,i1)
+            Liaai(i2,a2,a1,i1) *= 2.0
+
+            Liaai_x(i2,a2,a1,i1)   = l1a_old_x(i2,a2)^t1a_old(a1,i1)
+            Liaai_x1(i2,a2,a1,i1)  = l1a_old(i2,a2)^t1a_old_x(a1,i1)
+            Liaai_x(i2,a2,a1,i1)  += Liaai_x1(i2,a2,a1,i1)
+            Liaai_x(i2,a2,a1,i1) *= 2.0
+#bgn_debug
+            Liaai(i2,a2,a1,i1) *= 1.0
+            Liaai_x(i2,a2,a1,i1) *= 1.0
+#end_debug
+
+            DO i3
+            DO a3
+               REQUEST T2old_aa(a3,i3,a1,i1) a3
+               REQUEST L2old_aa(i2,a2,i3,a3) a3
+               REQUEST T2old_aa_x(a3,i3,a1,i1) a3
+               REQUEST L2old_aa_x(i2,a2,i3,a3) a3
+
+               Tiaai(i2,a2,a1,i1)  = L2old_aa(i2,a2,i3,a3)*T2old_aa(a3,i3,a1,i1)
+               Liaai(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)  = L2old_aa_x(i2,a2,i3,a3)*T2old_aa(a3,i3,a1,i1)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)    = L2old_aa(i2,a2,i3,a3)*T2old_aa_x(a3,i3,a1,i1)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+            ENDDO a3
+            ENDDO i3
+            DO j
+            DO b
+               REQUEST T2old_ab(a1,i1,b,j) b
+               REQUEST L2old_ab(i2,a2,j,b) b
+               Tiaai(i2,a2,a1,i1)  = L2old_ab(i2,a2,j,b)*T2old_ab(a1,i1,b,j)
+               Liaai(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+               REQUEST T2old_ab_x(a1,i1,b,j) b
+               REQUEST L2old_ab_x(i2,a2,j,b) b
+               Tiaai(i2,a2,a1,i1)  = L2old_ab(i2,a2,j,b)*T2old_ab_x(a1,i1,b,j)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)  = L2old_ab_x(i2,a2,j,b)*T2old_ab(a1,i1,b,j)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+            ENDDO b
+            ENDDO j
+            DO i
+               GET t1a_old(a2,i)
+               tai(a2,i) = t1a_old(a2,i)
+               GET t1a_old_x(a2,i)                      #PV
+               tai_x(a2,i) = t1a_old_x(a2,i)            #PV
+
+               DO a
+                  REQUEST T2old_aa(a,i2,a2,i) i
+                  GET t1a_old(a,i2)
+
+                  REQUEST T2old_aa_x(a,i2,a2,i) i      #PV
+                  GET t1a_old_x(a,i2)                  #PV
+
+# 2.0 t1_x(m,a)t(e,i) + t1(m,a)t1_x(e,i) + t2(mi,ae)
+# multiplication of these two pieces should complete this contribution
+
+                  Tiaia(i,a,i2,a2)         = t1a_old(a,i2)^tai(a2,i)
+                  Tiaia(i,a,i2,a2)        *= 2.0
+#bgn_debug
+                  Tiaia(i,a,i2,a2)  *= 1.0
+#end_debug
+                  T1iaia(i,a,i2,a2)        = T2old_aa(a,i2,a2,i)
+#bgn_debug
+                  T1iaia(i,a,i2,a2) *= 1.0
+#end_debug
+                  Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
+                  Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai_x(i2,a2,a1,i1)
+# What is the origin of 0.0625??
+                  Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
+                  Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
+#bgn_debug
+                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 1.0
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#bgn_debug
+                  T1iiaa(i,i1,a,a1) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+                  T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+                  T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+                  T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+                  T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+                  Tiaia(i,a,i2,a2)         = t1a_old_x(a,i2)^tai(a2,i)
+                  Tiaia_x(i,a,i2,a2)       = t1a_old(a,i2)^tai_x(a2,i)
+                  Tiaia(i,a,i2,a2)        += Tiaia_x(i,a,i2,a2)
+                  Tiaia(i,a,i2,a2)        *= 2.0
+#bgn_debug
+                  Tiaia(i,a,i2,a2) *= 1.0
+#end_debug
+
+                  T1iaia(i,a,i2,a2)        = T2old_aa_x(a,i2,a2,i)
+#bgn_debug
+                  T1iaia(i,a,i2,a2) *= 1.0
+#end_debug
+                  Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
+
+                  Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai(i2,a2,a1,i1)
+                  Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
+
+                  Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
+#bgn_debug
+#bgn_debug
+                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 1.0
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+                  T1iiaa(i,i1,a1,a) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+                  T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+                  T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+                  T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+                  T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+               ENDDO a
+            ENDDO i
+      ENDPARDO i2, a2, a1, i1
+# Odd spin combination
+
+      PARDO j, b, a1, i1
+            GET l1b_old(j,b)
+            GET t1a_old(a1,i1)
+
+            GET l1b_old_x(j,b)
+            GET t1a_old_x(a1,i1)
+
+            Ljbai(j,b,a1,i1)  = l1b_old(j,b)^t1a_old(a1,i1)
+            ljbai(j,b,a1,i1) *= 2.0
+
+            Ljbai_x(j,b,a1,i1)    = l1b_old(j,b)^t1a_old_x(a1,i1)
+            Ljbai_x1(j,b,a1,i1)   = l1b_old_x(j,b)^t1a_old(a1,i1)
+            Ljbai_x(j,b,a1,i1)   += Ljbai_x1(j,b,a1,i1)
+            ljbai_x(j,b,a1,i1) *= 2.0
+
+            DO i3
+            DO a3
+               REQUEST T2old_aa(a3,i3,a1,i1) a3
+               REQUEST L2old_ab(i3,a3,j,b)   a3
+               Tjbai(j,b,a1,i1)  = L2old_ab(i3,a3,j,b)*T2old_aa(a3,i3,a1,i1)
+               Ljbai(j,b,a1,i1) += Tjbai(j,b,a1,i1)
+
+               REQUEST T2old_aa_x(a3,i3,a1,i1) a3
+               REQUEST L2old_ab_x(i3,a3,j,b)   a3
+               Tjbai_x(j,b,a1,i1)  = L2old_ab(i3,a3,j,b)*T2old_aa_x(a3,i3,a1,i1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+               Tjbai_x(j,b,a1,i1)  = L2old_ab_x(i3,a3,j,b)*T2old_aa(a3,i3,a1,i1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+            ENDDO a3
+            ENDDO i3
+            DO j1
+            DO b1
+               REQUEST T2old_ab(a1,i1,b1,j1) b1
+               REQUEST L2old_bb(j1,b1,j,b)   b1
+               Tjbai(j,b,a1,i1)  = L2old_bb(j1,b1,j,b)*T2old_ab(a1,i1,b1,j1)
+               Ljbai(j,b,a1,i1) += Tjbai(j,b,a1,i1)
+               REQUEST T2old_ab_x(a1,i1,b1,j1) b1
+               REQUEST L2old_bb_x(j1,b1,j,b)   b1
+               Tjbai_x(j,b,a1,i1)  = L2old_bb(j1,b1,j,b)*T2old_ab_x(a1,i1,b1,j1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+               Tjbai_x(j,b,a1,i1)  = L2old_bb_x(j1,b1,j,b)*T2old_ab(a1,i1,b1,j1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+            ENDDO b1
+            ENDDO j1
+            DO i
+            DO a
+               REQUEST T2old_ab(a,i,b,j) a
+               REQUEST T2old_ab_x(a,i,b,j) a
+               Taiai(a1,i1,a,i)         = Ljbai_x(j,b,a1,i1)*T2old_ab(a,i,b,j)
+               Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
+               Tiiaa(i,i1,a,a1)        *= 0.0625
+#bgn_debug
+               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) *= 1.0
+               PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+               T1iiaa(i,i1,a1,a) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+               T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+               T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+               T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+               T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+               Taiai(a1,i1,a,i)         = Ljbai(j,b,a1,i1)*T2old_ab_x(a,i,b,j)
+               Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
+               Tiiaa(i,i1,a,a1)        *= 0.0625
+#bgn_debug
+               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) *= 1.0
+               PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+               T1iiaa(i,i1,a1,a) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+               T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+               T1iiaa(i1,i,a,a1) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+               T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+               T1iiaa(i1,i,a1,a) *= 1.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+            ENDDO a
+            ENDDO i
+      ENDPARDO j, b, a1, i1
+      execute server_barrier
+
+      ENDPROC DIJABAAOLD_X
+#-------------------------------------------Ajith------------------
+#-------------------------------------------Ajith------------------
+
+      PROC DIJABAAOLD_X
+#     --------------
+      PARDO i1,i,a1,a
+            T1iiaa(i1,i,a1,a) = 0.0
+            PREPARE Dijab_aa_x(i1,i,a1,a) = T1iiaa(i1,i,a1,a)
+      ENDPARDO i1,i,a1,a
+
+      EXECUTE SERVER_BARRIER
+
+# Dim(i,m) = Gmi_a(i,m) + l1a_old(m,e)*t1a_old(e,i)  
+# Dea(e,a) = Gae_a(e,a) - l1a_old(m,e)*t1a_old(a,m) 
+# Dii_x 
+      PARDO i, i1
+            GET Gmi_a_x(i,i1)
+            PUT Dii_x(i,i1) += Gmi_a_x(i,i1)
+      ENDPARDO i, i1
+
+      PARDO i, i1, a      
+            GET l1a_old(i1,a)
+            GET t1a_old(a,i)
+            GET l1a_old_x(i1,a)
+            GET t1a_old_x(a,i)
+
+            Tii(i,i1)        = l1a_old(i1,a)*t1a_old_x(a,i)
+            PUT Dii_x(i,i1) += Tii(i,i1)
+
+            Tii(i,i1)        = l1a_old_x(i1,a)*t1a_old(a,i)
+            PUT Dii_x(i,i1) += Tii(i,i1)
+      ENDPARDO i, i1, a      
+# Daa_x 
+      PARDO a1, a
+            GET Gae_a_x(a1,a)
+            PUT Daa_x(a1,a) += Gae_a_x(a1,a)
+      ENDPARDO a1, a
+      PARDO a1, a, i
+            GET l1a_old(i,a1)
+            GET t1a_old(a,i)
+            GET l1a_old_x(i,a1)
+            GET t1a_old_x(a,i)
+
+            Taa(a1,a)      = t1a_old(a,i)*l1a_old_x(i,a1)
+            Taa(a1,a)     *= -1.0
+            PUT Daa_x(a1,a) += Taa(a1,a)
+
+            Taa(a1,a)      = t1a_old_x(a,i)*l1a_old(i,a1)
+            Taa(a1,a)     *= -1.0
+            PUT Daa_x(a1,a) += Taa(a1,a)
+      ENDPARDO a1, a, i
+      execute sip_barrier             
+
+# Done one-particle intermediates 
+# Terms 1-5 in Eq. 33 
+
+      PARDO a, a1, i, i1
+            REQUEST Tau_aa_x(a,i,a1,i1)   i1
+            REQUEST L2old_aa_x(i,a,i1,a1) i1          
+
+# Terms 1 and 2 in Eqn 33.
+            Tiiaa(i,i1,a,a1)  = Tau_aa_x(a,i,a1,i1)
+            Tiiaa(i,i1,a,a1) *= 0.125
+#bgn_debug
+#            Tiiaa(i,i1,a,a1) *=1.0
+#end_debug
+
+# DABIJ_X begin
+          
+            T1aaii(a,a1,i,i1)  = L2old_aa_x(i,a,i1,a1)  
+            Taaii(a,a1,i,i1)   = T1aaii(a,a1,i,i1)
+            Taaii(a,a1,i,i1)   *= 0.125
+#bgn_debug
+#            Taaii(a,a1,i,i1) *=1.0
+#end_debug
+# DABIJ_X end
+
+            DO i2
+               REQUEST Tau_aa(a,i2,a1,i)  i2
+               REQUEST Tau_aa(a,i2,a1,i1) i2
+               GET Dii(i1,i2)
+               GET Dii(i,i2)
+
+               REQUEST Tau_aa_x(a,i2,a1,i)  i2
+               REQUEST Tau_aa_x(a,i2,a1,i1) i2
+               GET Dii_x(i1,i2)
+               GET Dii_x(i,i2)
+
+# Term 4:Eqn 33
+# -1/4P_(ij)[Tau(mj,ab)*t1(i,e)*l1_x(e,m)+Tau(mj,ab)*l1(e,m)*t1_x(e,i) +
+#         1/2Tau(mj,ab)*t2(in,ef)*l2_x(ef,mn) + 1/2Tau(mj,ab)*t2_x(mn,af)
+#           *l2(ef,mn)]
+# Factor??
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i)*Dii_x(i1,i2)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i1)*Dii_x(i,i2)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+# -1/4P_ij[Tau_x(mj,ab)*t1(i,e)*l1(e,m) - 1/2Tau_x(mj,ab)*t2(in,ef)*l2(ef,mn)]
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i)*Dii(i1,i2)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i1)*Dii(i,i2)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               DO i3
+                  REQUEST Tau_aa(a,i2,a1,i3)     i3
+                  REQUEST Vijmn_aaaa(i,i1,i2,i3) i3
+                  REQUEST Tau_aa_x(a,i2,a1,i3)     i3
+                  REQUEST Vijmn_aaaa_x(i,i1,i2,i3) i3
+
+#Term 3: Eqn 33.
+# 1/16[Tau(ij,ef)*L2(ef,mn)*Tau_x(mj,ab) + Tau_x(ij,ef)*l2(ef,mn)*Tau(mn,ab) +
+#      Tau(ij,ef)*Tau(mn,ab)L2_x(ef,mn)] 
+# Here the factor is right!
+
+                  T2iiaa(i2,i3,a,a1)    = Tau_aa(a,i2,a1,i3)
+                  T2iiaa_x(i2,i3,a,a1)  = Tau_aa_x(a,i2,a1,i3)
+
+                  T1iiaa(i,i1,a,a1)  = Vijmn_aaaa(i,i1,i2,i3)*T2iiaa_x(i2,i3,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 0.0625
+#bgn_debug
+#                  T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+                  Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a,a1)  = Vijmn_aaaa_x(i,i1,i2,i3)*T2iiaa(i2,i3,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 0.0625
+#bgn_debug
+#                  T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+                  Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
+               ENDDO i3
+            ENDDO i2
+
+            DO a2
+               REQUEST Tau_aa(a2,i,a1,i1) i1
+               REQUEST Tau_aa(a2,i,a,i1)  i1
+               GET Daa(a2,a)
+               GET Daa(a2,a1)
+            
+               REQUEST Tau_aa_x(a2,i,a1,i1) i1
+               REQUEST Tau_aa_x(a2,i,a,i1)  i1
+               GET Daa_x(a2,a)
+               GET Daa_x(a2,a1)
+# Term:5 Eqn.33
+# -1/4_(ab)[Tau(ij,eb)*l1(e,m)*t1_x(a,m) + Tau(ij,eb)*t1(m,a)*l1_x(e,m) +
+#        1/2Tau_x(ij,eb)*t2(mn,af)*l2(ef,mn) + 1//2Tau(ij,eb)*t2(mn,af)*
+#        l2_x(ef,mn)]
+# Factor??
+               T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a1,i1)*Daa_x(a2,a)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a,i1)*Daa_x(a2,a1)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a1,i1)*Daa(a2,a)
+               T1iiaa(i,i1,a,a1)*= 0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a,i1)*Daa(a2,a1)
+               T1iiaa(i,i1,a,a1)*= -0.125
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *=1.0
+#end_debug
+               Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+            ENDDO a2
+#bgn_debug
+#               Tiiaa(i,i1,a,a1) *=1.0
+#               Taaii(a,a1,i,i1) *=1.0
+#end_debug
+             T1AHiiaa(i,i1,a,a1)  = Taaii(a,a1,i,i1)
+             T1AHiiaa(i,i1,a,a1) *= Fact
+#bgn_debug
+#             T1AHiiaa(i,i1,a,a1) *=1.0
+#end_debug
+
+            Tiiaa(i,i1,a,a1)    += T1AHiiaa(i,i1,a,a1)
+
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+      ENDPARDO a, a1, i, i1
+      execute server_barrier 
+
+# Term  5 in Eqn 33.
+
+      CREATE L1aa
+      CREATE L1aa_x
+      execute sip_barrier
+
+      PARDO a1, a2, i
+            GET l1a_old(i,a2)
+            GET t1a_old(a1,i)
+            
+            GET l1a_old_x(i,a2)
+            GET t1a_old_x(a1,i)
+
+            Taa(a1,a2)  = t1a_old(a1,i)*l1a_old(i,a2)
+            PUT L1aa(a1,a2) += Taa(a1,a2)
+
+            Taa(a1,a2)  = t1a_old_x(a1,i)*l1a_old(i,a2)
+            PUT L1aa_x(a1,a2) += Taa(a1,a2)
+
+            Taa(a1,a2)  = t1a_old(a1,i)*l1a_old_x(i,a2)
+            PUT L1aa_x(a1,a2) += Taa(a1,a2)
+      ENDPARDO a1, a2, i
+      CREATE L1ai
+      CREATE L1ai_x
+      execute sip_barrier
+
+      PARDO a1, a2, i
+            GET t1a_old(a2,i)
+            GET L1aa(a1,a2)
+
+            GET t1a_old_x(a2,i)
+            GET L1aa_x(a1,a2)
+
+            Tai(a1,i)  = L1aa(a1,a2)*t1a_old(a2,i)
+            PUT L1ai(a1,i) += Tai(a1,i)
+
+            Tai(a1,i)  = L1aa(a1,a2)*t1a_old_x(a2,i)
+            PUT L1ai_x(a1,i) += Tai(a1,i)
+          
+            Tai(a1,i)  = L1aa_x(a1,a2)*t1a_old(a2,i)
+            PUT L1ai_x(a1,i) += Tai(a1,i)
+      ENDPARDO a1, a2, i
+      execute sip_barrier
+      DELETE L1aa
+      DELETE L1aa_x
+#bgn_debug
+#      sumaa = 0.0
+#      do a1
+#      do i
+#         get L1ai_x(a1,i)
+#         Tai(a1,i) = L1ai_x(a1,i)
+#         tmp = Tai(a1,i)*Tai(a1,i)
+#         sumaa += tmp
+#       enddo i
+#       enddo a1
+#       sumaa *= 0.111111
+#       execute print_scalar sumaa
+#end_debug
+
+      PARDO a, a1, i, i1
+            GET t1a_old(a,i)
+            GET L1ai(a1,i1)
+
+            GET t1a_old_x(a,i)
+            GET L1ai_x(a1,i1)
+
+# 3/4P(ij)P(ab)[l1_x(e,m)*t1(i,a)*t1(j,e)*t(m,b) + t1_x(m,b)*l1(e,m)*
+#               t1(i,a)*t1(j,e) + t1_x(i,a)*t1(j,e)*l1(e,m)*t(m,b) +
+#               t1(i,a)*t1_x(j,e)*l1(e,m)*t1(m,b)]
+# Factor is right; no assumptions 
+
+            Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai_x(a1,i1)
+            Tiiaa(i,i1,a,a1)        *= 0.375
+#bgn_debug
+#            Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+
+#bgn_debug
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+            T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#            T1iiaa(i,i1,a1,a) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+            T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#            T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+            T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#            T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+            Tiiaa(i,i1,a,a1)         = t1a_old_x(a,i)^L1ai(a1,i1)
+            Tiiaa(i,i1,a,a1)        *= 0.375
+#bgn_debug
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#bgn_debug
+#            Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+
+            PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+            T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#            T1iiaa(i,i1,a1,a) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+            T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+            T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#            T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+            T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#            T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+            PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+      ENDPARDO a, a1, i, i1
+      execute sip_barrier
+      execute server_barrier
+      DELETE L1ai
+      DELETE L1ai_x
+#.
+# Sixth-term in Eq. 33 
+
+# 1/8P_(ij)P_(ab){(l1_x(e,m)*t1(m,a) + l1(e,m)*t1_x(m,a) + l2_x(ef,mn)t2(mi,ae)
+#                 + l2(ef,mn)t2_x(mi,ae)] piece
+# A question about factor 2
+
+      PARDO i2, a2, a1, i1
+            GET l1a_old(i2,a2)
+            GET t1a_old(a1,i1)
+            GET l1a_old_x(i2,a2)
+            GET t1a_old_x(a1,i1)
+
+            Liaai(i2,a2,a1,i1)  = l1a_old(i2,a2)^t1a_old(a1,i1)
+            Liaai(i2,a2,a1,i1) *= 2.0
+
+            Liaai_x(i2,a2,a1,i1)   = l1a_old_x(i2,a2)^t1a_old(a1,i1)
+            Liaai_x1(i2,a2,a1,i1)  = l1a_old(i2,a2)^t1a_old_x(a1,i1)
+            Liaai_x(i2,a2,a1,i1)  += Liaai_x1(i2,a2,a1,i1)
+            Liaai_x(i2,a2,a1,i1) *= 2.0
+#bgn_debug
+#            Liaai(i2,a2,a1,i1) *= 1.0
+#            Liaai_x(i2,a2,a1,i1) *= 1.0
+#end_debug
+
+            DO i3
+            DO a3
+               REQUEST T2old_aa(a3,i3,a1,i1) a3
+               REQUEST L2old_aa(i2,a2,i3,a3) a3
+
+               REQUEST T2old_aa_x(a3,i3,a1,i1) a3
+               REQUEST L2old_aa_x(i2,a2,i3,a3) a3
+
+               Tiaai(i2,a2,a1,i1)  = L2old_aa(i2,a2,i3,a3)*T2old_aa(a3,i3,a1,i1)
+               Liaai(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)  = L2old_aa_x(i2,a2,i3,a3)*T2old_aa(a3,i3,a1,i1)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)    = L2old_aa(i2,a2,i3,a3)*T2old_aa_x(a3,i3,a1,i1)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+            ENDDO a3
+            ENDDO i3
+            DO j
+            DO b
+               REQUEST T2old_ab(a1,i1,b,j) b
+               REQUEST L2old_ab(i2,a2,j,b) b
+               Tiaai(i2,a2,a1,i1)  = L2old_ab(i2,a2,j,b)*T2old_ab(a1,i1,b,j)
+               Liaai(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               REQUEST T2old_ab_x(a1,i1,b,j) b
+               REQUEST L2old_ab_x(i2,a2,j,b) b
+               Tiaai(i2,a2,a1,i1)  = L2old_ab(i2,a2,j,b)*T2old_ab_x(a1,i1,b,j)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+
+               Tiaai(i2,a2,a1,i1)  = L2old_ab_x(i2,a2,j,b)*T2old_ab(a1,i1,b,j)
+               Liaai_x(i2,a2,a1,i1) += Tiaai(i2,a2,a1,i1)
+            ENDDO b
+            ENDDO j
+            DO i
+               GET t1a_old(a2,i)
+               tai(a2,i) = t1a_old(a2,i)
+               GET t1a_old_x(a2,i)                      #PV
+               tai_x(a2,i) = t1a_old_x(a2,i)            #PV
+
+               DO a
+                  REQUEST T2old_aa(a,i2,a2,i) i
+                  GET t1a_old(a,i2)
+          
+                  REQUEST T2old_aa_x(a,i2,a2,i) i      #PV
+                  GET t1a_old_x(a,i2)                  #PV
+
+# 2.0 t1_x(m,a)t(e,i) + t1(m,a)t1_x(e,i) + t2(mi,ae)
+# multiplication of these two pieces should complete this contribution
+
+                  Tiaia(i,a,i2,a2)         = t1a_old(a,i2)^tai(a2,i)
+                  Tiaia(i,a,i2,a2)        *= 2.0
+                  T1iaia(i,a,i2,a2)        = T2old_aa(a,i2,a2,i)
+                  Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
+                  Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai_x(i2,a2,a1,i1)
+# What is the origin of 0.0625??
+                  Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
+                  Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
+#bgn_debug
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#bgn_debug
+#                  Tiiaa(i,i1,a,a1) *= 0.0
+#end_debug
+
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#                  T1iiaa(i,i1,a,a1) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+                  T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#                  T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+                  T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#                  T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+                  Tiaia(i,a,i2,a2)         = t1a_old_x(a,i2)^tai(a2,i)
+                  Tiaia_x(i,a,i2,a2)       = t1a_old(a,i2)^tai_x(a2,i)
+                  Tiaia(i,a,i2,a2)        += Tiaia_x(i,a,i2,a2)
+                  Tiaia(i,a,i2,a2)        *= 2.0
+                  T1iaia(i,a,i2,a2)        = T2old_aa_x(a,i2,a2,i)
+                  Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
+
+                  Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai(i2,a2,a1,i1)
+                  Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
+
+                  Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
+#bgn_debug
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  PREPARE Dijab_aa_x(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#end_debug
+#bgn_debug
+#                  Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+
+                  PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+                  T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#                  T1iiaa(i,i1,a1,a) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+                  T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#                  T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+                  T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#                  T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+                  PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+               ENDDO a
+            ENDDO i
+      ENDPARDO i2, a2, a1, i1
+
+# Odd spin combination 
+
+      PARDO j, b, a1, i1
+            Ljbai_x(j,b,a1,i1) = 0.0
+            Ljbai(j,b,a1,i1)   = 0.0
+
+            GET l1b_old(j,b)
+            GET t1a_old(a1,i1)
+
+            GET l1b_old_x(j,b)
+            GET t1a_old_x(a1,i1)
+
+            Ljbai(j,b,a1,i1)  = l1b_old(j,b)^t1a_old(a1,i1)
+            ljbai(j,b,a1,i1) *= 2.0
+
+            Ljbai_x(j,b,a1,i1)    = l1b_old(j,b)^t1a_old_x(a1,i1)
+            Ljbai_x1(j,b,a1,i1)   = l1b_old_x(j,b)^t1a_old(a1,i1)
+            Ljbai_x(j,b,a1,i1)   += Ljbai_x1(j,b,a1,i1)
+            ljbai_x(j,b,a1,i1) *= 2.0
+
+            DO i3
+            DO a3
+               REQUEST T2old_aa(a3,i3,a1,i1) a3
+               REQUEST L2old_ab(i3,a3,j,b)   a3
+               Tjbai(j,b,a1,i1)  = L2old_ab(i3,a3,j,b)*T2old_aa(a3,i3,a1,i1)
+               Ljbai(j,b,a1,i1) += Tjbai(j,b,a1,i1)
+
+               REQUEST T2old_aa_x(a3,i3,a1,i1) a3
+               REQUEST L2old_ab_x(i3,a3,j,b)   a3
+               Tjbai_x(j,b,a1,i1)  = L2old_ab(i3,a3,j,b)*T2old_aa_x(a3,i3,a1,i1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+               Tjbai_x(j,b,a1,i1)  = L2old_ab_x(i3,a3,j,b)*T2old_aa(a3,i3,a1,i1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+            ENDDO a3
+            ENDDO i3
+            DO j1
+            DO b1
+               REQUEST T2old_ab(a1,i1,b1,j1) b1
+               REQUEST L2old_bb(j1,b1,j,b)   b1
+               Tjbai(j,b,a1,i1)  = L2old_bb(j1,b1,j,b)*T2old_ab(a1,i1,b1,j1)
+               Ljbai(j,b,a1,i1) += Tjbai(j,b,a1,i1)
+
+               REQUEST T2old_ab_x(a1,i1,b1,j1) b1
+               REQUEST L2old_bb_x(j1,b1,j,b)   b1
+               Tjbai_x(j,b,a1,i1)  = L2old_bb(j1,b1,j,b)*T2old_ab_x(a1,i1,b1,j1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+               Tjbai_x(j,b,a1,i1)  = L2old_bb_x(j1,b1,j,b)*T2old_ab(a1,i1,b1,j1)
+               Ljbai_x(j,b,a1,i1) += Tjbai_x(j,b,a1,i1)
+            ENDDO b1
+            ENDDO j1
+
+# Why is only T2 here (Can't T1 T1 contribute??)
+            DO i
+            DO a
+               REQUEST T2old_ab(a,i,b,j) a
+               REQUEST T2old_ab_x(a,i,b,j) a
+               Taiai(a1,i1,a,i)         = Ljbai_x(j,b,a1,i1)*T2old_ab(a,i,b,j)
+               Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
+               Tiiaa(i,i1,a,a1)        *= 0.0625
+#bgn_debug
+#               Tiiaa(i,i1,a1,a) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#               T1iiaa(i,i1,a1,a) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+               T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#               T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+               T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#               T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+
+               Taiai(a1,i1,a,i)         = Ljbai(j,b,a1,i1)*T2old_ab_x(a,i,b,j)
+               Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
+               Tiiaa(i,i1,a,a1)        *= 0.0625
+#bgn_debug
+#               Tiiaa(i1,i,a1,a) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+
+               T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a1,a)       *= -1.0
+#bgn_debug
+#               T1iiaa(i,i1,a1,a) *= 0.0
+#end_debug
+               PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
+
+               T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
+               T1iiaa(i1,i,a,a1)       *= -1.0
+#bgn_debug
+#               T1iiaa(i1,i,a,a1) *= 0.0
+#end_debug
+#               PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
+
+               T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
+#bgn_debug
+#               T1iiaa(i1,i,a1,a) *= 0.0
+#end_debug
+
+               PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
+            ENDDO a
+            ENDDO i
+      ENDPARDO j, b, a1, i1
+      execute server_barrier
+
+#  Back transformation of two indices
+#  Two particle contribution to G-tensor: O(pq,rs)*<|S_z(1)+S_z(2)pqsr|>
+#  DAAAA = 1/2 DAAAA + DAAAA
+
+      PARDO sigma, a, i, i1
+            Tiiax(i,i1,a,sigma) = 0.0
+            DO a1
+               REQUEST Dijab_aa_x(i,i1,a,a1) a1
+
+               T1iiaa(i,i1,a,a1) = Dijab_aa_x(i,i1,a,a1)
+#bgn_debug
+#               T1iiaa(i,i1,a,a1) *= 1.5
+#               T1iiaa(i,i1,a,a1) *= 1.0
+#end_debug
+               T1iiax(i,i1,a,sigma) = T1iiaa(i,i1,a,a1)*ca(sigma,a1)
+               Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)
+            ENDDO a1
+            PREPARE Diiax_x(i,i1,a,sigma) = Tiiax(i,i1,a,sigma)
+      ENDPARDO sigma, a, i, i1
+      execute server_barrier
+
+#dgn_debug
+#      esum = 0.0
+#      PARDO sigma, a, i, i1
+#            request Diiax_x(i,i1,a,sigma) i
+#            tmp = Diiax_x(i,i1,a,sigma) * Diiax_x(i,i1,a,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, a, i, i1
+#      execute print_scalar esum
+#end_debug
+
+      PARDO lambda, sigma, i, i1
+            Tiixx(i,i1,lambda,sigma) = 0.0
+            DO a
+               REQUEST Diiax_x(i,i1,a,sigma) a
+               T1iixx(i,i1,lambda,sigma) = Diiax_x(i,i1,a,sigma)*ca(lambda,a)
+               Tiixx(i,i1,lambda,sigma)  += T1iixx(i,i1,lambda,sigma)
+            ENDDO a
+            Tiixx(i,i1,lambda,sigma)         *= 4.0
+
+            PREPARE Diixx_x(i,i1,lambda,sigma) += Tiixx(i,i1,lambda,sigma)
+      ENDPARDO lambda, sigma, i, i1
+      execute server_barrier
+
+#bgn_debug
+#      esum=0.0
+#      PARDO sigma, lambda, i, i1
+#            request Diixx_x(i,i1,lambda,sigma) i
+#            tmp = Diixx_x(i,i1,lambda,sigma) * Diixx_x(i,i1,lambda,sigma)
+#            esum += tmp
+#      ENDPARDO sigma, lambda, i, i1
+#      execute print_scalar esum
+#bgn_debug
+
+      ENDPROC DIJABAAOLD_X
+#     ------------------
