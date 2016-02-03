@@ -1948,7 +1948,6 @@
 
        EXECUTE  SIP_BARRIER
 
-#-----------------------------------------------------------------------------
        PARDO  b, b1, j
             GET                     LT1B (b1,j) 
             GET                     T2L2_VV_B (b,b1)
@@ -1970,7 +1969,6 @@
          ENDDO b
       ENDPARDO  b1,j1
 
-
       PARDO  i, a
          GET  l1a_old(i,a)
          DO b
@@ -1982,6 +1980,7 @@
             ENDDO j
          ENDDO b
       ENDPARDO  i, a
+
 #--------------------------------------------------------------------
 # First and second term of Dai
       PARDO  b, j
@@ -1992,7 +1991,6 @@
                tbj (b,j) *=0.5
                PUT  Doldai_b(b,j) += tbj (b,j)
       ENDPARDO  b, j
-# end
 
 #bgn_debug
 #      do b

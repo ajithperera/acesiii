@@ -1189,6 +1189,7 @@
 #    -----------------
      PROC IGUESS_UHF
 #    ---------------
+
      PARDO a, a1, i, i1
            REQUEST VSpipi(a,i,a1,i1) i1
            Taiai(a,i,a1,i1)            = VSpipi(a,i,a1,i1)
@@ -1451,6 +1452,7 @@
             tai(a,i) = 0.0
             DO i1
                GET t1a_old_x(a,i1)
+               GET Fmi_a(i1,i) 
                t1ai(a,i) = t1a_old_x(a,i1)*Fmi_a(i1,i)
                tai(a,i) -= t1ai(a,i)
             ENDDO i1
@@ -4285,6 +4287,7 @@
       ICOUNT = 0.0
 
       DO NPERT 
+      EXECUTE SERVER_BARRIER
 
       X_COMP = 0.0
       Y_COMP = 0.0
@@ -4325,6 +4328,7 @@
 # Get initial second-order guess
 
       CALL IGUESS_UHF
+
       EXECUTE SERVER_BARRIER
 
 # Calculate the second-order energy

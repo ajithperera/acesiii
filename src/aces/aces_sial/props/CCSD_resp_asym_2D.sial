@@ -9174,10 +9174,10 @@
 
         CALL DCIABAAAA_X
         CALL DCIABBBBB_X
-        if property == 20.0
+#        if property == 20.0
            CALL DCIABABAB_X
            CALL DCIABBABA_X
-        endif
+#        endif
 
       ENDPROC DCIAB_X
 #-----------------------------------------------------------
@@ -10382,10 +10382,10 @@
       PROC DIJKA_X
            CALL DIJKAAAAA_X
 
-           if property == 20.0
+#           if property == 20.0
               CALL DIJKAABAB_X
               CALL DIJKABABA_X
-           endif
+#           endif
 
            CALL DIJKABBBB_X
       ENDPROC DIJKA_X
@@ -14594,15 +14594,14 @@
             property      = 10.0
             beta_is_minus =  0.0
             ASYM          =  1.0
-            Fact          = 1.0 
-            Pone          = 1.0
-            Mone          = 1.0
+            Fact          = -1.0 
+            Pone          =  1.0
+            Mone          = -1.0
 #bgn_debug
 #         property = 30.0
 #         beta_is_minus = 100.0
 #end_debug
          endif
-         property = 10.0
 
          execute print_scalar property
 
@@ -14616,10 +14615,10 @@
          endif
 
 #bgn_debug
-         property = 20.0
-         Fact     = 1.0
-         Pone          = 1.0
-         Mone          = 1.0
+#         property = 20.0
+#         Fact     = -1.0
+#         Pone          = 1.0
+#         Mone          = -1.0
 #end_debug
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle

@@ -912,8 +912,8 @@
                DO j
                   REQUEST L2old_ab(i,a,j,b) b
                   Tjj(j1,j)        = T2old_ab(a,i,b,j1)*L2old_ab(i,a,j,b)
-                  Tjj(j,j1)       *= -0.5
-                  PUT  T2L2_OO_B (j,j1) += Tjj(j1,j)
+                  Tjj(j1,j)       *= -0.5
+                  PUT  T2L2_OO_B (j1,j) += Tjj(j1,j)
 
                ENDDO j
             ENDDO j1
@@ -924,7 +924,7 @@
             GET l1b_old(j,b)
             Tjj(j1,j)        = l1b_old(j,b)*t1b_old(b,j1)
             Tjj(j1,j)       *= -0.5
-            PUT T1L1_OO_B(j,j1) += Tjj(j1,j)
+            PUT T1L1_OO_B(j1,j) += Tjj(j1,j)
       ENDPARDO b, j, j1
 
      ENDPROC GMIAB
@@ -1959,7 +1959,7 @@
                   REQUEST L2old_ab_x(i,a,j,b) b
                   Tjj(j,j1)   = L2old_ab_x(i,a,j,b)*T2old_ab(a,i,b,j1)
                   Tjj(j,j1)  *= -1.0
-                  PUT Dij_b_x_L(j,j)    += Tjj(j,j1)
+                  PUT Dij_b_x_L(j,j1)    += Tjj(j,j1)
 
                ENDDO j
             ENDDO j1
@@ -2191,7 +2191,6 @@
             tbj(b,j)            *= -1.0
             PUT  Doldai_b(b,j)   += tbj (b,j)
        ENDPARDO  b, b1, j
-
 #-----------------------------------------------------------------------------
       PARDO  b1,j1
          GET  l1b_old(j1,b1)
@@ -2205,7 +2204,6 @@
          ENDDO b
       ENDPARDO  b1,j1
 
-
       PARDO  i, a
          GET  l1a_old(i,a)
          DO b
@@ -2217,6 +2215,7 @@
             ENDDO j
          ENDDO b
       ENDPARDO  i, a
+
 #--------------------------------------------------------------------
 # First and second term of Dai
       PARDO  b, j
@@ -2227,7 +2226,6 @@
                tbj (b,j) *=0.5
                PUT  Doldai_b(b,j) += tbj (b,j)
       ENDPARDO  b, j
-# end
 
 #bgn_debug
 #      do b
