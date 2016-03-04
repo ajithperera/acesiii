@@ -193,7 +193,7 @@
       served I3AB(i,a,j,j1) 
       served I3BA(j,b,i,i1) 
       served I3BB(j,b,j1,j2) 
-#
+
       served TAO_aa(mu,i,nu,i1)  
       served TAO_ab(mu,i,nu,j)  
       served TAO_bb(mu,j,nu,j1)  
@@ -533,6 +533,35 @@
       temp Tjibi(j,i,b,i1) 
       temp Tbiaj(b,i,a,j)    
       temp Tajbi(a,j,b1,i1)  
+
+      temp Taiaa(a,i,a1,a2)
+      temp T1aiaa(a,i,a1,a2)
+      temp T1AHaaai(a,a1,a2,i)
+      temp Tbjbb(b,j,b1,b2)
+      temp T1bjbb(b,j,b1,b2)
+      temp T1AHbbbj(b,b1,b2,j)
+      temp Tajab(a,j,a1,b)
+      temp T1ajab(a,j,a1,b)
+      temp TAHaabj(a,a1,b,j)
+      temp Taiii(a,i,i1,i2)
+      temp T1aiii(a,i,i1,i2)
+      temp T1AHiiia(i,i1,i2,a)
+      temp Tbjjj(b,j,j1,j2)
+      temp T1bjjj(b,j,j1,j2)
+      temp T1AHjjjb(j,j1,j2,b)
+      temp Tbiab(b,i,a,b1)
+      temp T1biab(b,i,a,b1)
+      temp T1AHbabi(b,a,b1,i)
+      temp Tajba(a,j,b,a1)
+      temp T1ajba(a,j,b,a1)
+      temp T1AHabaj(a,b,a1,j)
+      temp Tbiji(b,i,j,i1)
+      temp T1biji(b,i,j,i1)
+      temp T1AHijib(i,j,i1,b)
+      temp Tajij(a,j,i,j1)
+      temp T1ajij(a,j,i,j1)
+      temp T1AHjija(j,i,j1,a)
+
 #
       temp Jxi(mu,i) 
       temp Jxj(mu,j) 
@@ -563,6 +592,14 @@
       scalar eacbd 
       scalar suma
       scalar tmp
+      scalar do_pols
+      scalar do_aten
+      scalar do_gten
+      scalar do_dten
+      scalar asym_fact
+      scalar property 
+      scalar Pone
+      scalar Mone
 #
 # PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP 
 # 
@@ -2289,6 +2326,7 @@
                Tiiii(i,i1,i2,i3)          *= 0.25
                T1iiii(i2,i3,i,i1)          = Tiiii(i,i1,i2,i3)
                PREPARE Dijkl_aa_p(i,i1,i2,i3)   += Tiiii(i,i1,i2,i3)
+               T1iiii(i2,i3,i,i1)               *=  Asym_fact
                PREPARE Dijkl_aa_p(i2,i3,i,i1)   += T1iiii(i2,i3,i,i1)
                T1iiii(i2,i3,i,i1)         *= 2.0
                PREPARE Vijmn_aaaa(i2,i3,i,i1) += T1iiii(i2,i3,i,i1)
@@ -2381,6 +2419,7 @@
                Tjjjj(j,j1,j2,j3)          *= 0.25
                T1jjjj(j2,j3,j,j1)          = Tjjjj(j,j1,j2,j3)
                PREPARE Dijkl_bb_p(j,j1,j2,j3)   += Tjjjj(j,j1,j2,j3)
+               T1jjjj(j2,j3,j,j1)               *= Asym_fact
                PREPARE Dijkl_bb_p(j2,j3,j,j1)   += T1jjjj(j2,j3,j,j1)
                T1jjjj(j2,j3,j,j1)         *= 2.0
                PREPARE Vijmn_bbbb(j2,j3,j,j1) += T1jjjj(j2,j3,j,j1)
@@ -2472,6 +2511,7 @@
                Tijij(i,j,i1,j1)          *= 0.5
                T1ijij(i1,j1,i,j)          = Tijij(i,j,i1,j1)
                PREPARE Dijkl_ab_p(i,j,i1,j1)   += Tijij(i,j,i1,j1)
+               T1ijij(i1,j1,i,j)               *= Asym_Fact
                PREPARE Dijkl_ab_p(i1,j1,i,j)   += T1ijij(i1,j1,i,j)
                T1ijij(i1,j1,i,j)         *= 2.0
                PREPARE Vijmn_abab(i1,j1,i,j) += T1ijij(i1,j1,i,j)
@@ -2628,6 +2668,7 @@
 #           TAiaia(i1,a,i,a1) *= 4.0 
 #
             PREPARE Dibja_aaaa_p(i,a1,i1,a) += Tiaia(i,a1,i1,a)  
+            TAiaia(i1,a,i,a1)               *= Asym_fact 
             PREPARE Dibja_aaaa_p(i1,a,i,a1) += TAiaia(i1,a,i,a1)  
 #
       ENDPARDO a, a1, i, i1 
@@ -2736,6 +2777,7 @@
 #           TAibib(i,b,i1,b1) *= 4.0 
 #
             PREPARE Dibja_abab_p(i1,b1,i,b) += Tibib(i1,b1,i,b) 
+            TAibib(i,b,i1,b1)               *=  Asym_fact
             PREPARE Dibja_abab_P(i,b,i1,b1) += TAibib(i,b,i1,b1) 
 #
       ENDPARDO b1, b, i, i1 
@@ -2843,6 +2885,7 @@
 #           TAjaja(j1,a1,j,a) *= 4.0 
 #
             PREPARE Dibja_baba_p(j,a,j1,a1) += Tjaja(j,a,j1,a1) 
+            TAjaja(j1,a1,j,a)               *= Asym_fact
             PREPARE Dibja_baba_p(j1,a1,j,a) += TAjaja(j1,a1,j,a)  
 #
       ENDPARDO a, a1, j1, j 
@@ -2982,6 +3025,7 @@
 #           TAjbjb(j1,b,j,b1) *= 4.0 
 #
             PREPARE Dibja_bbbb_p(j,b1,j1,b) += Tjbjb(j,b1,j1,b)
+            TAjbjb(j1,b,j,b1)               *= Asym_fact
             PREPARE Dibja_bbbb_p(j1,b,j,b1) += TAjbjb(j1,b,j,b1)
 #
       ENDPARDO b, b1, j, j1
@@ -3056,10 +3100,12 @@
 #
             T1iajb(i,a,j,b)  = t1a_old(a,i)^l1b_old(j,b) 
             T1iajb(i,a,j,b) *= 0.125  
+            T1iajb(i,a,j,b) *= Mone 
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b) 
 #
             T1iajb(i,a,j,b)  = l1a_old(i,a)^t1b_old(b,j) 
             T1iajb(i,a,j,b) *= 0.125  
+            T1iajb(i,a,j,b) *= Pone 
             Tiajb(i,a,j,b)  += T1iajb(i,a,j,b) 
 #
             DO i1 
@@ -3077,24 +3123,25 @@
 #
                   T1iajb(i,a,j,b)          = T2old_aa(a,i,a1,i1)*L2old_ab(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-#
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba(i,b,j,a) += Tibja(i,b,j,a)
-#
-#                 T1iajb(i,a,j,b)          = T2old_ab(a1,i1,b,j)*L2old_aa(i1,a1,i,a)
+
+                  T1iajb(i,a,j,b)         *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                   Tiaia(i,a,i1,a1)         = L2old_aa(i1,a1,i,a)
                   T2iajb(i1,a1,j,b)        = T2old_ab(a1,i1,b,j)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*T2iajb(i1,a1,j,b)
 #
                   T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                   Tiaia(i,a,i1,a1)         = t1a_old(a1,i)^tai(a,i1)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                ENDDO a1 
@@ -3116,22 +3163,23 @@
 #
                   T1iajb(i,a,j,b)          = T2old_ab(a,i,b1,j1)*L2old_bb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
-                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
-#
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba(i,b,j,a) += Tibja(i,b,j,a)
-#
-#                 T1iajb(i,a,j,b)          = T2old_bb(b,j,b1,j1)*L2old_ab(i,a,j1,b1)
+
+                  T1iajb(i,a,j,b)          *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                   Tjbjb(j1,b1,j,b)         = T2old_bb(b,j,b1,j1)
                   T1iajb(i,a,j,b)          = L2old_ab(i,a,j1,b1)*Tjbjb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
+                  Tiajb(i,a,j,b)          *= Pone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                   Tjbjb(j,b,j1,b1)         = t1b_old(b1,j)^tbj(b,j1)
                   T1iajb(i,a,j,b)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1iajb(i,a,j,b)         *= -0.125
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 #
                ENDDO b1 
@@ -3209,10 +3257,12 @@
 #
             T1jbia(j,b,i,a)  = l1b_old(j,b)^t1a_old(a,i) 
             T1jbia(j,b,i,a) *= 0.125  
+            T1jbia(j,b,i,a) *= Pone
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a) 
 #
             T1jbia(j,b,i,a)  = l1a_old(i,a)^t1b_old(b,j) 
             T1jbia(j,b,i,a) *= 0.125  
+            T1jbia(j,b,i,a) *= Pone 
             Tjbia(j,b,i,a)  += T1jbia(j,b,i,a) 
 #
             DO i1 
@@ -3235,18 +3285,21 @@
                   Tjaib(j,a,i,b)           = T1jbia(j,b,i,a)
                   Tjaib(j,a,i,b)          *= 4.0
                   PREPARE Vibja_baab(j,a,i,b) += Tjaib(j,a,i,b)
-#
-#                 T1jbia(j,b,i,a)          = T2old_aa(a,i,a1,i1)*L2old_ab(i1,a1,j,b)
+
+                  T1jbia(j,b,i,a)         *= Mone
+                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 #
                   Taijb(a,i,j,b)           = T2old_aa(a,i,a1,i1)*L2old_ab(i1,a1,j,b)
                   T1jbia(j,b,i,a)          = Taijb(a,i,j,b)
 #
                   T1jbia(j,b,i,a)         *= 0.125
+                  T1jbia(j,b,i,a)         *= Pone
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 #
                   Tiaia(i,a,i1,a1)         = t1a_old(a1,i)^tai(a,i1)
                   T1jbia(j,b,i,a)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
                   T1jbia(j,b,i,a)          *= -0.125
+                  T1jbia(j,b,i,a)          *= Pone 
                   Tjbia(j,b,i,a)           += T1jbia(j,b,i,a)
 #
                ENDDO a1 
@@ -3268,23 +3321,23 @@
 #
                   T1jbia(j,b,i,a)          = T2old_bb(b,j,b1,j1)*L2old_ab(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= 0.125
-                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
-#
                   Tjaib(j,a,i,b)           = T1jbia(j,b,i,a)
                   Tjaib(j,a,i,b)          *= 4.0
                   PREPARE Vibja_baab(j,a,i,b) += Tjaib(j,a,i,b)
-#
-#                 T1jbia(j,b,i,a)          = T2old_ab(a,i,b1,j1)*L2old_bb(j,b,j1,b1)
-#
+
+                  T1jbia(j,b,i,a)         *= Mone
+                  Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
+
                   T2jbia(j1,b1,i,a)        = T2old_ab(a,i,b1,j1)
                   T1jbia(j,b,i,a)          = L2old_bb(j,b,j1,b1)*T2jbia(j1,b1,i,a)
-#
                   T1jbia(j,b,i,a)         *= 0.125
+                  T1jbia(j,b,i,a)         *= Pone
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 #
                   Tjbjb(j,b,j1,b1)         = t1b_old(b1,j)^tbj(b,j1)
                   T1jbia(j,b,i,a)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
                   T1jbia(j,b,i,a)         *= -0.125
+                  T1jbia(j,b,i,a)         *= Mone
                   Tjbia(j,b,i,a)          += T1jbia(j,b,i,a)
 #
                ENDDO b1 
@@ -3477,6 +3530,7 @@
       PARDO a, a1, a2, i 
 #
             Taaai(a,a1,a2,i) = 0.0  
+            Taiaa(a,i,a1,a2) = 0.0 
 #
             GET Gae_a(a2,a) 
             GET t1a_old(a1,i) 
@@ -3506,9 +3560,9 @@
                T1aaai(a,a1,a2,i) *= 0.125 
                Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)  
 #
-               T1aaai(a,a1,a2,i)  = L2old_aa(i1,a,i,a1)*t1a_old(a2,i1) 
-               T1aaai(a,a1,a2,i) *= 0.125 
-               Taaai(a,a1,a2,i)  += T1aaai(a,a1,a2,i)  
+               T1aiaa(a,i,a1,a2)  = L2old_aa(i1,a,i,a1)*t1a_old(a2,i1) 
+               T1aiaa(a,i,a1,a2) *= 0.125 
+               Taiaa(a,i,a1,a2)  += T1aiaa(a,i,a1,a2)
 #
                T1aaai(a,a1,a2,i)  = Vibja_aaaa(i,a2,i1,a)*t1a_old(a1,i1)  
                T1aaai(a,a1,a2,i) *= -0.25 
@@ -3534,7 +3588,12 @@
                ENDDO i2 
 #
             ENDDO i1 
-#
+
+            T1AHaaai(a,a1,a2,i)    = Taiaa(a,i,a1,a2)
+            T1AHaaai(a,a1,a2,i)   *= Asym_fact
+            Taaai(a,a1,a2,i)      += T1AHaaai(a,a1,a2,i) 
+       
+#  
 # Multiply by 4 to match aces 
 # --------------------------- 
 #
@@ -3650,6 +3709,7 @@
       PARDO b, b1, b2, j 
 #
             Tbbbj(b,b1,b2,j) = 0.0  
+            Tbjbb(b,j,b1,b2) = 0.0
 #
             GET Gae_b(b2,b) 
             GET t1b_old(b1,j) 
@@ -3679,9 +3739,9 @@
                T1bbbj(b,b1,b2,j) *= 0.125 
                Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)  
 #
-               T1bbbj(b,b1,b2,j)  = L2old_bb(j1,b,j,b1)*t1b_old(b2,j1) 
-               T1bbbj(b,b1,b2,j) *= 0.125 
-               Tbbbj(b,b1,b2,j)  += T1bbbj(b,b1,b2,j)  
+               T1bjbb(b,j,b1,b2)  = L2old_bb(j1,b,j,b1)*t1b_old(b2,j1) 
+               T1bjbb(b,j,b1,b2) *= 0.125 
+               Tbjbb(b,j,b1,b2)  += T1bjbb(b,j,b1,b2)
 #
                T1bbbj(b,b1,b2,j)  = Vibja_bbbb(j,b2,j1,b)*t1b_old(b1,j1)  
                T1bbbj(b,b1,b2,j) *= -0.25 
@@ -3706,6 +3766,10 @@
                ENDDO j2 
 #
             ENDDO j1 
+
+            T1AHbbbj(b,b1,b2,j)      = Tbjbb(b,j,b1,b2)
+            T1AHbbbj(b,b1,b2,j)     *= Asym_fact
+            Tbbbj(b,b1,b2,j)        += T1AHbbbj(b,b1,b2,j)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -3830,6 +3894,7 @@
       PARDO a, a1, b, j 
 #
             Tabaj(a,b,a1,j) = 0.0 
+            Tajba(a,j,b,a1) = 0.0
 #
             GET Gae_a(a,a1) 
             GET t1b_old(b,j) 
@@ -3851,9 +3916,9 @@
                T1abaj(a,b,a1,j) *= 0.125 
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
-               T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old(a1,i)  
-               T1abaj(a,b,a1,j) *= 0.125 
-               Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
+               T1ajba(a,j,b,a1) = L2old_ab(i,a,j,b)*t1a_old(a1,i)  
+               T1ajba(a,j,b,a1) *= 0.125
+               Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 #
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old(a,i) 
                T1abaj(a,b,a1,j) *= 0.25 
@@ -3886,6 +3951,10 @@
                ENDDO i 
 #
             ENDDO j1 
+
+           T1AHabaj(a,b,a1,j)              = Tajba(a,j,b,a1)
+           T1AHabaj(a,b,a1,j)             *= Asym_fact
+           Tabaj(a,b,a1,j)                += T1AHabaj(a,b,a1,j)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -4010,6 +4079,7 @@
       PARDO b1, b, a, i 
 #
             Tbabi(b1,a,b,i) = 0.0 
+            Tbiab(b1,i,a,b) = 0.0
 #
             GET Gae_b(b1,b) 
             GET t1a_old(a,i) 
@@ -4031,10 +4101,10 @@
                T1babi(b1,a,b,i) *= 0.125 
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #
-               T1babi(b1,a,b,i)  = L2old_ab(i,a,j,b1)*t1b_old(b,j)  
-               T1babi(b1,a,b,i) *= 0.125 
-               Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
-#
+               T1biab(b1,i,a,b)  = L2old_ab(i,a,j,b1)*t1b_old(b,j)
+               T1biab(b1,i,a,b) *= 0.125
+               Tbiab(b1,i,a,b)  += T1biab(b1,i,a,b)
+
                T1babi(b1,a,b,i)  = Vibja_abba(i,b,j,a)*t1b_old(b1,j) 
                T1babi(b1,a,b,i) *= 0.25 
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
@@ -4066,7 +4136,11 @@
                ENDDO j 
 #
             ENDDO i1 
-#
+
+           T1AHbabi(b1,a,b,i)       = Tbiab(b1,i,a,b)
+           T1AHbabi(b1,a,b,i)      *= Asym_Fact
+           Tbabi(b1,a,b,i)         +=  T1AHbabi(b1,a,b,i)
+
 # Multiply by 4 to match aces 
 # --------------------------- 
 #
@@ -4247,6 +4321,7 @@
       PARDO i, i1, i2, a
 
             Tiiia(i,i1,i2,a) = 0.0 
+            Taiii(a,i,i1,i2) = 0.0
 #
             GET Gmi_a(i,i2) 
             GET t1a_old(a,i1) 
@@ -4286,12 +4361,9 @@
 #end_debug
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
-               T1iiia(i,i1,i2,a) = L2old_aa(i,a1,i1,a)*t1a_old(a1,i2) 
-               T1iiia(i,i1,i2,a)*= -0.125  
-#bgn_debug
-            T1iiia(i,i1,i2,a) *=1.0
-#end_debug
-               Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
+               T1aiii(a,i,i1,i2)  = L2old_aa(i,a1,i1,a)*t1a_old(a1,i2) 
+               T1aiii(a,i,i1,i2) *= -0.125  
+               Taiii(a,i,i1,i2)  += T1aiii(a,i,i1,i2)
 #
                T1iiia(i,i1,i2,a) = Vibja_aaaa(i,a1,i2,a)*t1a_old(a1,i1) 
                T1iiia(i,i1,i2,a)*= 0.25  
@@ -4322,6 +4394,10 @@
                Tiiia(i,i1,i2,a) += T1iiia(i,i1,i2,a) 
 #
             ENDDO i3 
+
+           T1AHiiia(i,i1,i2,a)   = Taiii(a,i,i1,i2)
+           T1AHiiia(i,i1,i2,a)  *= Asym_fact
+           Tiiia(i,i1,i2,a)     += T1AHiiia(i,i1,i2,a)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -4383,6 +4459,7 @@
       PARDO i, j, i1, b 
 #
             Tijib(i,j,i1,b) = 0.0 
+            Tbiji(b,i,j,i1) = 0.0
 #
             GET Gmi_a(i,i1) 
             GET t1b_old(b,j) 
@@ -4404,9 +4481,9 @@
                T1ijib(i,j,i1,b)*= -0.125  
                Tijib(i,j,i1,b) += T1ijib(i,j,i1,b) 
 #
-               T1ijib(i,j,i1,b) = L2old_ab(i,a,j,b)*t1a_old(a,i1) 
-               T1ijib(i,j,i1,b)*= -0.125  
-               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b) 
+               T1biji(b,i,j,i1)  = L2old_ab(i,a,j,b)*t1a_old(a,i1) 
+               T1biji(b,i,j,i1) *= -0.125  
+               Tijib(i,j,i1,b) += T1ijib(i,j,i1,b)
 #
                T1ijib(i,j,i1,b) = Vibja_baab(j,a,i1,b)*t1a_old(a,i) 
                T1ijib(i,j,i1,b)*= -0.25  
@@ -4435,6 +4512,10 @@
                Tijib(i,j,i1,b) += T1ijib(i,j,i1,b) 
 #
             ENDDO j1 
+
+           T1AHijib(i,j,i1,b)   = Tbiji(b,i,j,i1)
+           T1AHijib(i,j,i1,b)  *= Asym_Fact
+           Tijib(i,j,i1,b)     += T1AHijib(i,j,i1,b)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -4496,6 +4577,7 @@
       PARDO j, i, j1, a 
 #
             Tjija(j,i,j1,a) = 0.0 
+            Tajij(a,j,i,j1) = 0.0
 #
             GET Gmi_b(j,j1) 
             GET t1a_old(a,i) 
@@ -4517,9 +4599,9 @@
                T1jija(j,i,j1,a)*= -0.125  
                Tjija(j,i,j1,a) += T1jija(j,i,j1,a) 
 #
-               T1jija(j,i,j1,a) = L2old_ab(i,a,j,b)*t1b_old(b,j1) 
-               T1jija(j,i,j1,a)*= -0.125  
-               Tjija(j,i,j1,a) += T1jija(j,i,j1,a) 
+               T1ajij(a,j,i,j1) = L2old_ab(i,a,j,b)*t1b_old(b,j1) 
+               T1ajij(a,j,i,j1)*= -0.125  
+               Tajij(a,j,i,j1) += T1ajij(a,j,i,j1)
 #
                T1jija(j,i,j1,a) = Vibja_abba(i,b,j1,a)*t1b_old(b,j) 
                T1jija(j,i,j1,a)*= -0.25  
@@ -4546,6 +4628,10 @@
                Tjija(j,i,j1,a) += T1jija(j,i,j1,a) 
 #
             ENDDO a1 
+
+           T1AHjija(j,i,j1,a)   = Tajij(a,j,i,j1)
+           T1AHjija(j,i,j1,a)  *= Asym_fact
+           Tjija(j,i,j1,a)     += T1AHjija(j,i,j1,a)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -4607,6 +4693,7 @@
       PARDO j, j1, j2, b 
 #
             Tjjjb(j,j1,j2,b) = 0.0 
+            Tbjjj(b,j,j1,j2) = 0.0
 #
             GET Gmi_b(j,j2) 
             GET t1b_old(b,j1) 
@@ -4637,9 +4724,9 @@
                T1jjjb(j,j1,j2,b)*= -0.125  
                Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b) 
 #
-               T1jjjb(j,j1,j2,b) = L2old_bb(j,b1,j1,b)*t1b_old(b1,j2) 
-               T1jjjb(j,j1,j2,b)*= -0.125  
-               Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b) 
+               T1bjjj(b,j,j1,j2) = L2old_bb(j,b1,j1,b)*t1b_old(b1,j2) 
+               T1bjjj(b,j,j1,j2)*= -0.125  
+               Tbjjj(b,j,j1,j2) += T1bjjj(b,j,j1,j2)
 #
                T1jjjb(j,j1,j2,b) = Vibja_bbbb(j,b1,j2,b)*t1b_old(b1,j1) 
                T1jjjb(j,j1,j2,b)*= 0.25  
@@ -4660,6 +4747,10 @@
                Tjjjb(j,j1,j2,b) += T1jjjb(j,j1,j2,b) 
 #
             ENDDO j3 
+
+           T1AHjjjb(j,j1,j2,b)   = Tbjjj(b,j,j1,j2)
+           T1AHjjjb(j,j1,j2,b)  *= Asym_fact
+           Tjjjb(j,j1,j2,b)     += T1AHjjjb(j,j1,j2,b)
 #
 # Multiply by 4 to match aces 
 # --------------------------- 
@@ -6009,6 +6100,27 @@
 #
       PROC DMAIN
 #     ----------
+
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      execute print_scalar do_pols
+      execute print_scalar do_gten
+
+      if do_pols == 1.0
+         property   = 10.0
+         Asym_Fact  = 1.0
+         Pone      =  1.0
+         Mone      =  1.0
+      endif
+      if do_gten == 1.0
+         property  = 20
+         Asym_Fact =  1.0
+         Pone      =  1.0
+         Mone      =  1.0
+      endif 
 #
 # Create Tau arrays, single particle intermediates GAE and GMI and DAB, DIJ arrays 
 # -------------------------------------------------------------------------------- 

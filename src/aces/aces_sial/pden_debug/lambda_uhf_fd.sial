@@ -491,6 +491,10 @@
       scalar Z_COMP
       scalar FD_SCALE
       scalar SCALE
+      scalar do_pols
+      scalar do_aten
+      scalar do_gten
+      scalar do_dten
 #
 # ---------------------------------------
 #
@@ -10043,9 +10047,19 @@
       eight = 8.0
       nine = 9.0 
       ten = 10.0
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      if do_pols == 1.0
+         property = 10.0
+      endif
+      if do_gten == 1.0
+         property = 20
+      endif 
+      execute print_scalar property 
  
-      property = 10.0
-#
 # Create one-particle intermediate arrays 
 # --------------------------------------- 
 #      CALL CREAT1INTER  

@@ -734,6 +734,9 @@
             GET DpqB(mu,nu)
             GET DHF_aa(mu,nu)
             GET DHF_bb(mu,nu)
+            get HBx(mu,nu)
+            get HBy(mu,nu)
+            get HBz(mu,nu)
 
             Dccsd(mu,nu)  = DpqA(mu,nu)
 
@@ -960,8 +963,8 @@
 
       PARDO a, a1
             GET DAB_a(a,a1)
-            Taa(a, a) = DAB_a(a,a1) 
-            PUT DVV_A_P(a, a1) = Taa(a, a)
+            Taa(a, a1) = DAB_a(a,a1) 
+            PUT DVV_A_P(a, a1) = Taa(a, a1)
       ENDPARDO a, a1
       PARDO b, b1
             GET DAB_b(b,b1)
@@ -992,8 +995,8 @@
 
       PARDO a, a1
             GET DAB_a(a,a1)
-            Taa(a, a) = DAB_a(a,a1)
-            PUT DVV_A_M(a, a1) = Taa(a, a)
+            Taa(a,a1) = DAB_a(a,a1)
+            PUT DVV_A_M(a,a1) = Taa(a,a1)
       ENDPARDO a, a1
       PARDO b, b1
             GET DAB_b(b,b1)

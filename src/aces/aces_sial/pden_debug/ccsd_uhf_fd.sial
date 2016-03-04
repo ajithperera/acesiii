@@ -758,7 +758,12 @@
        scalar enhfa
        scalar enhfb
        scalar rank
-
+       scalar do_pols
+       scalar do_aten
+       scalar do_gten
+       scalar do_dten
+       scalar asym_fact
+       scalar asym 
 #
 #    ------------------------------------------------------------------------ 
 #
@@ -878,6 +883,9 @@
     PARDO a, i
            get HBa_me_x(i,a)
            tai(a,i) = HBa_me_x(i,a)
+           If ASYM == 1.0
+               tai(a,i) *= ASYM_FACT
+           Endif 
            execute energy_denominator tai
            PUT t1a_old(a,i) = tai(a,i)
            PUT D0ai(a,i) = tai(a,i)
@@ -885,6 +893,9 @@
      PARDO b, j
            get HBb_me_x(j,b)
            tbj(b,j) = HBb_me_x(j,b)
+           If ASYM == 1.0
+              tbj(b,j) *= ASYM_FACT
+           Endif 
            execute energy_denominator tbj
            PUT t1b_old(b,j) = tbj(b,j)
            PUT D0bj(b,j) = tbj(b,j)
@@ -8707,7 +8718,18 @@
       six   = 6.0
       seven = 7.0
 
-      property = 10.0
+      do_pols = polarizability
+      do_aten = a_tensor
+      do_gten = g_tensor
+      do_dten = d_tensor
+
+      if do_pols == 1.0
+         property = 10.0
+      endif 
+      if do_gten == 1.0
+         property = 20.0
+      endif 
+      execute print_scalar property
 #
 # Read transformed integrals from lists 
 # ------------------------------------- 
@@ -8827,6 +8849,8 @@
             ENDIF 
             IF PROPERTY == 20.0
                CALL GET_FD_P_ANGMOM
+               ASYM      =  1.0
+               ASYM_FACT =  1.0
             ENDIF
 
             CALL TRANS_2MO
