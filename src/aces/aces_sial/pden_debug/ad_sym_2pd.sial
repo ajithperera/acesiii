@@ -399,6 +399,8 @@
       Served AO_2SOI_X(mu, nu, lambda, sigma)
       Served AO_2SOI_Y(mu, nu, lambda, sigma)
       Served AO_2SOI_Z(mu, nu, lambda, sigma)
+      Served AO_ERI_INTS(mu,lambda,nu,sigma)
+      temp TAO_ERI_INTS(mu, nu, lambda, sigma)
 
       temp PXXXX_x(mu,nu,lambda,sigma)
 
@@ -456,6 +458,9 @@
       distributed Daa(a1,a)
       distributed Djj(j,j1)
       distributed Dbb(b1,b)
+
+      distributed Fxx_a(mu,nu)
+      distributed Fxx_b(mu,nu)
 #
       temp PXXXX(mu,nu,lambda,sigma) 
       temp TXXXX(mu,nu,lambda,sigma) 
@@ -610,6 +615,8 @@
 # Declare temporary arrays
 # ------------------------
 #
+      temp txp(mu,p)
+      temp txq(mu,q)
       temp Taiai(p,i,p1,i1)
     
       temp Taiai_x(p,i,p1,i1)
@@ -11425,9 +11432,25 @@
             PUT DhfB(mu,nu) += Tpq(mu,nu) 
       ENDPARDO mu, nu, j  
       ENDPROC HFDENS  
-#______________________________________________________________________________
-      PROC PDCONT
+#     ---------------
 
+     PROC GET_2P_ERI_INTS
+#    --------------------
+
+     PARDO mu, nu, lambda, sigma
+
+               COMPUTE_INTEGRALS TAO_ERI_INTS(mu, nu, lambda, sigma)
+               PREPARE AO_ERI_INTS(mu, nu, lambda, sigma) = TAO_ERI_INTS(mu, nu, lambda, sigma)
+
+     ENDPARDO mu, nu, lambda, sigma
+
+     EXECUTE SERVER_BARRIER
+
+     ENDPROC GET_2P_ERI_INTS
+#    --------------------
+
+      PROC HF_ENERGY
+#     --------------
        esuma   = 0.0
        ecorraa = 0.0
        esumb   = 0.0
@@ -11436,6 +11459,154 @@
        PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
+
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma
+            GET DHFA(mu,lambda)
+            GET DHFB(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFB(nu,sigma)
+
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
+#
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+# Exchange terms
+
+            Txx(mu,sigma)              = DHFa(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,sigma)              = DHFb(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,lambda,nu,sigma) = Txxxx(mu,nu,lambda,sigma)
+
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu,lambda,nu,sigma)
+            esuma += tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+
+      esuma = 0.0
+      do mu
+      do nu
+         GET DHFA(mu,nu)
+         GET DHFB(mu,nu)
+         execute return_h1 txx(mu,nu)
+         tmp = txx(mu,nu) * DHFA(mu,nu)
+         esuma += tmp
+         tmp = txx(mu,nu) * DHFB(mu,nu)
+         esuma += tmp
+      enddo nu
+      enddo mu
+      execute sip_barrier 
+      execute print_scalar esuma 
+      ecorraa += esuma
+      ecorraa += 0.526315789473684
+
+      execute print_scalar ecorraa
+
+     ENDPROC HF_ENERGY
+#    -----------------
+
+#______________________________________________________________________________
+      PROC COR_ENERGY
+
+       esuma   = 0.0
+       ecorraa = 0.0
+       esumb   = 0.0
+       ecorrbb = 0.0
+
+       PARDO mu, nu, lambda, sigma
+
+            Txxxx(mu,nu,lambda,sigma) = 0
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma
+#
+            GET DHFA(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
+#
+            GET DHFB(mu,lambda)
+            GET DHFB(nu,sigma)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
+#
+            GET DpqA(mu,lambda)
+            GET DpqA(nu,sigma)
+            GET DpqA(mu,sigma)
+            GET DpqA(nu,lambda)
+#
+            GET DpqB(mu,lambda)
+            GET DpqB(nu,sigma)
+            GET DpqB(mu,sigma)
+            GET DpqB(nu,lambda)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFB(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+# Exchange terms
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            Txxxx(mu,nu,lambda,sigma) *= 0.25
 
 #           Fully transform Diixx
 #           ---------------------
@@ -11662,15 +11833,70 @@
             ENDDO j
             ENDDO i
 #
-            Pxxxx(mu,nu,lambda,sigma) *= 0.25
             Pxxxx(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 4
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu, lambda, nu, sigma) 
+            esuma += tmp            
 
       ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier
+      collective ecorraa += esuma 
+      execute print_scalar  ecorraa 
+ 
+#      ecorraa *= 16.0 
+      Create  Fxx_a(mu,nu)
+      Create  Fxx_b(mu,nu)
+      execute sip_barrier 
 
-      ENDPROC PDCONT 
-#     --------------
+      PARDO p, p1
+           DO mu
+               Txp(mu,p) = Fock_a(p1,p)*ca(mu,p1)
+               DO nu
+                  Txx(mu,nu) = Txp(mu,p)*ca(nu,p)
+                  PUT Fxx_a(mu,nu) += Txx(mu,nu)
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO p, p1
+
+
+      PARDO q, q1
+           DO mu
+               Txq(mu,q) = Fock_b(q1,q)*cb(mu,q1)
+               DO nu 
+                  Txx(mu,nu) = Txq(mu,q)*cb(nu,q)
+                  PUT Fxx_b(mu,nu) += Txx(mu,nu)
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO q, q1
+      execute sip_barrier
+
+      esuma = 0.0
+      do mu
+      do nu
+         GET DpqA(mu,nu)
+         GET DpqB(mu,nu)
+         GET Fxx_a(mu,nu) 
+         GET Fxx_b(mu,nu) 
+
+         tmp = Fxx_a(mu,nu) * DpqA(mu,nu)
+         esuma += tmp
+         tmp = Fxx_b(mu,nu) * DpqB(mu,nu)
+         esuma += tmp
+      enddo nu
+      enddo mu
+      execute sip_barrier
+      execute print_scalar esuma 
+      
+      ecorraa += esuma
+      execute print_scalar ecorraa
+
+      delete  Fxx_a(mu,nu)
+      delete  Fxx_b(mu,nu)
+
+      ENDPROC COR_ENERGY
+#     ----------------
 #--------------------------------------------------------------------
       PROC  CCSD_2DRESPN_X
 #     --------------------
@@ -13775,9 +14001,13 @@
 #bgn_debug
 #         CALL S2ABCI
 #end_debug
-         execute sip_barrier 
+         CALL HFDENS
          execute server_barrier 
-         CALL PDCONT 
+
+         CALL GET_2P_ERI_INTS
+         CALL HF_ENERGY
+         CALL COR_ENERGY
+ 
          execute server_barrier
 ##         call verify
 

@@ -15224,7 +15224,7 @@
         CALL FORM_SPN_TOT_DENS
 
         CALL PDCONT_HF
-        CALL PDCONT 
+#        CALL PDCONT 
 #
 #bgn_debug
 #      suma=0.0

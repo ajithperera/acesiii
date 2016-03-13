@@ -203,10 +203,15 @@
       distributed DpqB(mu,nu) 
       distributed DHFA(mu,nu) 
       distributed DHFB(mu,nu) 
+
+      distributed fxx_a(mu,nu)
+      distributed fxx_b(mu,nu)
       temp Tpq(mu,nu) 
       temp Txx(mu,nu) 
       temp Txi(mu,i) 
       temp Txj(mu,j) 
+      temp Txp(mu,p)
+      temp Txq(mu,q)
 #
       distributed Dij_a(i,i1) 
       distributed Dij_b(j,j1) 
@@ -223,6 +228,9 @@
       temp T2XXXX(mu,nu,lambda,sigma) 
       temp T3XXXX(mu,nu,lambda,sigma) 
       temp P1XXXX(mu,nu,lambda,sigma) 
+
+      temp TAO_ERI_INTS(mu, nu, lambda, sigma)
+      served AO_ERI_INTS(mu, nu, lambda, sigma)
 #
       temp Txaai(mu,a,a1,i) 
       temp Txxai(mu,nu,a1,i) 
@@ -349,6 +357,9 @@
      scalar  one
      scalar  two
      scalar  three
+     scalar esuma 
+     scalar ecorraa
+     scalar tmp
 
      scalar XX
      scalar YY
@@ -565,7 +576,6 @@
       scalar etemp 
       scalar esum 
       scalar eacbd 
-      scalar tmp
       scalar sum
 #
 # PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP 
@@ -4184,7 +4194,7 @@
       do i
       do i1
          get Gmi_a(i,i1)
-         execute dump_amp  Gmi_a(i,i1)
+#         execute dump_amp  Gmi_a(i,i1)
          tmp = Gmi_a(i,i1) *  Gmi_a(i,i1)
          sum += tmp
        enddo i1
@@ -4276,7 +4286,7 @@
             DO i2  
 #
                REQUEST Diiix(i,i1,i2,sigma) i  
-               execute dump_amp Diiix(i,i1,i2,sigma)
+#               execute dump_amp Diiix(i,i1,i2,sigma)
 #
                T1iixx(i,i1,lambda,sigma) = Diiix(i,i1,i2,sigma)*ca(lambda,i2) 
                Tiixx(i,i1,lambda,sigma) += T1iixx(i,i1,lambda,sigma)  
@@ -5620,7 +5630,7 @@
 #
             T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma) 
 
-            execute dump_amp T1xxxx(mu,lambda,nu,sigma) 
+#            execute dump_amp T1xxxx(mu,lambda,nu,sigma) 
 #
 #           INTEGRAL BLOCK 1 
 #           ---------------- 
@@ -5646,6 +5656,388 @@
 #
       ENDPROC PDCONT 
 #     -------------- 
+
+      PROC COR_ENERGY
+#     ---------------
+       esuma   = 0.0
+       ecorraa = 0.0
+
+     PARDO mu, nu, lambda, sigma
+
+               COMPUTE_INTEGRALS TAO_ERI_INTS(mu, nu, lambda, sigma)
+               PREPARE AO_ERI_INTS(mu, nu, lambda, sigma) = TAO_ERI_INTS(mu, nu, lambda, sigma)
+
+     ENDPARDO mu, nu, lambda, sigma
+
+     EXECUTE SERVER_BARRIER
+
+
+       PARDO mu, nu, lambda, sigma
+
+            Txxxx(mu,nu,lambda,sigma)  = 0
+            T2xxxx(mu,nu,lambda,sigma) = 0
+
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma
+#
+            GET DHFA(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
+#
+            GET DHFB(mu,lambda)
+            GET DHFB(nu,sigma)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
+#
+            GET DpqA(mu,lambda)
+            GET DpqA(nu,sigma)
+            GET DpqA(mu,sigma)
+            GET DpqA(nu,lambda)
+#
+            GET DpqB(mu,lambda)
+            GET DpqB(nu,sigma)
+            GET DpqB(mu,sigma)
+            GET DpqB(nu,lambda)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFB(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+# Exchange terms
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            
+            Txxxx(mu,nu,lambda,sigma) *= 0.25
+
+#           Fully transform Diixx
+#           ---------------------
+
+#           Fully transform Diixx
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO i1
+                  REQUEST Diixx(i,i1,lambda,sigma) i1
+                  T1ixxx(i,nu,lambda,sigma) = Diixx(i,i1,lambda,sigma)*ca(nu,i1) 
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Djjxx
+#           ---------------------
+            DO j
+#
+               Tjxxx(j,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Djjxx(j,j1,lambda,sigma) j1
+                  T1jxxx(j,nu,lambda,sigma) = Djjxx(j,j1,lambda,sigma)*cb(nu,j1) 
+                  Tjxxx(j,nu,lambda,sigma) += T1jxxx(j,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dijxx
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Dijxx(i,j1,lambda,sigma) j1
+                  REQUEST Dijxx(i,j1,lambda,sigma) j1
+                  T1ixxx(i,nu,lambda,sigma) = Dijxx(i,j1,lambda,sigma)*cb(nu,j1)
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dixix
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO i1
+#
+                  REQUEST Dixix(i,nu,i1,sigma) i1
+                  T1ixxx(i,nu,lambda,sigma) = Dixix(i,nu,i1,sigma)*ca(lambda,i1)
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#
+#           Fully transform Djxjx
+#           ---------------------
+            DO j
+#
+               Tjxxx(j,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Djxjx(j,nu,j1,sigma) j1
+                  T1jxxx(j,nu,lambda,sigma) = Djxjx(j,nu,j1,sigma)*cb(lambda,j1)
+                  Tjxxx(j,nu,lambda,sigma) += T1jxxx(j,nu,lambda,sigma)
+#
+               ENDDO j1
+
+              T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
+              T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dixxj
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Dixxj(i,nu,lambda,j1) j1
+                  T1ixxx(i,nu,lambda,sigma) = Dixxj(i,nu,lambda,j1)*cb(sigma,j1)
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxiix
+#           ---------------------
+            DO i
+#
+               Txixx(mu,i,lambda,sigma) = 0.0
+#
+               DO i1
+                  REQUEST Dxiix(mu,i,i1,sigma) i1
+                  T1xixx(mu,i,lambda,sigma) = Dxiix(mu,i,i1,sigma)*ca(lambda,i1)
+                  Txixx(mu,i,lambda,sigma) += T1xixx(mu,i,lambda,sigma)
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxjjx
+#           ---------------------
+            DO j
+#
+               Txjxx(mu,j,lambda,sigma) = 0.0
+#
+               DO j1
+                  REQUEST Dxjjx(mu,j,j1,sigma) j1
+                  T1xjxx(mu,j,lambda,sigma) = Dxjjx(mu,j,j1,sigma)*cb(lambda,j1)
+                  Txjxx(mu,j,lambda,sigma) += T1xjxx(mu,j,lambda,sigma)
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dxxxi
+#           ---------------------
+            DO i
+#
+               REQUEST Dxxxi(mu,nu,lambda,i) i
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxi(mu,nu,lambda,i)*ca(sigma,i)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               T2xxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxxxj
+#           ---------------------
+            DO j
+#
+               REQUEST Dxxxj(mu,nu,lambda,j) j
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Dxxxj(mu,nu,lambda,j)*cb(sigma,j)
+               T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               T2xxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Contract half-transformed amplitudes to form backtransformed Dabcd
+#           ------------------------------------------------------------------
+#
+            PXXXX(mu,nu,lambda,sigma) = 0.0
+#
+#           AAAA spin case
+#           --------------
+            DO i
+            DO i1
+#
+               REQUEST TAO_AA(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            ENDDO i1
+            ENDDO i
+#
+#           BBBB spin case
+#           --------------
+            DO j
+            DO j1
+#
+               REQUEST TAO_bb(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j1
+            ENDDO j
+#
+#           ABAB spin case
+#           --------------
+            DO i
+            DO j
+#
+               REQUEST TAO_ab(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               T1xxxx(mu,nu,lambda,sigma) *= 4.0
+               PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+            ENDDO i
+#
+            Pxxxx(mu,nu,lambda,sigma) *= 0.25
+            Pxxxx(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
+#            Pxxxx(mu,nu,lambda,sigma) *= 4.0
+            Pxxxx(mu,nu,lambda,sigma) +=Txxxx(mu,nu,lambda,sigma) 
+#
+            T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma)
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu, lambda, nu, sigma) 
+            esuma += tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar  ecorraa
+
+      Create  Fxx_a(mu,nu)
+      Create  Fxx_b(mu,nu)
+      execute sip_barrier
+
+      PARDO p, p1
+           DO mu
+               Txp(mu,p) = Fock_a(p1,p)*ca(mu,p1)
+               DO nu
+                  Txx(mu,nu) = Txp(mu,p)*ca(nu,p)
+                  PUT Fxx_a(mu,nu) += Txx(mu,nu)
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO p, p1
+
+
+      PARDO q, q1
+           DO mu
+               Txq(mu,q) = Fock_b(q1,q)*cb(mu,q1)
+               DO nu
+                  Txx(mu,nu) = Txq(mu,q)*cb(nu,q)
+                  PUT Fxx_b(mu,nu) += Txx(mu,nu)
+               ENDDO nu
+            ENDDO mu
+      ENDPARDO q, q1
+      execute sip_barrier
+
+      esuma = 0.0
+      do mu
+      do nu
+         GET DpqA(mu,nu)
+         GET DpqB(mu,nu)
+         GET Fxx_a(mu,nu)
+        GET Fxx_a(mu,nu)
+         GET Fxx_b(mu,nu)
+
+         tmp = Fxx_a(mu,nu) * DpqA(mu,nu)
+         esuma += tmp
+         tmp = Fxx_b(mu,nu) * DpqB(mu,nu)
+         esuma += tmp
+      enddo nu
+      enddo mu
+      execute sip_barrier
+      execute print_scalar esuma
+
+      ecorraa += esuma
+      execute print_scalar ecorraa
+
+      delete  Fxx_a(mu,nu)
+      delete  Fxx_b(mu,nu)
+
+      ENDPROC COR_ENERGY
+#     ------------------
 
       PROC GET_XYZ_DIPOLE
 #     -------------------
@@ -6133,6 +6525,7 @@
 # ---------------------------------------------------------------------- 
 #
          CALL PDCONT 
+         CALL COR_ENERGY
 #
       ENDPROC DMAIN
 #     -------------

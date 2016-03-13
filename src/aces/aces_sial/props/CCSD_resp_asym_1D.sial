@@ -2750,7 +2750,7 @@
             sumb += tmp
       enddo j1
       enddo j
-      execute  print_scalar suma
+      execute  print_scalar sumb
       sumb = 0.0
       do b
       do j
