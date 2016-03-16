@@ -9927,8 +9927,8 @@
       PARDO j, i1, lambda, sigma
             Tijxx(i1,j,sigma,lambda) = 0.0
             DO j2
-               REQUEST Djijx(j,i1,j2,lambda) j
-               T1ijxx(i1,j,sigma,lambda) = Djijx(j,i1,j2,lambda)*cb(sigma,j2)
+               REQUEST Djijx(j,i1,j2,sigma) j
+               T1ijxx(i1,j,sigma,lambda) = Djijx(j,i1,j2,sigma)*cb(lambda,j2)
                Tijxx(i1,j,sigma,lambda) += T1ijxx(i1,j,sigma,lambda)
             ENDDO j2
             Tijxx(i1,j,sigma,lambda)         *= 8.0

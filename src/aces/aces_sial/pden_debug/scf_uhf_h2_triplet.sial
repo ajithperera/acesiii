@@ -3600,6 +3600,7 @@
       execute sip_barrier 
       PARDO mu, nu 
             GET Fpq_a(mu,nu) 
+#            execute dump_amp Fpq_a(mu,nu) 
             DO p 
                Txp(mu,p) = Fpq_a(mu,nu)*ca(nu,p) 
                DO p1 
@@ -3611,6 +3612,7 @@
 #     
       PARDO mu, nu 
             GET Fpq_b(mu,nu) 
+#            execute dump_amp Fpq_b(mu,nu) 
             DO q 
                Txq(mu,q) = Fpq_b(mu,nu)*cb(nu,q) 
                DO q1 
@@ -3623,21 +3625,23 @@
 #
 #     Put the final Fock arrays into predefined arrays 
 #     ------------------------------------------------ 
-#
+
       DO p 
-      DO p1  
-         GET FTa(p,p1) 
-         Fock_a(p,p1) = FTa(p,p1) 
-      ENDDO p1  
-      ENDDO p 
-#
-      DO q 
-      DO q1  
-         GET FTb(q,q1) 
-         Fock_b(q,q1) = FTb(q,q1) 
-      ENDDO q1  
-      ENDDO q 
-#
+      DO p1
+         GET FTa(p,p1)
+         Fock_a(p,p1) = FTa(p,p1)
+         execute dump_amp FTa(p,p1)
+      ENDDO p1
+      ENDDO p
+
+      DO q
+      DO q1
+         GET FTb(q,q1)
+         Fock_b(q,q1) = FTb(q,q1)
+         execute dump_amp FTb(q,q1)
+      ENDDO q1
+      ENDDO q
+
       #execute sip_barrier 
       #execute blocks_to_list Fpq_a 
       #execute blocks_to_list Fpq_b 

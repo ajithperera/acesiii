@@ -9275,8 +9275,8 @@
       PARDO j, i1, lambda, sigma
             Tijxx(i1,j,sigma,lambda) = 0.0
             DO j2
-               REQUEST Djijx(j,i1,j2,lambda) j
-               T1ijxx(i1,j,sigma,lambda) = Djijx(j,i1,j2,lambda)*cb(sigma,j2)
+               REQUEST Djijx(j,i1,j2,sigma) j
+               T1ijxx(i1,j,sigma,lambda) = Djijx(j,i1,j2,sigma)*cb(lambda,j2)
                Tijxx(i1,j,sigma,lambda) += T1ijxx(i1,j,sigma,lambda)
             ENDDO j2
             Tijxx(i1,j,sigma,lambda)         *= 8.0
@@ -10964,8 +10964,7 @@
             GET DHFB(lambda,sigma)
 #
 # Coulomb terms (Notice the negative sign in the 2nd and the
-# forth terms. That comes from the operator S_z(1)I_z(2) (opposed 
-# to the I_z(1)I_z(2) in gradient theory; I_z is the unit operator).
+# third terms. That comes from the operator S_z(1)+2s_z(2).
 #
             Txx(mu,lambda)             = DHFa(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
@@ -10979,12 +10978,12 @@
 
             Txx(mu,lambda)             = DHFa(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.25
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
             Txx(mu,lambda)             = DHFb(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.25
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 # Exchange terms
@@ -11080,7 +11079,6 @@
 #--------------------------------------------------------------------
       PROC PDCONT
 #     -----------
-       E2GC_XX_YY_ZZ = 0.0
        E2GC_XX_INTMD = 0.0
        E2GC_XY_INTMD = 0.0
        E2GC_XZ_INTMD = 0.0
@@ -11136,59 +11134,75 @@
             GET DpqB(nu,lambda)
 #
 # Coulomb terms (Notice the negative sign in the 2nd and the
-# forth terms. That comes from the operator S_z(1)I_z(2) (opposed
-# to the I_z(1)I_z(2) in gradient theory).
+# third terms. That comes from the operator S_z(1)+2s_z(2).
 #
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
             T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFA(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
             T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFB(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.25
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFB(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.25
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-# Exchange terms 
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
+# Exchange terms
+
+            Txx(mu,sigma)              = DHFa(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
             T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
+
+            Txx(mu,sigma)              = DHFb(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
             T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
+# Correlation terms 
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 1.5
+            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 1.5
+            Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFA(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+# Exchange terms
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,sigma)^DHFA(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(nu,lambda)^DHFA(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
+           
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,sigma)^DHFB(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(nu,lambda)^DHFB(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
 #           Fully transform Diixx
 #           ---------------------
@@ -11494,10 +11508,6 @@
 
       E2GC_ZZ   = E2GC_XX_SAVE
       E2GC_ZZ  += E2GC_YY_SAVE
-
-      E2GC_XX  += E2GC_XX_HF
-      E2GC_YY  += E2GC_YY_HF
-      E2GC_ZZ  += E2GC_ZZ_HF
 
 #bgn_debug
       execute print_scalar  E2GC_XX

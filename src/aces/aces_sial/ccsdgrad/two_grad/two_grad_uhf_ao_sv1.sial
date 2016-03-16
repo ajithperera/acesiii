@@ -1,4 +1,4 @@
-#  Copyright (c) 2003-2010 University of Florida
+
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -206,6 +206,8 @@
 
       distributed fxx_a(mu,nu)
       distributed fxx_b(mu,nu)
+      distributed DT_a(mu,nu)
+      distributed DT_b(mu,nu)
       temp Tpq(mu,nu) 
       temp Txx(mu,nu) 
       temp Txi(mu,i) 
@@ -350,6 +352,9 @@
      distributed Hz(mu,nu)
      static DIPOLE_MOMS(XYZ,XYZ)
 
+     Temp Tpp(p,p1)
+     Temp Tqq(q,q1)
+
      scalar  tmpnuc
      scalar  dipnucx
      scalar  dipnucy
@@ -358,6 +363,7 @@
      scalar  two
      scalar  three
      scalar esuma 
+     scalar esumb
      scalar ecorraa
      scalar tmp
 
@@ -1801,6 +1807,19 @@
 #
       ENDPARDO lambda, sigma, i, j1 
       execute server_barrier 
+#bgn_debug
+      execute server_barrier
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,lambda
+            request Dijxx(i1,j,sigma,lambda) lambda
+            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,lambda
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
 #
 # Done backtransformation 
 # ----------------------- 
@@ -2496,6 +2515,19 @@
 #
       ENDPARDO i1, nu, j1, mu 
       execute server_barrier 
+#bgn_debug
+      execute server_barrier
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,lambda
+            request Dijxx(i1,j,sigma,lambda) lambda
+            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,lambda
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
 #
 # Done backtransformation 
 # ----------------------- 
@@ -3144,6 +3176,18 @@
 #
       ENDPARDO sigma, b1, i, j1 
       execute server_barrier 
+#bgn_debug
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO sigma, b1, i, j1
+            request Dibjx(i,b1,j1,sigma) sigma 
+            etemp = Dibjx(i,b1,j1,sigma) * Dibjx(i,b1,j1,sigma)
+            esuma += etemp
+      ENDPARDO sigma, b1, i, j1
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
 #
       PARDO sigma, nu, i, j1 
 #
@@ -3163,6 +3207,20 @@
 #
       ENDPARDO sigma, nu, i, j1 
       execute server_barrier 
+
+#bgn_debug
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,nu
+            request Dixxj(i1,sigma,nu,j) j
+            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,nu
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
+
 #
 # Done backtransformation 
 # -----------------------
@@ -3297,6 +3355,20 @@
 #
       ENDPARDO sigma, a1, j, i1 
       execute server_barrier 
+
+#bgn_debug
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO sigma, a1, j, i1
+            request  Djaix(j,a1,i1,sigma) sigma 
+            etemp =  Djaix(j,a1,i1,sigma) *  Djaix(j,a1,i1,sigma)
+            esuma += etemp
+      ENDPARDO sigma, a1, j, i1
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
+
 #
       PARDO sigma, nu, j, i1 
 #
@@ -3316,6 +3388,20 @@
 #
       ENDPARDO sigma, nu, j, i1 
       execute server_barrier 
+#bgn_debug
+      execute server_barrier
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,nu
+            request Dixxj(i1,sigma,nu,j) j
+            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,nu
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
+
 #
 # Done backtransformation 
 # -----------------------
@@ -3515,7 +3601,7 @@
 #
 #           Taaai(a,a1,a2,i) *= 4.0 
 #
-#           PUT Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+            PREPARE Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 # 
             DO mu 
 #
@@ -3687,7 +3773,7 @@
 #
 #           Tbbbj(b,b1,b2,j) *= 4.0 
 #
-#           PUT Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+            PREPARE Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 # 
             DO mu 
 #
@@ -3867,7 +3953,7 @@
 #
 #           Tabaj(a,b,a1,j) *= 4.0 
 #
-#           PUT Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j) 
+            PREPARE Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j) 
 # 
             DO mu 
 #
@@ -4047,7 +4133,7 @@
 #
 #           Tbabi(b1,a,b,i) *= 4.0 
 #
-#           PUT Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i) 
+            PREPARE Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i) 
 # 
             DO mu 
 #
@@ -4199,7 +4285,6 @@
          sum += tmp
        enddo i1
       enddo i
-      execute print_scalar  sum
 #
       PARDO i, i1, i2, a 
 #
@@ -4264,7 +4349,7 @@
 #
 #           Tiiia(i,i1,i2,a) *= 4.0 
 #
-#           PUT Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
+            PREPARE Dijka_aaaa(i,i1,i2,a) += Tiiia(i,i1,i2,a) 
 #
             DO sigma 
 #
@@ -4378,7 +4463,7 @@
 #
 #           Tijib(i,j,i1,b) *= 4.0 
 #
-#           PUT Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
+            PREPARE Dijka_abab(i,j,i1,b) += Tijib(i,j,i1,b) 
 #
             DO sigma 
 #
@@ -4411,6 +4496,20 @@
 #
       ENDPARDO i, j1, lambda, sigma 
       execute server_barrier
+#bgn_debug
+      execute server_barrier
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,lambda
+            request Dijxx(i1,j,sigma,lambda) lambda
+            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,lambda
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
+
 #
 # Done Backtransformation 
 # ----------------------- 
@@ -4489,7 +4588,7 @@
 #
 #           Tjija(j,i,j1,a) *= 4.0 
 #
-#           PUT Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
+            PREPARE Dijka_baba(j,i,j1,a) += Tjija(j,i,j1,a) 
 #
             DO sigma 
 #
@@ -4522,6 +4621,20 @@
 #
       ENDPARDO j, i1, lambda, sigma 
       execute server_barrier
+#bgn_debug
+      execute server_barrier
+      esuma   = 0.0
+      ecorraa = 0.0
+      PARDO i1,j,sigma,lambda
+            request Dijxx(i1,j,sigma,lambda) lambda
+            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+            esuma += etemp
+      ENDPARDO i1,j,sigma,lambda
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar ecorraa
+#end_debug
+
 #
 # Done Backtransformation 
 # ----------------------- 
@@ -4603,7 +4716,7 @@
 #
 #           Tjjjb(j,j1,j2,b) *= 4.0 
 #
-#           PUT Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+            PREPARE Dijka_bbbb(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #
             DO sigma 
 #
@@ -5662,6 +5775,17 @@
        esuma   = 0.0
        ecorraa = 0.0
 
+#    DO mu 
+#    DO nu
+#       GET DpqA(mu,nu) 
+#       GET DpqB(mu,nu)
+#       Txx(mu,nu) = 0.0
+#       PUT DpqA(mu,nu) = Txx(mu,nu)
+#       PUT DpqB(mu,nu) = Txx(mu,nu)
+#     ENDDO nu
+#     ENDDO mu
+#     execute sip_barrier  
+
      PARDO mu, nu, lambda, sigma
 
                COMPUTE_INTEGRALS TAO_ERI_INTS(mu, nu, lambda, sigma)
@@ -5698,54 +5822,89 @@
             GET DpqB(nu,sigma)
             GET DpqB(mu,sigma)
             GET DpqB(nu,lambda)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+#HF part
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+#Exchange terms
+
+            Txx(mu,sigma)              = DHFa(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,sigma)              = DHFb(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+#Correlation 
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFA(nu,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFA(mu,lambda)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFB(nu,sigma)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,lambda)^DHFB(nu,sigma)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,sigma)^DHFB(mu,lambda)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,lambda)^DHFA(nu,sigma)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,sigma)^DHFA(mu,lambda)
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
 # Exchange terms
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA(mu,sigma)^DHFA(nu,lambda)
 #            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA(nu,lambda)^DHFA(mu,sigma)
 #            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(mu,sigma)^DHFB(nu,lambda)
 #            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB(nu,lambda)^DHFB(mu,sigma)
 #            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
             
-            Txxxx(mu,nu,lambda,sigma) *= 0.25
+            T2xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma)  += T2xxxx(mu,nu,lambda,sigma) 
 
 #           Fully transform Diixx
 #           ---------------------
 
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
+ 
 #           Fully transform Diixx
 #           ---------------------
             DO i
@@ -5791,10 +5950,9 @@
                DO j1
 #
                   REQUEST Dijxx(i,j1,lambda,sigma) j1
-                  REQUEST Dijxx(i,j1,lambda,sigma) j1
                   T1ixxx(i,nu,lambda,sigma) = Dijxx(i,j1,lambda,sigma)*cb(nu,j1)
                   Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
-#
+
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
@@ -5973,8 +6131,10 @@
             ENDDO i
 #
             Pxxxx(mu,nu,lambda,sigma) *= 0.25
+#            Pxxxx(mu,nu,lambda,sigma) *= 0.0
+
             Pxxxx(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
-#            Pxxxx(mu,nu,lambda,sigma) *= 4.0
+            Pxxxx(mu,nu,lambda,sigma) *= 1.0 
             Pxxxx(mu,nu,lambda,sigma) +=Txxxx(mu,nu,lambda,sigma) 
 #
             T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma)
@@ -5988,53 +6148,99 @@
 
       Create  Fxx_a(mu,nu)
       Create  Fxx_b(mu,nu)
+      Create  Dt_a(mu,nu)
+      Create  Dt_b(mu,nu)
       execute sip_barrier
 
-      PARDO p, p1
-           DO mu
-               Txp(mu,p) = Fock_a(p1,p)*ca(mu,p1)
-               DO nu
-                  Txx(mu,nu) = Txp(mu,p)*ca(nu,p)
-                  PUT Fxx_a(mu,nu) += Txx(mu,nu)
-               ENDDO nu
-            ENDDO mu
-      ENDPARDO p, p1
+#      PARDO p, p1
+#           DO i
+#           DO i1
+#            Tpp(i,i1) = 0.0
+#            Fock_a(i,i1) = Tpp(i,i1)
+#            ENDDO i1
+#            ENDDO i
+#      ENDPARDO p, p1
+#
+#     PARDO q, q1
+#           DO j
+#           DO j1
+#              Tqq(j,j1) = 0.0
+#              Fock_b(j,j1) = Tqq(j,j1)
+#           ENDDO j1
+#           ENDDO j
+#      ENDPARDO q, q1
+#      execute sip_barrier
+       
+      PARDO mu, nu
+           get DpqA(mu,nu)
+           get DHfA(mu,nu)
+           Txx(mu,nu)  = DpqA(mu,nu)
+           Txx(mu,nu) += DHfA(mu,nu)
+           Put DT_A(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu, nu
 
-
-      PARDO q, q1
-           DO mu
-               Txq(mu,q) = Fock_b(q1,q)*cb(mu,q1)
-               DO nu
-                  Txx(mu,nu) = Txq(mu,q)*cb(nu,q)
-                  PUT Fxx_b(mu,nu) += Txx(mu,nu)
-               ENDDO nu
-            ENDDO mu
-      ENDPARDO q, q1
+      PARDO mu, nu
+           get DpqB(mu,nu)
+           get DHfB(mu,nu)
+           Txx(mu,nu)  = DpqB(mu,nu)
+           Txx(mu,nu) += DHfB(mu,nu)
+           Put DT_B(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu, nu
       execute sip_barrier
 
+#      PARDO p, p1
+#            Tpp(p,p1) = Fock_a(p,p1)
+#            execute dump_amp Fock_a(p,p1)
+#           DO mu
+#               Txp(mu,p) = Tpp(p,p1)*ca(mu,p1)
+#               execute dump_amp Fock_a(p,p1)
+#               DO nu
+#                  Txx(mu,nu) = Txp(mu,p)*ca(nu,p)
+#                  PUT Fxx_a(mu,nu) += Txx(mu,nu)
+#               ENDDO nu
+#            ENDDO mu
+#      ENDPARDO p, p1
+#
+#
+#      PARDO q, q1
+#            Tqq(q,q1) = Fock_b(q,q1)
+#           DO mu
+#               Txq(mu,q) = Tqq(q,q1)*cb(mu,q1)
+#               execute dump_amp Fock_b(q,q1)
+#               DO nu
+#                  Txx(mu,nu) = Txq(mu,q)*cb(nu,q)
+#                  PUT Fxx_b(mu,nu) += Txx(mu,nu)
+#               ENDDO nu
+#            ENDDO mu
+#      ENDPARDO q, q1
+#      execute sip_barrier
+#
       esuma = 0.0
-      do mu
-      do nu
-         GET DpqA(mu,nu)
-         GET DpqB(mu,nu)
-         GET Fxx_a(mu,nu)
-        GET Fxx_a(mu,nu)
+      esumb = 0.0
+      pardo mu, nu
+         GET DT_A(mu,nu)
+         GET DT_B(mu,nu)
          GET Fxx_b(mu,nu)
-
-         tmp = Fxx_a(mu,nu) * DpqA(mu,nu)
+         execute return_h1 txx(mu,nu)
+         tmp = txx(mu,nu) * DT_A(mu,nu)
          esuma += tmp
-         tmp = Fxx_b(mu,nu) * DpqB(mu,nu)
+         tmp = txx(mu,nu) * DT_B(mu,nu)
          esuma += tmp
-      enddo nu
-      enddo mu
-      execute sip_barrier
-      execute print_scalar esuma
+      endpardo mu, nu
+      execute server_barrier
+      collective esumb += esuma
+      execute server_barrier
+      execute print_scalar esumb
+      esumb += 15.5383811486638
+      execute print_scalar esumb
 
-      ecorraa += esuma
+      ecorraa += esumb
       execute print_scalar ecorraa
 
       delete  Fxx_a(mu,nu)
       delete  Fxx_b(mu,nu)
+      delete  DT_A(mu,nu)
+      delete  DT_B(mu,nu)
 
       ENDPROC COR_ENERGY
 #     ------------------
@@ -6434,22 +6640,27 @@
 # Form DIBJA 
 # ---------- 
          CALL DIBJA # gamma4 
+         CALL S2DIBJA
 #
 # Form DIJKL 
 # ---------- 
          CALL DIJKL # gamma3 # BTRAN OK  
+         CALL S2DIJKL
 #
 # Form DIJAB  
 # ---------- 
          CALL DIJAB # gamma1 # BTRAN OK  
+         CALL S2DIJAB
 #
 # Form DIJKA  
 # ---------- 
          CALL DIJKA # gamma6 # BTRAN OK  
+         CALL S2DIJKA
 #
 # Form DABCI 
 # ---------- 
          CALL DABCI # gamma5 # BTRAN OK  
+         CALL S2ABCI
          execute sip_barrier 
          execute server_barrier 
 #
