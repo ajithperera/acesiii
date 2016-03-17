@@ -9761,6 +9761,17 @@
 #
       CALL LMAIN 
          execute print_rel_info ten pinf
+#bgn_debug
+      suma = 0.0
+      do i
+      do a
+         get l1a_old(i,a)
+         tmp = l1a_old(i,a) * l1a_old(i,a) 
+         suma += tmp
+      enddo a
+      enddo i
+      execute print_scalar suma 
+#end_debug
 #
 # Write amplitudes to file
 # ------------------------

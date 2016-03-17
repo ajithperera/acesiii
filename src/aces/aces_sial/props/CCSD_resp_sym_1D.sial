@@ -3547,6 +3547,7 @@
             
             call GAEAB
             call GMIAB
+            execute sip_barrier
             call DAB
             call DIJ
             execute sip_barrier
@@ -3583,6 +3584,7 @@
 
                call GAEAB_x
                call GMIAB_x
+               execute sip_barrier
                call NEWDAB_x 
                call NEWDIJ_x
                execute sip_barrier

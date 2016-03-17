@@ -14083,7 +14083,7 @@
 
         CALL FORM_SPN_TOT_DENS
 
-        CALL PDCONT_HF
+#        CALL PDCONT_HF
         CALL PDCONT 
 #
 #bgn_debug

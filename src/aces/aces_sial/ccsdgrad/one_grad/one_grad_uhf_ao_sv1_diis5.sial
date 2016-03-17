@@ -796,6 +796,9 @@
       scalar ecrit 
       scalar ediff 
       scalar rank 
+      scalar suma 
+      scalar sumb
+      scalar tmp
 #    ------------------------------------------------------------------------
 #
 #    ------------------------------------------------------------------------
@@ -10788,6 +10791,45 @@
          CALL DIJ 
          execute sip_barrier  
          execute server_barrier  
+
+#bgn_debug
+      suma = 0.0
+      do a
+      do a1
+            GET Dab_a(a,a1)
+            tmp  = Dab_a(a,a1) * Dab_a(a,a1)
+            suma += tmp
+      enddo a1
+      enddo a
+      execute print_scalar suma
+      suma = 0.0
+      do i
+      do i1
+            GET Dij_a(i,i1)
+            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
+            suma += tmp
+      enddo i1
+      enddo i
+      execute print_scalar suma
+      sumb = 0.0
+      do b
+      do b1
+            GET Dab_b(b,b1)
+            tmp  = Dab_b(b,b1) * Dab_b(b,b1)
+            sumb += tmp
+      enddo b1
+      enddo b
+      execute print_scalar sumb
+      sumb = 0.0
+      do j
+      do j1
+            GET Dij_b(j,j1)
+            tmp  = Dij_b(j,j1) * Dij_b(j,j1)
+            sumb += tmp
+      enddo j1
+      enddo j
+      execute  print_scalar sumb
+#enddefbu 
 #
 # Compute contributions to one-particle intermediates from DAB and DIJ 
 # -------------------------------------------------------------------- 

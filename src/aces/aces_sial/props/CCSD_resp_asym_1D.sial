@@ -1,4 +1,4 @@
-#  Copyright (c) 2003-2010 University of Florida
+
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -2111,16 +2111,52 @@
          PUT Doldai_a(a,i) += tai1 (a,i)
        ENDPARDO a,i
        EXECUTE  SIP_BARRIER
+#
 #-------------------------------------------------------------------------
 # 6th term
        PARDO  a, a1, i
             GET                     T2L2_VV_A (a,a1)
             tai (a,i)             = T2L2_VV_A (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
-            PUT  Doldai_a(a,i)    += tai (a,i)
+            PUT  Doldai_a(a,i)   += tai (a,i)
       ENDPARDO  a, a1, i
 # end 6th term
 
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a(a,i)
+#         tmp = Doldai_a(a,i) * Doldai_a(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#--------------------------------------
+#      PARDO  a, i
+#        tai1(a,i) = 0.0
+#         DO i1
+#            GET  T2L2_OO_A (i,i1)
+#            tii (i,i1) = T2L2_OO_A (i,i1)
+#            tai (a,i)   = LT1A (a,i1) * tii (i,i1)
+#            tai1(a,i) += tai(a,i)
+#         ENDDO i1
+#         PUT Doldai_a(a,i) += tai1 (a,i)
+#       ENDPARDO a,i
+#
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a(a,i)
+#         tmp = Doldai_a(a,i) * Doldai_a(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#
+#end_debug
 # -------------------------------------------------------------------------
       PARDO   a1,i1
          GET  l1a_old(i1,a1)
@@ -2128,12 +2164,49 @@
             DO i
                REQUEST                 T2old_aa(a,i,a1,i1) i
                tai  (a,i)            = T2old_aa (a,i,a1,i1) * l1a_old(i1,a1)
-               tai (a,i)          *=0.5
+               tai  (a,i)           *=0.5
                PUT  Doldai_a(a,i) += tai (a,i)
            ENDDO i
          ENDDO a
       ENDPARDO   a1,i1
 
+#bgn_debug
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a(a,i)
+#         tmp = Doldai_a(a,i) * Doldai_a(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_old(i,a)
+#         tmp = l1a_old(i,a) * l1a_old(i,a) 
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma 
+#      suma = 0.0
+#      do a
+#      do a1
+#      do i 
+#      do i1 
+#         REQUEST   T2old_aa(a,i,a1,i1) i1
+#         tmp = T2old_aa(a,i,a1,i1) * T2old_aa(a,i,a1,i1)
+#         suma += tmp
+#          REQUEST L2old_aa(I,A,I1,A1) a1
+#          tmp = L2old_aa(I,A,I1,A1) * L2old_aa(I,A,I1,A1)
+#          suma += tmp
+#      enddo i1
+#      enddo i
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma 
+#end_debug
 
       PARDO  b,j 
          GET  l1b_old(j,b)
@@ -2146,6 +2219,21 @@
             ENDDO i
          ENDDO a
       ENDPARDO  b,j 
+
+#bgn_debug
+#      execute sip_barrier 
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a(a,i)
+#         tmp = Doldai_a(a,i) * Doldai_a(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma 
+#end_debug
+
+
 # R--------------------------------------------------------------------------
 
       PARDO  a, i
@@ -2188,7 +2276,7 @@
        PARDO  b, b1, j
             GET                     T2L2_VV_B (b,b1)
             tbj (b,j)             = T2L2_VV_B (b,b1) * LT1B (b1,j)
-            tbj(b,j)            *= -1.0
+            tbj (b,j)            *= -1.0
             PUT  Doldai_b(b,j)   += tbj (b,j)
        ENDPARDO  b, b1, j
 #-----------------------------------------------------------------------------
@@ -2240,8 +2328,6 @@
 #end_debug
 
 
-      EXECUTE  SERVER_BARRIER
-      execute load_balance_off
       EXECUTE  SERVER_BARRIER
       
       ENDPROC DAI
@@ -2948,6 +3034,7 @@
 
             Tpq(mu,nu)  = Dccsd(mu,nu)
             Tpq(mu,nu) += Dscf(mu,nu)
+            execute dump_amp Tpq(mu,nu)
 
             XX   = Tpq(mu,nu)*Tkin(mu,nu)
             Axx += XX
@@ -4968,7 +5055,45 @@
             call GMIAB
             call DAB
             call DIJ
-
+#bgn_debug
+      execute sip_barrier
+      suma = 0.0
+      sumb = 0.0
+      do a
+      do a1
+         get T2L2_VV_A (a,a1)
+         tmp = T2L2_VV_A (a,a1) * T2L2_VV_A (a,a1)
+         suma += tmp
+      enddo a1
+      enddo a
+      do b
+      do b1
+         get T2L2_VV_B (b1,b)
+         tmp = T2L2_VV_B (b1,b) * T2L2_VV_B (b1,b)
+         sumb += tmp
+      enddo b1
+      enddo b
+      execute print_scalar suma
+      execute print_scalar sumb
+      suma = 0.0
+      sumb = 0.0
+      do i
+      do i1
+         get T2L2_OO_A (i,i1)
+         tmp = T2L2_OO_A (i,i1) * T2L2_OO_A (i,i1)
+         suma += tmp
+      enddo i1
+      enddo i 
+      do j
+      do j1
+         get T2L2_OO_B (j1,j)
+         tmp = T2L2_OO_B (j1,j) * T2L2_OO_B (j1,j)
+         sumb += tmp
+      enddo j1
+      enddo j
+     execute print_scalar suma
+     execute print_scalar sumb
+#end_debug
             execute sip_barrier
             call DAI
             execute sip_barrier
@@ -5023,6 +5148,7 @@
 
                call GAEAB_x
                call GMIAB_x
+               execute sip_barrier
                call DAB_x
                call DIJ_x
 
