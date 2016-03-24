@@ -1867,9 +1867,9 @@
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai(a1,i1) 
             Tiiaa(i,i1,a,a1)        *= 0.375 
 #bgn_debug
-#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#            T1iiaa(i,i1,a,a1) *= 1.0
-#            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) *= 1.0
+            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
  
@@ -1944,9 +1944,9 @@
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#                  T1iiaa(i,i1,a,a1) *= 1.0
-#                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 1.0
+                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
@@ -2000,9 +2000,9 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-#               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#               T1iiaa(i,i1,a,a1) *= 1.0
-#               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) *= 1.0
+               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 

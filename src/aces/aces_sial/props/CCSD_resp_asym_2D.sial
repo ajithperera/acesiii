@@ -532,6 +532,12 @@
       distributed Daa(a1,a)
       distributed Djj(j,j1)
       distributed Dbb(b1,b)
+#bgn_debug
+      distributed Fxx_a(mu,nu)
+      distributed Fxx_b(mu,nu)
+      distributed Dt_a(mu,nu)
+      distributed Dt_b(mu,nu)
+#end_debug
 #
       temp PXXXX(mu,nu,lambda,sigma) 
       temp TXXXX(mu,nu,lambda,sigma) 
@@ -1861,9 +1867,9 @@
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai(a1,i1) 
             Tiiaa(i,i1,a,a1)        *= 0.375 
 #bgn_debug
-#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#            T1iiaa(i,i1,a,a1) *= 1.0
-#            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+            T1iiaa(i,i1,a,a1) *= 1.0
+            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
  
@@ -1938,9 +1944,9 @@
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#                  T1iiaa(i,i1,a,a1) *= 1.0
-#                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+                  T1iiaa(i,i1,a,a1) *= 1.0
+                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
@@ -1994,9 +2000,9 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-#               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-#               T1iiaa(i,i1,a,a1) *= 1.0
-#               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+               T1iiaa(i,i1,a,a1) *= 1.0
+               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
 #               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
@@ -2045,6 +2051,7 @@
             DO a1 
                REQUEST Dijab_aa(i,i1,a,a1) a1  
                T1iiax(i,i1,a,sigma) = Dijab_aa(i,i1,a,a1)*ca(sigma,a1) 
+               T1iiax(i,i1,a,sigma)*= Pthalf 
                Tiiax(i,i1,a,sigma) += T1iiax(i,i1,a,sigma)  
             ENDDO a1  
             PREPARE Diiax(i,i1,a,sigma) = Tiiax(i,i1,a,sigma) 
@@ -2471,6 +2478,7 @@
             DO b1  
                REQUEST Dijab_ab(i,j1,a,b1) b1  
                T1ijax(i,j1,a,sigma) = Dijab_ab(i,j1,a,b1)*cb(sigma,b1) 
+               T1ijax(i,j1,a,sigma)*= Null
                Tijax(i,j1,a,sigma) += T1ijax(i,j1,a,sigma)  
             ENDDO b1  
             PREPARE Dijax(i,j1,a,sigma) = Tijax(i,j1,a,sigma) 
@@ -2731,6 +2739,7 @@
             DO b1 
                REQUEST Dijab_bb(j,j1,b,b1) b1  
                T1jjbx(j,j1,b,sigma) = Dijab_bb(j,j1,b,b1)*cb(sigma,b1) 
+               T1jjbx(j,j1,b,sigma)*= Pthalf 
                Tjjbx(j,j1,b,sigma) += T1jjbx(j,j1,b,sigma)  
             ENDDO b1 
             PREPARE Djjbx(j,j1,b,sigma) = Tjjbx(j,j1,b,sigma) 
@@ -3400,7 +3409,7 @@
                REQUEST Dijab_aa_x(i,i1,a,a1) a1
 
                T1iiaa(i,i1,a,a1)  = Dijab_aa_x(i,i1,a,a1)
-               T1iiaa(i,i1,a,a1) *= 1.5
+               T1iiaa(i,i1,a,a1) *= Pthalf 
 #bgn_debug
 #               T1iiaa(i,i1,a,a1) *= 1.5
 #               T1iiaa(i,i1,a,a1) *= 1.0
@@ -3427,7 +3436,7 @@
             DO a
                REQUEST Diiax_x(i,i1,a,sigma) a
                T1iixx(i,i1,lambda,sigma) = Diiax_x(i,i1,a,sigma)*ca(lambda,a)
-               Tiixx(i,i1,lambda,sigma)  += T1iixx(i,i1,lambda,sigma)
+               Tiixx(i,i1,lambda,sigma) += T1iixx(i,i1,lambda,sigma)
             ENDDO a
             Tiixx(i,i1,lambda,sigma)         *= 4.0
 
@@ -4320,7 +4329,7 @@
                REQUEST Dijab_ab_x(i,j,a,b) b 
 
                Tijab(i,j,a,b)  = Dijab_ab_x(i,j,a,b)
-               Tijab(i,j,a,b) *= -0.5
+               Tijab(i,j,a,b) *= Null 
 #bgn_debug              
 #               Tijab(i,j,a,b) *= -0.5
 #               Tijab(i,j,a,b) *= 1.0
@@ -4891,7 +4900,7 @@
                REQUEST Dijab_bb_x(j,j1,b,b1) b1
  
                T1jjbb(j,j1,b,b1)  = Dijab_bb_x(j,j1,b,b1)
-               T1jjbb(j,j1,b,b1) *= -1.5
+               T1jjbb(j,j1,b,b1) *= Mthalf 
 #bgn_debug
 #               T1jjbb(j,j1,b,b1) *= -1.5
 #               T1jjbb(j,j1,b,b1) *= 1.0
@@ -5234,7 +5243,7 @@
 
 # What is this step?? 
                Tiiii(i,i1,i2,i3)  -= T1iiii(i,i1,i2,i3)
-               Tiiii(i,i1,i2,i3)  *= 1.5
+               Tiiii(i,i1,i2,i3)  *= Pthalf 
 #bgn_debug
 #               Tiiii(i,i1,i2,i3) *= 1.5
 #               Tiiii(i,i1,i2,i3) *= 1.0
@@ -5324,7 +5333,7 @@
             DO i
                REQUEST Dijkl_ab_x(i,j,i1,j1) j1
                Tijij(i,j,i1,j1) = Dijkl_ab_x(i,j,i1,j1)
-               Tijij(i,j,i1,j1)*=  0.0
+               Tijij(i,j,i1,j1)*=  Null
 #bgn_debug               
 #               Tijij(i,j,i1,j1) *= -0.5
 #               Tijij(i,j,i1,j1) *=  1.0
@@ -5418,7 +5427,7 @@
                Tjjjj(j,j1,j2,j3)   = Dijkl_bb_x(j,j1,j2,j3)
                T1jjjj(j,j1,j2,j3)  = Dijkl_bb_x(j,j1,j3,j2)
                Tjjjj(j,j1,j2,j3)  -= T1jjjj(j,j1,j2,j3)
-               Tjjjj(j,j1,j2,j3)  *= -1.5
+               Tjjjj(j,j1,j2,j3)  *= Mthalf 
 #bgn_debug
 #               Tjjjj(j,j1,j2,j3) *= -1.5
 #               Tjjjj(j,j1,j2,j3) *=  1.0
@@ -5698,7 +5707,9 @@
             DO b 
                REQUEST Dibja_abab(i,b1,i1,b) b  
                T1ibix(i,b1,i1,sigma) = Dibja_abab(i,b1,i1,b)*cb(sigma,b) 
-               Tibib(i1,b1,i,b)     *= Mhalf 
+#               Tibib(i1,b1,i,b)     *= Mhalf 
+               Tibib(i1,b1,i,b)     *= Null 
+
                Tibix(i,b1,i1,sigma) += T1ibix(i,b1,i1,sigma)  
             ENDDO b 
             PREPARE Dibix(i,b1,i1,sigma) = Tibix(i,b1,i1,sigma) 
@@ -5809,7 +5820,8 @@
             DO a 
                REQUEST Dibja_baba(j,a1,j1,a) a  
                T1jajx(j,a1,j1,sigma) = Dibja_baba(j,a1,j1,a)*ca(sigma,a) 
-               T1jajx(j,a1,j1,sigma)*= Phalf 
+#               T1jajx(j,a1,j1,sigma)*= Phalf 
+               T1jajx(j,a1,j1,sigma)*= Null
                Tjajx(j,a1,j1,sigma) += T1jajx(j,a1,j1,sigma)  
             ENDDO a 
             PREPARE Djajx(j,a1,j1,sigma) = Tjajx(j,a1,j1,sigma) 
@@ -6145,7 +6157,8 @@
                REQUEST Dibja_abba(i,b1,j1,a) a
 #
                T1ibjx(i,b1,j1,sigma)  = Dibja_abba(i,b1,j1,a)*ca(sigma,a)
-               T1ibjx(i,b1,j1,sigma) *= Mhalf 
+#               T1ibjx(i,b1,j1,sigma) *= Mhalf 
+               T1ibjx(i,b1,j1,sigma) *= Null 
                Tibjx(i,b1,j1,sigma)  += T1ibjx(i,b1,j1,sigma)
 #
             ENDDO a
@@ -6321,7 +6334,8 @@
                REQUEST Djaix(j,a1,i1,sigma) a1
 #
                T1ixxj(i1,sigma,nu,j)  = Djaix(j,a1,i1,sigma)*ca(nu,a1)
-               T1ixxj(i1,sigma,nu,j) *= Phalf 
+#               T1ixxj(i1,sigma,nu,j) *= Phalf 
+               T1ixxj(i1,sigma,nu,j) *= Null 
                Tixxj(i1,sigma,nu,j)  += T1ixxj(i1,sigma,nu,j)
 #
             ENDDO a1
@@ -6577,7 +6591,7 @@
                REQUEST Dibja_aaaa_x(i,a1,i1,a) a 
 
                Tiaia(i,a1,i1,a)  = Dibja_aaaa_x(i,a1,i1,a)
-               Tiaia(i,a1,i1,a) *= 1.5
+               Tiaia(i,a1,i1,a) *= Pthalf 
 #bgn_debug
 #               Tiaia(i,a1,i1,a) *= 1.5
 #               Tiaia(i,a1,i1,a) *= 1.0
@@ -6717,7 +6731,7 @@
             DO b
                REQUEST Dibja_abab_x(i,b1,i1,b) b
                Tibib(i1,b1,i,b)  = Dibja_abab_x(i,b1,i1,b) 
-               Tibib(i1,b1,i,b) *= -0.5
+               Tibib(i1,b1,i,b) *= Mhalf 
 #bgn_debug               
 #               Tibib(i1,b1,i,b) *= -0.5
 #               Tibib(i1,b1,i,b) *= 1.0
@@ -6904,7 +6918,7 @@
             DO b
                REQUEST Dibja_bbbb_x(j,b1,j1,b) b 
                Tjbjb(j,b1,j1,b) = Dibja_bbbb_x(j,b1,j1,b)
-               Tjbjb(j,b1,j1,b)*= -1.5
+               Tjbjb(j,b1,j1,b)*= Mthalf 
 #bgn_debug
 #               Tjbjb(j,b1,j1,b) *= -1.5
 #               Tjbjb(j,b1,j1,b) *= 1.0 
@@ -7056,7 +7070,7 @@
             DO a
                REQUEST Dibja_baba_x(j,a1,j1,a) a
                Tjaja(j,a,j1,a1) = Dibja_baba_x(j,a1,j1,a)
-               Tjaja(j,a,j1,a1)*= 0.5 
+               Tjaja(j,a,j1,a1)*= Phalf 
 #bgn_debug
 #               Tjaja(j,a,j1,a1) *= 0.5 
 #               Tjaja(j,a,j1,a1) *= 1.0
@@ -7205,6 +7219,7 @@
 
                ENDDO a1
             ENDDO i1
+
             DO j1
                GET t1b_old(b,j1)
                GET t1b_old_x(b,j1)
@@ -7302,7 +7317,7 @@
                REQUEST Dibja_baab_x(j,a1,i1,b) b
                
                Tjaib(j,a1,i1,b) = Dibja_baab_x(j,a1,i1,b)
-               Tjaib(j,a1,i1,b)*= 0.5
+               Tjaib(j,a1,i1,b)*= Phalf 
 #bgn_debug                 
 #               Tjaib(j,a1,i1,b) *= 0.5
 #               Tjaib(j,a1,i1,b) *= 1.0
@@ -7345,6 +7360,41 @@
       PARDO i, a, b, j
             Tiajb(i,a,j,b) = 0.0
 
+            GET l1b_old(j,b)
+            GET t1a_old(a,i)
+            GET l1a_old(i,a)
+            GET t1b_old(b,j)
+
+            GET l1b_old_x(j,b)
+            GET t1a_old_x(a,i)
+            GET l1a_old_x(i,a)
+            GET t1b_old_x(b,j)
+
+            T1iajb(i,a,j,b)  = t1a_old(a,i)^l1b_old_x(j,b)
+            T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Pone
+
+            Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
+
+            T1iajb(i,a,j,b)  = t1a_old_x(a,i)^l1b_old(j,b)
+            T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Pone
+
+            Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
+
+
+            T1iajb(i,a,j,b)  = l1a_old(i,a)^t1b_old_x(b,j)
+            T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Mone
+
+            Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
+
+            T1iajb(i,a,j,b)  = l1a_old_x(i,a)^t1b_old(b,j)
+            T1iajb(i,a,j,b) *= 0.125
+            T1iajb(i,a,j,b) *= Mone
+
+            Tiajb(i,a,j,b)  += T1iajb(i,a,j,b)
+
             DO i1
                GET t1a_old(a,i1)
                GET t1a_old_x(a,i1)
@@ -7369,12 +7419,33 @@
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
 
+                  T1iajb(i,a,j,b)         *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   T1iajb(i,a,j,b)          = T2old_aa(a,i,a1,i1)*L2old_ab_x(i1,a1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)         *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
+
+                  Tiaia(i,a,i1,a1)         = L2old_aa_x(i1,a1,i,a)
+                  T2iajb(i1,a1,j,b)        = T2old_ab(a1,i1,b,j)
+                  T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*T2iajb(i1,a1,j,b)
+                  T1iajb(i,a,j,b)         *= 0.125
+
+                  T1iajb(i,a,j,b)         *= Pone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
+
+                  Tiaia(i,a,i1,a1)         = L2old_aa(i1,a1,i,a)
+                  T2iajb(i1,a1,j,b)        = T2old_ab_x(a1,i1,b,j)
+                  T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*T2iajb(i1,a1,j,b)
+                  T1iajb(i,a,j,b)         *= 0.125
+
+                  T1iajb(i,a,j,b)         *= Pone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tiaia(i,a,i1,a1)         = t1a_old_x(a1,i)^tai(a,i1)
                   T1iajb(i,a,j,b)          = Tiaia(i,a,i1,a1)*L2old_ab(i1,a1,j,b)
@@ -7420,15 +7491,29 @@
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
 
-                  T1iajb(i,a,j,b)         *= 0.0
+                  T1iajb(i,a,j,b)         *= Mone
                   Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
-#                 T1iajb(i,a,j,b)          = T2old_bb(b,j,b1,j1)*L2old_ab(i,a,j1,b1)
                   T1iajb(i,a,j,b)          = T2old_ab_x(a,i,b1,j1)*L2old_bb(j1,b1,j,b)
                   T1iajb(i,a,j,b)         *= 0.125
                   Tibja(i,b,j,a)           = T1iajb(i,a,j,b)
                   Tibja(i,b,j,a)          *= 4.0
                   PREPARE Vibja_abba_x(i,b,j,a) += Tibja(i,b,j,a)
+
+                  T1iajb(i,a,j,b)          *= Mone
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
+
+                  Tjbjb(j1,b1,j,b)         = T2old_bb_x(b,j,b1,j1)
+                  T1iajb(i,a,j,b)          = L2old_ab(i,a,j1,b1)*Tjbjb(j1,b1,j,b)
+                  T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Pone 
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
+
+                  Tjbjb(j1,b1,j,b)         = T2old_bb(b,j,b1,j1)
+                  T1iajb(i,a,j,b)          = L2old_ab_x(i,a,j1,b1)*Tjbjb(j1,b1,j,b)
+                  T1iajb(i,a,j,b)         *= 0.125
+                  T1iajb(i,a,j,b)         *= Pone 
+                  Tiajb(i,a,j,b)          += T1iajb(i,a,j,b)
 
                   Tjbjb(j,b,j1,b1)         = t1b_old_x(b1,j)^tbj(b,j1)
                   T1iajb(i,a,j,b)          = Tjbjb(j,b,j1,b1)*L2old_ab(i,a,j1,b1)
@@ -7465,7 +7550,7 @@
             DO a
                REQUEST Dibja_abba_x(i,b1,j1,a) a
                Tibja(i,b1,j1,a) = Dibja_abba_x(i,b1,j1,a)
-               Tibja(i,b1,j1,a)*= -0.5
+               Tibja(i,b1,j1,a)*= Mhalf 
 #                                                                  ++
 # Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 # DABAB = +1/2 DABAB - DABAB
@@ -7879,7 +7964,8 @@
 
             DO mu 
                Txbaj(mu,b,a1,j)          = Tabaj(a,b,a1,j)*ca(mu,a) 
-               Txbaj(mu,b,a1,j)         *= Mhalf 
+#               Txbaj(mu,b,a1,j)         *= Mhalf 
+               Txbaj(mu,b,a1,j)         *= Null 
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
             ENDDO mu 
       ENDPARDO a, a1, b, j 
@@ -7992,7 +8078,8 @@
 
             DO mu 
                Txabi(mu,a,b,i)          = Tbabi(b1,a,b,i)*cb(mu,b1) 
-               Txabi(mu,a,b,i)         *= Phalf 
+#               Txabi(mu,a,b,i)         *= Phalf 
+               Txabi(mu,a,b,i)         *= Null 
                PREPARE Dxabi(mu,a,b,i) += Txabi(mu,a,b,i)  
             ENDDO mu 
       ENDPARDO b1, b, a, i 
@@ -8348,7 +8435,7 @@
 #
             dO mu
 
-               Taaai(a,a1,a2,i) *= 1.5
+               Taaai(a,a1,a2,i) *= Pthalf 
 #bgn_debug
 #               Taaai(a,a1,a2,i) *= 1.5
 #               Taaai(a,a1,a2,i) *= 1.0
@@ -8535,7 +8622,7 @@
 #
             DO mu
 
-               Tbbbj(b,b1,b2,j)  *= -1.5
+               Tbbbj(b,b1,b2,j)  *= Mthalf 
 #bgn_debug
 #               Tbbbj(b,b1,b2,j) *= -1.5
 #               Tbbbj(b,b1,b2,j) *= 1.0
@@ -8734,7 +8821,7 @@
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DBABA = -1/2 DBABA + DBABA
 #
-            Tbabi(b1,a,b,i)  *= 0.5
+            Tbabi(b1,a,b,i)  *= Phalf 
 
             DO mu
 
@@ -8932,7 +9019,7 @@
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
 #  DABAB = 1/2 DABAB - DABAB
 #
-            Tabaj(a,b,a1,j)  *= -0.5
+            Tabaj(a,b,a1,j)  *= Mhalf 
 
             DO mu
 
@@ -9168,7 +9255,8 @@
 
             DO sigma 
                Tijix(i,j,i1,sigma)          = Tijib(i,j,i1,b)*cb(sigma,b) 
-               Tijix(i,j,i1,sigma)         *= Mhalf 
+#               Tijix(i,j,i1,sigma)         *= Mhalf 
+               Tijix(i,j,i1,sigma)         *= Null 
                PREPARE Dijix(i,j,i1,sigma) += Tijix(i,j,i1,sigma) 
             ENDDO sigma 
       ENDPARDO i, j, i1, b 
@@ -9264,7 +9352,8 @@
 
             DO sigma 
                Tjijx(j,i,j1,sigma)          = Tjija(j,i,j1,a)*ca(sigma,a) 
-               Tjijx(j,i,j1,sigma)         *= Phalf 
+#               Tjijx(j,i,j1,sigma)         *= Phalf 
+               Tjijx(j,i,j1,sigma)         *= Null 
                PREPARE Djijx(j,i,j1,sigma) += Tjijx(j,i,j1,sigma) 
             ENDDO sigma 
       ENDPARDO j, i, j1, a 
@@ -9583,7 +9672,7 @@
 #
             DO sigma
 
-                Tiiia(i,i1,i2,a)  *= 1.5
+                Tiiia(i,i1,i2,a)  *= Pthalf 
 #bgn_debug
 #               Tiiia(i,i1,i2,a)  *= 1.5
 #               Tiiia(i,i1,i2,a)  *= 1.0
@@ -9743,7 +9832,7 @@
 #
             DO sigma
 
-               Tjjjb(j,j1,j2,b)  *= -1.5
+               Tjjjb(j,j1,j2,b)  *= Mthalf 
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
 #               Tjjjb(j,j1,j2,b) *= 1.0
@@ -9924,7 +10013,7 @@
 #
             DO sigma
 
-               Tijib(i,j,i1,b)  *= -0.5
+               Tijib(i,j,i1,b)  *= Mhalf 
 #bgn_debug                  
 #               Tijib(i,j,i1,b) *= -0.5
 #               Tijib(i,j,i1,b) *= 1.0
@@ -10105,7 +10194,7 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjija(j,i,j1,a) *= 4.0 
-#           PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+#            PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 #                                                                   ++
 #  Two particle contribution to G-tensor: O(pq,rs)*<BA|S_z(1)+2S_z(2)pqsr|BA>
@@ -10113,7 +10202,7 @@
 
             DO sigma
 
-               Tjija(j,i,j1,a)  *= 0.5
+               Tjija(j,i,j1,a)  *= Phalf 
 #bgn_debug               
 #               Tjija(j,i,j1,a)  *= 0.5
 #               Tjija(j,i,j1,a)  *= 1.0
@@ -10127,8 +10216,8 @@
       PARDO j, i1, lambda, sigma
             Tijxx(i1,j,sigma,lambda) = 0.0
             DO j2
-               REQUEST Djijx_x(j,i1,j2,lambda) j
-               T1ijxx(i1,j,sigma,lambda) = Djijx_x(j,i1,j2,lambda)*cb(sigma,j2)
+               REQUEST Djijx_x(j,i1,j2,sigma) j
+               T1ijxx(i1,j,sigma,lambda) = Djijx_x(j,i1,j2,sigma)*cb(lambda,j2)
                Tijxx(i1,j,sigma,lambda) += T1ijxx(i1,j,sigma,lambda)
             ENDDO j2
             Tijxx(i1,j,sigma,lambda)         *= 8.0
@@ -11068,6 +11157,10 @@
       E2GC_ZZ_HF   = E2GC_XX_SAVE
       E2GC_ZZ_HF  += E2GC_YY_SAVE
 
+      E2GC_XX = E2GC_XX_HF 
+      E2GC_YY = E2GC_YY_HF 
+      E2GC_ZZ = E2GC_zz_HF 
+
 #bgn_debug
       execute print_scalar  E2GC_XX_HF
       execute print_scalar  E2GC_YY_HF
@@ -11593,20 +11686,20 @@
 #exchange terms 
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_x(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #           Fully transform Diixx
 #           ---------------------
@@ -11812,7 +11905,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
-               T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Pthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -11831,7 +11924,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Pthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -11852,7 +11945,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
                T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Mthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -11869,7 +11962,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Mthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -11891,7 +11984,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= 0.0
+               T1xxxx(mu,nu,lambda,sigma)  *= Null
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -11910,7 +12003,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= Null
                   
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12025,20 +12118,20 @@
 #exchange terms
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA_y(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
 #           Fully transform Diixx
 #           ---------------------
@@ -12248,7 +12341,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Pthalf 
 
             PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12267,7 +12360,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= 1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Pthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12288,7 +12381,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Mthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12306,7 +12399,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= -1.5
+               T1xxxx(mu,nu,lambda,sigma) *= Mthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12327,7 +12420,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= 0.0
+               T1xxxx(mu,nu,lambda,sigma)  *= Null
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12345,7 +12438,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= 0.0
+               T1xxxx(mu,nu,lambda,sigma) *= Null
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12441,20 +12534,20 @@
 #exchange terms
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA_z(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_z(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #            execute dump_amp Txxxx(mu,nu,lambda,sigma)
 #
@@ -12685,7 +12778,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= 1.5
+               T1xxxx(mu,nu,lambda,sigma)  *= Pthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12704,7 +12797,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= 1.5
+               T1xxxx(mu,nu,lambda,sigma)  *= Pthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i1
@@ -12724,7 +12817,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= -1.5
+               T1xxxx(mu,nu,lambda,sigma)  *= Mthalf 
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12741,7 +12834,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= -1.5
+               T1xxxx(mu,nu,lambda,sigma)  *= Mthalf  
 
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
@@ -12761,7 +12854,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= 0.0
+               T1xxxx(mu,nu,lambda,sigma)  *= Null
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12779,7 +12872,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
                T1xxxx(mu,nu,lambda,sigma)  += TASxxxx(mu,nu,lambda,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  *= 0.0
+               T1xxxx(mu,nu,lambda,sigma)  *= Null
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j
@@ -12823,8 +12916,426 @@
 
       ENDPROC CCSD_2DRESPN_Z
 #     ----------------------
-#-----------------------------------------------------------------------
+
+      PROC COR_ENERGY
+#     ---------------
+       esuma   = 0.0
+       ecorraa = 0.0
+       esumb   = 0.0
+       ecorrbb = 0.0
+
+#       DO mu
+#       DO nu
+#       GET DpqA(mu,nu)
+#       GET DpqB(mu,nu)
+#       Txx(mu,nu) = 0.0
+#       PUT DpqA(mu,nu) = Txx(mu,nu)
+#       PUT DpqB(mu,nu) = Txx(mu,nu)
+#       ENDDO nu
+#       ENDDO mu
+#       execute sip_barrier
+
+       PARDO mu, nu, lambda, sigma
+
+             COMPUTE_INTEGRALS TAO_ERI_INTS(mu, nu, lambda, sigma)
+             PREPARE AO_ERI_INTS(mu, nu, lambda, sigma) = TAO_ERI_INTS(mu, nu, lambda, sigma)
+
+       ENDPARDO mu, nu, lambda, sigma
+
+       EXECUTE SERVER_BARRIER
+
+       PARDO mu, nu, lambda, sigma
+
+            Txxxx(mu,nu,lambda,sigma)  = 0
+            T2xxxx(mu,nu,lambda,sigma) = 0
+            REQUEST AO_ERI_INTS(mu, lambda, nu, sigma) sigma
+#
+            GET DHFA(mu,lambda)
+            GET DHFA(nu,sigma)
+            GET DHFA(mu,sigma)
+            GET DHFA(nu,lambda)
+#
+            GET DHFB(mu,lambda)
+            GET DHFB(nu,sigma)
+            GET DHFB(mu,sigma)
+            GET DHFB(nu,lambda)
+#
+            GET DpqA(mu,lambda)
+            GET DpqA(nu,sigma)
+            GET DpqA(mu,sigma)
+            GET DpqA(nu,lambda)
+#
+            GET DpqB(mu,lambda)
+            GET DpqB(nu,sigma)
+            GET DpqB(mu,sigma)
+            GET DpqB(nu,lambda)
+#HF part
+            Txx(mu,lambda)             = DHFa(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,lambda)             = DHFb(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+#Exchange terms
+
+            Txx(mu,sigma)              = DHFa(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            Txx(mu,sigma)              = DHFb(mu,sigma)
+            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#correlation
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFA(nu,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFB(nu,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFB(nu,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFA(nu,sigma)
+            T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+# Exchange terms
+#
+           T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,sigma)^DHFA(nu,lambda)
+           T1xxxx(mu,nu,lambda,sigma) *= 0.5
+           T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+           T1xxxx(mu,nu,lambda,sigma)  = DpqA(nu,lambda)^DHFA(mu,sigma)
+           T1xxxx(mu,nu,lambda,sigma) *= 0.5
+           T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+           T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,sigma)^DHFB(nu,lambda)
+           T1xxxx(mu,nu,lambda,sigma) *= 0.5
+           T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+           T1xxxx(mu,nu,lambda,sigma)  = DpqB(nu,lambda)^DHFB(mu,sigma)
+           T1xxxx(mu,nu,lambda,sigma) *= 0.5
+           T2xxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+#           T2xxxx(mu,nu,lambda,sigma) *= 0.5
+
+           Txxxx(mu,nu,lambda,sigma)  += T2xxxx(mu,nu,lambda,sigma)
+
+           T2xxxx(mu,nu,lambda,sigma)  = 0.0
+
+#           Fully transform Diixx
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO i1
+                  REQUEST Diixx(i,i1,lambda,sigma) i1
+                  T1ixxx(i,nu,lambda,sigma) = Diixx(i,i1,lambda,sigma)*ca(nu,i1) 
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Djjxx
+#           ---------------------
+            DO j
+#
+               Tjxxx(j,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Djjxx(j,j1,lambda,sigma) j1
+                  T1jxxx(j,nu,lambda,sigma) = Djjxx(j,j1,lambda,sigma)*cb(nu,j1) 
+                  Tjxxx(j,nu,lambda,sigma) += T1jxxx(j,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dijxx
+#           ---------------------
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Dijxx(i,j1,lambda,sigma) j1
+                  T1ixxx(i,nu,lambda,sigma) = Dijxx(i,j1,lambda,sigma)*cb(nu,j1) 
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dixix
+
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO i1
+#
+                  REQUEST Dixix(i,nu,i1,sigma) i1
+                  T1ixxx(i,nu,lambda,sigma) = Dixix(i,nu,i1,sigma)*ca(lambda,i1) 
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#
+#           Fully transform Djxjx
+#           ---------------------
+            DO j
+#
+               Tjxxx(j,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Djxjx(j,nu,j1,sigma) j1
+                  T1jxxx(j,nu,lambda,sigma) = Djxjx(j,nu,j1,sigma)*cb(lambda,j1) 
+                  Tjxxx(j,nu,lambda,sigma) += T1jxxx(j,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dixxj
+#           ---------------------
+
+            DO i
+#
+               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+               DO j1
+#
+                  REQUEST Dixxj(i,nu,lambda,j1) j1
+                  T1ixxx(i,nu,lambda,sigma) = Dixxj(i,nu,lambda,j1)*cb(sigma,j1) 
+                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxiix
+#           ---------------------
+            DO i
+#
+               Txixx(mu,i,lambda,sigma) = 0.0
+#
+               DO i1
+                  REQUEST Dxiix(mu,i,i1,sigma) i1
+                  T1xixx(mu,i,lambda,sigma) = Dxiix(mu,i,i1,sigma)*ca(lambda,i1) 
+                  Txixx(mu,i,lambda,sigma) += T1xixx(mu,i,lambda,sigma)
+               ENDDO i1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Txixx(mu,i,lambda,sigma)*ca(nu,i)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxjjx
+#           ---------------------
+            DO j
+#
+               Txjxx(mu,j,lambda,sigma) = 0.0
+#
+               DO j1
+                  REQUEST Dxjjx(mu,j,j1,sigma) j1
+                  T1xjxx(mu,j,lambda,sigma) = Dxjjx(mu,j,j1,sigma)*cb(lambda,j1) 
+                  Txjxx(mu,j,lambda,sigma) += T1xjxx(mu,j,lambda,sigma)
+               ENDDO j1
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Fully transform Dxxxi
+#           ---------------------
+            DO i
+#
+               REQUEST Dxxxi(mu,nu,lambda,i) i
+#
+               T1xxxx(mu,nu,lambda,sigma)   = Dxxxi(mu,nu,lambda,i)*ca(sigma,i)
+               T1xxxx(mu,nu,lambda,sigma)  *= 8.0
+               T2xxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i
+#
+#           Fully transform Dxxxj
+#           ---------------------
+            DO j
+#
+               REQUEST Dxxxj(mu,nu,lambda,j) j
+#
+               T1xxxx(mu,nu,lambda,sigma)   = Dxxxj(mu,nu,lambda,j)*cb(sigma,j)
+               T1xxxx(mu,nu,lambda,sigma)  *= 8.0
+               T2xxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+#
+#           Contract half-transformed amplitudes to form backtransformed Dabcd
+#           ------------------------------------------------------------------
+#
+            PXXXX(mu,nu,lambda,sigma) = 0.0
+#
+#           AAAA spin case
+#           --------------
+            DO i
+            DO i1
+#
+               REQUEST TAO_AA(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO i1
+            ENDDO i
+#
+#           BBBB spin case
+#           --------------
+            DO j
+            DO j1
+#
+               REQUEST TAO_bb(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               PXXXX(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j1
+            ENDDO j
+#
+#           ABAB spin case
+#           --------------
+            DO i
+            DO j
+#
+               REQUEST TAO_ab(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+#
+               T1xxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               T1xxxx(mu,nu,lambda,sigma) *= 4.0
+               PXXXX(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#
+            ENDDO j
+            ENDDO i
+
+            Pxxxx(mu,nu,lambda,sigma) *= 0.25
+#             Pxxxx(mu,nu,lambda,sigma)  *= 0.0
+
+            Pxxxx(mu,nu,lambda,sigma)  += T2xxxx(mu,nu,lambda,sigma)
+            Pxxxx(mu,nu,lambda,sigma)  *= 1.0
+            Pxxxx(mu,nu,lambda,sigma)  += Txxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,lambda,nu,sigma)  = Pxxxx(mu,nu,lambda,sigma)
+
+            tmp = T1xxxx(mu,lambda,nu,sigma) * AO_ERI_INTS(mu, lambda, nu, sigma)
+            esuma += tmp
+
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier
+      collective ecorraa += esuma
+      execute print_scalar  ecorraa
+
+      Create  Fxx_a(mu,nu)
+      Create  Fxx_b(mu,nu)
+      Create  Dt_a(mu,nu)
+      Create  Dt_b(mu,nu)
+      execute sip_barrier
+
+      PARDO mu, nu
+           get DpqA(mu,nu)
+           get DHfA(mu,nu)
+           Txx(mu,nu)  = DpqA(mu,nu)
+           Txx(mu,nu) += DHfA(mu,nu)
+           Put DT_A(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu, nu
+
+      PARDO mu, nu
+           get DpqB(mu,nu)
+           get DHfB(mu,nu)
+           Txx(mu,nu)  = DpqB(mu,nu)
+           Txx(mu,nu) += DHfB(mu,nu)
+           Put DT_B(mu,nu) = Txx(mu,nu)
+      ENDPARDO mu, nu
+      execute sip_barrier
+
+      esuma = 0.0
+      esumb = 0.0
+      pardo mu, nu
+         GET DT_A(mu,nu)
+         GET DT_B(mu,nu)
+         GET Fxx_b(mu,nu)
+         execute return_h1 txx(mu,nu)
+#         execute dump_amp txx(mu,nu)
+         tmp = txx(mu,nu) * DT_A(mu,nu)
+         esuma += tmp
+         tmp = txx(mu,nu) * DT_B(mu,nu)
+         esuma += tmp
+      endpardo mu, nu
+      execute server_barrier
+      collective esumb += esuma
+      execute server_barrier
+
+      execute print_scalar esumb
+      esumb += 15.5383811486638
+      execute print_scalar esumb
+
+      ecorraa += esumb
+      execute print_scalar ecorraa
+
+      delete  Fxx_a(mu,nu)
+      delete  Fxx_b(mu,nu)
+      delete  DT_A(mu,nu)
+      delete  DT_B(mu,nu)
+
+      ENDPROC COR_ENERGY
+#     ----------------
+
       PROC S2DIJ 
+#     ----------
            esum = 0.0 
            DO i 
            DO i1 
@@ -12844,7 +13355,8 @@
            ENDDO j1 
            ENDDO j 
            execute print_scalar esum 
-      ENDPROC S2DIJ 
+      ENDPROC S2DIJ
+#     -------------
 #
       PROC S2DAB 
 #
@@ -13978,10 +14490,6 @@
      ENDPARDO sigma, nu, j, i1
 #IBJA(end)
 
-#PREPARE Dxxai_x(mu,nu,a2,i) = Txxai(mu,nu,a2,i)
-#PREPARE Dxxbj_x(mu,nu,b2,j) = Txxbj(mu,nu,b2,j)
-#PREPARE Djijx_x(j,i,j1,sigma) = Tjijx(j,i,j1,sigma) 
-
      EXECUTE SERVER_BARRIER 
 #
      ENDPROC  ZERO_AOD_BLOCKS
@@ -14000,6 +14508,52 @@
          CREATE COR_TOT_DEN
 
          EXECUTE SIP_BARRIER
+
+# Set the property type based on the input key-word
+
+         do_pols = polarizability
+         do_aten = a_tensor
+         do_gten = g_tensor
+         do_dten = d_tensor
+
+# Notcie that 10.0 is used here for g-tensor (in T,L_xyz 10.0 is for
+# polarizablities)
+
+         if do_gten == 1.00
+            property      = 10.0
+            beta_is_minus =  0.0
+            ASYM          =  1.0
+            Fact          = -1.0
+            Pone          =  1.0
+            Mone          = -1.0
+            Pthalf        =  0.75
+            Mthalf        = -0.75
+            Phalf         =  0.5
+            Mhalf         = -0.5
+            Null          =  0.0
+         endif
+
+#bgn_debug
+#            beta_is_minus = 0.0
+#            Fact          = 1.0
+#            Pone          = 1.0
+#            Mone          = 1.0
+#            Pthalf        = 1.0
+#            Mthalf        = 1.0
+#            Phalf         = 1.0
+#            Mhalf         = 1.0
+#            Null          = 1.0
+#            property      = 10.0
+            execute print_scalar property
+            execute print_scalar Pthalf
+            execute print_scalar mthalf
+            execute print_scalar phalf 
+            execute print_scalar mhalf 
+            execute print_scalar Null
+            execute print_scalar fact
+            execute print_scalar Pone
+            execute print_scalar Mone
+#end_debug
 
          CALL TAU 
          CALL GAE 
@@ -14030,36 +14584,6 @@
 
          execute server_barrier 
 
-# Set the property type based on the input key-word
-
-         do_pols = polarizability
-         do_aten = a_tensor
-         do_gten = g_tensor
-         do_dten = d_tensor
-
-# Notcie that 10.0 is used here for g-tensor (in T,L_xyz 10.0 is for
-# polarizablities)
-
-         if do_gten == 1.00
-            property      = 10.0
-            beta_is_minus =  0.0
-            ASYM          =  1.0
-            Fact          = -1.0 
-            Pone          =  1.0
-            Mone          = -1.0
-            Pthalf        =  0.75
-            Mthalf        = -0.75
-            Phalf         =  0.5
-            Mhalf         = -0.5
-            Null          =  0.0
-#bgn_debug
-#         property = 30.0
-#         beta_is_minus = 100.0
-#end_debug
-         endif
-
-         execute print_scalar property
-
          if property == 10.0
 
             CALL GET_2P_SPIN_ORBIT_INTS
@@ -14069,12 +14593,6 @@
 
          endif
 
-#bgn_debug
-#         property = 20.0
-#         Fact     = -1.0
-#         Pone     = 1.0
-#         Mone     = -1.0
-#end_debug
 #
 # Compute the contributions to g-tensor from the zeroth-order two-particle
 # density. Overall, the g-tensor is second-order property, so for these 
@@ -14083,69 +14601,14 @@
 
         CALL FORM_SPN_TOT_DENS
 
+#bgn_debug
+#        CALL COR_ENERGY
+#end_debug
+
 #        CALL PDCONT_HF
+
         CALL PDCONT 
 #
-#bgn_debug
-#      suma=0.0
-#      sumb=0.0
-#   
-#      PARDO mu, nu, lambda, sigma
-#            Txxxx(mu,nu,lambda,sigma) = 0.0
-#
-#            REQUEST AO_2P_SOI_X(mu, nu, lambda, sigma) sigma
-#            REQUEST AO_2P_SOI_Y(mu, nu, lambda, sigma) sigma
-#            REQUEST AO_2P_SOI_Z(mu, nu, lambda, sigma) sigma  
-#            GET DpqA_x(mu,lambda)
-#            GET DpqB_x(mu,lambda)
-#            GET DHFA(nu,sigma)
-#            GET DHFB(nu,sigma)
-#            GET DHFA(nu,lambda)
-#            GET DHFB(mu,sigma)
-#  
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFA(nu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= 3.0
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFB(nu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= -3.0
-#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFB(nu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= -0.5
-#
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFA(nu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-#           Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-#exchange terms
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,sigma)^DHFA(nu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma)*= 1.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(nu,lambda)^DHFA(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= 1.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,sigma)^DHFB(nu,lambda)
-#            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-#            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(nu,lambda)^DHFB(mu,sigma)
-#            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
-#
-#            tmp = AO_2P_SOI_X(mu, nu, lambda, sigma)*Txxxx(mu, nu, lambda, sigma)
-#            suma +=tmp
-#
-#      ENDPARDO mu, nu, lambda, sigma
-#      EXECUTE SERVER_BARRIER 
-#      COLLECTIVE sumaa +=suma
-#      execute print_scalar sumaa
-#end_debug
 # Loop over perturbation statrs here.
 
          NCOUNT = 0.0
