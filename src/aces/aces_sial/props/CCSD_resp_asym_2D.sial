@@ -1108,6 +1108,9 @@
       Scalar Phalf 
       Scalar Mhalf 
       Scalar Null 
+      Scalar Coulmb
+      Scalar Exchng
+      Scalar Coreln 
 
       Scalar E2GC_INTMD    
       Scalar E2GC_XX_YY_ZZ 
@@ -4963,7 +4966,9 @@
 
            CALL DIJABAA
            CALL DIJABBB
-           CALL DIJABAB
+           If Property == 20.0
+              CALL DIJABAB
+           Endif 
            execute sip_barrier
 
 #           DELETE Dii
@@ -4982,7 +4987,10 @@
 
            CALL DIJABAA_X
            CALL DIJABBB_X 
-           CALL DIJABAB_X
+           
+           If property == 20.0
+              CALL DIJABAB_X
+           Endif 
            execute sip_barrier
 
            DELETE Dii_x
@@ -5457,14 +5465,18 @@
 #-------------------------------------------------------------------------
       PROC DIJKL
            CALL DIJKLAAAA
-           CALL DIJKLABAB
+           If Property == 20.0
+              CALL DIJKLABAB
+           Endif 
            CALL DIJKLBBBB
       ENDPROC DIJKL
 #     -----------------
 #--------------------------------------------------------------------
       PROC DIJKL_X
            CALL DIJKLAAAA_X
-           CALL DIJKLABAB_X
+           If Property == 20.0
+              CALL DIJKLABAB_X
+           Endif 
            CALL DIJKLBBBB_X
       ENDPROC DIJKL_X
 #---------------------------------------------------------------------
@@ -5707,7 +5719,9 @@
             DO b 
                REQUEST Dibja_abab(i,b1,i1,b) b  
                T1ibix(i,b1,i1,sigma) = Dibja_abab(i,b1,i1,b)*cb(sigma,b) 
+#bgn_debug
 #               Tibib(i1,b1,i,b)     *= Mhalf 
+#end_debug
                Tibib(i1,b1,i,b)     *= Null 
 
                Tibix(i,b1,i1,sigma) += T1ibix(i,b1,i1,sigma)  
@@ -5820,7 +5834,9 @@
             DO a 
                REQUEST Dibja_baba(j,a1,j1,a) a  
                T1jajx(j,a1,j1,sigma) = Dibja_baba(j,a1,j1,a)*ca(sigma,a) 
+#bgn_debug
 #               T1jajx(j,a1,j1,sigma)*= Phalf 
+#end_debug
                T1jajx(j,a1,j1,sigma)*= Null
                Tjajx(j,a1,j1,sigma) += T1jajx(j,a1,j1,sigma)  
             ENDDO a 
@@ -6157,7 +6173,9 @@
                REQUEST Dibja_abba(i,b1,j1,a) a
 #
                T1ibjx(i,b1,j1,sigma)  = Dibja_abba(i,b1,j1,a)*ca(sigma,a)
+#bgn_debug
 #               T1ibjx(i,b1,j1,sigma) *= Mhalf 
+#end_debug
                T1ibjx(i,b1,j1,sigma) *= Null 
                Tibjx(i,b1,j1,sigma)  += T1ibjx(i,b1,j1,sigma)
 #
@@ -6334,7 +6352,9 @@
                REQUEST Djaix(j,a1,i1,sigma) a1
 #
                T1ixxj(i1,sigma,nu,j)  = Djaix(j,a1,i1,sigma)*ca(nu,a1)
+#bgn_debug
 #               T1ixxj(i1,sigma,nu,j) *= Phalf 
+#end_debug
                T1ixxj(i1,sigma,nu,j) *= Null 
                Tixxj(i1,sigma,nu,j)  += T1ixxj(i1,sigma,nu,j)
 #
@@ -6383,12 +6403,12 @@
       PROC DIBJA
         CALL DIBJAAAAA # BTRAN OK
         CALL DIBJABBBB # BTRAN OK
-
-        CALL DIBJAABAB # BTRAN OK
-        CALL DIBJABABA # BTRAN OK
-
-        CALL DIBJABAAB # BTRAN OK
-        CALL DIBJAABBA # BTRAN OK
+        If Property == 20.0
+           CALL DIBJAABAB # BTRAN OK
+           CALL DIBJABABA # BTRAN OK
+           CALL DIBJABAAB # BTRAN OK
+           CALL DIBJAABBA # BTRAN OK
+        Endif 
       ENDPROC DIBJA
 #----------------------------------------------------
 #
@@ -6731,9 +6751,9 @@
             DO b
                REQUEST Dibja_abab_x(i,b1,i1,b) b
                Tibib(i1,b1,i,b)  = Dibja_abab_x(i,b1,i1,b) 
-               Tibib(i1,b1,i,b) *= Mhalf 
+               Tibib(i1,b1,i,b) *= Null 
 #bgn_debug               
-#               Tibib(i1,b1,i,b) *= -0.5
+#               Tibib(i1,b1,i,b) *= Mhalf 
 #               Tibib(i1,b1,i,b) *= 1.0
 #end_debug
                T1ibix(i,b1,i1,sigma) = Tibib(i1,b1,i,b)*cb(sigma,b)
@@ -7070,9 +7090,9 @@
             DO a
                REQUEST Dibja_baba_x(j,a1,j1,a) a
                Tjaja(j,a,j1,a1) = Dibja_baba_x(j,a1,j1,a)
-               Tjaja(j,a,j1,a1)*= Phalf 
+               Tjaja(j,a,j1,a1)*= Null 
 #bgn_debug
-#               Tjaja(j,a,j1,a1) *= 0.5 
+#               Tjaja(j,a,j1,a1) *= Phalf 
 #               Tjaja(j,a,j1,a1) *= 1.0
 #end_debug
                T1jajx(j,a1,j1,sigma) = Tjaja(j,a,j1,a1)*ca(sigma,a)
@@ -7317,9 +7337,9 @@
                REQUEST Dibja_baab_x(j,a1,i1,b) b
                
                Tjaib(j,a1,i1,b) = Dibja_baab_x(j,a1,i1,b)
-               Tjaib(j,a1,i1,b)*= Phalf 
+               Tjaib(j,a1,i1,b)*= Null 
 #bgn_debug                 
-#               Tjaib(j,a1,i1,b) *= 0.5
+#               Tjaib(j,a1,i1,b) *= Phalf 
 #               Tjaib(j,a1,i1,b) *= 1.0
 #end_debug
                 
@@ -7550,14 +7570,14 @@
             DO a
                REQUEST Dibja_abba_x(i,b1,j1,a) a
                Tibja(i,b1,j1,a) = Dibja_abba_x(i,b1,j1,a)
-               Tibja(i,b1,j1,a)*= Mhalf 
+               Tibja(i,b1,j1,a)*= Null 
 #                                                                  ++
 # Two particle contribution to G-tensor: O(pq,rs)*<AB|S_z(1)+2S_z(2)pqsr|AB>
 # DABAB = +1/2 DABAB - DABAB
 # Here particle-1 is A and particle-2 is B
 
 #bgn_debug 
-#               Tibja(i,b1,j1,a) *= -0.5
+#               Tibja(i,b1,j1,a) *= Mhalf 
 #               Tibja(i,b1,j1,a) *= 1.0
 #end_debug
                T1ibjx(i,b1,j1,sigma) = Tibja(i,b1,j1,a)*ca(sigma,a)
@@ -7592,10 +7612,12 @@
 
 # We have to go through these for all the properties 
 
-           CALL DIBJAABAB_X
-           CALL DIBJABABA_X
-           CALL DIBJABAAB_X
-           CALL DIBJAABBA_X
+           If Property == 20.0
+              CALL DIBJAABAB_X
+              CALL DIBJABABA_X
+              CALL DIBJABAAB_X
+              CALL DIBJAABBA_X
+           Endif 
 
       ENDPROC DIBJA_X
 #----------------------------------------------------
@@ -7964,8 +7986,10 @@
 
             DO mu 
                Txbaj(mu,b,a1,j)          = Tabaj(a,b,a1,j)*ca(mu,a) 
-#               Txbaj(mu,b,a1,j)         *= Mhalf 
                Txbaj(mu,b,a1,j)         *= Null 
+#bgn_debug
+#               Txbaj(mu,b,a1,j)         *= Mhalf 
+#end_debug
                PREPARE Dxbaj(mu,b,a1,j) += Txbaj(mu,b,a1,j)  
             ENDDO mu 
       ENDPARDO a, a1, b, j 
@@ -8078,8 +8102,10 @@
 
             DO mu 
                Txabi(mu,a,b,i)          = Tbabi(b1,a,b,i)*cb(mu,b1) 
-#               Txabi(mu,a,b,i)         *= Phalf 
                Txabi(mu,a,b,i)         *= Null 
+#bgn_debug
+#               Txabi(mu,a,b,i)         *= Phalf 
+#end_debug
                PREPARE Dxabi(mu,a,b,i) += Txabi(mu,a,b,i)  
             ENDDO mu 
       ENDPARDO b1, b, a, i 
@@ -8121,8 +8147,10 @@
         execute server_barrier
         CALL DABCIAAAA
         CALL DABCIBBBB
-        CALL DABCIABAB
-        CALL DABCIBABA
+        If Property == 20.0
+           CALL DABCIABAB
+           CALL DABCIBABA
+        Endif 
       ENDPROC DABCI
 # -----------------------------------------------------------
 
@@ -8821,7 +8849,10 @@
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+2S_z(2)pqsr|AA>
 #  DBABA = -1/2 DBABA + DBABA
 #
-            Tbabi(b1,a,b,i)  *= Phalf 
+#bgn_debug
+#            Tbabi(b1,a,b,i)  *= Phalf 
+#end_debug
+            Tbabi(b1,a,b,i)  *= Null 
 
             DO mu
 
@@ -9019,7 +9050,10 @@
 #  Two particle contribution to G-tensor: O(pq,rs)*<AA|S_z(1)+S_z(2)pqsr|AA>
 #  DABAB = 1/2 DABAB - DABAB
 #
-            Tabaj(a,b,a1,j)  *= Mhalf 
+#bgn_debug
+#            Tabaj(a,b,a1,j)  *= Mhalf 
+#end_debug
+            Tabaj(a,b,a1,j)  *= Null 
 
             DO mu
 
@@ -9067,8 +9101,10 @@
 
         CALL DCIABAAAA_X
         CALL DCIABBBBB_X
-        CALL DCIABABAB_X
-        CALL DCIABBABA_X
+        If Property == 20.0
+           CALL DCIABABAB_X
+           CALL DCIABBABA_X
+        Endif 
 
       ENDPROC DCIAB_X
 #-----------------------------------------------------------
@@ -9255,8 +9291,10 @@
 
             DO sigma 
                Tijix(i,j,i1,sigma)          = Tijib(i,j,i1,b)*cb(sigma,b) 
-#               Tijix(i,j,i1,sigma)         *= Mhalf 
                Tijix(i,j,i1,sigma)         *= Null 
+#bgn_debug
+#               Tijix(i,j,i1,sigma)         *= Mhalf 
+#end_debug
                PREPARE Dijix(i,j,i1,sigma) += Tijix(i,j,i1,sigma) 
             ENDDO sigma 
       ENDPARDO i, j, i1, b 
@@ -9352,8 +9390,10 @@
 
             DO sigma 
                Tjijx(j,i,j1,sigma)          = Tjija(j,i,j1,a)*ca(sigma,a) 
-#               Tjijx(j,i,j1,sigma)         *= Phalf 
                Tjijx(j,i,j1,sigma)         *= Null 
+#bgn_debug
+#               Tjijx(j,i,j1,sigma)         *= Phalf 
+#end_debug
                PREPARE Djijx(j,i,j1,sigma) += Tjijx(j,i,j1,sigma) 
             ENDDO sigma 
       ENDPARDO j, i, j1, a 
@@ -9486,9 +9526,11 @@
 #-------------------------------------------------------------------------
       PROC DIJKA
            CALL DIJKAAAAA
-           CALL DIJKAABAB
-           CALL DIJKABABA
            CALL DIJKABBBB
+           If Property == 20.0
+              CALL DIJKAABAB
+              CALL DIJKABABA
+           Endif 
       ENDPROC DIJKA
 #--------------------------------------------------------------------------
 
@@ -10013,9 +10055,9 @@
 #
             DO sigma
 
-               Tijib(i,j,i1,b)  *= Mhalf 
+               Tijib(i,j,i1,b)  *= Null 
 #bgn_debug                  
-#               Tijib(i,j,i1,b) *= -0.5
+#               Tijib(i,j,i1,b) *= Mhalf 
 #               Tijib(i,j,i1,b) *= 1.0
 #end_debug
                Tijix(i,j,i1,sigma)      = Tijib(i,j,i1,b)*cb(sigma,b)
@@ -10202,9 +10244,9 @@
 
             DO sigma
 
-               Tjija(j,i,j1,a)  *= Phalf 
+               Tjija(j,i,j1,a)  *= Null 
 #bgn_debug               
-#               Tjija(j,i,j1,a)  *= 0.5
+#               Tjija(j,i,j1,a)  *= Phalf 
 #               Tjija(j,i,j1,a)  *= 1.0
 #end_debug
                Tjijx(j,i,j1,sigma)      = Tjija(j,i,j1,a)*ca(sigma,a)
@@ -10245,9 +10287,11 @@
 #------------------------------------------------------------------
       PROC DIJKA_X
            CALL DIJKAAAAA_X
-           CALL DIJKAABAB_X
-           CALL DIJKABABA_X
            CALL DIJKABBBB_X
+           If Property == 20.0
+              CALL DIJKAABAB_X
+              CALL DIJKABABA_X
+           Endif 
       ENDPROC DIJKA_X
 #-----------------------------------------------------------------
 # In this superprocedure the particle-particle block of the relaxed density 
@@ -11053,38 +11097,40 @@
             GET DHFB(lambda,sigma)
 #
 # Coulomb terms (Notice the negative sign in the 2nd and the
-# third terms. That comes from the operator S_z(1)+2s_z(2).
+# third terms. That comes from the operator 3/2(S_z(1)+2s_z(2))
 #
             Txx(mu,lambda)             = DHFa(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coulmb
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             Txx(mu,lambda)             = DHFb(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coulmb
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-            Txx(mu,lambda)             = DHFa(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.25
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-
-            Txx(mu,lambda)             = DHFb(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.25
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-
+# No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            Txx(mu,lambda)             = DHFa(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.25
+#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+#            Txx(mu,lambda)             = DHFb(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.25
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
 # Exchange terms
 
             Txx(mu,sigma)              = DHFa(mu,sigma)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Exchng
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
             Txx(mu,sigma)              = DHFb(mu,sigma)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Exchng 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,lambda,nu,sigma) = Txxxx(mu,nu,lambda,sigma)
@@ -11227,74 +11273,86 @@
             GET DpqB(nu,lambda)
 #
 # Coulomb terms (Notice the negative sign in the 2nd and the
-# third terms. That comes from the operator S_z(1)+2s_z(2).
+# third terms. That comes from the operator 3/2(S_z(1)+2s_z(2)).
 #
             Txx(mu,lambda)             = DHFa(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coulmb
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             Txx(mu,lambda)             = DHFb(mu,lambda)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coulmb
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-            Txx(mu,lambda)             = DHFa(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.25
-            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-
-            Txx(mu,lambda)             = DHFb(mu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.25
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            Txx(mu,lambda)             = DHFa(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFb(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.25
+#            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+#            Txx(mu,lambda)             = DHFb(mu,lambda)
+#            T1xxxx(mu,nu,lambda,sigma) = Txx(mu,lambda)^DHFa(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.25
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 # Exchange terms
 
             Txx(mu,sigma)              = DHFa(mu,sigma)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFa(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Exchng
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
             Txx(mu,sigma)              = DHFb(mu,sigma)
             T1xxxx(mu,nu,lambda,sigma) = Txx(mu,sigma)^DHFb(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Exchng
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 # Correlation terms 
 
             T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 1.5
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln
+            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma)  = DpqA(nu,sigma)^DHFA(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln
             Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 1.5
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln 
             Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+            T1xxxx(mu,nu,lambda,sigma)  = DpqB(nu,sigma)^DHFB(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln 
             Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
 
-            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.5
-            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,lambda)^DHFB(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+#            Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,lambda)^DHFA(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma) *= 0.5
+#            Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
-# Exchange terms
+# Correlation/Exchange terms
 
             T1xxxx(mu,nu,lambda,sigma)  = DpqA(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln
             Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma)  = DpqA(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln
             Txxxx(mu,nu,lambda,sigma)  -= T1xxxx(mu,nu,lambda,sigma)
            
             T1xxxx(mu,nu,lambda,sigma)  = DpqB(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln
             Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma)  = DpqB(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma) *= 0.75
+            T1xxxx(mu,nu,lambda,sigma) *= Coreln 
             Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
 #           Fully transform Diixx
@@ -11332,25 +11390,27 @@
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2)); These contributions
+# are from DIJABAB,DIJKLABAB,DIJKABAB,DIJKBABA but not formed. 
 #
 #           Fully transform Dijxx
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dijxx(i,j1,lambda,sigma) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dijxx(i,j1,lambda,sigma)*cb(nu,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dijxx(i,j1,lambda,sigma) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dijxx(i,j1,lambda,sigma)*cb(nu,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 #           Fully transform Dixix
 #           ---------------------
@@ -11391,24 +11451,27 @@
 #
             ENDDO j
 #
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2)); These contributions
+# are from DIBJAABBA,DIBJABAAB but not formed. 
+# 
 #           Fully transform Dixxj
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dixxj(i,nu,lambda,j1) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dixxj(i,nu,lambda,j1)*cb(sigma,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dixxj(i,nu,lambda,j1) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dixxj(i,nu,lambda,j1)*cb(sigma,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 #           Fully transform Dxiix
 #           ---------------------
@@ -11739,25 +11802,27 @@
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2)); These contributions
+# are from DIJABAB,DIJKLABAB,DIJKABAB,DIJKBABA(_X) but not formed. 
 #
 #           Fully transform Dijxx
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 # The above 3 blocks handles D(IJKL) and D(IJAB) blocks.
 #
@@ -11800,24 +11865,27 @@
 #
             ENDDO j
 #
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2)); These contributions
+# are from DIBJAABBA,DIBJABAAB(_X) but not formed. 
+#
 #           Fully transform Dixxj
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#            DO j1
 #
-                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 #           Fully transform Dxiix
 #           ---------------------
@@ -12172,25 +12240,26 @@
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
+# See the extended comments in X-component 
 #
 #           Fully transform Dijxx
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 # The above 3 blocks handles D(IJKL) and D(IJAB) blocks.
 #
@@ -12233,24 +12302,26 @@
 #
             ENDDO j
 #
+# See the extended comments in X-component 
+#
 #           Fully transform Dixxj
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 #           Fully transform Dxiix
 #           ---------------------
@@ -12588,25 +12659,26 @@
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
+# See the extended comments in X-component 
 #
 #           Fully transform Dijxx
 #           ---------------------
-            DO i
+#            DO i
 #
-               Tixxx(i,nu,lambda,sigma) = 0.0
+#               Tixxx(i,nu,lambda,sigma) = 0.0
 #
-               DO j1
+#               DO j1
 #
-                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#                  REQUEST Dijxx_x(i,j1,lambda,sigma) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dijxx_x(i,j1,lambda,sigma)*cb(nu,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
 #
-               ENDDO j1
+#               ENDDO j1
 #
-               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+#               T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 #
-            ENDDO i
+#            ENDDO i
 #
 # The above 3 blocks handles D(IJKL), D(IJKA)  and D(IJAB) blocks.
 #
@@ -12648,25 +12720,26 @@
                Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
+# See the extended comments in X-component 
 #
 #           Fully transform Dixxj
 #           ---------------------
-            DO i
-
-               Tixxx(i,nu,lambda,sigma) = 0.0
-
-               DO j1
-
-                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
-                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
-                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
-
-               ENDDO j1
-
-               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-
-            ENDDO i
+#            DO i
+#
+#               Tixxx(i,nu,lambda,sigma) = 0.0
+#
+#               DO j1
+#
+#                  REQUEST Dixxj_x(i,nu,lambda,j1) j1
+#                  T1ixxx(i,nu,lambda,sigma) = Dixxj_x(i,nu,lambda,j1)*cb(sigma,j1) 
+#                  Tixxx(i,nu,lambda,sigma) += T1ixxx(i,nu,lambda,sigma)
+#
+#               ENDDO j1
+#
+#               T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
+#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            ENDDO i
 #
 #           Fully transform Dxiix
 #           ---------------------
@@ -14526,11 +14599,14 @@
             Fact          = -1.0
             Pone          =  1.0
             Mone          = -1.0
-            Pthalf        =  0.75
-            Mthalf        = -0.75
+            Pthalf        =  1.5
+            Mthalf        = -1.5
             Phalf         =  0.5
             Mhalf         = -0.5
             Null          =  0.0
+            Coulmb        =  1.5
+            Exchng        =  1.5
+            Coreln        =  1.5
          endif
 
 #bgn_debug
@@ -14544,6 +14620,9 @@
 #            Mhalf         = 1.0
 #            Null          = 1.0
 #            property      = 10.0
+#             Coulmb        = 1.0
+#             Exchng        = 1.0
+#             Corlen        = 1.0
             execute print_scalar property
             execute print_scalar Pthalf
             execute print_scalar mthalf
@@ -14605,7 +14684,7 @@
 #        CALL COR_ENERGY
 #end_debug
 
-#        CALL PDCONT_HF
+#         CALL PDCONT_HF
 
         CALL PDCONT 
 #
@@ -14768,18 +14847,6 @@
 #end_debug
 
           IF PROPERTY == 10.0
-
-# Need to check this sign change.
-
-          D2SO_XX *= -1.0
-          D2SO_XY *= -1.0
-          D2SO_XZ *= -1.0
-          D2SO_YX *= -1.0
-          D2SO_YY *= -1.0
-          D2SO_ZZ *= -1.0
-          D2SO_ZX *= -1.0
-          D2SO_ZY *= -1.0
-          D2SO_ZZ *= -1.0
 
           DO XYZ 
              DO XYZ1

@@ -15258,18 +15258,6 @@
 
           IF PROPERTY == 10.0
 
-# Need to check this sign change.
-
-          D2SO_XX *= -1.0
-          D2SO_XY *= -1.0
-          D2SO_XZ *= -1.0
-          D2SO_YX *= -1.0
-          D2SO_YY *= -1.0
-          D2SO_ZZ *= -1.0
-          D2SO_ZX *= -1.0
-          D2SO_ZY *= -1.0
-          D2SO_ZZ *= -1.0
-
           DO XYZ 
              DO XYZ1
                 IF XYZ == 1
