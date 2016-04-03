@@ -236,7 +236,7 @@ c      Write(6,"(3(1x,F10.5))") x4, y4, z4
      *                                 a1,a2,b1,b2,c1,
      *                                 c2,d1,d2,scr(nfirst),
      *                                 aa1,aa2,bb1,bb2,cc1,cc2,
-     *                                 dd1,dd2,1.d0,0)
+     *                                 dd1,dd2,-1.d0,0)
            endif 
 
       enddo   ! s

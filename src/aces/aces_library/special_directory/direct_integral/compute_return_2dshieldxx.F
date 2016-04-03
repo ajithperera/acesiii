@@ -236,7 +236,7 @@ c      Write(6,"(3(1x,F10.5))") x4, y4, z4
      *                                 a1,a2,b1,b2,c1,
      *                                 c2,d1,d2,scr(nfirst),
      *                                 aa1,aa2,bb1,bb2,cc1,cc2,
-     *                                 dd1,dd2,1.d0,0)
+     *                                 dd1,dd2,-1.d0,0)
            endif 
 
       enddo   ! s
@@ -244,7 +244,7 @@ c      Write(6,"(3(1x,F10.5))") x4, y4, z4
       enddo   ! n
       enddo   ! m
 
-#ifdef _DEBUG_LVL0
+C#ifdef _DEBUG_LVL0
       Write(6,*) "The <munu |(r1-r2)*r2/r12| lam sig> integral matrix"
       xx_s = 0.0d0
       xx_l = 0.0d0
@@ -269,7 +269,7 @@ C      write(*,*)
       Write(6,"(a,a,F20.10,1x,F20.10)")"Check sum of the XX-DSHIELD",
      &                                 " integrals = " ,xx_s,xx_l
 
-#endif
+C#endif
       return
       end
 

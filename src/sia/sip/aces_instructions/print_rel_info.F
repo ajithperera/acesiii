@@ -1777,8 +1777,8 @@ C
          Call abort_job()
       Endif
 
-      Refspin   = Dble(Nunpaired) 
-      Fac = -FNS*FNS*PPM*Two/Refspin
+      Refspin   = Dble(Nunpaired)*0.50D0
+      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 713) then
@@ -1845,8 +1845,8 @@ c External multiplication constant for 1-el gauge correction
          Call abort_job()
       Endif 
 
-      Refspin   = Dble(Nunpaired)
-      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
+      Refspin   = Dble(Nunpaired)*0.50D0
+      Fac = FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 714) then
@@ -1915,9 +1915,9 @@ c contribution.
          Call abort_job()
       Endif
 
-      Refspin   = Dble(Nunpaired)
+      Refspin   = Dble(Nunpaired)*0.50D0
   
-      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0))
+      Fac = FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 715) then
@@ -1985,9 +1985,9 @@ c contribution.
          Call abort_job()
       Endif
 
-      Refspin   = Dble(Nunpaired)
+      Refspin   = Dble(Nunpaired)*0.50D0
 
-      Fac = FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
+      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 716) then
@@ -2055,9 +2055,9 @@ c contribution.
          Call abort_job()
       Endif
 
-      Refspin   = Dble(Nunpaired) * 0.50D0
+      Refspin   = Dble(Nunpaired)*0.50D0
 
-      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
+      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 717) then

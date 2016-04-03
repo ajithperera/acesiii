@@ -11731,37 +11731,47 @@
             GET DpqB_x(nu,lambda)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -0.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
-#exchange terms 
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(nu,sigma)^DHFA(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(nu,sigma)^DHFB(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,lambda)^DHFB(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,lambda)^DHFA(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#Correlation/exchange terms 
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqA_x(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_x(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_x(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #           Fully transform Diixx
@@ -11958,7 +11968,7 @@
 
 # AAAA spin case
 #
-# <ab | Sz(1) + 2 S_z(2)| cd > gives additional 3/2, -3/2 and -+1/2.
+# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
 #
             DO i
             DO i1
@@ -12168,37 +12178,47 @@
             GET DpqB_y(nu,lambda)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(nu,sigma)^DHFA(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -0.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
 
-#exchange terms
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(nu,sigma)^DHFB(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,lambda)^DHFB(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,lambda)^DHFA(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#Correlation/exchange terms
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_y(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqA_y(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqB_y(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
 #           Fully transform Diixx
@@ -12397,7 +12417,7 @@
 
 # AAAA spin case
 #
-# <ab | Sz(1) + 2 S_z(2)| cd > gives additional 3/2, -3/2 and -1/2.
+# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
 #
             DO i
             DO i1
@@ -12587,37 +12607,47 @@
             GET DpqB_z(nu,lambda)
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 1.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -1.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFB(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= -0.5
-            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
-            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFA(nu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
+            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(nu,sigma)^DHFA(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
+            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFB(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln 
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+
+            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(nu,sigma)^DHFB(mu,lambda)
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln 
+            Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
+#
+#No contribution from ABAB for 3/2(S_z(1) + S_z(2))
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,lambda)^DHFB(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= -0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
+#            T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,lambda)^DHFA(nu,sigma)
+#            T1xxxx(mu,nu,lambda,sigma)*= 0.5
+#            Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+#
 #exchange terms
 
             T1xxxx(mu,nu,lambda,sigma) = DpqA_z(mu,sigma)^DHFA(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqA_z(nu,lambda)^DHFA(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) -= T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqB_z(mu,sigma)^DHFB(nu,lambda)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-#
+
             T1xxxx(mu,nu,lambda,sigma) = DpqB_z(nu,lambda)^DHFB(mu,sigma)
-            T1xxxx(mu,nu,lambda,sigma)*= 0.75
+            T1xxxx(mu,nu,lambda,sigma)*= Coreln 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #            execute dump_amp Txxxx(mu,nu,lambda,sigma)
@@ -12835,9 +12865,8 @@
 
 # AAAA spin case
 #
-# <ab | Sz(1) + 2 S_z(2)| cd > gives additional 3/2, -3/2 and -1/2.
+# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
 #
-
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
