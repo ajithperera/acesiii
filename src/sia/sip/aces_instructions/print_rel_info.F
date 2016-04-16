@@ -1987,7 +1987,7 @@ c contribution.
 
       Refspin   = Dble(Nunpaired)*0.50D0
 
-      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(2.0D0*Refspin))
+      Fac = -1.0D0*FNS*FNS*PPM*(1.0D0/(4.0D0*Refspin))
 
        if (me .eq. 0)then
        if (ival .eq. 716) then
