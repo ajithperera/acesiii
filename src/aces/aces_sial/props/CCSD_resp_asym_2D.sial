@@ -12604,11 +12604,7 @@
       D2SO_XX_21 = 0.0
       D2SO_YX_21 = 0.0
       D2SO_ZX_21 = 0.0     
-#bgn_debug
-     execute print_scalar D2SO_XX_21
-     execute print_scalar D2SO_YX_21
-     execute print_scalar D2SO_ZX_21
-#end_debug
+
        PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
