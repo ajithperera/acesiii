@@ -242,6 +242,15 @@ C     skip the header
       END IF
       Read (LuZ, '(A)', ERR=8500, END=8800) Wrk
 
+C I think this is the best way to avoid the problem of Cartesian
+C frequency finite difference runs when the first two atoms are
+C not the same. This problem must have existed from the very
+C begining. It get unnoticed because we do not do lots and lots
+C of Cartesian Frqs (and then of course the first two atoms are
+C the same, then no one notice it). 01/2016, Ajith Perera.
+
+      IF (XYZIN) BAD123 = .FALSE.
+
 c YAU : old
 c     Get the optimizer settings & another blank line after
 c      Call GtFlgs(0,IErr,
