@@ -142,6 +142,7 @@
 
       temp tpol(xyz,xyz1)
       static pol(xyz,xyz1)
+      static dmom(xyz) 
       scalar ipol
 
       distributed t1a_old_x(a,i)
@@ -318,6 +319,7 @@
       scalar do_aten
       scalar do_gten
       scalar do_dten
+      scalar dipole 
 #
       scalar tmp
       Scalar suma
@@ -328,6 +330,7 @@
       Scalar sum
       Scalar rank
       Scalar Ncount
+     
  
 #PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
         PROC READ_2EL
@@ -2645,6 +2648,23 @@
       EXECUTE  PRINT_SCALAR  PX
       EXECUTE  PRINT_SCALAR  PY
       EXECUTE  PRINT_SCALAR  PZ
+
+      do xyz
+         if xyz == 1
+            dmom(xyz) = PZ
+         endif
+
+         if xyz == 2
+            dmom(xyz) = PY
+         endif
+
+         if xyz == 1
+            dmom(xyz) = PZ
+         endif
+      enddo xyz
+
+      dipole = 718
+      execute print_rel_info dipole dmom
 
       ENDPROC DMAIN
 

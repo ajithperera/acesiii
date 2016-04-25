@@ -10687,21 +10687,21 @@
       ENDPARDO mu, nu
       execute sip_barrier 
 #bgn_debug
-     suma = 0.0
-     sumb = 0.0
-     do mu
-     do nu 
-        get  HF_SPN_DEN(mu,nu)
-        get  HF_TOT_DEN(mu,nu)
-        execute dump_amp COR_TOT_DEN(mu,nu)
-        tmp =  HF_TOT_DEN(mu,nu)*HF_TOT_DEN(mu,nu)
-        suma += tmp
-        tmp = HF_SPN_DEN(mu,nu)*HF_SPN_DEN(mu,nu)
-        sumb += tmp
-     enddo nu
-     enddo mu
-     execute print_scalar suma
-     execute print_scalar sumb
+#     suma = 0.0
+#     sumb = 0.0
+#     do mu
+#     do nu 
+#        get  HF_SPN_DEN(mu,nu)
+#        get  HF_TOT_DEN(mu,nu)
+#        execute dump_amp COR_TOT_DEN(mu,nu)
+#        tmp =  HF_TOT_DEN(mu,nu)*HF_TOT_DEN(mu,nu)
+#        suma += tmp
+#        tmp = HF_SPN_DEN(mu,nu)*HF_SPN_DEN(mu,nu)
+#        sumb += tmp
+#     enddo nu
+#     enddo mu
+#     execute print_scalar suma
+#     execute print_scalar sumb
 #end_debug
  
       ENDPROC FORM_SPN_TOT_DENS
@@ -11593,6 +11593,7 @@
             REQUEST AO_2P_DSHIELD_XZ(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_DSHIELD_YX(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_DSHIELD_YY(nu, sigma, mu, lambda) lambda
+            REQUEST AO_2P_DSHIELD_YZ(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_DSHIELD_ZX(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_DSHIELD_ZY(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_DSHIELD_ZZ(nu, sigma, mu, lambda) lambda
@@ -12441,8 +12442,6 @@
 
 # AAAA spin case
 #
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
@@ -12518,9 +12517,6 @@
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-
-# ABAB spin case (scaling factor zero is used since ABAB + BABA=0), otherwise
-# it is 8. 
 
             DO i
             DO j
@@ -12936,8 +12932,6 @@
 
 # AAAA spin case
 #
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
@@ -13013,9 +13007,6 @@
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-
-# ABAB spin case (scaling factor zero is used since ABAB + BABA=0), otherwise
-# it is 8. 
 
             DO i
             DO j
@@ -13454,8 +13445,6 @@
 
 # AAAA spin case
 #
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
@@ -13532,9 +13521,6 @@
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-
-# ABAB spin-case,(scaling factor zero is used since ABAB + BABA=0), otherwise
-# it is 8.
 
             DO i
             DO j
@@ -13942,8 +13928,6 @@
 
 # AAAA spin case
 #
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
             DO i
             DO i1
                REQUEST TAO_AA(mu,i,nu,i1)        i 
@@ -14020,9 +14004,6 @@
                PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO j1
             ENDDO j
-
-# ABAB spin-case,(scaling factor zero is used since ABAB + BABA=0), otherwise
-# it is 8.
 
             DO i
             DO j
@@ -14567,7 +14548,7 @@
                TASxxxx(lambda,sigma,mu,nu) *= Fact
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  += TASxxxx(mu,nu,lambda,sigma)
+               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  *= Pquart 
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -15036,7 +15017,7 @@
                TASxxxx(lambda,sigma,mu,nu) *= Fact
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
+               T1xxxx(lambda,sigma,mu,nU)  += TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  *= Mquart 
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
@@ -15054,7 +15035,7 @@
                TASxxxx(lambda,sigma,mu,nu) *= Fact
 
                T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(mu,nu,lambda,sigma)  += TASxxxx(mu,nu,lambda,sigma)
+               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
                T1xxxx(mu,nu,lambda,sigma)  *= Mquart 
 
                PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
