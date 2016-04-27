@@ -12097,6 +12097,135 @@
       D2SO_YX_12 = 0.0
       D2SO_ZX_12 = 0.0
 
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
 #bgn_debug
 #      esum=0.0
 #      PARDO sigma, lambda, i, i1
@@ -12432,133 +12561,17 @@
 
             ENDDO j
 
-# The above two blocks handle D(ABCI)
+# The above two blocks handle D(ABCI) and now handle the D(ABCD) terns
+          
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
+            PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
+#bgn_debug
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#end_debug
 
-# Bulit the D(ABCD) contribution
-
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
-
-# AAAA spin case
-#
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *=  Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
-               T1xxxx(mu,nu,lambda,sigma) *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Ptquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Mtquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j 
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Pquart 
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Pquart 
-                  
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
-            T1xxxx(mu,lambda,nu,sigma)  = Pxxxx_X(mu,nu,lambda,sigma)
+            T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
 
 # The 1/8 factor is D(ab,cd) = D(cd,ab)
 #
@@ -12601,7 +12614,136 @@
       D2SO_YX_21 = 0.0
       D2SO_ZX_21 = 0.0     
 
-       PARDO mu, nu, lambda, sigma
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
@@ -12922,136 +13064,17 @@
 
             ENDDO j
 
-# The above two blocks handle D(ABCI)
-
-# Bulit the D(ABCD) contribution
-
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
-
-# AAAA spin case
-#
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *=  Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
-               T1xxxx(mu,nu,lambda,sigma) *= Ptquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Ptquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma) 
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Mtquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j 
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mquart
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Mquart
-                  
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
-            PXXXX_x(mu,nu,lambda,sigma) *= 0.125
-            PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+# The above two blocks handle D(ABCI) and now handle D(ABCD)
+  
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma 
+            PXXXX_x(mu,nu,lambda,sigma) =  Dxxxx_x(mu,nu,lambda,sigma) 
+#bgn_debug
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#end_debug
+            PXXXX_x(mu,nu,lambda,sigma)*= 0.125
+            PXXXX_x(mu,nu,lambda,sigma)+= Txxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)  = Pxxxx_X(mu,nu,lambda,sigma)
 
-# The 1/8 factor is D(ab,cd) = D(cd,ab)
-#
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
 #bgn_debug
 #            execute dump_amp AO_2P_SOI_X(nu,sigma,mu,lambda)
@@ -13098,6 +13121,135 @@
       D2SO_YY_12 = 0.0
       D2SO_ZY_12 = 0.0
 
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
 #bgn_debug
 #      esum=0.0
 #      PARDO sigma, lambda, i, i1
@@ -13432,137 +13584,19 @@
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
-
-# The above two blocks handle D(ABCI)
-
-# Bulit the D(ABCD) contribution
-
-#       ENDPARDO mu, nu, lambda, sigma
-
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
-
-# AAAA spin case
 #
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
+# The above two blocks handle D(ABCI)
+#
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma  
+            PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
+#bgn_debug
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#end_debug
 
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-            PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Pquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Pquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
+
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
-
-# The 1/8 factor is D(ab,cd) = D(cd,ab) 
 
             tmp = AO_2P_SOI_X(mu,lambda,nu,sigma)*T1xxxx(mu,lambda,nu,sigma)
             D2SO_PX += tmp
@@ -13598,7 +13632,136 @@
       D2SO_YY_21 = 0.0
       D2SO_ZY_21 = 0.0
 
-       PARDO mu, nu, lambda, sigma
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
@@ -13918,134 +14081,14 @@
 
 # The above two blocks handle D(ABCI)
 
-# Bulit the D(ABCD) contribution
-
-#       ENDPARDO mu, nu, lambda, sigma
-
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
-
-# AAAA spin case
-#
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart
-
-            PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)*= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)  = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma) *= Mquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
+            PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
+#bgn_debug
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#end_debug
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)   = Pxxxx_X(mu,nu,lambda,sigma)
-
-# The 1/8 factor is D(ab,cd) = D(cd,ab) 
 
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
             D2SO_PX += tmp
@@ -14090,7 +14133,136 @@
       D2SO_YZ_12 = 0.0
       D2SO_ZZ_12 = 0.0
 
-       PARDO mu, nu, lambda, sigma
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+#
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Pquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
@@ -14410,157 +14582,12 @@
 
 # Bulit the D(ABCD) contribution
 
-#bgn_debug
-#       ENDPARDO mu, nu, lambda, sigma
-#       EXECUTE SERVER_BARRIER 
-#
-#       PARDO mu, nu, lambda, sigma
-#            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
-#            REQUEST AO_2P_SOI_Z(mu,nu,lambda,sigma) sigma
-#            tmp = AO_2P_SOI_Z(mu, nu, lambda, sigma)*Dxxxx_x(mu,nu,lambda,sigma)
-#            D2SO_PZ += tmp
-#       ENDPARDO mu, nu, lambda, sigma
-#       EXECUTE SERVER_BARRIER
-#
-#       COLLECTIVE D2SO_XZ += D2SO_PX
-#       COLLECTIVE D2SO_YZ += D2SO_PY
-#       COLLECTIVE D2SO_ZZ += D2SO_PZ
-#       EXECUTE SIP_BARRIER
-#
-#     execute print_scalar D2SO_XZ
-#     execute print_scalar D2SO_YZ
-#     execute print_scalar D2SO_ZZ
-#end_debug
-#
-#       PARDO mu, nu, lambda, sigma
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
+            PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
-
-# AAAA spin case
-#
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact 
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-# ABAB spin case 
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j 
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Pquart 
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Pquart 
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
-
-# The 1/4 factor is D(ab,cd) = D(cd,ab) (symmetrization is not done though)
-
 #bgn_debug
 #            execute dump_amp T1xxxx(mu,nu,lambda, sigma)
 #            execute dump_amp AO_2P_SOI_Z(mu, nu, lambda, sigma)
@@ -14602,8 +14629,137 @@
       D2SO_XZ_21 = 0.0
       D2SO_YZ_21 = 0.0
       D2SO_ZZ_21 = 0.0
+
+      PARDO mu, nu, lambda, sigma
+            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            PREPARE DXXXX_x(mu,nu,lambda,sigma) = PXXXX_x(mu,nu,lambda,sigma)
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
+
+      PARDO mu, nu, lambda, sigma
+#
+# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
+# 
+# AAAA spin case
+#
+            DO i
+            DO i1
+               REQUEST TAO_AA(mu,i,nu,i1)        i 
+               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
+               Txxii(mu,nu,i,i1)           = TAO_AA(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)    = LAO_AA_x(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+               
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu) 
+
+            ENDDO i1
+            ENDDO i
+
+          DO i
+            DO i1
+               REQUEST TAO_AA_x(mu,i,nu,i1)        i
+               REQUEST LAO_AA(i,lambda,i1,sigma) i
+               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
+               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Ptquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO i1
+            ENDDO i
+
+# BBBB spin case
+
+            DO j
+            DO j1
+               REQUEST TAO_bb(mu,j,nu,j1)        j1 
+               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
+               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mtquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+            ENDDO j1
+            ENDDO j
+
+           DO j
+            DO j1
+               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
+               REQUEST LAO_bb(j,lambda,j1,sigma) j1
+               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
+               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
+               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma)*= Mtquart
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j1
+            ENDDO j
+
+            DO i
+            DO j
+               REQUEST TAO_ab(mu,i,nu,j)        j 
+               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
+               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+
+            DO i
+            DO j
+               REQUEST TAO_ab_x(mu,i,nu,j)        j
+               REQUEST LAO_ab(i,lambda,j,sigma) j
+               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
+               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
+
+               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
+               TSxxxx(mu,nu,lambda,sigma) *= Mquart 
+
+               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
+               TASxxxx(lambda,sigma,mu,nu)*=  Fact
+
+               PREPARE Dxxxx_x(mu,nu,lambda,sigma) += TSxxxx(mu,nu,lambda,sigma)
+               PREPARE Dxxxx_x(lambda,sigma,mu,nu) += TASxxxx(lambda,sigma,mu,nu)
+
+            ENDDO j
+            ENDDO i
+      
+      ENDPARDO mu, nu, lambda, sigma
+      execute server_barrier 
  
-       PARDO mu, nu, lambda, sigma
+      PARDO mu, nu, lambda, sigma
 #
             Txxxx(mu,nu,lambda,sigma) = 0.0
 
@@ -14919,134 +15075,12 @@
 
 # The above two blocks handle D(ABCI)
 
-# Bulit the D(ABCD) contribution
-#
-# 1/8[L2_x(ab,mn)*Tau(mn,cd) + Tau_x(mn,cd)*L2(ab,mn)]
-# 
-            PXXXX_x(mu,nu,lambda,sigma) = 0.0
+            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
+            PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
-# AAAA spin case
-#
-# 3/2<ab | Sz(1) + S_z(2)| cd > gives additional 3/2, -3/2 and 0.0
-#
-            DO i
-            DO i1
-               REQUEST TAO_AA(mu,i,nu,i1)        i 
-               REQUEST LAO_AA_x(i,lambda,i1,sigma) i 
-               Txxii(mu,nu,i,i1)          = TAO_AA(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA_x(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-          DO i
-            DO i1
-               REQUEST TAO_AA_x(mu,i,nu,i1)        i
-               REQUEST LAO_AA(i,lambda,i1,sigma) i
-               Txxii(mu,nu,i,i1)          = TAO_AA_x(mu,i,nu,i1)
-               Tiixx(i,i1,lambda,sigma)   = LAO_AA(i,lambda,i1,sigma)
-
-               TSxxxx(mu,nu,lambda,sigma) = Txxii(mu,nu,i,i1)*Tiixx(i,i1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Ptquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO i1
-            ENDDO i
-
-# BBBB spin case
-
-            DO j
-            DO j1
-               REQUEST TAO_bb(mu,j,nu,j1)        j1 
-               REQUEST LAO_bb_x(j,lambda,j1,sigma) j1 
-               Txxjj(mu,nu,j,j1)          = TAO_BB(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB_x(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-           DO j
-            DO j1
-               REQUEST TAO_bb_x(mu,j,nu,j1)        j1
-               REQUEST LAO_bb(j,lambda,j1,sigma) j1
-               Txxjj(mu,nu,j,j1)          = TAO_BB_x(mu,j,nu,j1)
-               Tjjxx(j,j1,lambda,sigma)   = LAO_BB(j,lambda,j1,sigma)
-               TSxxxx(mu,nu,lambda,sigma) = Txxjj(mu,nu,j,j1)*Tjjxx(j,j1,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact 
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mtquart 
-
-               PXXXX_x(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j1
-            ENDDO j
-
-# ABAB spin case 
-
-            DO i
-            DO j
-               REQUEST TAO_ab(mu,i,nu,j)        j 
-               REQUEST LAO_ab_x(i,lambda,j,sigma) j 
-               Txxij(mu,nu,i,j)            = TAO_AB(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB_x(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nU)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mquart 
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-
-            DO i
-            DO j
-               REQUEST TAO_ab_x(mu,i,nu,j)        j
-               REQUEST LAO_ab(i,lambda,j,sigma) j
-               Txxij(mu,nu,i,j)            = TAO_AB_x(mu,i,nu,j)
-               Tijxx(i,j,lambda,sigma)     = LAO_AB(i,lambda,j,sigma)
-               TSxxxx(mu,nu,lambda,sigma)  = Txxij(mu,nu,i,j)*Tijxx(i,j,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu)  = TSxxxx(mu,nu,lambda,sigma)
-               TASxxxx(lambda,sigma,mu,nu) *= Fact
-
-               T1xxxx(mu,nu,lambda,sigma)   = TSxxxx(mu,nu,lambda,sigma)
-               T1xxxx(lambda,sigma,mu,nu)  += TASxxxx(lambda,sigma,mu,nu)
-               T1xxxx(mu,nu,lambda,sigma)  *= Mquart 
-
-               PXXXX_x(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
-            ENDDO j
-            ENDDO i
-      
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)   = Pxxxx_X(mu,nu,lambda,sigma)
-
-# The 1/4 factor is D(ab,cd) = D(cd,ab) (symmetrization is not done though)
 
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
             D2SO_PX += tmp
@@ -16898,46 +16932,46 @@
                 CALL PICK_PERT_T_Z
              ENDIF
 #bgn_debug
-#      sum0 = 0.0
-#      do a
-#      do i
-#         get t1a_old_x(a,i)
-#         get l1a_old_x(i,a)
-#         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
-#         sum0 +=tmp
-#         tmp  =  l1a_old_x(i,a) * l1a_old_x(i,a)
-#          sum0 +=tmp
-#      enddo i
-#      enddo a
-#      execute print_scalar sum0
-#
-#      suma = 0.0
-#      sumb = 0.0
-#      sumaa = 0.0
-#      sumbb = 0.0
-#
-#      PARDO a, i, a2, i1
-#            REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
-#             REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
-#             tmp = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
-#             suma += tmp
-#             tmp =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
-#             suma += tmp
-#      ENDPARDO a, i, a2, i1
-#
-#      PARDO b1, j, b2, j1
-#            REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
-#            REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
-#            tmp = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
-#            sumb += tmp
-#            tmp = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
-#            sumb += tmp
-#       ENDPARDO b1, j, b2, j1
-#       execute server_barrier
-#       collective sumaa += suma
-#       collective sumbb += sumb
-#       execute print_scalar sumaa
-#       execute print_scalar sumbb
+      sum0 = 0.0
+      do a
+      do i
+         get t1a_old_x(a,i)
+         get l1a_old_x(i,a)
+         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
+         sum0 +=tmp
+         tmp  =  l1a_old_x(i,a) * l1a_old_x(i,a)
+          sum0 +=tmp
+      enddo i
+      enddo a
+      execute print_scalar sum0
+
+      suma = 0.0
+      sumb = 0.0
+      sumaa = 0.0
+      sumbb = 0.0
+
+      PARDO a, i, a2, i1
+            REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
+             REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+             tmp = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
+             suma += tmp
+             tmp =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
+             suma += tmp
+      ENDPARDO a, i, a2, i1
+
+      PARDO b1, j, b2, j1
+            REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
+            REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
+            tmp = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
+            sumb += tmp
+            tmp = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
+            sumb += tmp
+       ENDPARDO b1, j, b2, j1
+       execute server_barrier
+       collective sumaa += suma
+       collective sumbb += sumb
+       execute print_scalar sumaa
+       execute print_scalar sumbb
 #end_debug
 
              CREATE Gmi_a_x

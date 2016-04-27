@@ -1837,8 +1837,8 @@
              Tai(a,i)  = t1a_old(a,i)
              Tii(i1,i) = HBa_me_x(i1,a)*Tai(a,i)
              Tii(i1,i) += T1ii(i1,i)
-             Tii(i1,i) *= 0.5
            ENDDO a
+           Tii(i1,i) *= 0.5
            put F1mi_a_x(i1,i) +=Tii(i1,i)
        ENDPARDO i1,i
       ENDPROC F1MIA

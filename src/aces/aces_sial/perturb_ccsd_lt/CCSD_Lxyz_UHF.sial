@@ -785,6 +785,8 @@
       scalar esum
       scalar esuma
       scalar esumb
+      scalar esumaa
+      scalar esumbb
       scalar esumab
       scalar ecorraa
       scalar ecorrbb
@@ -1910,6 +1912,19 @@
                PUT F1mi_a_x(i1,i) += Tii(i1,i)
             ENDDO i2
       ENDPARDO i1, i, a
+#bgn_debug
+     execute sip_barrier
+     suma = 0.0
+     do i
+     do i1
+        get F1mi_a_x(i1,i)
+        tmp = F1mi_a_x(i1,i) * F1mi_a_x(i1,i)
+        suma += tmp
+     enddo i1
+     enddo i
+     execute print_scalar suma
+#end_debug
+
 #.....................................
       PARDO a, a2, i2
             allocate L2aiai(a2,*,a,i2)
@@ -1927,6 +1942,19 @@
             ENDDO i
             deallocate L2aiai(a2,*,a,i2)
       ENDPARDO a, a2, i2
+#bgn_debug
+     execute sip_barrier
+     suma = 0.0
+     do i
+     do i1
+        get F1mi_a_x(i1,i)
+        tmp = F1mi_a_x(i1,i) * F1mi_a_x(i1,i)
+        suma += tmp
+     enddo i1
+     enddo i
+     execute print_scalar suma
+#end_debug
+
 #.........................
       PARDO i1, i, j, b
             REQUEST Vpiqj(i,i1,b,j) j
@@ -1949,12 +1977,29 @@
             ENDDO i
             deallocate L3aibj(a,*,b,j)
       ENDPARDO a, b, j
+#bgn_debug
+     execute sip_barrier
+     suma = 0.0
+     do i
+     do i1
+        get F1mi_a_x(i1,i)
+        tmp = F1mi_a_x(i1,i) * F1mi_a_x(i1,i)
+        suma += tmp
+     enddo i1
+     enddo i
+     execute print_scalar suma
+#end_debug
+
 #.................................
       PARDO i1,i
             get HBa_mi_x(i1,i)
             Tii(i1,i)         =  HBa_mi_x(i1,i)
             put F1mi_a_x(i1,i) +=Tii(i1,i)
       ENDPARDO i1,i
+#
+# A bug fix on 04/2016 (Prakash codes are infested with this type
+# of buggy constructs)
+#
       PARDO i1,i
            Tii(i1,i)=0.0
            DO a
@@ -1963,8 +2008,8 @@
              Tai(a,i)  = t1a_old(a,i)
              T1ii(i1,i) = HBa_me_x(i1,a)*Tai(a,i)
              Tii(i1,i) += T1ii(i1,i)
-             Tii(i1,i) *= 0.5
            ENDDO a
+           Tii(i1,i) *= 0.5
            put F1mi_a_x(i1,i) +=Tii(i1,i)
        ENDPARDO i1,i
 #bgn_debug
@@ -2056,8 +2101,8 @@
              Tbj(b,j) = t1b_old(b,j)
              T1jj(j1,j) = HBb_me_x(j1,b)*tbj(b,j)
              Tjj(j1,j) += T1jj(j1,j)   
-             Tjj(j1,j)*= 0.5
         ENDDO b
+           T1jj(j1,j)*= 0.5
            put F1mi_b_x(j1,j) +=Tjj(j1,j)
        ENDPARDO j1,j
 
@@ -13073,6 +13118,60 @@
 # T1old_aa_x, T2old_aa_x and they copied for different arrays to
 # dump them to the disk.
 #
+#bgn_debug
+    esuma   = 0.0
+    esumb   = 0.0
+    ecorraa = 0.0
+    ecorrbb = 0.0
+
+    PARDO a,i
+           GET l1a_old_x(i,a)
+           etemp  = l1a_old_x(i,a) * l1a_old_x(i,a)
+           esuma += etemp
+     ENDPARDO a,i
+     PARDO b,j
+           GET l1b_old_x(j,b)
+           etemp  = l1b_old_x(j,b) *  l1b_old_x(j,b)
+           esumb += etemp
+     ENDPARDO b,j
+
+     collective ecorraa += esuma
+     collective ecorrbb += esumb
+     execute print_scalar ecorraa
+     execute print_scalar ecorrbb
+
+     ecorraa = 0.0
+     ecorrbb = 0.0
+     ecorrab = 0.0
+     esumaa  = 0.0
+     esumbb  = 0.0
+     esumab  = 0.0
+     PARDO a, i, a1, i1
+           REQUEST L2old_aa_x(i,a,i1,a1) i1
+           etemp = L2old_aa_x(i,a,i1,a1) * L2old_aa_x(i,a,i1,a1) 
+           esumaa += etemp
+     ENDPARDO a, i, a1, i1
+
+     PARDO b, j, b1, j1
+           REQUEST L2old_bb_x(j,b,j1,b1) j1
+           etemp = L2old_bb_x(j,b,j1,b1) * L2old_bb_x(j,b,j1,b1)
+           esumbb += etemp
+     ENDPARDO b, j, b1, j1
+
+     PARDO a, b, i, j
+           REQUEST L2old_ab_x(i,a,j,b) j
+           etemp =  L2old_ab_x(i,a,j,b) *  L2old_ab_x(i,a,j,b)
+           esumab += etemp
+     ENDPARDO a, b, i, j
+     execute server_barrier
+     collective ecorraa += esumaa
+     collective ecorrbb += esumbb
+     collective ecorrab += esumab
+     execute print_scalar ecorraa
+     execute print_scalar ecorrbb
+     execute print_scalar ecorrab
+#end_debug
+
          IF NCOUNT == 1.0
             CALL PUT_PERT_LX
             EXECUTE SERVER_BARRIER

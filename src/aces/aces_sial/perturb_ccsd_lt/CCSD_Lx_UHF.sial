@@ -1826,8 +1826,8 @@
              Tai(a,i)  = t1a_old(a,i)
              T1ii(i1,i) = HBa_me_x(i1,a)*Tai(a,i)
              Tii(i1,i) += T1ii(i1,i)
-             Tii(i1,i) *= 0.5
            ENDDO a
+           Tii(i1,i) *= 0.5
            put F1mi_a_x(i1,i) +=Tii(i1,i)
        ENDPARDO i1,i
 #PV..........................................................      ENDPROC F1MIA
@@ -1961,8 +1961,8 @@
              Tbj(b,j) = t1b_old(b,j)
              T1jj(j1,j) = HBb_me_x(j1,b)*tbj(b,j)
              Tjj(j1,j) += T1jj(j1,j)   
-             Tjj(j1,j)*= 0.5
         ENDDO b
+           Tjj(j1,j)*= 0.5
            put F1mi_b_x(j1,j) +=Tjj(j1,j)
        ENDPARDO j1,j
 #PV.......................................................      ENDPROC F1MIB

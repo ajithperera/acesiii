@@ -620,6 +620,7 @@
       scalar esum
       scalar esuma
       scalar esumaa
+      scalar esumbb
       scalar esumb
       scalar esumab
       scalar ecorraa
@@ -10014,19 +10015,35 @@
            etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
            esuma += etemp
      ENDPARDO a,i
+
+     PARDO b,j
+           GET t1b_old_x(b,j)
+           etemp  = T1b_old_x(b,j)*T1b_old_x(b,j)
+           esumb += etemp
+     ENDPARDO b,j
      execute server_barrier
      collective ecorraa += esuma
+     collective ecorrbb += esumb
      execute print_scalar ecorraa
+     execute print_scalar ecorrbb
 
      ecorraa = 0.0
+     ecorrbb = 0.0
      ecorrab = 0.0
      esumaa  = 0.0
+     esumbb  = 0.0
      esumab  = 0.0
      PARDO a, i, a1, i1
            REQUEST T2old_aa_x(a,i,a1,i1) i1
            etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
            esumaa += etemp
      ENDPARDO a, i, a1, i1
+
+     PARDO b, j, b1, j1
+           REQUEST T2old_bb_x(b,j,b1,j1) j1
+           etemp = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
+           esumbb += etemp
+     ENDPARDO b, j, b1, j1
 
      PARDO a, b, i, j
            REQUEST T2old_ab_x(a,i,b,j) j
@@ -10035,8 +10052,10 @@
      ENDPARDO a, b, i, j
      execute server_barrier
      collective ecorraa += esumaa
+     collective ecorrbb += esumbb
      collective ecorrab += esumab
      execute print_scalar ecorraa
+     execute print_scalar ecorrbb
      execute print_scalar ecorrab
 #end_debug
 #        Check on convergence 
@@ -10088,25 +10107,41 @@
     esuma   = 0.0
     esumb   = 0.0
     ecorraa = 0.0
+    ecorrbb = 0.0
 
     PARDO a,i
            GET t1a_old_x(a,i)
            etemp  = T1a_old_x(a,i)*T1a_old_x(a,i)
            esuma += etemp
      ENDPARDO a,i
+     PARDO b,j
+           GET t1b_old_x(b,j)
+           etemp  = T1b_old_x(b,j)*T1b_old_x(b,j)
+           esumb += etemp
+     ENDPARDO b,j
 
      collective ecorraa += esuma
+     collective ecorrbb += esumb
      execute print_scalar ecorraa
+     execute print_scalar ecorrbb
 
      ecorraa = 0.0
+     ecorrbb = 0.0
      ecorrab = 0.0
      esumaa  = 0.0
+     esumbb  = 0.0
      esumab  = 0.0
      PARDO a, i, a1, i1
            REQUEST T2old_aa_x(a,i,a1,i1) i1
            etemp = T2old_aa_x(a,i,a1,i1)*T2old_aa_x(a,i,a1,i1)
            esumaa += etemp
      ENDPARDO a, i, a1, i1
+
+     PARDO b, j, b1, j1
+           REQUEST T2old_bb_x(b,j,b1,j1) j1
+           etemp = T2old_bb_x(b,j,b1,j1)*T2old_bb_x(b,j,b1,j1)
+           esumbb += etemp
+     ENDPARDO b, j, b1, j1
 
      PARDO a, b, i, j
            REQUEST T2old_ab_x(a,i,b,j) j
@@ -10115,8 +10150,10 @@
      ENDPARDO a, b, i, j
      execute server_barrier
      collective ecorraa += esumaa
+     collective ecorrbb += esumbb
      collective ecorrab += esumab
      execute print_scalar ecorraa
+     execute print_scalar ecorrbb
      execute print_scalar ecorrab
 #end_debug
 
