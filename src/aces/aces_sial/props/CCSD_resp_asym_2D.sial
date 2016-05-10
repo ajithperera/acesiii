@@ -8216,12 +8216,13 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Taaai(a,a1,a2,i) *= 4.0 
-#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i)  
+           Taaai(a,a1,a2,i) *= 4.0 
+           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i)  
 #end_debug
+            Taaai(a,a1,a2,i) *= Ptquart
+
             dO mu
 
-               Taaai(a,a1,a2,i) *= Ptquart
 #bgn_debug
 #               Taaai(a,a1,a2,i) *= 1.5
 #               Taaai(a,a1,a2,i) *= 1.0
@@ -8232,6 +8233,21 @@
       ENDPARDO a, a1, a2, i
       execute server_barrier
 
+#bgn_debug
+      sumaa=0.0
+      suma =0.0
+      PARDO mu,a1,a2,i
+            REQUEST Dxaai_x(mu,a1,a2,i) i
+            Txaai(mu,a1,a2,i) = Dxaai_x(mu,a1,a2,i)
+            tmp = Txaai(mu,a1,a2,i) * Txaai(mu,a1,a2,i)
+            suma += tmp
+      ENDPARDO mu,a1,a2,i
+      execute server_barrier
+      collective sumaa += suma
+      execute print_scalar sumaa
+#end_debug
+
+
 # Back transform to full AO representation
       PARDO mu, a1, a2, i
             REQUEST Dxaai_x(mu,a1,a2,i) i
@@ -8241,6 +8257,19 @@
             ENDDO nu
       ENDPARDO mu, a1, a2, i
       execute server_barrier
+#bgn_debug
+      sumaa=0.0
+      suma =0.0
+      PARDO mu,nu,a2,i
+            REQUEST Dxxai_x(mu,nu,a2,i)i
+            Txxai(mu,nu,a2,i) = Dxxai_x(mu,nu,a2,i) 
+            tmp = Txxai(mu,nu,a2,i) * Txxai(mu,nu,a2,i)
+            suma += tmp
+      ENDPARDO mu,nu,a2,i
+      execute server_barrier
+      collective sumaa += suma
+      execute print_scalar sumaa
+#end_debug
 
       PARDO mu, nu, i
             allocate Lxxai(mu,nu,*,i)
@@ -8259,6 +8288,20 @@
             deallocate Lxxai(mu,nu,*,i)
       ENDPARDO mu, nu, i
       execute server_barrier
+#bgn_debug
+      sumaa=0.0
+      suma =0.0
+      PARDO mu, nu, lambda,i
+            REQUEST Dxxxi_x_AA(mu,nu,lambda,i) i
+            Txxxi(mu,nu,lambda,i) = Dxxxi_x_AA(mu,nu,lambda,i)
+            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
+            suma += tmp
+      ENDPARDO mu, nu, lambda,i
+      execute server_barrier
+      collective sumaa += suma
+      execute print_scalar sumaa
+#end_debug
+
 
       ENDPROC DCIABAAAA_X
 #    ---------------------
@@ -8385,13 +8428,13 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tbbbj(b,b1,b2,j) *= 4.0 
-#            PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+           Tbbbj(b,b1,b2,j) *= 4.0 
+            PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
+            Tbbbj(b,b1,b2,j)  *= Mtquart
 
             DO mu
 
-               Tbbbj(b,b1,b2,j)  *= Mtquart
 #bgn_debug
 #               Tbbbj(b,b1,b2,j) *= -1.5
 #               Tbbbj(b,b1,b2,j) *= 1.0
@@ -8430,6 +8473,19 @@
             deallocate Lxxbj(mu,nu,*,j)
       ENDPARDO mu, nu, j
       execute server_barrier
+#bgn_debug
+      sumbb=0.0
+      sumb =0.0
+      PARDO mu, nu, lambda,j
+            REQUEST Dxxxj_x_BB(mu,nu,lambda,j) j
+            Txxxj(mu,nu,lambda,j) = Dxxxj_x_BB(mu,nu,lambda,j)
+            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
+            sumb += tmp
+      ENDPARDO mu, nu, lambda,j
+      execute server_barrier
+      collective sumbb += sumb
+      execute print_scalar sumbb
+#end_debug
 
      ENDPROC DCIABBBBB_X
 #    -------------------
@@ -8583,8 +8639,8 @@
 # Multiply by 4 to match aces
 # ---------------------------
 #bgn_debug
-#           Tbabi(b1,a,b,i) *= 4.0
-#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
+           Tbabi(b1,a,b,i) *= 4.0
+           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
             DO mu
 
@@ -8623,6 +8679,20 @@
             deallocate Lxxbi(mu,nu,*,i)
       ENDPARDO mu, nu, i
       execute server_barrier
+#bgn_debug
+      sumbb=0.0
+      sumb =0.0
+      PARDO mu, nu, lambda,i
+            REQUEST Dxxxi_x_AB(mu,nu,lambda,i) i
+            Txxxi(mu,nu,lambda,i) = Dxxxi_x_AB(mu,nu,lambda,i)
+            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
+            sumb += tmp
+      ENDPARDO mu, nu, lambda,i
+      execute server_barrier
+      collective sumbb += sumb
+      execute print_scalar sumbb
+#end_debug
+
 
       ENDPROC DCIABBABA_X
 #     --------------------
@@ -8776,8 +8846,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tabaj(a,b,a1,j) *= 4.0
-#           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
+           Tabaj(a,b,a1,j) *= 4.0
+           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 
             DO mu
@@ -8817,6 +8887,21 @@
             deallocate Lxxaj(mu,nu,*,j)
       ENDPARDO mu, nu, j
       execute server_barrier
+
+#bgn_debug
+      sumbb=0.0
+      sumb =0.0
+      PARDO mu, nu, lambda,j
+            REQUEST Dxxxj_x_AB(mu,nu,lambda,j) j
+            Txxxj(mu,nu,lambda,j) = Dxxxj_x_BB(mu,nu,lambda,j)
+            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
+            sumb += tmp
+      ENDPARDO mu, nu, lambda,j
+      execute server_barrier
+      collective sumbb += sumb
+      execute print_scalar sumbb
+#end_debug
+
 
      ENDPROC DCIABABAB_X
 #    -------------------
@@ -9406,16 +9491,15 @@
            T1AHiiia(i,i1,i2,a)   = Taiii(a,i,i1,i2)
            T1AHiiia(i,i1,i2,a)  *= Fact
            Tiiia(i,i1,i2,a)     += T1AHiiia(i,i1,i2,a)
+           Tiiia(i,i1,i2,a)     *= Ptquart
 
 # Multiply by 4 to match aces 
 # ---------------------------
 #bgn_debug
-#           Tiiia(i,i1,i2,a) *= 4.0
-#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+           Tiiia(i,i1,i2,a) *= 4.0
+           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
             DO sigma
-
-                Tiiia(i,i1,i2,a)  *= Ptquart
 #bgn_debug
 #               Tiiia(i,i1,i2,a)  *= 1.5
 #               Tiiia(i,i1,i2,a)  *= 1.0
@@ -9563,15 +9647,14 @@
            T1AHjjjb(j,j1,j2,b)   = Tbjjj(b,j,j1,j2)
            T1AHjjjb(j,j1,j2,b)  *= Fact
            Tjjjb(j,j1,j2,b)     += T1AHjjjb(j,j1,j2,b)
+           Tjjjb(j,j1,j2,b)     *= Mtquart
 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tjjjb(j,j1,j2,b) *= 4.0 
-#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+           Tjjjb(j,j1,j2,b) *= 4.0 
+           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
             DO sigma
-
-               Tjjjb(j,j1,j2,b)  *= Mtquart
 #bgn_debug
 #               Tjjjb(j,j1,j2,b) *= -1.5
 #               Tjjjb(j,j1,j2,b) *= 1.0
@@ -9740,15 +9823,14 @@
            T1AHijib(i,j,i1,b)   = Tbiji(b,i,j,i1)
            T1AHijib(i,j,i1,b)  *= Fact 
            Tijib(i,j,i1,b)     += T1AHijib(i,j,i1,b) 
-
+           Tijib(i,j,i1,b)     *= ABAB_fact 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tijib(i,j,i1,b) *= 4.0 
-#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+           Tijib(i,j,i1,b) *= 4.0 
+           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
 #end_debug
             DO sigma
             
-               Tijib(i,j,i1,b)         *= ABAB_fact 
                Tijix(i,j,i1,sigma)      = Tijib(i,j,i1,b)*cb(sigma,b)
                PREPARE Dijix_x(i,j,i1,sigma) += Tijix(i,j,i1,sigma)
             ENDDO sigma
@@ -9908,11 +9990,12 @@
            T1AHjija(j,i,j1,a)   = Tajij(a,j,i,j1)
            T1AHjija(j,i,j1,a)  *= Fact
            Tjija(j,i,j1,a)     += T1AHjija(j,i,j1,a)
+           Tjija(j,i,j1,a)     *= ABAB_fact 
 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tjija(j,i,j1,a) *= 4.0 
-#            PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+            Tjija(j,i,j1,a) *= 4.0 
+            PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 
             DO sigma
@@ -9920,7 +10003,6 @@
 #               Tjija(j,i,j1,a)  *= Phalf 
 #               Tjija(j,i,j1,a)  *= 1.0
 #end_debug
-               Tjija(j,i,j1,a)         *= ABAB_fact 
                Tjijx(j,i,j1,sigma)      = Tjija(j,i,j1,a)*ca(sigma,a)
                PREPARE Djijx_x(j,i,j1,sigma) += Tjijx(j,i,j1,sigma)
             ENDDO sigma
@@ -13338,7 +13420,7 @@
             T1xxxx(mu,nu,lambda,sigma)*= Coreln 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #bgn_debug
-#              Txxxx(mu,nu,lambda,sigma) = 0.0
+#              Txxxx(mu,nu,lambda,sigma) *= 0.0
 #end_debug
 #
 #           Fully transform Diixx
@@ -14333,15 +14415,15 @@
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #            execute dump_amp Txxxx(mu,nu,lambda,sigma)
+#bgn_debug
+#              Txxxx(mu,nu,lambda,sigma) *= 0.0
+#end_debug
 #
 #           Fully transform Diixx
 #           ---------------------
             DO i
 #
                Tixxx(i,nu,lambda,sigma) = 0.0
-#bgn_debug
-#              Txxxx(mu,nu,lambda,sigma) = 0.0
-#end_debug
                DO i1
                   REQUEST Diixx_x(i,i1,lambda,sigma) i1
                   T1ixxx(i,nu,lambda,sigma) = Diixx_x(i,i1,lambda,sigma)*ca(nu,i1) 
@@ -14550,6 +14632,7 @@
                REQUEST Dxxxi_x_AB(mu,nu,lambda,i) i
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AB(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
+               T1xxxx(mu,nu,lambda,sigma) *= Pquart 
                Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i
 #
@@ -14585,6 +14668,9 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
+#bgn_debug
+#             PXXXX_x(mu,nu,lambda,sigma) *= 0
+#end_debuh
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
@@ -15078,6 +15164,9 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
+#bgn_debug
+#             PXXXX_x(mu,nu,lambda,sigma) *= 0
+#end_debuh
             PXXXX_x(mu,nu,lambda,sigma) *= 0.125
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)   = Pxxxx_X(mu,nu,lambda,sigma)
@@ -16995,29 +17084,29 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-#             CALL S2DIJKL_X 
+             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-#             CALL S2DIBJA_X 
+             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-#             CALL S2DIJKA_X 
+             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-#             CALL S2DIJAB_X
+             CALL S2DIJAB_X
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-#             CALL S2ABCI_X 
+             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions
