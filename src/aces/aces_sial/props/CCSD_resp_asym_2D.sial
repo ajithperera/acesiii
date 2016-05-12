@@ -8216,8 +8216,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-           Taaai(a,a1,a2,i) *= 4.0 
-           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i)  
+#           Taaai(a,a1,a2,i) *= 4.0 
+#           PREPARE Dabci_aaaa_x(a,a1,a2,i) += Taaai(a,a1,a2,i)  
 #end_debug
             Taaai(a,a1,a2,i) *= Ptquart
 
@@ -8428,8 +8428,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-           Tbbbj(b,b1,b2,j) *= 4.0 
-            PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+#           Tbbbj(b,b1,b2,j) *= 4.0 
+#            PREPARE Dabci_bbbb_x(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
             Tbbbj(b,b1,b2,j)  *= Mtquart
 
@@ -8639,8 +8639,8 @@
 # Multiply by 4 to match aces
 # ---------------------------
 #bgn_debug
-           Tbabi(b1,a,b,i) *= 4.0
-           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
+#           Tbabi(b1,a,b,i) *= 4.0
+#           PREPARE Dabci_baba_x(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
             DO mu
 
@@ -8846,8 +8846,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-           Tabaj(a,b,a1,j) *= 4.0
-           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
+#           Tabaj(a,b,a1,j) *= 4.0
+#           PREPARE Dabci_abab_x(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 
             DO mu
@@ -9496,8 +9496,8 @@
 # Multiply by 4 to match aces 
 # ---------------------------
 #bgn_debug
-           Tiiia(i,i1,i2,a) *= 4.0
-           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+#           Tiiia(i,i1,i2,a) *= 4.0
+#           PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #end_debug
             DO sigma
 #bgn_debug
@@ -9651,8 +9651,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-           Tjjjb(j,j1,j2,b) *= 4.0 
-           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+#           Tjjjb(j,j1,j2,b) *= 4.0 
+#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #end_debug
             DO sigma
 #bgn_debug
@@ -9826,8 +9826,8 @@
            Tijib(i,j,i1,b)     *= ABAB_fact 
 # Multiply by 4 to match aces 
 #bgn_debug
-           Tijib(i,j,i1,b) *= 4.0 
-           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
+#           Tijib(i,j,i1,b) *= 4.0 
+#           PREPARE Dijka_abab_x(i,j,i1,b) += Tijib(i,j,i1,b) 
 #end_debug
             DO sigma
             
@@ -9994,8 +9994,8 @@
 
 # Multiply by 4 to match aces 
 #bgn_debug
-            Tjija(j,i,j1,a) *= 4.0 
-            PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
+#            Tjija(j,i,j1,a) *= 4.0 
+#            PREPARE Dijka_baba_x(j,i,j1,a) += Tjija(j,i,j1,a) 
 #end_debug
 
             DO sigma
@@ -17084,29 +17084,29 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-             CALL S2DIJKL_X 
+#             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-             CALL S2DIBJA_X 
+#             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-             CALL S2DIJKA_X 
+#             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-             CALL S2DIJAB_X
+#             CALL S2DIJAB_X
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-             CALL S2ABCI_X 
+#             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions
