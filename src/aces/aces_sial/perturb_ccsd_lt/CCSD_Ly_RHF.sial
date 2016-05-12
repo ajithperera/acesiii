@@ -7765,7 +7765,7 @@
 #------------------------------End of lambda iterations
       EXECUTE SERVER_BARRIER
       totenerg  = ecorrT
-      execute print_scalar totenerg
+      execute print_scalar ediff 
       execute print_rel_info ten pinf
 
 # If the lambda iterations converge and start work on new perturbation.

@@ -12595,7 +12595,7 @@
       eold = ecorrT
       ENDDO kiter
       totenerg  = ecorrT
-      execute print_scalar totenerg
+      execute print_scalar ediff 
       execute print_rel_info ten pinf
       ENDPROC LMAIN 
 

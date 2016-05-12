@@ -8011,7 +8011,7 @@
      delete Gmi_a_x
 
      eold = ecorrT
-     execute print_scalar eold 
+     execute print_scalar ediff 
      ENDDO kiter
 #------------------------------End of lambda iterations
       EXECUTE SERVER_BARRIER
