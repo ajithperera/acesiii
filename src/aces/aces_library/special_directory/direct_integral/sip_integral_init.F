@@ -230,9 +230,10 @@ C become available.
             
             soi    = .TRUE.
             dsh_2p = .TRUE.
+#ifdef _DEBUG_LVL0
             Write(6,"(1x,a,a)") "In sip_integral_init both SOI and",
      *                       " dsh_2p flags are turned on"
-
+#endif 
         endif 
 
          if (do_erd_scratch_calc) then

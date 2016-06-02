@@ -3034,7 +3034,7 @@
 
             Tpq(mu,nu)  = Dccsd(mu,nu)
             Tpq(mu,nu) += Dscf(mu,nu)
-            execute dump_amp Tpq(mu,nu)
+#            execute dump_amp Tpq(mu,nu)
 
             XX   = Tpq(mu,nu)*Tkin(mu,nu)
             Axx += XX

@@ -9877,6 +9877,13 @@
 
        DO NPERT 
 
+       do kiter
+       do kptr1
+          etemp = 0.0
+          pinf(kiter,kptr1)  = etemp
+       enddo kptr1
+       enddo kiter
+
        X_COMP = 0.0
        Y_COMP = 0.0
        Z_COMP = 0.0
@@ -10050,7 +10057,7 @@
            etemp = T2old_ab_x(a,i,b,j)*T2old_ab_x(a,i,b,j)
            esumab += etemp
      ENDPARDO a, b, i, j
-     execute server_barrier
+     #execute server_barrier
      collective ecorraa += esumaa
      collective ecorrbb += esumbb
      collective ecorrab += esumab
@@ -10176,7 +10183,7 @@
 #
 #pv      totenerg += scfeneg  
 #     execute print_scalar totenerg  
-#     execute print_rel_info seven pinf
+#      execute print_rel_info seven pinf
 
 # Write amplitudes to file
 # ------------------------
@@ -10204,62 +10211,62 @@
 #      execute print_scalar diff
 #debug_end
 
-      etemp = 23.0
-      execute print_rel_info etemp pinf
-      DO a
-      DO a1  
-      DO i
-      DO i1  
-         REQUEST T2old_aa_x(a,i,a1,i1) a
-         execute maxamp_print T2old_aa_x
-      ENDDO i1  
-      ENDDO i
-      ENDDO a1  
-      ENDDO a
-
-      etemp = 24.0
-      execute print_rel_info etemp pinf
-      DO b
-      DO b1  
-      DO j
-      DO j1  
-         REQUEST T2old_bb_x(b,j,b1,j1) b
-         execute maxamp_print T2old_bb_x
-      ENDDO j1  
-      ENDDO j
-      ENDDO b1  
-      ENDDO b
-
-      etemp = 25.0
-      execute print_rel_info etemp pinf
-      DO a
-      DO b
-      DO i
-      DO j
-         REQUEST T2old_ab_x(a,i,b,j) a
-         execute maxamp_print T2old_ab_x
-      ENDDO j
-      ENDDO i
-      ENDDO b
-      ENDDO a
-
-      etemp = 26.0
-      execute print_rel_info etemp pinf
-      DO a
-      DO i
-         GET t1a_old_x(a,i)
-         execute maxamp_print t1a_old_x
-      ENDDO i
-      ENDDO a
-
-      etemp = 27.0
-      execute print_rel_info etemp pinf
-      DO b
-      DO j
-         GET t1b_old_x(b,j)
-         execute maxamp_print t1b_old_x
-      ENDDO j
-      ENDDO b
+#      etemp = 23.0
+#      execute print_rel_info etemp pinf
+#      DO a
+#      DO a1  
+#      DO i
+#      DO i1  
+#         REQUEST T2old_aa_x(a,i,a1,i1) a
+#         execute maxamp_print T2old_aa_x
+#      ENDDO i1  
+#      ENDDO i
+#      ENDDO a1  
+#      ENDDO a
+#
+#      etemp = 24.0
+#      execute print_rel_info etemp pinf
+#      DO b
+#      DO b1  
+#      DO j
+#      DO j1  
+#         REQUEST T2old_bb_x(b,j,b1,j1) b
+#         execute maxamp_print T2old_bb_x
+#      ENDDO j1  
+#      ENDDO j
+#      ENDDO b1  
+#      ENDDO b
+#
+#      etemp = 25.0
+#      execute print_rel_info etemp pinf
+#      DO a
+#      DO b
+#      DO i
+#      DO j
+#         REQUEST T2old_ab_x(a,i,b,j) a
+#         execute maxamp_print T2old_ab_x
+#      ENDDO j
+#      ENDDO i
+#      ENDDO b
+#      ENDDO a
+#
+#      etemp = 26.0
+#      execute print_rel_info etemp pinf
+#      DO a
+#      DO i
+#         GET t1a_old_x(a,i)
+#         execute maxamp_print t1a_old_x
+#      ENDDO i
+#      ENDDO a
+#
+#      etemp = 27.0
+#      execute print_rel_info etemp pinf
+#      DO b
+#      DO j
+#         GET t1b_old_x(b,j)
+#         execute maxamp_print t1b_old_x
+#      ENDDO j
+#      ENDDO b
 
       CALL WRITE_2EL   
       execute sip_barrier
