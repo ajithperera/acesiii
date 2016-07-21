@@ -363,6 +363,7 @@
      scalar  two
      scalar  three
      scalar esuma 
+     scalar etmp
      scalar esumb
      scalar ecorraa
      scalar tmp
@@ -3892,10 +3893,10 @@
 #
             Tabaj(a,b,a1,j) = 0.0 
 #
-            GET Gae_a(a,a1) 
+            GET Gae_a(a1,a) 
             GET t1b_old(b,j) 
 #
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old(b,j) 
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old(b,j) 
             T1abaj(a,b,a1,j) *= -0.125 
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
@@ -3910,14 +3911,23 @@
 #
                T1abaj(a,b,a1,j)  = Tau_ab(a,i,b,j)*l1a_old(i,a1) 
                T1abaj(a,b,a1,j) *= 0.125 
+#bgn_debug
+#               T1abaj(a,b,a1,j) *= 1.0
+#end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
                T1abaj(a,b,a1,j)  = L2old_ab(i,a,j,b)*t1a_old(a1,i)  
                T1abaj(a,b,a1,j) *= 0.125 
+#bgn_debug
+#               T1abaj(a,b,a1,j) *= 1.0
+#end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old(a,i) 
                T1abaj(a,b,a1,j) *= 0.25 
+#bgn_debug
+#               T1abaj(a,b,a1,j) *= 0.0
+#end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
             ENDDO i 
@@ -3929,6 +3939,9 @@
 #
                T1abaj(a,b,a1,j)  = Vibja_baba(j,a1,j1,a)*t1b_old(b,j1) 
                T1abaj(a,b,a1,j) *= -0.25 
+#bgn_debug
+#               T1abaj(a,b,a1,j) *= 0.0
+#end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
                DO i 
@@ -3942,6 +3955,9 @@
                   Tijaj(i,j1,a1,j)  = I3ab(i,a1,j1,j)
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
+#bgn_debug
+#               T1abaj(a,b,a1,j) *= 0.0
+#end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 #
                ENDDO i 
@@ -4072,10 +4088,10 @@
 #
             Tbabi(b1,a,b,i) = 0.0 
 #
-            GET Gae_b(b1,b) 
+            GET Gae_b(b,b1) 
             GET t1a_old(a,i) 
 #
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #
@@ -4090,16 +4106,25 @@
 #
                T1babi(b1,a,b,i)  = Tau_ab(a,i,b1,j)*l1b_old(j,b) 
                T1babi(b1,a,b,i) *= 0.125 
+#bgn_debug
+#               T1babi(b1,a,b,i) *= 1.0
+#end_debug
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #
                T1babi(b1,a,b,i)  = L2old_ab(i,a,j,b1)*t1b_old(b,j)  
                T1babi(b1,a,b,i) *= 0.125 
+#bgn_debug
+#               T1babi(b1,a,b,i) *= 1.0
+#end_debug
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #
                T1babi(b1,a,b,i)  = Vibja_abba(i,b,j,a)*t1b_old(b1,j) 
                T1babi(b1,a,b,i) *= 0.25 
+#bgn_debug
+#               T1babi(b1,a,b,i) *= 0.0
+#end_debug
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
-#
+
             ENDDO j 
 #
             DO i1 
@@ -4109,6 +4134,9 @@
 #
                T1babi(b1,a,b,i)  = Vibja_abab(i,b,i1,b1)*t1a_old(a,i1) 
                T1babi(b1,a,b,i) *= -0.25 
+#bgn_debug
+#               T1babi(b1,a,b,i) *= 0.0
+#end_debug
                Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #
                DO j 
@@ -4122,6 +4150,9 @@
                   Tjibi(j,i1,b,i)   = I3ba(j,b,i1,i)
                   T1babi(b1,a,b,i)  = Tbaji(b1,a,j,i1)*Tjibi(j,i1,b,i)
                   T1babi(b1,a,b,i) *= -0.125
+#bgn_debug
+#               T1babi(b1,a,b,i) *= 0.0
+#end_debug
                   Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 #
                ENDDO j 
@@ -6415,46 +6446,63 @@
       PROC S2ABCI 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO a, a1, a2, i 
 #
             REQUEST Dabci_aaaa(a,a1,a2,i) i  
             etemp = Dabci_aaaa(a,a1,a2,i)*Dabci_aaaa(a,a1,a2,i)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, a1, a2, i 
-      esum *= 0.5 # to match aces 
-      execute print_scalar esum 
+      etmp *= 0.5 # to match aces 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO b, b1, b2, j 
 #
             REQUEST Dabci_bbbb(b,b1,b2,j) j  
             etemp = Dabci_bbbb(b,b1,b2,j)*Dabci_bbbb(b,b1,b2,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO b, b1, b2, j 
-      esum *= 0.5 # to match aces 
-      execute print_scalar esum 
+      etmp *= 0.5 # to match aces 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO a, a1, b, j 
 #
             REQUEST Dabci_abab(a,b,a1,j) j  
             etemp = Dabci_abab(a,b,a1,j)*Dabci_abab(a,b,a1,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, a1, b, j 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO a, b1, b, i 
 #
             REQUEST Dabci_baba(b,a,b1,i) i   
             etemp = Dabci_baba(b,a,b1,i)*Dabci_baba(b,a,b1,i)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, b1, b, i 
-      execute print_scalar esum 
+#      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       ENDPROC S2ABCI 
 #
@@ -6507,42 +6555,53 @@
       PROC S2DIJAB 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, i1, a, a1  
 #
             REQUEST Dijab_aa(i,i1,a,a1) a  
             etemp = Dijab_aa(i,i1,a,a1)*Dijab_aa(i,i1,a,a1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, i1, a,a1 
-      esum *= 0.25 # to match aces 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO j, j1, b, b1  
 #
             REQUEST Dijab_bb(j,j1,b,b1) b  
             etemp = Dijab_bb(j,j1,b,b1)*Dijab_bb(j,j1,b,b1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO j, j1, b,b1 
-      esum *= 0.25 # to match aces 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, j, a, b  
 #
             REQUEST Dijab_ab(i,j,a,b) a  
             etemp = Dijab_ab(i,j,a,b)*Dijab_ab(i,j,a,b)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, j, a, b 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute sip_barrier
+      execute print_scalar esum
 #
       ENDPROC S2DIJAB 
 #
       PROC S2DIBJA 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, i1, a, a1  
 #
             REQUEST Dibja_aaaa(i,a,i1,a1) a  
@@ -6727,7 +6786,7 @@
 
          ENDDO XYZ
 
-         PRINT_FLAG = 717.0
+         PRINT_FLAG = 718.0
          EXECUTE PRINT_REL_INFO  PRINT_FLAG DIPOLE_MOMS
 #
 #
@@ -6736,7 +6795,7 @@
 # ---------------------------------------------------------------------- 
 #
          CALL PDCONT 
-         CALL COR_ENERGY
+#         CALL COR_ENERGY
 #
       ENDPROC DMAIN
 #     -------------

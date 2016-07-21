@@ -3921,10 +3921,10 @@
 #
             Tabaj(a,b,a1,j) = 0.0 
 #
-            GET Gae_a(a,a1) 
+            GET Gae_a(a1,a) 
             GET t1b_old(b,j) 
 #
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old(b,j) 
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old(b,j) 
             T1abaj(a,b,a1,j) *= -0.125 
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j) 
 #
@@ -4101,10 +4101,10 @@
 #
             Tbabi(b1,a,b,i) = 0.0 
 #
-            GET Gae_b(b1,b) 
+            GET Gae_b(b,b1) 
             GET t1a_old(a,i) 
 #
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #

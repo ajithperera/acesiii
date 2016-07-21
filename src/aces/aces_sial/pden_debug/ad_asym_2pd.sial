@@ -1074,6 +1074,7 @@
       
       scalar sum0
       scalar tmp
+      scalar sum 
       scalar suma
       scalar sumb
       scalar sumaa
@@ -1408,20 +1409,6 @@
             ENDDO i
             PUT Gae_a(a,a1) += Taa(a,a1)
       ENDPARDO a, a1
-#bgn_debug
-#      execute sip_barrier
-#      sumaa = 0.0
-#      do a
-#      do a1
-#         get Gae_a(a,a1)
-#         Taa(a,a1) = Gae_a(a,a1)
-#         tmp = Taa(a,a1)*Taa(a,a1)
-#         sumaa +=tmp
-#       enddo a1
-#       enddo a
-#       execute print_scalar sumaa
-#end_debug
-
       ENDPROC GAEA
 #-------------------------------------------------------------
       PROC GAEA_x
@@ -1475,20 +1462,7 @@
             ENDDO i
             PUT Gae_a_x(a,a1) += Taa(a,a1)
       ENDPARDO a, a1
-#bgn_debug
-#      execute sip_barrier
-#      sumaa = 0.0
-#      do a
-#      do a1
-#         get Gae_a_x(a,a1)
-#         Taa(a,a1) = Gae_a_x(a,a1)
-#         tmp = Taa(a,a1)*Taa(a,a1)
-#         sumaa +=tmp
-#       enddo a1
-#       enddo a
-#       execute print_scalar sumaa
-#end_debug
- 
+
       ENDPROC GAEA_x
 #-------------------------------------------------------------------
       PROC GAEB
@@ -1576,11 +1550,59 @@
       PROC GAE
          CALL GAEA
          CALL GAEB
+#bgn_debug
+      execute sip_barrier
+      sumaa = 0.0
+      do a
+      do a1
+         get Gae_a(a,a1)
+         Taa(a,a1) = Gae_a(a,a1)
+         tmp = Taa(a,a1)*Taa(a,a1)
+        sumaa +=tmp
+      enddo a1
+      enddo a
+       execute print_scalar sumaa
+      sumaa = 0.0
+      do b
+      do b1
+         get Gae_b(b,b1)
+         Tbb(b,b1) = Gae_b(b,b1)
+         tmp = Tbb(b,b1)  * Tbb(b,b1)
+         sumaa +=tmp
+       enddo b1
+       enddo b
+      execute print_scalar sumaa
+#end_debug
+
       ENDPROC GAE
 #-------------------------------------------------------------
        PROC GAE_x
          CALL GAEA_x
          CALL GAEB_x
+#bgn_debug
+      execute sip_barrier
+      sumaa = 0.0
+      do a
+      do a1
+         get Gae_a_x(a,a1)
+         Taa(a,a1) = Gae_a_x(a,a1)
+         tmp = Taa(a,a1)*Taa(a,a1)
+        sumaa +=tmp
+      enddo a1
+      enddo a
+       execute print_scalar sumaa
+      sumaa = 0.0
+      do b
+      do b1
+         get Gae_b_x(b,b1)
+         Tbb(b,b1) = Gae_b_x(b,b1)
+         tmp = Tbb(b,b1)  * Tbb(b,b1)
+         sumaa +=tmp
+       enddo b1
+       enddo b
+      execute print_scalar sumaa
+#end_debug
+
       ENDPROC GAE_x
 #-------------------------------------------------------------
       PROC GMIA
@@ -5660,7 +5682,7 @@
 
       PROC DABCDEXPAA_X
 #     -----------------
-#      Fact = 1.0
+      Fact = 1.0
       PARDO a, a1, a2, a3
             Taaaa(a,a1,a2,a3) = 0.0
             PREPARE Dabcd_aa_x(a,a1,a2,a3) = Taaaa(a,a1,a2,a3)
@@ -5715,6 +5737,7 @@
                T1aaaa(a,a1,a2,a3)  = Dabcd_aa_x(a,a1,a3,a2)
                Taaaa(a,a1,a2,a3)  -= T1aaaa(a,a1,a2,a3)
 
+               Taaaa(a,a1,a2,a3)   = Dabcd_aa_x(a,a1,a2,a3) 
                T1xaaa(mu,a1,a2,a3) = Taaaa(a,a1,a2,a3)*ca(mu,a)
                Txaaa(mu,a1,a2,a3) += T1xaaa(mu,a1,a2,a3)
             ENDDO a
@@ -5810,7 +5833,7 @@
          
       ENDPARDO mu,nu,lambda,sigma
       execute server_barrier
-#      Fact = -1.0
+      Fact = -1.0
       esum = 0.0
       etmp = 0.0
       PARDO mu,nu,lambda,sigma
@@ -5847,7 +5870,7 @@
       ENDPROC DIJKL_X
 #--------------------------------------------------------------------
       PROC DIJKLEXP_X
-           CALL DIJKLEXPAA_X
+###           CALL DIJKLEXPAA_X
            CALL DABCDEXPAA_X
       ENDPROC DIJKLEXP_X
 
@@ -6762,6 +6785,80 @@
 
         CALL DIBJABAAB # BTRAN OK
         CALL DIBJAABBA # BTRAN OK
+
+#bgn_debug
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, i1, a, a1
+           request vibja_aaaa(i1,a,i,a1) a1
+           tmp  = vibja_aaaa(i1,a,i,a1) *  vibja_aaaa(i1,a,i,a1)
+           sum += tmp
+     Endpardo i, i1, a, a1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, j1, b, b1
+           request vibja_bbbb(j1,b,j,b1) b1
+           tmp  = vibja_bbbb(j1,b,j,b1) * vibja_bbbb(j1,b,j,b1)
+           sum += tmp
+     Endpardo j, j1, b, b1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo  a, a1, j, j1
+           request vibja_baba(j,a,j1,a1) j1
+           tmp  = vibja_baba(j,a,j1,a1) * vibja_baba(j,a,j1,a1)
+           sum += tmp
+     Endpardo a, a1, j, j1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo b, b1, i, i1
+           request vibja_abab(i,b,i1,b1) i1
+           tmp  =  vibja_abab(i,b,i1,b1) * vibja_abab(i,b,i1,b1)
+           sum += tmp
+     Endpardo b, b1, i, i1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, a, j, b
+           request vibja_baab(j,a,i,b) b
+           tmp  = vibja_baab(j,a,i,b) * vibja_baab(j,a,i,b)
+           sum += tmp
+     Endpardo i, a, j, b
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, a, j, b
+           request vibja_abba(i,b,j,a) a
+           tmp  =  vibja_abba(i,b,j,a) * vibja_abba(i,b,j,a)
+           sum += tmp
+     Endpardo i, a, j, b
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+#end_debug
+
       ENDPROC DIBJA
 #----------------------------------------------------
 #
@@ -8138,6 +8235,77 @@
 
            CALL DIBJAABBA_X
 #bgn_debug
+#bgn_debug
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, i1, a, a1
+           request vibja_aaaa_x(i1,a,i,a1) a1
+           tmp  = vibja_aaaa_x(i1,a,i,a1) *  vibja_aaaa_x(i1,a,i,a1)
+           sum += tmp
+     Endpardo i, i1, a, a1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, j1, b, b1
+           request vibja_bbbb_x(j1,b,j,b1) b1
+           tmp  = vibja_bbbb_x(j1,b,j,b1) * vibja_bbbb_x(j1,b,j,b1)
+           sum += tmp
+     Endpardo j, j1, b, b1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo  a, a1, j, j1
+           request vibja_baba_x(j,a,j1,a1) j1
+           tmp  = vibja_baba_x(j,a,j1,a1) * vibja_baba_x(j,a,j1,a1)
+           sum += tmp
+     Endpardo a, a1, j, j1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo b, b1, i, i1
+           request vibja_abab_x(i,b,i1,b1) i1
+           tmp  =  vibja_abab_x(i,b,i1,b1) * vibja_abab_x(i,b,i1,b1)
+           sum += tmp
+     Endpardo b, b1, i, i1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo  j,a,i,b
+           request Vibja_baab_x(j,a,i,b) b
+           tmp  =  Vibja_baab_x(j,a,i,b) * Vibja_baab_x(j,a,i,b)
+           sum += tmp
+     Endpardo j,a,i,b
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i,b,j,a
+           request Vibja_abba_x(i,b,j,a) a
+           tmp  =  Vibja_abba_x(i,b,j,a) * Vibja_abba_x(i,b,j,a)
+           sum += tmp
+     Endpardo i,b,j,a
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
 #      PARDO i, b, j, a
 #            REQUEST Dibja_abba_x(i,b,j,a) a 
 #            REQUEST Dibja_baab_x(j,a,i,b) b
@@ -8219,6 +8387,56 @@
             ENDDO i1 
             ENDDO j 
       ENDPARDO b, a1 
+#bgn_debug
+     execute server_barrier 
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, i1, i2, a
+           request I3aa(i2,a,i1,i) i2
+           tmp  = I3aa(i2,a,i1,i) * I3aa(i2,a,i1,i) 
+           sum += tmp
+     Endpardo i, i1, i2, a
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, j1, j2, b
+           request I3bb(j2,b,j1,j) j2
+           tmp  = I3bb(j2,b,j1,j) * I3bb(j2,b,j1,j)
+           sum += tmp
+     Endpardo j, j1, j2, b
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i2,a,j1,j
+           request  I3ab(i2,a,j1,j) j1
+           tmp  =   I3ab(i2,a,j1,j) * I3ab(i2,a,j1,j)
+           sum += tmp
+     Endpardo i2,a,j1,j
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, b, i, i1
+           request I3ba(j,b,i1,i) i1
+           tmp  =  I3ba(j,b,i1,i) * I3ba(j,b,i1,i)
+           sum += tmp
+     Endpardo j, b, i, i1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+#end_debug
+
       ENDPROC I2XX 
 #     ------------
 # Start the calculation of the D^{ab}_{ci} type contributions to the
@@ -8303,8 +8521,8 @@
             ENDDO i1 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Taaai(a,a1,a2,i) *= 4.0 
-#            PREPARE Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
+           Taaai(a,a1,a2,i) *= 4.0 
+            PREPARE Dabci_aaaa(a,a1,a2,i) += Taaai(a,a1,a2,i) 
 #end_debug
 
             DO mu 
@@ -8414,8 +8632,8 @@
             ENDDO j1 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tbbbj(b,b1,b2,j) *= 4.0 
-#           PREPARE Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
+           Tbbbj(b,b1,b2,j) *= 4.0 
+           PREPARE Dabci_bbbb(b,b1,b2,j) += Tbbbj(b,b1,b2,j) 
 #end_debug
 
             DO mu 
@@ -8472,10 +8690,10 @@
       PARDO a, a1, b, j 
             Tabaj(a,b,a1,j) = 0.0 
 
-            GET Gae_a(a,a1) 
+            GET Gae_a(a1,a) 
             GET t1b_old(b,j) 
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old(b,j) 
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old(b,j) 
             T1abaj(a,b,a1,j) *= -0.125 
 #bgn_debug
 #            T1abaj(a,b,a1,j) *=1.0
@@ -8542,8 +8760,8 @@
             ENDDO j1 
 # Multiply by 4 to match aces 
 #bgn_debug
-#           Tabaj(a,b,a1,j) *= 4.0
-#           PREPARE Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j)
+           Tabaj(a,b,a1,j) *= 4.0
+           PREPARE Dabci_abab(a,b,a1,j) += Tabaj(a,b,a1,j)
 #end_debug
 
             DO mu 
@@ -8613,10 +8831,10 @@
 #     --------------
       PARDO b1, b, a, i 
             Tbabi(b1,a,b,i) = 0.0 
-            GET Gae_b(b1,b) 
+            GET Gae_b(b,b1) 
             GET t1a_old(a,i) 
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
@@ -8678,9 +8896,9 @@
 # Multiply by 4 to match aces
 # ---------------------------
 #bgn_debug
-#           Tbabi(b1,a,b,i) *= 4.0
-#
-#           PREPARE Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i)
+           Tbabi(b1,a,b,i) *= 4.0
+
+           PREPARE Dabci_baba(b1,a,b,i) += Tbabi(b1,a,b,i)
 #end_debug
 
             DO mu 
@@ -9320,20 +9538,20 @@
       PARDO b1, b, a, i
             Tbabi(b1,a,b,i) = 0.0
             Tbiab(b1,i,a,b) = 0.0
-            GET Gae_b(b1,b)
+            GET Gae_b(b,b1)
             GET t1a_old(a,i)
              
-            GET Gae_b_x(b1,b)
+            GET Gae_b_x(b,b1)
             GET t1a_old_x(a,i)
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old_x(a,i)
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old_x(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
 #end_debug
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 
-            T1babi(b1,a,b,i)  = Gae_b_x(b1,b)^t1a_old(a,i)
+            T1babi(b1,a,b,i)  = Gae_b_x(b,b1)^t1a_old(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
@@ -9543,20 +9761,20 @@
             Tabaj(a,b,a1,j) = 0.0
             Tajba(a,j,b,a1) = 0.0
 
-            GET Gae_a(a,a1)
+            GET Gae_a(a1,a)
             GET t1b_old(b,j)
 
-            GET Gae_a_x(a,a1)
+            GET Gae_a_x(a1,a)
             GET t1b_old_x(b,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old_x(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
 #            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a_x(a,a1)^t1b_old(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a_x(a1,a)^t1b_old(b,j)
 #bgn_debug
 #            T1abaj(a,b,a1,j) *=1.0
 #end_debug
@@ -9756,7 +9974,55 @@
         CALL I2XX_X
         execute sip_barrier
         execute server_barrier
+#bgn_debug
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i, i1, i2, a
+           request I3aa_x(i2,a,i1,i) i2
+           tmp  = I3aa_x(i2,a,i1,i) * I3aa_x(i2,a,i1,i)
+           sum += tmp
+     Endpardo i, i1, i2, a
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
 
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, j1, j2, b
+           request I3bb_x(j2,b,j1,j) j2
+           tmp  = I3bb_x(j2,b,j1,j) * I3bb_x(j2,b,j1,j)
+           sum += tmp
+     Endpardo j, j1, j2, b
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo i2,a,j1,j
+           request  I3ab_x(i2,a,j1,j) j1
+           tmp  =   I3ab_x(i2,a,j1,j) * I3ab_x(i2,a,j1,j)
+           sum += tmp
+     Endpardo i2,a,j1,j
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+
+     sum   = 0.0
+     sumaa = 0.0
+     Pardo j, b, i, i1
+           request I3ba_x(j,b,i1,i) i1
+           tmp  =  I3ba_x(j,b,i1,i) * I3ba_x(j,b,i1,i)
+           sum += tmp
+     Endpardo j, b, i, i1
+     execute server_barrier
+     collective sumaa += sum
+     execute sip_barrier
+     execute print_scalar sumaa
+#end_debug
         CALL DCIABAAAA_X
         CALL DCIABBBBB_X
 #        if property == 20.0
@@ -14128,45 +14394,56 @@
       PROC S2ABCI
 #
       esum = 0.0
+      etmp = 0.0
       PARDO a, a1, a2, i
 #
             REQUEST Dabci_aaaa(a,a1,a2,i) i
             etemp = Dabci_aaaa(a,a1,a2,i)*Dabci_aaaa(a,a1,a2,i)
-            esum += etemp
-#
+            etmp += etemp
       ENDPARDO a, a1, a2, i
-      esum *= 0.5 # to match aces
+      etmp *= 0.5 # to match aces
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO b, b1, b2, j
 #
             REQUEST Dabci_bbbb(b,b1,b2,j) j
             etemp = Dabci_bbbb(b,b1,b2,j)*Dabci_bbbb(b,b1,b2,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO b, b1, b2, j
-      esum *= 0.5 # to match aces
+      etmp *= 0.5 # to match aces
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO a, a1, b, j
 #
             REQUEST Dabci_abab(a,b,a1,j) j
             etemp = Dabci_abab(a,b,a1,j)*Dabci_abab(a,b,a1,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, a1, b, j
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0 
       PARDO a, b1, b, i
 #
             REQUEST Dabci_baba(b,a,b1,i) i
             etemp = Dabci_baba(b,a,b1,i)*Dabci_baba(b,a,b1,i)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, b1, b, i
+      execute server_barrier
+      collective esum +=etmp
       execute print_scalar esum
 #
       ENDPROC S2ABCI
@@ -14534,7 +14811,7 @@
       PARDO i, j, a, b 
 #
             REQUEST Dibja_baab_x(j,a,i,b) a 
-            execute dump_amp Dibja_baab_x(j,a,i,b) 
+#            execute dump_amp Dibja_baab_x(j,a,i,b) 
             etemp = Dibja_baab_x(j,a,i,b)*Dibja_baab_x(j,a,i,b)
             etmp += etemp
 #
@@ -15177,7 +15454,7 @@
 #end_debug
          CALL DABCI                                               
 #bgn_debug
-#         CALL S2ABCI
+         CALL S2ABCI
 #end_debug
 
          execute server_barrier 

@@ -7318,7 +7318,7 @@
             Tjxix(j,nu,i1,sigma) = 0.0
             DO a1
                REQUEST Djaix_x(j,a1,i1,sigma) a1
-              T1ixxj(i1,sigma,nu,j) = Djaix(j,a1,i1,sigma)*ca(nu,a1)
+              T1ixxj(i1,sigma,nu,j) = Djaix_x(j,a1,i1,sigma)*ca(nu,a1)
               Tixxj(i1,sigma,nu,j) += T1ixxj(i1,sigma,nu,j)
             ENDDO a1
             Tixxj(i1,sigma,nu,j) *= 4.0
@@ -7559,7 +7559,7 @@
             Tixxj(i,nu,sigma,j1) = 0.0
             DO b1
                REQUEST Dibjx_x(i,b1,j1,sigma) sigma 
-               T1ixxj(i,nu,sigma,j1) = Dibjx(i,b1,j1,sigma)*cb(nu,b1)
+               T1ixxj(i,nu,sigma,j1) = Dibjx_x(i,b1,j1,sigma)*cb(nu,b1)
                Tixxj(i,nu,sigma,j1) += T1ixxj(i,nu,sigma,j1)
             ENDDO b1
             Tixxj(i,nu,sigma,j1)         *= 4.0
@@ -7922,10 +7922,10 @@
       PARDO a, a1, b, j 
             Tabaj(a,b,a1,j) = 0.0 
 
-            GET Gae_a(a,a1) 
+            GET Gae_a(a1,a) 
             GET t1b_old(b,j) 
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old(b,j) 
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old(b,j) 
             T1abaj(a,b,a1,j) *= -0.125 
 #bgn_debug
             T1abaj(a,b,a1,j) *=1.0
@@ -8063,10 +8063,10 @@
 #     --------------
       PARDO b1, b, a, i 
             Tbabi(b1,a,b,i) = 0.0 
-            GET Gae_b(b1,b) 
+            GET Gae_b(b,b1) 
             GET t1a_old(a,i) 
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
 #bgn_debug
             T1babi(b1,a,b,i) *=1.0
@@ -8744,20 +8744,20 @@
 
       PARDO b1, b, a, i
             Tbabi(b1,a,b,i) = 0.0
-            GET Gae_b(b1,b)
+            GET Gae_b(b,b1)
             GET t1a_old(a,i)
              
-            GET Gae_b_x(b1,b)
+            GET Gae_b_x(b,b1)
             GET t1a_old_x(a,i)
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old_x(a,i)
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old_x(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
             T1babi(b1,a,b,i) *=1.0
 #end_debug
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 
-            T1babi(b1,a,b,i)  = Gae_b_x(b1,b)^t1a_old(a,i)
+            T1babi(b1,a,b,i)  = Gae_b_x(b,b1)^t1a_old(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
             T1babi(b1,a,b,i) *=1.0
@@ -8958,20 +8958,20 @@
       PARDO a, a1, b, j
             Tabaj(a,b,a1,j) = 0.0
 
-            GET Gae_a(a,a1)
+            GET Gae_a(a1,a)
             GET t1b_old(b,j)
 
-            GET Gae_a_x(a,a1)
+            GET Gae_a_x(a1,a)
             GET t1b_old_x(b,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old_x(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
             T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a_x(a,a1)^t1b_old(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a_x(a1,a)^t1b_old(b,j)
 #bgn_debug
             T1abaj(a,b,a1,j) *=1.0
 #end_debug
@@ -11581,9 +11581,11 @@
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DHFa(mu,lambda)^DHFb(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             T1xxxx(mu,nu,lambda,sigma) = DHFb(mu,lambda)^DHFa(nu,sigma)
+            T1xxxx(mu,nu,lambda,sigma)*= 0.5
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 # Exchange terms
@@ -11623,7 +11625,7 @@
       execute sip_barrier 
       execute print_scalar esuma 
       ecorraa += esuma
-      ecorraa += 0.526315789473684
+      ecorraa += 18.9701897018970
 
       execute print_scalar ecorraa
 
@@ -13160,36 +13162,45 @@
       ENDPARDO i, i1, i2, i3 
       execute server_barrier 
       collective esum +=etmp
+      execute server_barrier 
 #bgn_debug
       esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO j, j1, j2, j3 
 #
             REQUEST Dijkl_bb_X(j,j1,j2,j3) j  
             etemp = Dijkl_bb_X(j,j1,j2,j3)*Dijkl_bb_X(j,j1,j2,j3)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO j, j1, j2, j3 
 #bgn_debug
       esum *= 1.0
 #end_debug
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, i1, j, j1 
 #
             REQUEST Dijkl_ab_X(i,j,i1,j1) i  
             etemp = Dijkl_ab_X(i,j,i1,j1)*Dijkl_ab_X(i,j,i1,j1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, i1, j, j1 
 #bgn_debug
       esum *= 1.0
 #end_debug
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
+      execute print_scalar esum
 #
       ENDPROC S2DIJKL_X
 
@@ -13279,57 +13290,72 @@
       PROC S2ABCI_X
 #
       esum = 0.0
+      etmp = 0.0
       PARDO a, a1, a2, i
 #
             REQUEST Dabci_aaaa_x(a,a1,a2,i) i
 #            execute dump_amp Dabci_aaaa_x(a,a1,a2,i)
             etemp = Dabci_aaaa_x(a,a1,a2,i)*Dabci_aaaa_x(a,a1,a2,i)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, a1, a2, i
 #      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO b, b1, b2, j
 #
             REQUEST Dabci_bbbb_x(b,b1,b2,j) j
             etemp = Dabci_bbbb_x(b,b1,b2,j)*Dabci_bbbb_x(b,b1,b2,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO b, b1, b2, j
 #      esum *= 0.5 # to match aces
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO a, a1, b, j
 #
             REQUEST Dabci_abab_x(a,b,a1,j) j
 #            execute dump_amp Dabci_abab_x(a,b,a1,j)
             etemp = Dabci_abab_x(a,b,a1,j)*Dabci_abab_x(a,b,a1,j)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, a1, b, j
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO a, b1, b, i
 #
             REQUEST Dabci_baba_x(b,a,b1,i) i
             etemp = Dabci_baba_x(b,a,b1,i)*Dabci_baba_x(b,a,b1,i)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO a, b1, b, i
 #bgn_debug
       esum *= 1.0
 #end_debug
-
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       ENDPROC S2ABCI_X
@@ -13383,57 +13409,73 @@
       PROC S2DIJKA_X
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, i2, a
 #
             REQUEST Dijka_aaaa_x(i,i1,i2,a) a
             etemp = Dijka_aaaa_x(i,i1,i2,a)*Dijka_aaaa_x(i,i1,i2,a)
-            esum += etemp
+            etmp += etemp
 #     
       ENDPARDO i, i1, i2, a
 #      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO j, j1, j2, b
 #
             REQUEST Dijka_bbbb_x(j,j1,j2,b) b
             etemp = Dijka_bbbb_x(j,j1,j2,b)*Dijka_bbbb_x(j,j1,j2,b)
-            esum += etemp
+            etmp += etemp
 #     
       ENDPARDO j, j1, j2, b
 #      esum *= 0.5 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
-#
+
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, j, b
 #
             REQUEST Dijka_abab_x(i,j,i1,b) b
             etemp = Dijka_abab_x(i,j,i1,b)*Dijka_abab_x(i,j,i1,b)
-            esum += etemp
+            etmp += etemp
 #     
       ENDPARDO i, i1, j, b
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0 
       PARDO i, j1, j, a
 #
             REQUEST Dijka_baba_x(j,i,j1,a) a
             etemp = Dijka_baba_x(j,i,j1,a)*Dijka_baba_x(j,i,j1,a)
-            esum += etemp
+            etmp += etemp
 #     
       ENDPARDO i, j1, j, a
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
       execute print_scalar esum
 #
       ENDPROC S2DIJKA_X
@@ -13477,41 +13519,53 @@
       PROC S2DIJAB_X
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, a, a1
 #
             REQUEST Dijab_aa_x(i,i1,a,a1) a
             etemp = Dijab_aa_x(i,i1,a,a1)*Dijab_aa_x(i,i1,a,a1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO i, i1, a,a1
 #      esum *= 0.25 # to match aces
 #bgn_debug
       esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO j, j1, b, b1
 #
             REQUEST Dijab_bb_x(j,j1,b,b1) b
             etemp = Dijab_bb_x(j,j1,b,b1)*Dijab_bb_x(j,j1,b,b1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO j, j1, b,b1
 #      esum *= 0.25 # to match aces
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, j, a, b
 #
             REQUEST Dijab_ab_x(i,j,a,b) a
             etemp = Dijab_ab_x(i,j,a,b)*Dijab_ab_x(i,j,a,b)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO i, j, a, b
 #bgn_debug
      esum *= 1.0
 #end_debug
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       ENDPROC S2DIJAB_X
@@ -13519,77 +13573,100 @@
       PROC S2DIBJA_X
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, a, a1
 #
             REQUEST Dibja_aaaa_x(i,a,i1,a1) a
             etemp = Dibja_aaaa_x(i,a,i1,a1)*Dibja_aaaa_x(i,a,i1,a1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO i, i1, a, a1
 #bgn_debug
       esum *= 1.0
 #end_debu
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO j, j1, b, b1
 #
             REQUEST Dibja_bbbb_x(j,b,j1,b1) b
             etemp = Dibja_bbbb_x(j,b,j1,b1)*Dibja_bbbb_x(j,b,j1,b1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO j, j1, b, b1
+      collective esum += etmp
+      execute server_barrier
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, i1, b, b1
 #
             REQUEST Dibja_abab_x(i,b,i1,b1) b
             etemp = Dibja_abab_x(i,b,i1,b1)*Dibja_abab_x(i,b,i1,b1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO i, i1, b, b1
 #bgn_debug
       esum *= 1.0
 #end_debu
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO j, j1, a, a1
 #
             REQUEST Dibja_baba_x(j,a,j1,a1) a
             etemp = Dibja_baba_x(j,a,j1,a1)*Dibja_baba_x(j,a,j1,a1)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO j, j1, a, a1
 #bgn_debug
       esum *= 1.0
 #end_debu
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, j, a, b
 #
             REQUEST Dibja_abba_x(i,b,j,a) a
             etemp = Dibja_abba_x(i,b,j,a)*Dibja_abba_X(i,b,j,a)
-            esum += etemp
+            etmp += etemp
       ENDPARDO i, j, a, b
 #bgn_debug
       esum *= 1.0
 #end_debu
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       esum = 0.0
+      etmp = 0.0
       PARDO i, j, a, b 
 #
             REQUEST Dibja_baab_x(j,a,i,b) a 
             etemp = Dibja_baab_x(j,a,i,b)*Dibja_baab_x(j,a,i,b)
-            esum += etemp
+            etmp += etemp
 #
       ENDPARDO i, j, a, b
 #bgn_debug
       esum *= 1.0
-#end_debu
+      execute server_barrier
+      collective esum += etmp
+      execute server_barrier
       execute print_scalar esum
 #
       ENDPROC S2DIBJA_X
@@ -14156,8 +14233,8 @@
          execute server_barrier 
 
          CALL GET_2P_ERI_INTS
-#         CALL HF_ENERGY
-         CALL COR_ENERGY
+         CALL HF_ENERGY
+#         CALL COR_ENERGY
  
          execute server_barrier
 ##         call verify
@@ -14361,52 +14438,52 @@
 #          call verify_x
 #end_debug
 
-          IF PROPERTY == 10.0
-
-          DO XYZ 
-             DO XYZ1
-                IF XYZ == 1
-                   IF XYZ1 == 1
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
-                   ENDIF 
-                   IF XYZ1 == 2
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XY
-                   ENDIF 
-                   IF XYZ1 == 3
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XZ
-                   ENDIF 
-                ENDIF 
-
-                IF XYZ == 2
-                   IF XYZ1 == 1
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YX
-                   ENDIF 
-                   IF XYZ1 == 2
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YY
-                   ENDIF 
-                   IF XYZ1 == 3
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YZ
-                   ENDIF 
-                ENDIF 
-
-                IF XYZ == 3
-                   IF XYZ1 == 1
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZX
-                   ENDIF 
-                   IF XYZ1 == 2
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZY
-                   ENDIF 
-                   IF XYZ1 == 3
-                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZZ
-                   ENDIF 
-                ENDIF 
-             ENDDO XYZ1
-          ENDDO XYZ
-
-          IPOL = 716.0
-          EXECUTE PRINT_REL_INFO IPOL G_TENSOR_2E_SOI
-
-          ENDIF
+#          IF PROPERTY == 10.0
+#
+#          DO XYZ 
+#             DO XYZ1
+#                IF XYZ == 1
+#                   IF XYZ1 == 1
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XX
+#                   ENDIF 
+#                   IF XYZ1 == 2
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XY
+#                   ENDIF 
+#                   IF XYZ1 == 3
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_XZ
+#                   ENDIF 
+#                ENDIF 
+#
+#                IF XYZ == 2
+#                   IF XYZ1 == 1
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YX
+#                   ENDIF 
+#                   IF XYZ1 == 2
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YY
+#                   ENDIF 
+#                   IF XYZ1 == 3
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_YZ
+#                   ENDIF 
+#                ENDIF 
+#
+#                IF XYZ == 3
+#                   IF XYZ1 == 1
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZX
+#                   ENDIF 
+#                   IF XYZ1 == 2
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZY
+#                   ENDIF 
+#                   IF XYZ1 == 3
+#                      G_TENSOR_2E_SOI(XYZ, XYZ1) = D2SO_ZZ
+#                   ENDIF 
+#                ENDIF 
+#             ENDDO XYZ1
+#          ENDDO XYZ
+#
+#          IPOL = 716.0
+#          EXECUTE PRINT_REL_INFO IPOL G_TENSOR_2E_SOI
+#
+#          ENDIF
 
       ENDPROC DMAIN
 

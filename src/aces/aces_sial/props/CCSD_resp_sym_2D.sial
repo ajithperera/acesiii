@@ -8279,10 +8279,10 @@
       PARDO a, a1, b, j 
             Tabaj(a,b,a1,j) = 0.0 
 
-            GET Gae_a(a,a1) 
+            GET Gae_a(a1,a) 
             GET t1b_old(b,j) 
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old(b,j) 
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old(b,j) 
             T1abaj(a,b,a1,j) *= -0.125 
 #bgn_debug
 #            T1abaj(a,b,a1,j) *=1.0
@@ -8420,10 +8420,10 @@
 #     --------------
       PARDO b1, b, a, i 
             Tbabi(b1,a,b,i) = 0.0 
-            GET Gae_b(b1,b) 
+            GET Gae_b(b,b1) 
             GET t1a_old(a,i) 
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
@@ -9139,20 +9139,20 @@
       PARDO b1, b, a, i
             Tbabi(b1,a,b,i) = 0.0
             Tbiab(b1,i,a,b) = 0.0
-            GET Gae_b(b1,b)
+            GET Gae_b(b,b1)
             GET t1a_old(a,i)
              
-            GET Gae_b_x(b1,b)
+            GET Gae_b_x(b,b1)
             GET t1a_old_x(a,i)
 
-            T1babi(b1,a,b,i)  = Gae_b(b1,b)^t1a_old_x(a,i)
+            T1babi(b1,a,b,i)  = Gae_b(b,b1)^t1a_old_x(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
 #end_debug
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i)
 
-            T1babi(b1,a,b,i)  = Gae_b_x(b1,b)^t1a_old(a,i)
+            T1babi(b1,a,b,i)  = Gae_b_x(b,b1)^t1a_old(a,i)
             T1babi(b1,a,b,i) *= -0.125
 #bgn_debug
 #            T1babi(b1,a,b,i) *=1.0
@@ -9387,20 +9387,20 @@
             Tabaj(a,b,a1,j) = 0.0
             Tajba(a,j,b,a1) = 0.0
 
-            GET Gae_a(a,a1)
+            GET Gae_a(a1,a)
             GET t1b_old(b,j)
 
-            GET Gae_a_x(a,a1)
+            GET Gae_a_x(a1,a)
             GET t1b_old_x(b,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a(a,a1)^t1b_old_x(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
             T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
-            T1abaj(a,b,a1,j)  = Gae_a_x(a,a1)^t1b_old(b,j)
+            T1abaj(a,b,a1,j)  = Gae_a_x(a1,a)^t1b_old(b,j)
 #bgn_debug
             T1abaj(a,b,a1,j) *=1.0
 #end_debug

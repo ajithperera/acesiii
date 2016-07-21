@@ -8846,6 +8846,8 @@
             X_COMP = 9.0
             IF PROPERTY == 10.0
                CALL GET_FD_P_DIPOLE
+               ASYM      =  0.0
+               ASYM_FACT =  1.0
             ENDIF 
             IF PROPERTY == 20.0
                CALL GET_FD_P_ANGMOM

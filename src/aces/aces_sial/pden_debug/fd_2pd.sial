@@ -553,6 +553,33 @@
     EXECUTE SIP_BARRIER
     EXECUTE PRINT_SCALAR sumaa
 
+#    sum   = 0.0
+#    sumaa = 0.0
+#    PARDO  I, I1, I2, A
+#           REQUEST DIJKA_AAAA_P(I, I1, I2, A) A
+#           tmp  = DIJKA_AAAA_P(I, I1, I2, A) * DIJKA_AAAA_P(I, I1, I2, A)
+#           sum  += tmp
+#    ENDPARDO I, I1, I2, A
+#
+#    EXECUTE SERVER_BARRIER
+#    COLLECTIVE sumaa += sum
+#    EXECUTE SIP_BARRIER
+#    EXECUTE PRINT_SCALAR sumaa
+#
+#    sum   = 0.0
+#    sumaa = 0.0
+#    PARDO  I, I1, I2, A
+#           REQUEST DIJKA_AAAA_M(I, I1, I2, A) A
+#           tmp  = DIJKA_AAAA_M(I, I1, I2, A) * DIJKA_AAAA_M(I, I1, I2, A)
+#           sum  += tmp
+#    ENDPARDO I, I1, I2, A
+#
+#    EXECUTE SERVER_BARRIER
+#    COLLECTIVE sumaa += sum
+#    EXECUTE SIP_BARRIER
+#    EXECUTE PRINT_SCALAR sumaa
+
+
     ENDPROC FD_DIJKA_AA
 #   -------------------
 

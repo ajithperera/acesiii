@@ -2790,10 +2790,10 @@
 #
             Tbabi(b1,a,b,i) = 0.0 
 #
-            GET Gae_a(b1,b) 
+            GET Gae_a(b,b1) 
             GET t1a_old(a,i) 
 #
-            T1babi(b1,a,b,i)  = Gae_a(b1,b)^t1a_old(a,i) 
+            T1babi(b1,a,b,i)  = Gae_a(b,b1)^t1a_old(a,i) 
             T1babi(b1,a,b,i) *= -0.125 
             Tbabi(b1,a,b,i)  += T1babi(b1,a,b,i) 
 #

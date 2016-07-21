@@ -381,7 +381,7 @@
 #-----------------------------------------------------
 #  Main program 
 
-      FD_WIDTH     = 200.0
+      FD_WIDTH     = 100.0
       INV_FD_WIDTH = 1.0/FD_WIDTH
       SCALE        = 1000000.0
       INV_FD_WIDTH *= SCALE
