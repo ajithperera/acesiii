@@ -12579,7 +12579,8 @@
 
        PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
             REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
@@ -12671,7 +12672,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -12690,7 +12691,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -12710,7 +12711,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart 
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12728,7 +12729,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12749,7 +12750,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -12769,7 +12770,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart 
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -12788,7 +12789,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -12808,7 +12809,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -12829,7 +12830,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12846,7 +12847,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12863,7 +12864,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 
@@ -12877,7 +12878,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12890,7 +12891,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -12902,7 +12903,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
               
             ENDDO j
 
@@ -12915,7 +12916,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart 
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -12925,10 +12926,12 @@
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 ##bgn_debug
             PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 ##end_debug
 
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+            PXXXX_x(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
 
 # The 1/8 factor is D(ab,cd) = D(cd,ab)
@@ -13105,7 +13108,8 @@
 
       PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_SOI_Y(nu, sigma, mu, lambda) lambda
@@ -13197,7 +13201,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13216,7 +13220,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13236,7 +13240,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -13254,7 +13258,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13275,7 +13279,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13295,7 +13299,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13316,7 +13320,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13336,7 +13340,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13358,7 +13362,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13376,7 +13380,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13393,7 +13397,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13407,7 +13411,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -13420,7 +13424,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -13433,7 +13437,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
               
             ENDDO j
 #
@@ -13446,7 +13450,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -13456,9 +13460,11 @@
            PXXXX_x(mu,nu,lambda,sigma) =  Dxxxx_x(mu,nu,lambda,sigma) 
 ####bgn_debug
             PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 ##end_debug
             PXXXX_x(mu,nu,lambda,sigma)*= 0.25
-            PXXXX_x(mu,nu,lambda,sigma)+= Txxxx(mu,nu,lambda,sigma)
+	    PXXXX_x(mu,nu,lambda,sigma)+= Txxxx(mu,nu,lambda,sigma)
+            PXXXX_x(mu,nu,lambda,sigma)+= T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)  = Pxxxx_X(mu,nu,lambda,sigma)
 
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
@@ -13658,7 +13664,8 @@
 
        PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
             REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
@@ -13734,7 +13741,7 @@
             T1xxxx(mu,nu,lambda,sigma)*= Coreln 
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #bgn_debug
-#              Txxxx(mu,nu,lambda,sigma) *= 0.0
+              Txxxx(mu,nu,lambda,sigma) *= 0.0
 #end_debug
 #
 #           Fully transform Diixx
@@ -13751,7 +13758,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13770,7 +13777,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13790,7 +13797,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13808,7 +13815,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13829,7 +13836,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 
@@ -13849,7 +13856,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13868,7 +13875,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13888,7 +13895,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -13908,7 +13915,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart 
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -13925,7 +13932,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -13942,7 +13949,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 
@@ -13956,7 +13963,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13969,7 +13976,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -13981,7 +13988,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -13995,7 +14002,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -14004,12 +14011,15 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma  
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 #bgn_debug
-            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 #end_debug
 
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
 
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma)  *= 2.0
+            PXXXX_x(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
 
             tmp = AO_2P_SOI_X(mu,lambda,nu,sigma)*T1xxxx(mu,lambda,nu,sigma)
@@ -14179,7 +14189,8 @@
 
       PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_SOI_Y(nu, sigma, mu, lambda) lambda
@@ -14261,7 +14272,7 @@
 #
                Tixxx(i,nu,lambda,sigma) = 0.0
 #bgn_debug
-#              Txxxx(mu,nu,lambda,sigma) = 0.0
+              Txxxx(mu,nu,lambda,sigma) = 0.0
 #end_debug
 #
                DO i1
@@ -14272,7 +14283,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
 
-#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -14291,7 +14302,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-#               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -14311,7 +14322,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -14329,7 +14340,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14350,7 +14361,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -14370,7 +14381,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -14389,7 +14400,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -14409,7 +14420,7 @@
 #
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -14430,7 +14441,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14447,7 +14458,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -14464,7 +14475,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 
@@ -14478,7 +14489,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14491,7 +14502,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14503,7 +14514,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -14516,7 +14527,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -14525,10 +14536,13 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 #bgn_debug
-            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2XXXX(mu,nu,lambda,sigma)  *= 0.0
 #end_debug
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+            T2xxxx(mu,nu,lambda,sigma)  *= 2.0
+            PXXXX_x(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)   = Pxxxx_X(mu,nu,lambda,sigma)
 
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
@@ -14707,7 +14721,8 @@
 
       PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(mu, lambda, nu, sigma) sigma
             REQUEST AO_2P_SOI_Y(mu, lambda, nu, sigma) sigma
@@ -14800,7 +14815,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -14819,7 +14834,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma)  = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -14839,7 +14854,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -14857,7 +14872,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14878,7 +14893,7 @@
                ENDDO i1
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #           ------------------------
@@ -14896,7 +14911,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -14915,7 +14930,7 @@
                ENDDO j1
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -14935,7 +14950,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -14956,7 +14971,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Pquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -14973,7 +14988,7 @@
                ENDDO i1
 
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -14990,7 +15005,7 @@
                ENDDO j1
 
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -15004,7 +15019,7 @@
                REQUEST Dxxxi_x_AA(mu,nu,lambda,i) i
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i
 #
 #           Fully transform Dxxxi_BA
@@ -15015,7 +15030,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart 
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i
 #
 #           Fully transform Dxxxj_BB
@@ -15026,7 +15041,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -15039,7 +15054,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -15051,10 +15066,12 @@
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
 #bgn_debug
-#             PXXXX_x(mu,nu,lambda,sigma) *= 0
+#             PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+              T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 #end_debuh
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+            PXXXX_x(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(mu,lambda,nu,sigma)   = Pxxxx_X(mu,nu,lambda,sigma)
 #bgn_debug
 #            execute dump_amp T1xxxx(mu,nu,lambda, sigma)
@@ -15231,7 +15248,8 @@
  
       PARDO mu, nu, lambda, sigma
 #
-            Txxxx(mu,nu,lambda,sigma) = 0.0
+            Txxxx(mu,nu,lambda,sigma)  = 0.0
+            T2xxxx(mu,nu,lambda,sigma) = 0.0
 
             REQUEST AO_2P_SOI_X(nu, sigma, mu, lambda) lambda
             REQUEST AO_2P_SOI_Y(nu, sigma, mu, lambda) lambda
@@ -15324,7 +15342,7 @@
                ENDDO i1
 #
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO i
 #
@@ -15343,7 +15361,7 @@
                ENDDO j1
 #
                T1xxxx(mu,nu,lambda,sigma)  = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #
             ENDDO j
 #
@@ -15363,7 +15381,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 
@@ -15381,7 +15399,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -15402,7 +15420,7 @@
                ENDDO i1
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -15422,7 +15440,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -15441,7 +15459,7 @@
                ENDDO j1
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -15461,7 +15479,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tjxxx(j,nu,lambda,sigma)*cb(mu,j)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -15482,7 +15500,7 @@
 
                T1xxxx(mu,nu,lambda,sigma) = Tixxx(i,nu,lambda,sigma)*ca(mu,i)
                T1xxxx(mu,nu,lambda,sigma)*= Mquart
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -15499,7 +15517,7 @@
                ENDDO i1
 
                T1xxxx(mu,nu,lambda,sigma) = Txixx(mu,i,lambda,sigma)*ca(nu,i)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO i
 #
@@ -15516,7 +15534,7 @@
                ENDDO j1
 
                T1xxxx(mu,nu,lambda,sigma) = Txjxx(mu,j,lambda,sigma)*cb(nu,j)
-               Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma)+= T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -15530,7 +15548,7 @@
                REQUEST Dxxxi_x_AA(mu,nu,lambda,i) i
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_AA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i
 #
 #           Fully transform Dxxxi_AB
@@ -15541,7 +15559,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxi_x_BA(mu,nu,lambda,i)*ca(sigma,i)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Mquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
             ENDDO i
 #
 #           Fully transform Dxxxj_BB
@@ -15552,7 +15570,7 @@
 
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_BB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 #
@@ -15565,7 +15583,7 @@
                T1xxxx(mu,nu,lambda,sigma)  = Dxxxj_x_AB(mu,nu,lambda,j)*cb(sigma,j)
                T1xxxx(mu,nu,lambda,sigma) *= 8.0
                T1xxxx(mu,nu,lambda,sigma) *= Pquart
-               Txxxx(mu,nu,lambda,sigma)  += T1xxxx(mu,nu,lambda,sigma)
+               T2xxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
             ENDDO j
 
@@ -15575,10 +15593,12 @@
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 
 #bgn_debug
-#             PXXXX_x(mu,nu,lambda,sigma) *= 0
+#             PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#              T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 #end_debuh
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
+            PXXXX_x(mu,nu,lambda,sigma) += T2xxxx(mu,nu,lambda,sigma)
             T1xxxx(nu,sigma,mu,lambda)   = Pxxxx_X(mu,nu,lambda,sigma)
 
             tmp = AO_2P_SOI_X(nu,sigma,mu,lambda)*T1xxxx(nu,sigma,mu,lambda)
@@ -17565,12 +17585,12 @@
                 CALL CCSD_2DRESPN_X_2121
              ENDIF 
              IF NCOUNT == 2.0 
-#                CALL CCSD_2DRESPN_Y_1212
-#                CALL CCSD_2DRESPN_Y_2121
+                CALL CCSD_2DRESPN_Y_1212
+                CALL CCSD_2DRESPN_Y_2121
              ENDIF
              IF NCOUNT == 3.0 
-#                CALL CCSD_2DRESPN_Z_1212
-#                CALL CCSD_2DRESPN_Z_2121
+                CALL CCSD_2DRESPN_Z_1212
+                CALL CCSD_2DRESPN_Z_2121
              ENDIF 
 
              DELETE Gmi_a_x

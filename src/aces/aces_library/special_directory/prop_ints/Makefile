@@ -7,9 +7,9 @@ CPP=mpicxx
 SERIAL_CPP=icpc
 
 #Compiler flags
-FFLAGS=-D__fortran -D__fortran77 -DMPIF2C -Zp8 -zero -traceback -DMPI2 -shared-intel -O2 -xcore-avx2 -axcore-avx-i
-CFLAGS=-DMPIF2C -DC_SUFFIX  -DMPI2 -DCB_SUFFIX -shared-intel -O2 -xcore-avx2 -axcore-avx-i
-CPPFLAGS=-DMPIF2C -DC_SUFFIX -DCB_SUFFIX  -DMPI2 -shared-intel -O2 -xcore-avx2 -axcore-avx-i
+FFLAGS=-D__fortran -D__fortran77 -DMPIF2C -Zp8 -zero -traceback -DMPI2 -shared-intel -O2
+CFLAGS=-DMPIF2C -DC_SUFFIX  -DMPI2 -DCB_SUFFIX -shared-intel -O2
+CPPFLAGS=-DMPIF2C -DC_SUFFIX -DCB_SUFFIX  -DMPI2 -shared-intel -O2
 
 #ACESLIBS variable will be replaced by the autoconf script with appropriate libraries
 LIBS = -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core  -Wl,--end-group
