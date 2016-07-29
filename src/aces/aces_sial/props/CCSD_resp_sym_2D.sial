@@ -1843,11 +1843,11 @@
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai(a1,i1) 
             Tiiaa(i,i1,a,a1)        *= 0.375 
 #bgn_debug
-            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-            T1iiaa(i,i1,a,a1) *= 1.0
-            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
+            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
  
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
             T1iiaa(i,i1,a1,a)       *= -1.0  
@@ -1920,11 +1920,11 @@
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-                  T1iiaa(i,i1,a,a1) *= 1.0
-                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                 PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
@@ -1976,11 +1976,11 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-               T1iiaa(i,i1,a,a1) *= 1.0
-               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#               T1iiaa(i,i1,a,a1) *= 1.0
+#               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
                T1iiaa(i,i1,a1,a)       *= -1.0  
@@ -9396,13 +9396,13 @@
             T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-            T1abaj(a,b,a1,j) *=1.0
+#            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
             T1abaj(a,b,a1,j)  = Gae_a_x(a1,a)^t1b_old(b,j)
 #bgn_debug
-            T1abaj(a,b,a1,j) *=1.0
+#            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             T1abaj(a,b,a1,j) *= -0.125
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
@@ -9426,14 +9426,14 @@
                T1abaj(a,b,a1,j)  = Tau_ab(a,i,b,j)*l1a_old_x(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Tau_ab_x(a,i,b,j)*l1a_old(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 #--------------------------------------------------
@@ -9465,7 +9465,7 @@
                T1ajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
 #bgn_debug
-               T1ajba(a,j,b,a1) *=1.0
+#               T1ajba(a,j,b,a1) *=1.0
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 #end_debug
@@ -9474,14 +9474,14 @@
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old_x(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baab_x(j,a1,i,b)*t1a_old(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9496,14 +9496,14 @@
                T1abaj(a,b,a1,j)  = Vibja_baba(j,a1,j1,a)*t1b_old_x(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baba_x(j,a1,j1,a)*t1b_old(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9519,7 +9519,7 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-                  T1abaj(a,b,a1,j) *=1.0
+#                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9528,7 +9528,7 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-                  T1abaj(a,b,a1,j) *=1.0
+#                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
                ENDDO i
@@ -10222,9 +10222,9 @@
 # ---------------------------
 #bgn_debug
 #           Tiiia(i,i1,i2,a) *= 4.0
-            T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2)
-            Tiiia(i,i1,i2,a)   += T1AHiiia(i,i1,i2,a) 
-            PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
+#            T1AHiiia(i,i1,i2,a) = Taiii(a,i,i1,i2)
+#            Tiiia(i,i1,i2,a)   += T1AHiiia(i,i1,i2,a) 
+#            PREPARE Dijka_aaaa_x(i,i1,i2,a) += Tiiia(i,i1,i2,a)
 #           PREPARE Dakij_aaaa_x(a,i,i1,i2) += Taiii(a,i,i1,i2)
 #end_debug
 #                                                                   ++
@@ -10408,10 +10408,10 @@
 # Multiply by 4 to match aces 
 #bgn_debug
 #           Tjjjb(j,j1,j2,b) *= 4.0 
-           T1AHjjjb(j,j1,j2,b) = Tbjjj(b,j,j1,j2)
-           Tjjjb(j,j1,j2,b)   += T1AHjjjb(j,j1,j2,b) 
-
-           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
+#           T1AHjjjb(j,j1,j2,b) = Tbjjj(b,j,j1,j2)
+#           Tjjjb(j,j1,j2,b)   += T1AHjjjb(j,j1,j2,b) 
+#
+#           PREPARE Dijka_bbbb_x(j,j1,j2,b) += Tjjjb(j,j1,j2,b) 
 #           PREPARE Dakij_bbbb_x(b,j,j1,j2) += Tbjjj(b,j,j1,j2) 
 #end_debug
 #                                                                   ++
@@ -11736,16 +11736,16 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX_YY_ZZ
-      execute print_scalar  E2GC_XX
-      execute print_scalar  E2GC_XY
-      execute print_scalar  E2GC_XZ
-      execute print_scalar  E2GC_YX
-      execute print_scalar  E2GC_YY
-      execute print_scalar  E2GC_YZ
-      execute print_scalar  E2GC_ZX
-      execute print_scalar  E2GC_ZY
-      execute print_scalar  E2GC_ZZ
+#      execute print_scalar  E2GC_XX_YY_ZZ
+#      execute print_scalar  E2GC_XX
+#      execute print_scalar  E2GC_XY
+#      execute print_scalar  E2GC_XZ
+#      execute print_scalar  E2GC_YX
+#      execute print_scalar  E2GC_YY
+#      execute print_scalar  E2GC_YZ
+#      execute print_scalar  E2GC_ZX
+#      execute print_scalar  E2GC_ZY
+#      execute print_scalar  E2GC_ZZ
 #end_debug
 
       ONETHIRD       = 1.0/3.0
@@ -12157,16 +12157,16 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX_YY_ZZ
-      execute print_scalar  E2GC_XX
-      execute print_scalar  E2GC_XY
-      execute print_scalar  E2GC_XZ
-      execute print_scalar  E2GC_YX
-      execute print_scalar  E2GC_YY
-      execute print_scalar  E2GC_YZ
-      execute print_scalar  E2GC_ZX
-      execute print_scalar  E2GC_ZY
-      execute print_scalar  E2GC_ZZ
+#      execute print_scalar  E2GC_XX_YY_ZZ
+#      execute print_scalar  E2GC_XX
+#      execute print_scalar  E2GC_XY
+#      execute print_scalar  E2GC_XZ
+#      execute print_scalar  E2GC_YX
+#      execute print_scalar  E2GC_YY
+#      execute print_scalar  E2GC_YZ
+#      execute print_scalar  E2GC_ZX
+#      execute print_scalar  E2GC_ZY
+#      execute print_scalar  E2GC_ZZ
 #enddebug
 
       ONETHIRD       = 1.0/3.0
@@ -13916,7 +13916,7 @@
       execute server_barrier 
       collective esum +=etmp
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -13929,7 +13929,7 @@
 #            
       ENDPARDO j, j1, j2, j3 
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -13943,7 +13943,7 @@
 #            
       ENDPARDO i, i1, j, j1 
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -14045,7 +14045,7 @@
       ENDPARDO a, a1, a2, i
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14071,7 +14071,7 @@
 #
       ENDPARDO a, a1, b, j
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14084,7 +14084,7 @@
 #
       ENDPARDO a, b1, b, i
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
 
       execute print_scalar esum
@@ -14150,7 +14150,7 @@
       ENDPARDO i, i1, i2, a
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14164,7 +14164,7 @@
       ENDPARDO j, j1, j2, b
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14177,7 +14177,7 @@
 #     
       ENDPARDO i, i1, j, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14190,7 +14190,7 @@
 #     
       ENDPARDO i, j1, j, a
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14245,7 +14245,7 @@
       ENDPARDO i, i1, a,a1
 #      esum *= 0.25 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum
 #
@@ -14289,7 +14289,7 @@
 #
       ENDPARDO i, i1, a, a1
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debu
       execute print_scalar esum
 #
@@ -14314,7 +14314,7 @@
 #
       ENDPARDO i, i1, b, b1
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debu
       execute print_scalar esum
 #
@@ -14328,7 +14328,7 @@
 #
       ENDPARDO j, j1, a, a1
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debu
       execute print_scalar esum
 #
@@ -14341,7 +14341,7 @@
             esum += etemp
       ENDPARDO i, j, a, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debu
       execute print_scalar esum
 #
@@ -14355,7 +14355,7 @@
 #
       ENDPARDO i, j, a, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debu
       execute print_scalar esum
 #
@@ -15204,29 +15204,29 @@
 #
              CALL DIJKL_X   #1st term;checked
 #bgn_debug
-             CALL S2DIJKL_X 
+#             CALL S2DIJKL_X 
 #end_debug
 #(ij|kl)=(kl|ij) is used; factors are right.Vmnij is built
 
              CALL DIBJA_X   #5th term
 #bgn_debug
-             CALL S2DIBJA_X 
+#             CALL S2DIBJA_X 
 #end_debug
 #factors? Vbja is built
 
              CALL DIJKA_X   #2nd term;checked; factor?
 #bgn_debug
-             CALL S2DIJKA_X 
+#             CALL S2DIJKA_X 
 #end_debug
 #factors are right; no assumption are made;Vibja/vmnij isused.
 
              CALL DIJAB_X   #4th term
 #bgn_debug
-             CALL S2DIJAB_X
+#             CALL S2DIJAB_X
 #end_debug
              CALL DCIAB_X   #8th term
 #bgn_debug
-             CALL S2ABCI_X 
+#             CALL S2ABCI_X 
 #end_debug
 
 #checked; there are questions about factor; No assumptions

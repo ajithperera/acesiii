@@ -1205,20 +1205,20 @@
       ENDPARDO a, a1
 
 #bgn_debug
-     execute sip_barrier 
-     suma = 0.0
-     DO a
-     DO a1
-        GET Dab_a_x(a,a1)
+#     execute sip_barrier 
+#     suma = 0.0
+#     DO a
+#     DO a1
+#        GET Dab_a_x(a,a1)
 #        if rank == 0.0
 #          execute dump_amp Dab_a_x(a,a1)
 #        endif 
-         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
-         suma += tmp
-      ENDDO a1
-      ENDDO a 
-      execute print_scalar suma  
-#end_debug
+#         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
+#         suma += tmp
+#      ENDDO a1
+#      ENDDO a 
+#      execute print_scalar suma  
+##end_debug
           
       ENDPROC DABA_x
 #..................................................................
@@ -1366,19 +1366,19 @@
       ENDPARDO b, b1
 
 #bgn_debug
-      execute sip_barrier
-      sumb=0.0
-      do b
-      do b1
-         get Dab_b_x(b,b1) 
+#      execute sip_barrier
+#      sumb=0.0
+#      do b
+#      do b1
+#         get Dab_b_x(b,b1) 
 #         if rank == 0.0
 #            execute dump_amp Dab_b_x(b,b1)
 #         endif 
-         tmp = Dab_b_x(b,b1) * Dab_b_x(b,b1)
-         sumb += tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumb
+#         tmp = Dab_b_x(b,b1) * Dab_b_x(b,b1)
+#         sumb += tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
            
       ENDPROC DABB_x
@@ -1552,7 +1552,7 @@
       ENDPARDO a, b, j
 
 #bgn_debug
-      execute sip_barrier
+#      execute sip_barrier
 #     do i
 #     do i1
 #         get Dij_a_x_U(i,i1)
@@ -1564,17 +1564,17 @@
 #      enddo i1
 #      enddo i
 #      execute sip_barrier
-     do i
-     do i1
-         get Dij_a_x_U(i,i1) 
+#     do i
+#     do i1
+#         get Dij_a_x_U(i,i1) 
 #         if rank == 0.0
 #         execute dump_amp  Dij_a_x_U(i,i1)
 #         endif
-         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
-         sum += tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum
+#         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
+#         sum += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum
 #end_debug
 
       PARDO a, b, j
@@ -1595,21 +1595,20 @@
       ENDPARDO a, b, j
 
 #bgn_debug
-      execute sip_barrier
+#      execute sip_barrier
 #      execute get_my_rank rank
 #      sum = 0.0
-      do i
-      do i1
-         get Dij_a_x_L(i1,i)
-         if rank == 0.0
-         execute dump_amp Dij_a_x_L(i1,i)
-         endif
-         tmp = Dij_a_x_L(i1,i) * Dij_a_x_L(i1,i)
-         sum += tmp
-      enddo i1
-      enddo i
+#      do i
+#      do i1
+#         get Dij_a_x_L(i1,i)
+#         if rank == 0.0
+#         execute dump_amp Dij_a_x_L(i1,i)
+#         endif
+#         tmp = Dij_a_x_L(i1,i) * Dij_a_x_L(i1,i)
+#         sum += tmp
+#      enddo i1
+#      enddo i
 #end_debug
-#bgn_debug
 #      execute sip_barrier
 #      execute get_my_rank rank
 #      sum = 0.0
@@ -1720,23 +1719,23 @@
       ENDPARDO i, i1
 
 #bgn_debug
-      execute sip_barrier
-      suma=0.0
-      do i
-      do i1
-          get Dij_a_x(i1,i)
+#      execute sip_barrier
+#      suma=0.0
+#      do i
+#      do i1
+#          get Dij_a_x(i1,i)
 #         get Dij_a_x_U(i1,i)
 #         get Dij_a_x_L(i1,i)
 #         if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i1,i)
 #         execute dump_amp Dij_a_x_L(i1,i)
-         execute dump_amp Dij_a_x(i1,i) 
+#         execute dump_amp Dij_a_x(i1,i) 
 #         endif 
-         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
-         suma += tmp
-      enddo i1
-      enddo i
-      execute print_scalar suma 
+#         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
+#         suma += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar suma 
 #end_debug
       
       ENDPROC DIJA_x
@@ -1916,19 +1915,19 @@
       ENDPARDO j, j1
 
 #bgn_debug
-      execute sip_barrier
-      sumb=0.0
-      do j
-      do j1
-         get Dij_b_x(j1,j)
+#      execute sip_barrier
+#      sumb=0.0
+#      do j
+#      do j1
+#         get Dij_b_x(j1,j)
 #         if rank == 0.0
 #         execute dump_amp Dij_b_x(j1,j)
 #         endif
-         tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
-         sumb += tmp
-      enddo j1
-      enddo j
-      execute print_scalar sumb
+#         tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
+#         sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute print_scalar sumb
 #end_debug
 
       ENDPROC DIJB_x
@@ -2127,7 +2126,7 @@
             taiT (a,i)   = LT1A (a,i1) * tiiT (i,i1)
             tai1(a,i) += taiT(a,i)
 #bgn_debug
-            tai1(a,i) *= 1.0
+#            tai1(a,i) *= 1.0
 #end_debug
           ENDDO i1
             PUT Doldai_a_x(a,i) += tai1 (a,i)
@@ -2190,7 +2189,7 @@
             tai (a,i)             = T2L2_VV_A_x (a,a1) * LT1A (a1,i)
             tai (a,i)            *= -1.0
 #bgn_debug
-            tai(a,i) *= 1.0
+#            tai(a,i) *= 1.0
 #end_debug
             PUT  Doldai_a_x(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
@@ -2200,7 +2199,7 @@
             tai (a,i)             = T2L2_VV_A (a,a1) * LT1A_x (a1,i)
             tai (a,i)            *= -1.0
 #bgn_debug
-            tai(a,i) *= 1.0
+#            tai(a,i) *= 1.0
 #end_debug
             PUT  Doldai_a_x(a,i)    += tai (a,i)
       ENDPARDO  a, a1, i
@@ -2293,18 +2292,18 @@
       EXECUTE  SIP_BARRIER
 
 #bgn_debug
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
 #         if rank == 0.0
 #            execute dump_amp Doldai_a_x(a,i)
 #         endif
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
 # BETA  block
@@ -2328,7 +2327,7 @@
             tbjT (b,j)   = LT1B (b,j1) * tjjT (j,j1)
             tbj1(b,j) += tbjT(b,j)
 #bgn_debug
-         tbj1 (b,j) *= 1.0
+#         tbj1 (b,j) *= 1.0
 #end_debug 
          ENDDO j1
 
@@ -2469,18 +2468,18 @@
       EXECUTE  SERVER_BARRIER
 
 #bgn_debug
-      sumb=0.0
-      do b
-      do j
-         get Doldai_b_x(b,j)
+#      sumb=0.0
+#      do b
+#      do j
+#         get Doldai_b_x(b,j)
 #         if rank == 0.0
 #         execute dump_amp Doldai_b_x(b,j)
 #         endif 
-         tmp = Doldai_b_x(b,j) *  Doldai_b_x(b,j) 
-         sumb += tmp
-      enddo j
-      enddo b
-      execute print_scalar sumb
+#         tmp = Doldai_b_x(b,j) *  Doldai_b_x(b,j) 
+#         sumb += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
  
       ENDPROC DAI_x
@@ -2863,7 +2862,7 @@
                   Ixx(mu,nu)  = Jxi(mu,i)*ca(nu,i)
                   IXX(mu,nu) *= 0.5
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                   I1xx(nu,mu)     = Ixx(mu,nu)
                   IF ASYM == 1.0
@@ -2888,7 +2887,7 @@
                   Ixx(mu,nu) = Jxj(mu,j)*cb(nu,j)
                   IXX(mu,nu) *= 0.5
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                   I1xx(nu,mu)     = Ixx(mu,nu)
                   IF ASYM == 1.0
@@ -2909,7 +2908,7 @@
                DO nu
                   Ixx(mu,nu) = Ixa(mu,a1)*ca(nu,a1)
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                   PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
                ENDDO nu
@@ -2923,7 +2922,7 @@
                DO nu
                   Ixx(mu,nu) = Ixb(mu,b1)*cb(nu,b1)
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                   PUT DpqB_x(mu,nu) += Ixx(mu,nu) #PV
                ENDDO nu
@@ -2938,7 +2937,7 @@
                DO nu
                   Ixx(mu,nu) = Jxi(mu,i1)*ca(nu,i1)
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                    PUT DpqA_x(mu,nu) += Ixx(mu,nu) #PV
                ENDDO nu
@@ -2952,7 +2951,7 @@
                DO nu
                   Ixx(mu,nu) = Jxj(mu,j1)*cb(nu,j1)
 #bgn_debug  
-                  Ixx(mu,nu) *= 1.0
+#                  Ixx(mu,nu) *= 1.0
 #end_debug
                    PUT DpqB_x(mu,nu) += Ixx(mu,nu) #PV
                ENDDO nu
@@ -2961,16 +2960,16 @@
       execute sip_barrier
 
 #bgn_debug
-      PARDO mu, nu
-            get DpqA_x(mu,nu)
-            if rank == 0.0
+#      PARDO mu, nu
+#            get DpqA_x(mu,nu)
+#            if rank == 0.0
 #               execute dump_amp DpqA_x(mu,nu) 
-            endif 
-            get DpqB_x(mu,nu) 
-            if rank == 0.0
+#            endif 
+#            get DpqB_x(mu,nu) 
+#            if rank == 0.0
 #               execute dump_amp DpqA_x(mu,nu) 
-            endif 
-      ENDPARDO mu,nu
+#            endif 
+#      ENDPARDO mu,nu
 #end_debug
 
       ENDPROC D1TRANS_x
@@ -3406,60 +3405,60 @@
       execute sip_barrier
 
 #bgn_debug
-      suma = 0.0
-      do a
-      do i
-         get HBa_me_x(i,a)
-         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      sumb = 0.0
-      do b
-      do j
-         get  HBb_me_x(j,b)
-         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
-         sumb +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sumb
-      suma = 0.0
-      do i
-      do i1
-          GET HBa_mi_x(i,i1)
-          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
-          suma +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar suma
-      sumb = 0.0
-      do j
-      do j1
-          GET HBb_mi_x(j,j1)
-          tmp = HBb_mi_x(j,j1) * HBb_mi_x(j,j1)
-          sumb +=tmp
-      enddo j1
-      enddo j 
-      execute print_scalar sumb
-      suma=0.0
-      do a
-      do a1
-         GET HBa_ae_x(a,a1)
-         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
-         suma +=tmp
-      enddo a1
-      enddo a
-      execute print_scalar suma
-      sumb=0.0
-      do b
-      do b1
-         GET HBb_ae_x(b,b1)
-         tmp = HBb_ae_x(b,b1) * HBb_ae_x(b,b1)
-         sumb +=tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumb
+#      suma = 0.0
+#      do a
+#      do i
+#         get HBa_me_x(i,a)
+#         tmp  =  HBa_me_x(i,a) * HBa_me_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      sumb = 0.0
+#      do b
+#      do j
+#         get  HBb_me_x(j,b)
+#         tmp  = HBb_me_x(j,b) * HBb_me_x(j,b)
+#         sumb +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumb
+#      suma = 0.0
+#      do i
+#      do i1
+#          GET HBa_mi_x(i,i1)
+#          tmp = HBa_mi_x(i,i1) * HBa_mi_x(i,i1)
+#          suma +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar suma
+#      sumb = 0.0
+#      do j
+#      do j1
+#          GET HBb_mi_x(j,j1)
+#          tmp = HBb_mi_x(j,j1) * HBb_mi_x(j,j1)
+#          sumb +=tmp
+#      enddo j1
+#      enddo j 
+#      execute print_scalar sumb
+#      suma=0.0
+#      do a
+#      do a1
+#         GET HBa_ae_x(a,a1)
+#         tmp = HBa_ae_x(a,a1) * HBa_ae_x(a,a1)
+#         suma +=tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma
+#      sumb=0.0
+#      do b
+#      do b1
+#         GET HBb_ae_x(b,b1)
+#         tmp = HBb_ae_x(b,b1) * HBb_ae_x(b,b1)
+#         sumb +=tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
 
       ENDPROC TRANS_2MO

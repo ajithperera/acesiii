@@ -1304,16 +1304,16 @@
            put F1ae_a_x (a,a1) +=Taa(a,a1)
        ENDPARDO a,a1
 #bgn_debug
-     execute sip_barrier
-     suma = 0.0
-     do a
-     do a1
-        get F1ae_a_x(a,a1)
-        tmp = F1ae_a_x(a,a1) *F1ae_a_x(a,a1)
-        suma += tmp
-     enddo a1
-     enddo a
-     execute print_scalar suma 
+#     execute sip_barrier
+#     suma = 0.0
+#     do a
+#     do a1
+#        get F1ae_a_x(a,a1)
+#        tmp = F1ae_a_x(a,a1) *F1ae_a_x(a,a1)
+#        suma += tmp
+#     enddo a1
+#     enddo a
+#     execute print_scalar suma 
 #end_debug
 
       ENDPROC F1AEA_X
@@ -1368,16 +1368,16 @@
       ENDPARDO i,a
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do a
-      do i
-         get Fme_a_x(i,a)
-         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get Fme_a_x(i,a)
+#         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
 #      sum0 = 0.0
 #      do a
 #      do i
@@ -1545,16 +1545,16 @@
            put F1mi_a_x(i1,i) +=Tii(i1,i)
        ENDPARDO i1,i
 #bgn_debug
-     execute sip_barrier
-     suma = 0.0
-     do i
-     do i1
-        get F1mi_a_x(i1,i) 
-        tmp = F1mi_a_x(i1,i) * F1mi_a_x(i1,i)
-        suma += tmp
-     enddo i1
-     enddo i
-     execute print_scalar suma 
+#     execute sip_barrier
+#     suma = 0.0
+#     do i
+#     do i1
+#        get F1mi_a_x(i1,i) 
+#        tmp = F1mi_a_x(i1,i) * F1mi_a_x(i1,i)
+#        suma += tmp
+#     enddo i1
+#     enddo i
+#     execute print_scalar suma 
 #end_debug
 
       ENDPROC F1MIA_X
@@ -3735,16 +3735,16 @@
       ENDPARDO a, b, i, j
 
 #bgn_debug
-     execute sip_barrier
-     suma = 0.0
-     do i
-     do a 
-        get l1a_old_x(i,a)
-        tmp = l1a_old_x(i,a)*l1a_old_x(i,a)
-        suma += tmp
-     enddo a
-     enddo i
-     execute print_scalar suma
+#     execute sip_barrier
+#     suma = 0.0
+#     do i
+#     do a 
+#        get l1a_old_x(i,a)
+#        tmp = l1a_old_x(i,a)*l1a_old_x(i,a)
+#        suma += tmp
+#     enddo a
+#     enddo i
+#     execute print_scalar suma
 #end_debug
 
       ENDPROC L1AOLD_X
@@ -4059,17 +4059,17 @@
             PREPARE L2old_ab_x(i,a,j,b) += Tiajb(i,a,j,b)
       ENDPARDO i, a, b, j 
 #bgn_debug
-     suma = 0.0
-     sumab= 0.0
-     execute server_barrier
-     pardo i, a, b, j
-     request L2old_ab_x(i,a,j,b) b
-     tmp = L2old_ab_x(i,a,j,b) * L2old_ab_x(i,a,j,b)
-     suma += tmp
-     endpardo i, a, b, j
-     execute server_barrier
-     collective sumab += suma
-     execute print_scalar sumab
+#     suma = 0.0
+#     sumab= 0.0
+#     execute server_barrier
+#     pardo i, a, b, j
+#     request L2old_ab_x(i,a,j,b) b
+#     tmp = L2old_ab_x(i,a,j,b) * L2old_ab_x(i,a,j,b)
+#     suma += tmp
+#     endpardo i, a, b, j
+#     execute server_barrier
+#     collective sumab += suma
+#     execute print_scalar sumab
 #end_debug
 
       ENDPROC L2OLDAB_X
@@ -7396,47 +7396,47 @@
 #     --------------
          CALL W1MEBJAA_X
 #bgn_debug
-      execute server_barrieR
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
          CALL W1MEBJAB_X
 #bgn_debug
-      execute server_barrieR
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
          CALL W1MJBEab_X
 #bgn_debug
-      execute server_barrieR
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       ENDPROC W1MEBJ_X
@@ -7476,16 +7476,16 @@
       PROC LMAIN 
 
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get t1a_old_x(a,i)
-         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get t1a_old_x(a,i)
+#         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
 #end_debug
 
       CALL TAU 
@@ -7513,24 +7513,24 @@
       execute sip_barrier
 
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do a1
-         get Gae_a(a,a1)
-         tmp  = Gae_a(a,a1)*Gae_a(a,a1)
-         sum0 +=tmp
-      enddo a1
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-         get Gmi_a(i,i1)
-         tmp =  Gmi_a(i,i1)* Gmi_a(i,i1)
-         sum0 +=tmp
-       enddo i1
-       enddo i
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         get Gae_a(a,a1)
+#         tmp  = Gae_a(a,a1)*Gae_a(a,a1)
+#         sum0 +=tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do i
+#      do i1
+#         get Gmi_a(i,i1)
+#         tmp =  Gmi_a(i,i1)* Gmi_a(i,i1)
+#         sum0 +=tmp
+#       enddo i1
+#       enddo i
+#      execute print_scalar sum0
 #end_debug
 
 # Loop over perturbation statrs here.
@@ -7644,33 +7644,33 @@
       execute sip_barrier
 
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get Fme_a_x(i,a)
-         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do a1
-         get F1ae_a_x(a,a1)
-         tmp = F1ae_a_x(a,a1)* F1ae_a_x(a,a1)
-         sum0 +=tmp
-       enddo a1
-       enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-          get  F1mi_a_x(i,i1)
-          tmp =   F1mi_a_x(i,i1)*  F1mi_a_x(i,i1)
-          sum0 +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get Fme_a_x(i,a)
+#         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         get F1ae_a_x(a,a1)
+#         tmp = F1ae_a_x(a,a1)* F1ae_a_x(a,a1)
+#         sum0 +=tmp
+#       enddo a1
+#       enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do i
+#      do i1
+#          get  F1mi_a_x(i,i1)
+#          tmp =   F1mi_a_x(i,i1)*  F1mi_a_x(i,i1)
+#          sum0 +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum0
 #end_debug
 
       CALL W1MINJ_X
@@ -7697,72 +7697,72 @@
       CALL L2OLDAB_X
 
 #bgn_debug
-     execute server_barrier
-     ecorrab = 0.0
-     esumab  = 0.0
-     PARDO a, b, i, j
-           REQUEST L2old_ab_x(i,a,j,b) j
-           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#     execute server_barrier
+#     ecorrab = 0.0
+#     esumab  = 0.0
+#     PARDO a, b, i, j
+#           REQUEST L2old_ab_x(i,a,j,b) j
+#           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       CALL VABCDOLD_X
 #bgn_debug
-     execute server_barrier
-     ecorrab = 0.0
-     esumab  = 0.0
-     PARDO a, b, i, j
-           REQUEST L2old_ab_x(i,a,j,b) j
-           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#     execute server_barrier
+#     ecorrab = 0.0
+#     esumab  = 0.0
+#     PARDO a, b, i, j
+#           REQUEST L2old_ab_x(i,a,j,b) j
+#           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       CALL W1EAFMOLD_X
 #bgn_debug
-     execute server_barrier
-     ecorrab = 0.0
-     esumab  = 0.0
-     PARDO a, b, i, j
-           REQUEST L2old_ab_x(i,a,j,b) j
-           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#     execute server_barrier
+#     ecorrab = 0.0
+#     esumab  = 0.0
+#     PARDO a, b, i, j
+#           REQUEST L2old_ab_x(i,a,j,b) j
+#           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       call W1MEBJOLD_X
       execute server_barrier
 
 #bgn_debug
-      suma = 0.0
-      do a
-      do i
-         get l1a_old_x(i,a)
-         tmp  = l1a_old_x(i,a) * l1a_old_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2old_ab_x(i,a,j,b) j
-           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_old_x(i,a)
+#         tmp  = l1a_old_x(i,a) * l1a_old_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2old_ab_x(i,a,j,b) j
+#           etemp = L2old_ab_x(i,a,j,b)*L2old_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       PARDO a, a1, i, i1
@@ -7849,99 +7849,99 @@
       CALL L1ANEW_x
       CALL L2NEWAB_x
 #bgn_debug
-      execute server_barrieR
-      suma = 0.0
-      do a
-      do i
-         get l1a_new_x(i,a)
-         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_new_x(i,a)
+#         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
   
       CALL VABCD_X
 #bgn_debug
-      execute server_barrieR
-      suma = 0.0
-      do a
-      do i
-         get l1a_new_x(i,a)
-         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_new_x(i,a)
+#         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       CALL W1EAFM_X
 #bgn_debug
-      execute server_barrieR
-      suma = 0.0
-      do a
-      do i
-         get l1a_new_x(i,a)
-         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_new_x(i,a)
+#         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
  
       CALL W1MEBJ_X
 
 #bgn_debug
-      execute server_barrieR
-      suma = 0.0
-      do a
-      do i
-         get l1a_new_x(i,a)
-         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
-         suma +=tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-      ecorraa = 0.0
-      esumab  = 0.0
-      PARDO a, b, i, j
-           REQUEST L2new_ab_x(i,a,j,b) j
-           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
-           esumab += etemp
-     ENDPARDO a, b, i, j
-     execute server_barrier
-     collective ecorrab += esumab
-     execute print_scalar ecorrab
+#      execute server_barrieR
+#      suma = 0.0
+#      do a
+#      do i
+#         get l1a_new_x(i,a)
+#         tmp  = l1a_new_x(i,a) * l1a_new_x(i,a)
+#         suma +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#      ecorraa = 0.0
+#      esumab  = 0.0
+#      PARDO a, b, i, j
+#           REQUEST L2new_ab_x(i,a,j,b) j
+#           etemp = L2new_ab_x(i,a,j,b)*L2new_ab_x(i,a,j,b)
+#           esumab += etemp
+#     ENDPARDO a, b, i, j
+#     execute server_barrier
+#     collective ecorrab += esumab
+#     execute print_scalar ecorrab
 #end_debug
 
       execute server_barrier

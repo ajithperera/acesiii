@@ -656,19 +656,19 @@
       ENDPARDO a, a1
 
 #bgn_debug
-     execute sip_barrier
-     suma = 0.0
-     DO a
-     DO a1
-        GET Dab_a_x(a,a1)
+#     execute sip_barrier
+#     suma = 0.0
+#     DO a
+#     DO a1
+#        GET Dab_a_x(a,a1)
 #        if rank == 0.0
 #          execute dump_amp Dab_a_x(a,a1)
 #        endif
-         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
-         suma += tmp
-      ENDDO a1
-      ENDDO a
-      execute print_scalar suma
+#         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
+#         suma += tmp
+#      ENDDO a1
+#      ENDDO a
+#      execute print_scalar suma
 #end_debug
 
 # Beta spin--------------------------------
@@ -779,19 +779,19 @@
       ENDPARDO b, b1
 
 #bgn_debug
-      execute sip_barrier
-      sumb=0.0
-      do b
-      do b1
-         get Dab_b_x(b,b1)
+#      execute sip_barrier
+#      sumb=0.0
+#      do b
+#      do b1
+#         get Dab_b_x(b,b1)
 #         if rank == 0.0
 #            execute dump_amp Dab_b_x(b,b1)
 #         endif
-         tmp = Dab_b_x(b,b1) * Dab_b_x(b,b1)
-         sumb += tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumb
+#         tmp = Dab_b_x(b,b1) * Dab_b_x(b,b1)
+#         sumb += tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
 
       ENDPROC NEWDAB_x
@@ -895,26 +895,26 @@
       ENDPARDO a, a1, i2
 
 #bgn_debug
-       execute sip_barrier
+#       execute sip_barrier
 #      execute get_my_rank rank
-      suma = 0.0
-      sumb = 0.0
-      do i
-      do i1
-         get Dij_a_x_U(i,i1)
-         get Dij_a_x_L(i,i1) 
+#      suma = 0.0
+#      sumb = 0.0
+#      do i
+#      do i1
+#         get Dij_a_x_U(i,i1)
+#         get Dij_a_x_L(i,i1) 
 #         if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i,i1)
 #         execute dump_amp Dij_a_x_L(i,i1)
 #         endif
-         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
-         suma += tmp
-         tmp = Dij_a_x_L(i,i1) * Dij_a_x_L(i,i1)
-         sumb += tmp
-     enddo i1
-     enddo i
-     execute print_scalar suma
-     execute print_scalar sumb
+#         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
+#         suma += tmp
+#         tmp = Dij_a_x_L(i,i1) * Dij_a_x_L(i,i1)
+#         sumb += tmp
+#     enddo i1
+#     enddo i
+#     execute print_scalar suma
+#     execute print_scalar sumb
 #end_debug
 
       PARDO a, b, j
@@ -1012,25 +1012,25 @@
       ENDPARDO i, i1
 
 #bgn_debug
-      execute sip_barrier
-      suma=0.0
-      do i
-      do i1
+#      execute sip_barrier
+#      suma=0.0
+#      do i
+#      do i1
 #         get Dij_a_x_U(i1,i)
 #         get Dij_a_x_L(i1,i)
-         get Dij_a_x(i1,i)
+#         get Dij_a_x(i1,i)
 #          get T2L2_OO_A_x(i1,i)
-        if rank == 0.0
+#        if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i1,i)
 #         execute dump_amp Dij_a_x_L(i1,i)
 #         execute dump_amp Dij_a_x(i1,i)
 #         execute dump_amp  T2L2_OO_A_x(i1,i)
-         endif
-         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
-         suma += tmp
-      enddo i1
-      enddo i
-      execute print_scalar suma
+#         endif
+#         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
+#         suma += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar suma
 #end_debug
 
 #Beta spin-------------------------------------------
@@ -1064,26 +1064,26 @@
       ENDPARDO b, b1, j2
 
 #bgn_debug
-      execute sip_barrier
+#      execute sip_barrier
 #      execute get_my_rank rank
-      suma = 0.0
-      sumb = 0.0
-      do j
-      do j1
-         get Dij_b_x_U(j,j1)
-         get Dij_b_x_L(j,j1)
+#      suma = 0.0
+#      sumb = 0.0
+#      do j
+#      do j1
+#         get Dij_b_x_U(j,j1)
+#         get Dij_b_x_L(j,j1)
 #         if rank == 0.0
 #         execute dump_amp Dij_b_x_U(j,j1)
 #         execute dump_amp Dij_b_x_L(j,j1)
 #         endif
-         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
-         suma += tmp
-        tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
-        sumb += tmp
-      enddo j1
-      enddo j
-     execute print_scalar suma
-     execute print_scalar sumb
+#         tmp = Dij_b_x_U(j,j1) * Dij_b_x_U(j,j1)
+#         suma += tmp
+#        tmp = Dij_b_x_L(j,j1) * Dij_b_x_L(j,j1)
+#        sumb += tmp
+#      enddo j1
+#      enddo j
+#     execute print_scalar suma
+#     execute print_scalar sumb
 #end_debug
 
       PARDO b, a, i
@@ -1113,7 +1113,7 @@
       ENDPARDO b, a, i
 
 #bgn_debug
-      execute sip_barrier
+#      execute sip_barrier
 #      execute get_my_rank rank
 #      suma = 0.0
 #      sumb = 0.0
@@ -1162,19 +1162,19 @@
       ENDPARDO j, j1
 
 #bgn_debug
-      execute sip_barrier
-      sumb=0.0
-      do j
-      do j1
-         get Dij_b_x(j1,j)
+#      execute sip_barrier
+#      sumb=0.0
+#      do j
+#      do j1
+#         get Dij_b_x(j1,j)
 #         if rank == 0.0
 #         execute dump_amp Dij_b_x(j1,j)
 #         endif
-         tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
-         sumb += tmp
-      enddo j1
-      enddo j
-      execute print_scalar sumb
+#         tmp = Dij_b_x(j1,j) * Dij_b_x(j1,j)
+#         sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute print_scalar sumb
 #end_debug
 
       ENDPROC NEWDIJ_X
@@ -1216,15 +1216,15 @@
       EXECUTE  SIP_BARRIER
 # 
 #bgn_debug
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
 # Beta block
@@ -1239,16 +1239,16 @@
       ENDPARDO  b, j
 
 #bgn_debug
-      execute sip_barrier
-      sumb = 0.0
-      do b
-      do j
-         get Doldai_b_x(b,j)
-         tmp = Doldai_b_x(b,j) * Doldai_b_x(b,j)
-         sumb += tmp
-      enddo j
-      enddo b
-      execute print_scalar sumb
+#      execute sip_barrier
+#      sumb = 0.0
+#      do b
+#      do j
+#         get Doldai_b_x(b,j)
+#         tmp = Doldai_b_x(b,j) * Doldai_b_x(b,j)
+#         sumb += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
 
       EXECUTE  SERVER_BARRIER

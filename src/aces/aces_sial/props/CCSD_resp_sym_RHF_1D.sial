@@ -897,19 +897,19 @@
       ENDPARDO a, a1
 
 #bgn_debug
-     execute sip_barrier
-     suma = 0.0
-     DO a
-     DO a1
-        GET Dab_a_x(a,a1)
+#     execute sip_barrier
+#     suma = 0.0
+#     DO a
+#     DO a1
+#        GET Dab_a_x(a,a1)
 #        if rank == 0.0
 #          execute dump_amp Dab_a_x(a,a1)
 #        endif
-         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
-         suma += tmp
-      ENDDO a1
-      ENDDO a
-      execute print_scalar suma
+#         tmp = Dab_a_x(a,a1) * Dab_a_x(a,a1)
+#         suma += tmp
+#      ENDDO a1
+#      ENDDO a
+#      execute print_scalar suma
 #end_debug
 
       ENDPROC NEWDAB_x
@@ -1009,26 +1009,26 @@
       ENDPARDO a, a1, i2
 
 #bgn_debug
-       execute sip_barrier
+#       execute sip_barrier
 #      execute get_my_rank rank
-      suma = 0.0
-      sumb = 0.0
-      do i
-      do i1
-         get Dij_a_x_U(i,i1)
-         get Dij_a_x_L(i,i1) 
+#      suma = 0.0
+#      sumb = 0.0
+#      do i
+#      do i1
+#         get Dij_a_x_U(i,i1)
+#         get Dij_a_x_L(i,i1) 
 #         if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i,i1)
 #         execute dump_amp Dij_a_x_L(i,i1)
 #         endif
-         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
-         suma += tmp
-         tmp = Dij_a_x_L(i,i1) * Dij_a_x_L(i,i1)
-         sumb += tmp
-     enddo i1
-     enddo i
-     execute print_scalar suma
-     execute print_scalar sumb
+#         tmp = Dij_a_x_U(i,i1) * Dij_a_x_U(i,i1)
+#         suma += tmp
+#         tmp = Dij_a_x_L(i,i1) * Dij_a_x_L(i,i1)
+#         sumb += tmp
+#     enddo i1
+#     enddo i
+#     execute print_scalar suma
+#     execute print_scalar sumb
 #end_debug
 
       PARDO a, b, j
@@ -1184,25 +1184,25 @@
       ENDPARDO i, i1
 
 #bgn_debug
-      execute sip_barrier
-      suma=0.0
-      do i
-      do i1
+#      execute sip_barrier
+#      suma=0.0
+#      do i
+#      do i1
 #         get Dij_a_x_U(i1,i)
 #         get Dij_a_x_L(i1,i)
-         get Dij_a_x(i1,i)
+#         get Dij_a_x(i1,i)
 #          get T2L2_OO_A_x(i1,i)
-        if rank == 0.0
+#        if rank == 0.0
 #         execute dump_amp Dij_a_x_U(i1,i)
 #         execute dump_amp Dij_a_x_L(i1,i)
 #         execute dump_amp Dij_a_x(i1,i)
 #         execute dump_amp  T2L2_OO_A_x(i1,i)
-         endif
-         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
-         suma += tmp
-      enddo i1
-      enddo i
-      execute print_scalar suma
+#         endif
+#         tmp = Dij_a_x(i1,i) * Dij_a_x(i1,i)
+#         suma += tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar suma
 #end_debug
 
       ENDPROC NEWDIJ_X
@@ -1340,17 +1340,17 @@
 #           enddo i1
 #           enddo a
 #           execute print_scalar suma
-
-      execute sip_barrier
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#
+#      execute sip_barrier
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
        PARDO  a, a1, i              
@@ -1371,56 +1371,56 @@
       ENDPARDO  a, a1, i
 
 #bgn_debug
-      suma = 0.0
-      do a
-      do a1
-         get T2L2_VV_A_x (a,a1)
-         tmp = T2L2_VV_A_x (a,a1) * T2L2_VV_A_X (a,a1)
-         suma += tmp
-      enddo a1
-     enddo a
-     execute print_scalar suma
-
-      suma = 0.0
-      do a
-      do a1
-         get T2L2_VV_A (a,a1)
-         tmp = T2L2_VV_A (a,a1) * T2L2_VV_A (a,a1)
-         suma += tmp
-      enddo a1
-      enddo a
-      execute print_scalar suma
-
-      suma = 0.0
-           do a
-           do i1
-               get  LT1A_x (a,i1) 
-              sum = LT1A_x(a,i1)*LT1A_x(a,i1)
-             suma += sum
-           enddo i1
-           enddo a
-          execute print_scalar suma
-
-      suma = 0.0
-           do a
-           do i1 
-              GET LT1A(a,i1)
-              sum = LT1A(a,i1)*LT1A(a,i1)
-             suma += sum
-           enddo i1
-           enddo a
-          execute print_scalar suma
-
-      execute sip_barrier 
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#      suma = 0.0
+#      do a
+#      do a1
+#         get T2L2_VV_A_x (a,a1)
+#         tmp = T2L2_VV_A_x (a,a1) * T2L2_VV_A_X (a,a1)
+#         suma += tmp
+#      enddo a1
+#     enddo a
+#     execute print_scalar suma
+#
+#      suma = 0.0
+#      do a
+#      do a1
+#         get T2L2_VV_A (a,a1)
+#         tmp = T2L2_VV_A (a,a1) * T2L2_VV_A (a,a1)
+#         suma += tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma
+#
+#      suma = 0.0
+#           do a
+#           do i1
+#               get  LT1A_x (a,i1) 
+#              sum = LT1A_x(a,i1)*LT1A_x(a,i1)
+#             suma += sum
+#           enddo i1
+#           enddo a
+#          execute print_scalar suma
+#
+#      suma = 0.0
+#           do a
+#           do i1 
+#              GET LT1A(a,i1)
+#              sum = LT1A(a,i1)*LT1A(a,i1)
+#             suma += sum
+#           enddo i1
+#           enddo a
+#          execute print_scalar suma
+#
+#      execute sip_barrier 
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
       PARDO   a1,i1
@@ -1469,16 +1469,16 @@
       ENDPARDO  b,j
 
 #bgn_debug
-      execute sip_barrier 
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#      execute sip_barrier 
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
       PARDO  a, i
@@ -1494,15 +1494,15 @@
       EXECUTE  SIP_BARRIER
 
 #bgn_debug
-      suma = 0.0
-      do a
-      do i
-         get Doldai_a_x(a,i)
-         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
-         suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
+#      suma = 0.0
+#      do a
+#      do i
+#         get Doldai_a_x(a,i)
+#         tmp = Doldai_a_x(a,i) * Doldai_a_x(a,i)
+#         suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
 #end_debug
 
       EXECUTE  SERVER_BARRIER
@@ -1515,34 +1515,34 @@
       PROC D1TRANS
 #     ------------
 #bgn_debug
-      suma = 0.0
-      do a
-      do a1
-            GET Dab_a(a,a1)
-            tmp  = Dab_a(a,a1) * Dab_a(a,a1)
-            suma += tmp
-      enddo a1
-      enddo a
-      execute print_scalar suma 
-      suma = 0.0
-      do i
-      do i1
-            GET Dij_a(i,i1)
-            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
-            suma += tmp
-      enddo i1
-      enddo i
-      execute  print_scalar suma 
-      suma = 0.0
-      do a 
-      do i
-            GET Doldai_a(a,i)
-            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
-            suma += tmp
-      enddo i
-      enddo a 
-
-      execute print_scalar sumb
+#      suma = 0.0
+#      do a
+#      do a1
+#            GET Dab_a(a,a1)
+#            tmp  = Dab_a(a,a1) * Dab_a(a,a1)
+#            suma += tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma 
+#      suma = 0.0
+#      do i
+#      do i1
+#            GET Dij_a(i,i1)
+#            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
+#            suma += tmp
+#      enddo i1
+#      enddo i
+#      execute  print_scalar suma 
+#      suma = 0.0
+#      do a 
+#      do i
+#            GET Doldai_a(a,i)
+#            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
+#            suma += tmp
+#      enddo i
+#      enddo a 
+#
+#      execute print_scalar sumb
 #end_debug
 #     Transform Dai_aa
 #     ----------------

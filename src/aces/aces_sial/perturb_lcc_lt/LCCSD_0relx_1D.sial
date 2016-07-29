@@ -7460,24 +7460,24 @@
       ENDPARDO b, j  
       execute sip_barrier 
 #bgn_debug
-      suma = 0.0
-      do i 
-      do a
-         get Xai_aa(a,i)
-         tmp = Xai_aa(a,i) * Xai_aa(a,i)
-         suma +=tmp
-      enddo a
-      enddo i
-      execute print_scalar suma
-      sumb = 0.0
-      do j
-      do b
-         get Xai_bb(b,j)
-         tmp = Xai_bb(b,j) * Xai_bb(b,j)
-         sumb +=tmp
-      enddo b
-      enddo j
-      execute print_scalar sumb
+#      suma = 0.0
+#      do i 
+#      do a
+#         get Xai_aa(a,i)
+#         tmp = Xai_aa(a,i) * Xai_aa(a,i)
+#         suma +=tmp
+#      enddo a
+#      enddo i
+#      execute print_scalar suma
+#      sumb = 0.0
+#      do j
+#      do b
+#         get Xai_bb(b,j)
+#         tmp = Xai_bb(b,j) * Xai_bb(b,j)
+#         sumb +=tmp
+#      enddo b
+#      enddo j
+#      execute print_scalar sumb
 #end_debug
         
 #
@@ -7732,61 +7732,61 @@
       PROC D1TRANS
 #     ------------
 #bgn_debug
-     suma = 0.0
-     do a
-      do a1
-            GET Dab_a(a,a1)
-           tmp  = Dab_a(a,a1) * Dab_a(a,a1)
-            suma += tmp
-      enddo a1
-      enddo a
-      execute print_scalar suma
-      suma = 0.0
-      do i
-      do i1
-           GET Dij_a(i,i1)
-            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
-            suma += tmp
-      enddo i1
-      enddo i
-      execute  print_scalar suma
-      suma = 0.0
-      do a
-      do i
-           GET Doldai_a(a,i)
-            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
-            suma += tmp
-      enddo i
-      enddo a
-      execute print_scalar suma
-
-      sumb = 0.0
-      do b
-      do b1
-            GET Dab_b(b,b1)
-            tmp  = Dab_b(b,b1) * Dab_b(b,b1)
-            sumb += tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumb
-      sumb = 0.0
-      do j
-      do j1
-            GET Dij_b(j,j1)
-            tmp  = Dij_b(j,j1) * Dij_b(j,j1)
-            sumb += tmp
-      enddo j1
-      enddo j
-      execute  print_scalar sumb
-      sumb = 0.0
-      do b
-      do j
-            GET Doldai_b(b,j)
-            tmp  = Doldai_b(b,j) * Doldai_b(b,j)
-            sumb += tmp
-      enddo j
-      enddo b
-      execute print_scalar sumb
+#     suma = 0.0
+#     do a
+#      do a1
+#            GET Dab_a(a,a1)
+#           tmp  = Dab_a(a,a1) * Dab_a(a,a1)
+#            suma += tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma
+#      suma = 0.0
+#      do i
+#      do i1
+#           GET Dij_a(i,i1)
+#            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
+#            suma += tmp
+#      enddo i1
+#      enddo i
+#      execute  print_scalar suma
+#      suma = 0.0
+#      do a
+#      do i
+#           GET Doldai_a(a,i)
+#            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
+#            suma += tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar suma
+#
+#      sumb = 0.0
+#      do b
+#      do b1
+#            GET Dab_b(b,b1)
+#            tmp  = Dab_b(b,b1) * Dab_b(b,b1)
+#            sumb += tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumb
+#      sumb = 0.0
+#      do j
+#      do j1
+#            GET Dij_b(j,j1)
+#            tmp  = Dij_b(j,j1) * Dij_b(j,j1)
+#            sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute  print_scalar sumb
+#      sumb = 0.0
+#      do b
+#      do j
+#            GET Doldai_b(b,j)
+#            tmp  = Doldai_b(b,j) * Doldai_b(b,j)
+#            sumb += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumb
 #end_debug
 #      Transform Dai_aa
 #     ----------------
@@ -8588,7 +8588,7 @@
 # ---------- 
          CALL DIJKL # gamma3 
 #bgn_debug
-         call s2dijkl
+#         call s2dijkl
 #end_debug
 #
 # Form DABCD 
@@ -8599,28 +8599,28 @@
 # ---------- 
          CALL DIBJA # gamma4 
 #bgn_debug
-         call s2dibja
+#         call s2dibja
 #end_debug
 #
 # Form DIJAB  
 # ---------- 
          CALL DIJAB # gamma1 
 #bgn_debug
-         call s2dijab
+#         call s2dijab
 #end_debug
 #
 # Form DIJKA  
 # ---------- 
          CALL DIJKA # gamma6 
 #bgn_debug
-         call s2dijka
+#         call s2dijka
 #end_debug
 #
 # Form DABCI 
 # ---------- 
          CALL DABCI # gamma5 
 #bgn_debug
-         call s2abci 
+#         call s2abci 
 #end_debug
 #
 # Compute 'Direct' contributions to Iab coming from Vabcd  

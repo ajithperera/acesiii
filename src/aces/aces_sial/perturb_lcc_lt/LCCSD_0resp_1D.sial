@@ -565,62 +565,62 @@
       PROC D1TRANS
 #     ------------
 #bgn_debug
-      suma = 0.0
-      do a
-      do a1
-            GET Dab_a(a,a1)
-            tmp  = Dab_a(a,a1) * Dab_a(a,a1)
-            suma += tmp
-      enddo a1
-      enddo a
-      execute print_scalar suma 
-      suma = 0.0
-      do i
-      do i1
-            GET Dij_a(i,i1)
-            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
-            suma += tmp
-      enddo i1
-      enddo i
-      execute  print_scalar suma 
-      suma = 0.0
-      do a 
-      do i
-            GET Doldai_a(a,i)
-            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
-            suma += tmp
-      enddo i
-      enddo a 
-      execute print_scalar suma 
-
-      sumb = 0.0
-      do b
-      do b1
-            GET Dab_b(b,b1)
-            tmp  = Dab_b(b,b1) * Dab_b(b,b1)
-            sumb += tmp
-      enddo b1
-      enddo b
-      execute print_scalar sumb
-      sumb = 0.0
-      do j 
-      do j1
-            GET Dij_b(j,j1)
-            tmp  = Dij_b(j,j1) * Dij_b(j,j1)
-            sumb += tmp
-      enddo j1
-      enddo j
-      execute  print_scalar suma
-      sumb = 0.0
-      do b
-      do j
-            GET Doldai_b(b,j)
-            tmp  = Doldai_b(b,j) * Doldai_b(b,j)
-            sumb += tmp
-      enddo j
-      enddo b
-      execute print_scalar sumb
-#end_debug
+#      suma = 0.0
+#      do a
+#      do a1
+#            GET Dab_a(a,a1)
+#            tmp  = Dab_a(a,a1) * Dab_a(a,a1)
+#            suma += tmp
+#      enddo a1
+#      enddo a
+#      execute print_scalar suma 
+#      suma = 0.0
+#      do i
+#      do i1
+#            GET Dij_a(i,i1)
+#            tmp  = Dij_a(i,i1) * Dij_a(i,i1)
+#            suma += tmp
+#      enddo i1
+#      enddo i
+#      execute  print_scalar suma 
+#      suma = 0.0
+#      do a 
+#      do i
+#            GET Doldai_a(a,i)
+#            tmp  = Doldai_a(a,i) * Doldai_a(a,i)
+#            suma += tmp
+#      enddo i
+#      enddo a 
+#      execute print_scalar suma 
+#
+#      sumb = 0.0
+#      do b
+#      do b1
+#            GET Dab_b(b,b1)
+#            tmp  = Dab_b(b,b1) * Dab_b(b,b1)
+#            sumb += tmp
+#      enddo b1
+#      enddo b
+#      execute print_scalar sumb
+#      sumb = 0.0
+#      do j 
+#      do j1
+#            GET Dij_b(j,j1)
+#            tmp  = Dij_b(j,j1) * Dij_b(j,j1)
+#            sumb += tmp
+#      enddo j1
+#      enddo j
+#      execute  print_scalar suma
+#      sumb = 0.0
+#      do b
+#      do j
+#            GET Doldai_b(b,j)
+#            tmp  = Doldai_b(b,j) * Doldai_b(b,j)
+#            sumb += tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sumb
+##end_debug
 #     Transform Dai_aa
 #     ----------------
 

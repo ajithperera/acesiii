@@ -1638,25 +1638,25 @@
       ENDPARDO i,a
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do a
-      do i
-         get Fme_a_x(i,a)
-         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do i
-         get HBa_me_x(i,a)
-         tmp  = HBa_me_x(i,a) * HBa_me_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get Fme_a_x(i,a)
+#         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get HBa_me_x(i,a)
+#         tmp  = HBa_me_x(i,a) * HBa_me_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
 #end_debug
 
 #....................FMEB.........................................................
@@ -6400,16 +6400,16 @@
       ENDPARDO b, a, j, i
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get l1b_old_x(j,b)
+#         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       ENDPROC L1BNEW 
@@ -7901,16 +7901,16 @@
       execute server_barrier   
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get l1b_old_x(j,b)
+#         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       ENDPROC LLADDER 
@@ -12253,24 +12253,24 @@
 #__________________LMAIN________________________________________________                   
       PROC LMAIN 
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get t1a_old_x(a,i)
-         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do j
-         get t1b_old_x(b,j)
-         tmp  = t1b_old_x(b,j) * t1b_old_x(b,j)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get t1a_old_x(a,i)
+#         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get t1b_old_x(b,j)
+#         tmp  = t1b_old_x(b,j) * t1b_old_x(b,j)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       CALL TAU 
@@ -12281,51 +12281,51 @@
       CALL F1MI  
       execute sip_barrier 
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get Fme_a_x(i,a)
-         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
-         sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do j
-         get Fme_b_x(j,b)
-         tmp  = Fme_b_x(j,b)*Fme_b_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
-      sum0 = 0.0
-      do a
-      do a1
-         get F1ae_a_x(a,a1)
-         tmp = F1ae_a_x(a,a1)* F1ae_a_x(a,a1)
-         sum0 +=tmp
-       enddo a1
-       enddo a
-      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do b1
-         get  F1ae_b_x(b,b1)
-         tmp =  F1ae_b_x(b,b1) * F1ae_b_x(b,b1)
-         sum0 +=tmp
-       enddo b1
-       enddo b
-      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-          get  F1mi_a_x(i,i1)
-          tmp =   F1mi_a_x(i,i1)*  F1mi_a_x(i,i1)
-          sum0 +=tmp
-      enddo i1
-      enddo i
-      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get Fme_a_x(i,a)
+#         tmp  =  Fme_a_x(i,a)* Fme_a_x(i,a)
+#         sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get Fme_b_x(j,b)
+#         tmp  = Fme_b_x(j,b)*Fme_b_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         get F1ae_a_x(a,a1)
+#         tmp = F1ae_a_x(a,a1)* F1ae_a_x(a,a1)
+#         sum0 +=tmp
+#       enddo a1
+#       enddo a
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do b
+#      do b1
+#         get  F1ae_b_x(b,b1)
+#         tmp =  F1ae_b_x(b,b1) * F1ae_b_x(b,b1)
+#         sum0 +=tmp
+#       enddo b1
+#       enddo b
+#      execute print_scalar sum0
+#      sum0 = 0.0
+#      do i
+#      do i1
+#          get  F1mi_a_x(i,i1)
+#          tmp =   F1mi_a_x(i,i1)*  F1mi_a_x(i,i1)
+#          sum0 +=tmp
+#      enddo i1
+#      enddo i
+#      execute print_scalar sum0
 #end_debug
       CALL W1MINJ 
       CALL W2MEBJ   
@@ -12374,44 +12374,44 @@
       CALL GMI
       execute sip_barrier
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do a1
-         get Gae_a(a,a1)
-         tmp  = Gae_a(a,a1)*Gae_a(a,a1)
-         sum0 +=tmp
-      enddo a1
-      enddo a
+#      sum0 = 0.0
+#      do a
+#      do a1
+#         get Gae_a(a,a1)
+#         tmp  = Gae_a(a,a1)*Gae_a(a,a1)
+#         sum0 +=tmp
+#      enddo a1
+#      enddo a
 #      execute print_scalar sum0
-      sum0 = 0.0
-      do b
-      do b1
-         get Gae_b(b,b1)
-         tmp  = Gae_b(b,b1)*Gae_b(b,b1)
-         sum0 +=tmp
-      enddo b1
-      enddo b
+#      sum0 = 0.0
+#      do b
+#      do b1
+#         get Gae_b(b,b1)
+#         tmp  = Gae_b(b,b1)*Gae_b(b,b1)
+#         sum0 +=tmp
+#      enddo b1
+#      enddo b
 #      execute print_scalar sum0
-      sum0 = 0.0
-      do i
-      do i1
-         get Gmi_a(i,i1)
-         tmp =  Gmi_a(i,i1)* Gmi_a(i,i1)
-         sum0 +=tmp
-       enddo i1
-       enddo i
+#      sum0 = 0.0
+#      do i
+#      do i1
+#         get Gmi_a(i,i1)
+#         tmp =  Gmi_a(i,i1)* Gmi_a(i,i1)
+#         sum0 +=tmp
+#       enddo i1
+#       enddo i
 #      execute print_scalar sum0
-      sum0 = 0.0
-      do j
-      do j1
-         get Gmi_b(j,j1)
-         tmp =  Gmi_b(j,j1)* Gmi_b(j,j1)
-         sum0 +=tmp
-       enddo j1
-       enddo j
+#      sum0 = 0.0
+#      do j
+#      do j1
+#         get Gmi_b(j,j1)
+#         tmp =  Gmi_b(j,j1)* Gmi_b(j,j1)
+#         sum0 +=tmp
+#       enddo j1
+#       enddo j
 #      execute print_scalar sum0
 #end_debug
-
+#
       CALL L1ANEW
       CALL L1BNEW
 
@@ -12421,45 +12421,45 @@
 
       CALL VABCD                 # this is good
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get l1b_old_x(j,b)
+#         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       CALL W1EAFM                #Problem
 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get l1b_old_x(j,b)
+#         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       call W1MEBJ               # this is good as well 
 #bgn_debug
-      execute sip_barrier
-      sum0 = 0.0
-      do b
-      do j
-         get l1b_old_x(j,b)
-         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
-         sum0 +=tmp
-      enddo j
-      enddo b
-      execute print_scalar sum0
+#      execute sip_barrier
+#      sum0 = 0.0
+#      do b
+#      do j
+#         get l1b_old_x(j,b)
+#         tmp  = l1b_old_x(j,b) * l1b_old_x(j,b)
+#         sum0 +=tmp
+#      enddo j
+#      enddo b
+#      execute print_scalar sum0
 #end_debug
 
       execute sip_barrier

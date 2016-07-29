@@ -1522,7 +1522,7 @@
           get HBa_me_x(i,a)
           Tia(i,a) =  HBa_me_x(i,a)
 #bgn_debug
-          Tia(i,a)  *= 1.0
+#          Tia(i,a)  *= 1.0
 #end_debug
           put Fme_a_x(i,a) +=Tia(i,a)
       ENDPARDO i,a
@@ -5201,10 +5201,10 @@
        EXECUTE SIP_BARRIER
  
 #bgn_debug
-       execute print_scalar do_pols
-       execute print_scalar do_aten
-       execute print_scalar do_gten
-       execute print_scalar do_dten
+#       execute print_scalar do_pols
+#       execute print_scalar do_aten
+#       execute print_scalar do_gten
+#       execute print_scalar do_dten
 #end_debug
 
       if do_pols == one

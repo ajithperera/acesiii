@@ -1809,17 +1809,17 @@
       ENDPARDO lambda, sigma, i, j1 
       execute server_barrier 
 #bgn_debug
-      execute server_barrier
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,lambda
-            request Dijxx(i1,j,sigma,lambda) lambda
-            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,lambda
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      execute server_barrier
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,lambda
+#            request Dijxx(i1,j,sigma,lambda) lambda
+#            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,lambda
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 #
 # Done backtransformation 
@@ -2517,17 +2517,17 @@
       ENDPARDO i1, nu, j1, mu 
       execute server_barrier 
 #bgn_debug
-      execute server_barrier
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,lambda
-            request Dijxx(i1,j,sigma,lambda) lambda
-            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,lambda
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      execute server_barrier
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,lambda
+#            request Dijxx(i1,j,sigma,lambda) lambda
+#            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,lambda
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 #
 # Done backtransformation 
@@ -3178,16 +3178,16 @@
       ENDPARDO sigma, b1, i, j1 
       execute server_barrier 
 #bgn_debug
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO sigma, b1, i, j1
-            request Dibjx(i,b1,j1,sigma) sigma 
-            etemp = Dibjx(i,b1,j1,sigma) * Dibjx(i,b1,j1,sigma)
-            esuma += etemp
-      ENDPARDO sigma, b1, i, j1
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO sigma, b1, i, j1
+#            request Dibjx(i,b1,j1,sigma) sigma 
+#            etemp = Dibjx(i,b1,j1,sigma) * Dibjx(i,b1,j1,sigma)
+#            esuma += etemp
+#      ENDPARDO sigma, b1, i, j1
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 #
       PARDO sigma, nu, i, j1 
@@ -3210,16 +3210,16 @@
       execute server_barrier 
 
 #bgn_debug
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,nu
-            request Dixxj(i1,sigma,nu,j) j
-            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,nu
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,nu
+#            request Dixxj(i1,sigma,nu,j) j
+#            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,nu
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 
 #
@@ -3358,16 +3358,16 @@
       execute server_barrier 
 
 #bgn_debug
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO sigma, a1, j, i1
-            request  Djaix(j,a1,i1,sigma) sigma 
-            etemp =  Djaix(j,a1,i1,sigma) *  Djaix(j,a1,i1,sigma)
-            esuma += etemp
-      ENDPARDO sigma, a1, j, i1
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO sigma, a1, j, i1
+#            request  Djaix(j,a1,i1,sigma) sigma 
+#            etemp =  Djaix(j,a1,i1,sigma) *  Djaix(j,a1,i1,sigma)
+#            esuma += etemp
+#      ENDPARDO sigma, a1, j, i1
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 
 #
@@ -3390,17 +3390,17 @@
       ENDPARDO sigma, nu, j, i1 
       execute server_barrier 
 #bgn_debug
-      execute server_barrier
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,nu
-            request Dixxj(i1,sigma,nu,j) j
-            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,nu
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      execute server_barrier
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,nu
+#            request Dixxj(i1,sigma,nu,j) j
+#            etemp = Dixxj(i1,sigma,nu,j) * Dixxj(i1,sigma,nu,j)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,nu
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 
 #
@@ -4528,17 +4528,17 @@
       ENDPARDO i, j1, lambda, sigma 
       execute server_barrier
 #bgn_debug
-      execute server_barrier
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,lambda
-            request Dijxx(i1,j,sigma,lambda) lambda
-            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,lambda
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      execute server_barrier
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,lambda
+#            request Dijxx(i1,j,sigma,lambda) lambda
+#            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,lambda
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 
 #
@@ -4653,17 +4653,17 @@
       ENDPARDO j, i1, lambda, sigma 
       execute server_barrier
 #bgn_debug
-      execute server_barrier
-      esuma   = 0.0
-      ecorraa = 0.0
-      PARDO i1,j,sigma,lambda
-            request Dijxx(i1,j,sigma,lambda) lambda
-            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
-            esuma += etemp
-      ENDPARDO i1,j,sigma,lambda
-      execute server_barrier
-      collective ecorraa += esuma
-      execute print_scalar ecorraa
+#      execute server_barrier
+#      esuma   = 0.0
+#      ecorraa = 0.0
+#      PARDO i1,j,sigma,lambda
+#            request Dijxx(i1,j,sigma,lambda) lambda
+#            etemp = Dijxx(i1,j,sigma,lambda)*Dijxx(i1,j,sigma,lambda)
+#            esuma += etemp
+#      ENDPARDO i1,j,sigma,lambda
+#      execute server_barrier
+#      collective ecorraa += esuma
+#      execute print_scalar ecorraa
 #end_debug
 
 #

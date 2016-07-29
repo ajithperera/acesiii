@@ -1915,11 +1915,11 @@
             Tiiaa(i,i1,a,a1)         = t1a_old(a,i)^L1ai(a1,i1) 
             Tiiaa(i,i1,a,a1)        *= 0.375 
 #bgn_debug
-            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-            T1iiaa(i,i1,a,a1) *= 1.0
-            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#            T1iiaa(i,i1,a,a1) *= 1.0
+#            PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
+            PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1) 
  
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
             T1iiaa(i,i1,a1,a)       *= -1.0  
@@ -1992,11 +1992,11 @@
                   Tiiaa(i,i1,a,a1)         = Tiaai(i,a,a1,i1)
                   Tiiaa(i,i1,a,a1)        *= -0.0625 #-0.125
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-                  T1iiaa(i,i1,a,a1) *= 1.0
-                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+                  PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
@@ -2048,11 +2048,11 @@
                Tiiaa(i,i1,a,a1)         = Taiai(a1,i1,a,i)
                Tiiaa(i,i1,a,a1)        *= 0.0625
 #bgn_debug
-               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
-               T1iiaa(i,i1,a,a1) *= 1.0
-               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
+#               T1iiaa(i,i1,a,a1) = Tiiaa(i,i1,a,a1)
+#               T1iiaa(i,i1,a,a1) *= 1.0
+#               PREPARE Dijab_aa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 #end_debug
-#               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
+               PREPARE Dijab_aa(i,i1,a,a1) += Tiiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1) 
                T1iiaa(i,i1,a1,a)       *= -1.0  
@@ -2934,14 +2934,14 @@
                T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i)*Dii_x(i1,i2)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa(a,i2,a1,i1)*Dii_x(i,i2)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
@@ -2950,14 +2950,14 @@
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i)*Dii(i1,i2)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a,i2,a1,i1)*Dii(i,i2)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
@@ -2977,14 +2977,14 @@
                   T1iiaa(i,i1,a,a1)  = Vijmn_aaaa(i,i1,i2,i3)*T2iiaa_x(i2,i3,a,a1)
                   T1iiaa(i,i1,a,a1) *= 0.0625
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) *=1.0
+#                  T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                   Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
 
                   T1iiaa(i,i1,a,a1)  = Vijmn_aaaa_x(i,i1,i2,i3)*T2iiaa(i2,i3,a,a1)
                   T1iiaa(i,i1,a,a1) *= 0.0625
 #bgn_debug
-                  T1iiaa(i,i1,a,a1) *=1.0
+#                  T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                   Tiiaa(i,i1,a,a1)  += T1iiaa(i,i1,a,a1)
                ENDDO i3
@@ -3007,28 +3007,28 @@
                T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a1,i1)*Daa_x(a2,a)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa(a2,i,a,i1)*Daa_x(a2,a1)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a1,i1)*Daa(a2,a)
                T1iiaa(i,i1,a,a1)*= 0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
 
                T1iiaa(i,i1,a,a1) = Tau_aa_x(a2,i,a,i1)*Daa(a2,a1)
                T1iiaa(i,i1,a,a1)*= -0.125
 #bgn_debug
-               T1iiaa(i,i1,a,a1) *=1.0
+#               T1iiaa(i,i1,a,a1) *=1.0
 #end_debug
                Tiiaa(i,i1,a,a1) += T1iiaa(i,i1,a,a1)
             ENDDO a2
@@ -3120,7 +3120,7 @@
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-            T1iiaa(i,i1,a1,a) *= 1.0
+#            T1iiaa(i,i1,a1,a) *= 1.0
 #end_debug
             PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
@@ -3133,7 +3133,7 @@
 
             T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-            T1iiaa(i1,i,a1,a) *= 1.0
+#            T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3149,20 +3149,20 @@
             T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-            T1iiaa(i,i1,a1,a) *= 1.0
+#            T1iiaa(i,i1,a1,a) *= 1.0
 #end_debug
             PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
             T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
             T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-            T1iiaa(i1,i,a,a1) *= 1.0
+#            T1iiaa(i1,i,a,a1) *= 1.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
             T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-            T1iiaa(i1,i,a1,a) *= 1.0
+#            T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
             PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3193,8 +3193,8 @@
             Liaai_x(i2,a2,a1,i1)  += Liaai_x1(i2,a2,a1,i1)
             Liaai_x(i2,a2,a1,i1) *= 2.0
 #bgn_debug
-            Liaai(i2,a2,a1,i1) *= 1.0
-            Liaai_x(i2,a2,a1,i1) *= 1.0
+#            Liaai(i2,a2,a1,i1) *= 1.0
+#            Liaai_x(i2,a2,a1,i1) *= 1.0
 #end_debug
 
             DO i3
@@ -3249,11 +3249,11 @@
                   Tiaia(i,a,i2,a2)         = t1a_old(a,i2)^tai(a2,i)
                   Tiaia(i,a,i2,a2)        *= 2.0
 #bgn_debug
-                  Tiaia(i,a,i2,a2)  *= 1.0
+#                  Tiaia(i,a,i2,a2)  *= 1.0
 #end_debug
                   T1iaia(i,a,i2,a2)        = T2old_aa(a,i2,a2,i)
 #bgn_debug
-                  T1iaia(i,a,i2,a2) *= 1.0
+#                  T1iaia(i,a,i2,a2) *= 1.0
 #end_debug
                   Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
                   Tiaai(i,a,a1,i1)         = Tiaia(i,a,i2,a2)*Liaai_x(i2,a2,a1,i1)
@@ -3270,20 +3270,19 @@
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-#bgn_debug
-                  T1iiaa(i,i1,a,a1) *= 1.0
+#                  T1iiaa(i,i1,a,a1) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
                   T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-                  T1iiaa(i1,i,a,a1) *= 1.0
+#                  T1iiaa(i1,i,a,a1) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                   T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-                  T1iiaa(i1,i,a1,a) *= 1.0
+#                  T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3292,12 +3291,12 @@
                   Tiaia(i,a,i2,a2)        += Tiaia_x(i,a,i2,a2)
                   Tiaia(i,a,i2,a2)        *= 2.0
 #bgn_debug
-                  Tiaia(i,a,i2,a2) *= 1.0
+#                  Tiaia(i,a,i2,a2) *= 1.0
 #end_debug
 
                   T1iaia(i,a,i2,a2)        = T2old_aa_x(a,i2,a2,i)
 #bgn_debug
-                  T1iaia(i,a,i2,a2) *= 1.0
+#                  T1iaia(i,a,i2,a2) *= 1.0
 #end_debug
                   Tiaia(i,a,i2,a2)        += T1iaia(i,a,i2,a2)
 
@@ -3316,19 +3315,19 @@
                   T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-                  T1iiaa(i,i1,a1,a) *= 1.0
+#                  T1iiaa(i,i1,a1,a) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
                   T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                   T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-                  T1iiaa(i1,i,a,a1) *= 1.0
+#                  T1iiaa(i1,i,a,a1) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                   T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-                  T1iiaa(i1,i,a1,a) *= 1.0
+#                  T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
                   PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
                ENDDO a
@@ -3397,20 +3396,20 @@
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-               T1iiaa(i,i1,a1,a) *= 1.0
+#               T1iiaa(i,i1,a1,a) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
                T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-               T1iiaa(i1,i,a,a1) *= 1.0
+#               T1iiaa(i1,i,a,a1) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-               T1iiaa(i1,i,a1,a) *= 1.0
+#               T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
 
@@ -3426,20 +3425,20 @@
                T1iiaa(i,i1,a1,a)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i,i1,a1,a)       *= -1.0
 #bgn_debug
-               T1iiaa(i,i1,a1,a) *= 1.0
+#               T1iiaa(i,i1,a1,a) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i,i1,a1,a) += T1iiaa(i,i1,a1,a)
 
                T1iiaa(i1,i,a,a1)        = Tiiaa(i,i1,a,a1)
                T1iiaa(i1,i,a,a1)       *= -1.0
 #bgn_debug
-               T1iiaa(i1,i,a,a1) *= 1.0
+#               T1iiaa(i1,i,a,a1) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a,a1) += T1iiaa(i1,i,a,a1)
 
                T1iiaa(i1,i,a1,a)        = Tiiaa(i,i1,a,a1)
 #bgn_debug
-               T1iiaa(i1,i,a1,a) *= 1.0
+#               T1iiaa(i1,i,a1,a) *= 1.0
 #end_debug
                PREPARE Dijab_aa_x(i1,i,a1,a) += T1iiaa(i1,i,a1,a)
             ENDDO a
@@ -6221,78 +6220,78 @@
 #        Endif 
 
 #bgn_debug
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo i, i1, a, a1
-           request vibja_aaaa(i1,a,i,a1) a1
-           tmp  = vibja_aaaa(i1,a,i,a1) * vibja_aaaa(i1,a,i,a1)
-           suma += tmp
-     Endpardo i, i1, a, a1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo j, j1, b, b1
-           request vibja_bbbb(j1,b,j,b1) b1
-           tmp  = vibja_bbbb(j1,b,j,b1) * vibja_bbbb(j1,b,j,b1)
-           suma += tmp
-     Endpardo j, j1, b, b1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo  a, a1, j, j1
-           request vibja_baba(j,a,j1,a1) j1
-           tmp  = vibja_baba(j,a,j1,a1) * vibja_baba(j,a,j1,a1)
-           suma += tmp
-     Endpardo a, a1, j, j1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo b, b1, i, i1
-           request vibja_abab(i,b,i1,b1) i1
-           tmp  =  vibja_abab(i,b,i1,b1) * vibja_abab(i,b,i1,b1)
-           suma += tmp
-     Endpardo b, b1, i, i1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo i, a, j, b
-           request Vibja_baab(j,a,i,b) b
-           tmp  =  Vibja_baab(j,a,i,b) * Vibja_baab(j,a,i,b)
-           suma += tmp
-     Endpardo i, a, j, b
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo i, a, j, b
-           request Vibja_abba(i,b,j,a) a
-           tmp  =  Vibja_abba(i,b,j,a) * Vibja_abba(i,b,j,a)
-           suma += tmp
-     Endpardo i, a, j, b
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo i, i1, a, a1
+#           request vibja_aaaa(i1,a,i,a1) a1
+#           tmp  = vibja_aaaa(i1,a,i,a1) * vibja_aaaa(i1,a,i,a1)
+#           suma += tmp
+#     Endpardo i, i1, a, a1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo j, j1, b, b1
+#           request vibja_bbbb(j1,b,j,b1) b1
+#           tmp  = vibja_bbbb(j1,b,j,b1) * vibja_bbbb(j1,b,j,b1)
+#           suma += tmp
+#     Endpardo j, j1, b, b1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo  a, a1, j, j1
+#           request vibja_baba(j,a,j1,a1) j1
+#           tmp  = vibja_baba(j,a,j1,a1) * vibja_baba(j,a,j1,a1)
+#           suma += tmp
+#     Endpardo a, a1, j, j1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo b, b1, i, i1
+#           request vibja_abab(i,b,i1,b1) i1
+#           tmp  =  vibja_abab(i,b,i1,b1) * vibja_abab(i,b,i1,b1)
+#           suma += tmp
+#     Endpardo b, b1, i, i1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo i, a, j, b
+#           request Vibja_baab(j,a,i,b) b
+#           tmp  =  Vibja_baab(j,a,i,b) * Vibja_baab(j,a,i,b)
+#           suma += tmp
+#     Endpardo i, a, j, b
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo i, a, j, b
+#           request Vibja_abba(i,b,j,a) a
+#           tmp  =  Vibja_abba(i,b,j,a) * Vibja_abba(i,b,j,a)
+#           suma += tmp
+#     Endpardo i, a, j, b
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
 #end_debug
       ENDPROC DIBJA
 #----------------------------------------------------
@@ -7500,76 +7499,77 @@
               CALL DIBJAABBA_X
 #           Endif 
 #bgn_debug
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo i, i1, a, a1
-           request vibja_aaaa_x(i1,a,i,a1) a1
-           tmp  = vibja_aaaa_x(i1,a,i,a1) *  vibja_aaaa_x(i1,a,i,a1)
-           suma += tmp
-     Endpardo i, i1, a, a1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo j, j1, b, b1
-           request vibja_bbbb_x(j1,b,j,b1) b1
-           tmp  = vibja_bbbb_x(j1,b,j,b1) * vibja_bbbb_x(j1,b,j,b1)
-           suma += tmp
-     Endpardo j, j1, b, b1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo  a, a1, j, j1
-           request vibja_baba_x(j,a,j1,a1) j1
-           tmp  = vibja_baba_x(j,a,j1,a1) * vibja_baba_x(j,a,j1,a1)
-           suma += tmp
-     Endpardo a, a1, j, j1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo b, b1, i, i1
-           request vibja_abab_x(i,b,i1,b1) i1
-           tmp  =  vibja_abab_x(i,b,i1,b1) * vibja_abab_x(i,b,i1,b1)
-           suma += tmp
-     Endpardo b, b1, i, i1
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo  j,a,i,b
-           request Vibja_baab_x(j,a,i,b) b
-           tmp  =  Vibja_baab_x(j,a,i,b) * Vibja_baab_x(j,a,i,b)
-           suma += tmp
-     Endpardo j,a,i,b
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
-
-     suma   = 0.0
-     sumaa = 0.0
-     Pardo i,b,j,a
-           request Vibja_abba_x(i,b,j,a) a
-           tmp  =  Vibja_abba_x(i,b,j,a) * Vibja_abba_x(i,b,j,a)
-           suma += tmp
-     Endpardo i,b,j,a
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute print_scalar sumaa
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo i, i1, a, a1
+#           request vibja_aaaa_x(i1,a,i,a1) a1
+#           tmp  = vibja_aaaa_x(i1,a,i,a1) *  vibja_aaaa_x(i1,a,i,a1)
+#           suma += tmp
+#     Endpardo i, i1, a, a1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo j, j1, b, b1
+#           request vibja_bbbb_x(j1,b,j,b1) b1
+#           tmp  = vibja_bbbb_x(j1,b,j,b1) * vibja_bbbb_x(j1,b,j,b1)
+#           suma += tmp
+#     Endpardo j, j1, b, b1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo  a, a1, j, j1
+#           request vibja_baba_x(j,a,j1,a1) j1
+#           tmp  = vibja_baba_x(j,a,j1,a1) * vibja_baba_x(j,a,j1,a1)
+#           suma += tmp
+#     Endpardo a, a1, j, j1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo b, b1, i, i1
+#           request vibja_abab_x(i,b,i1,b1) i1
+#           tmp  =  vibja_abab_x(i,b,i1,b1) * vibja_abab_x(i,b,i1,b1)
+#           suma += tmp
+#     Endpardo b, b1, i, i1
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo  j,a,i,b
+#           request Vibja_baab_x(j,a,i,b) b
+#           tmp  =  Vibja_baab_x(j,a,i,b) * Vibja_baab_x(j,a,i,b)
+#           suma += tmp
+#     Endpardo j,a,i,b
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#
+#     suma   = 0.0
+#     sumaa = 0.0
+#     Pardo i,b,j,a
+#           request Vibja_abba_x(i,b,j,a) a
+#           tmp  =  Vibja_abba_x(i,b,j,a) * Vibja_abba_x(i,b,j,a)
+#           suma += tmp
+#     Endpardo i,b,j,a
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute print_scalar sumaa
+#end_debug
 
       ENDPROC DIBJA_X
 #----------------------------------------------------
@@ -7977,17 +7977,17 @@
       execute server_barrier 
 
 #bgn_debug
-      sumbb=0.0
-      sumb =0.0
-      PARDO mu, nu, lambda,j
-            REQUEST Dxxxj_AB(mu,nu,lambda,j) j
-            Txxxj(mu,nu,lambda,j) = Dxxxj_AB(mu,nu,lambda,j)
-            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
-            sumb += tmp
-      ENDPARDO mu, nu, lambda,j
-      execute server_barrier
-      collective sumbb += sumb
-      execute print_scalar sumbb
+#      sumbb=0.0
+#      sumb =0.0
+#      PARDO mu, nu, lambda,j
+#            REQUEST Dxxxj_AB(mu,nu,lambda,j) j
+#            Txxxj(mu,nu,lambda,j) = Dxxxj_AB(mu,nu,lambda,j)
+#            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
+#            sumb += tmp
+#      ENDPARDO mu, nu, lambda,j
+#      execute server_barrier
+#      collective sumbb += sumb
+#      execute print_scalar sumbb
 #end_debug
 
       ENDPROC DABCIABAB 
@@ -8439,17 +8439,17 @@
       execute server_barrier
 
 #bgn_debug
-      sumaa=0.0
-      suma =0.0
-      PARDO mu,a1,a2,i
-            REQUEST Dxaai_x(mu,a1,a2,i) i
-            Txaai(mu,a1,a2,i) = Dxaai_x(mu,a1,a2,i)
-            tmp = Txaai(mu,a1,a2,i) * Txaai(mu,a1,a2,i)
-            suma += tmp
-      ENDPARDO mu,a1,a2,i
-      execute server_barrier
-      collective sumaa += suma
-      execute print_scalar sumaa
+#      sumaa=0.0
+#      suma =0.0
+#      PARDO mu,a1,a2,i
+#            REQUEST Dxaai_x(mu,a1,a2,i) i
+#            Txaai(mu,a1,a2,i) = Dxaai_x(mu,a1,a2,i)
+#            tmp = Txaai(mu,a1,a2,i) * Txaai(mu,a1,a2,i)
+#            suma += tmp
+#      ENDPARDO mu,a1,a2,i
+#      execute server_barrier
+#      collective sumaa += suma
+#      execute print_scalar sumaa
 #end_debug
 
 
@@ -8463,17 +8463,17 @@
       ENDPARDO mu, a1, a2, i
       execute server_barrier
 #bgn_debug
-      sumaa=0.0
-      suma =0.0
-      PARDO mu,nu,a2,i
-            REQUEST Dxxai_x(mu,nu,a2,i)i
-            Txxai(mu,nu,a2,i) = Dxxai_x(mu,nu,a2,i) 
-            tmp = Txxai(mu,nu,a2,i) * Txxai(mu,nu,a2,i)
-            suma += tmp
-      ENDPARDO mu,nu,a2,i
-      execute server_barrier
-      collective sumaa += suma
-      execute print_scalar sumaa
+#      sumaa=0.0
+#      suma =0.0
+#      PARDO mu,nu,a2,i
+#            REQUEST Dxxai_x(mu,nu,a2,i)i
+#            Txxai(mu,nu,a2,i) = Dxxai_x(mu,nu,a2,i) 
+#            tmp = Txxai(mu,nu,a2,i) * Txxai(mu,nu,a2,i)
+#            suma += tmp
+#      ENDPARDO mu,nu,a2,i
+#      execute server_barrier
+#      collective sumaa += suma
+#      execute print_scalar sumaa
 #end_debug
 
       PARDO mu, nu, i
@@ -8494,17 +8494,17 @@
       ENDPARDO mu, nu, i
       execute server_barrier
 #bgn_debug
-      sumaa=0.0
-      suma =0.0
-      PARDO mu, nu, lambda,i
-            REQUEST Dxxxi_x_AA(mu,nu,lambda,i) i
-            Txxxi(mu,nu,lambda,i) = Dxxxi_x_AA(mu,nu,lambda,i)
-            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
-            suma += tmp
-      ENDPARDO mu, nu, lambda,i
-      execute server_barrier
-      collective sumaa += suma
-      execute print_scalar sumaa
+#      sumaa=0.0
+#      suma =0.0
+#      PARDO mu, nu, lambda,i
+#            REQUEST Dxxxi_x_AA(mu,nu,lambda,i) i
+#            Txxxi(mu,nu,lambda,i) = Dxxxi_x_AA(mu,nu,lambda,i)
+#            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
+#            suma += tmp
+#      ENDPARDO mu, nu, lambda,i
+#      execute server_barrier
+#      collective sumaa += suma
+#      execute print_scalar sumaa
 #end_debug
 
 
@@ -8679,17 +8679,17 @@
       ENDPARDO mu, nu, j
       execute server_barrier
 #bgn_debug
-      sumbb=0.0
-      sumb =0.0
-      PARDO mu, nu, lambda,j
-            REQUEST Dxxxj_x_BB(mu,nu,lambda,j) j
-            Txxxj(mu,nu,lambda,j) = Dxxxj_x_BB(mu,nu,lambda,j)
-            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
-            sumb += tmp
-      ENDPARDO mu, nu, lambda,j
-      execute server_barrier
-      collective sumbb += sumb
-      execute print_scalar sumbb
+#      sumbb=0.0
+#      sumb =0.0
+#      PARDO mu, nu, lambda,j
+#            REQUEST Dxxxj_x_BB(mu,nu,lambda,j) j
+#            Txxxj(mu,nu,lambda,j) = Dxxxj_x_BB(mu,nu,lambda,j)
+#            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
+#            sumb += tmp
+#      ENDPARDO mu, nu, lambda,j
+#      execute server_barrier
+#      collective sumbb += sumb
+#     execute print_scalar sumbb
 #end_debug
 
      ENDPROC DCIABBBBB_X
@@ -8885,17 +8885,17 @@
       ENDPARDO mu, nu, i
       execute server_barrier
 #bgn_debug
-      sumbb=0.0
-      sumb =0.0
-      PARDO mu, nu, lambda,i
-            REQUEST Dxxxi_x_BA(mu,nu,lambda,i) i
-            Txxxi(mu,nu,lambda,i) = Dxxxi_x_BA(mu,nu,lambda,i)
-            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
-            sumb += tmp
-      ENDPARDO mu, nu, lambda,i
-      execute server_barrier
-      collective sumbb += sumb
-      execute print_scalar sumbb
+#      sumbb=0.0
+#      sumb =0.0
+#      PARDO mu, nu, lambda,i
+#            REQUEST Dxxxi_x_BA(mu,nu,lambda,i) i
+#            Txxxi(mu,nu,lambda,i) = Dxxxi_x_BA(mu,nu,lambda,i)
+#            tmp = Txxxi(mu,nu,lambda,i) * Txxxi(mu,nu,lambda,i)
+#            sumb += tmp
+#      ENDPARDO mu, nu, lambda,i
+#      execute server_barrier
+#      collective sumbb += sumb
+#      execute print_scalar sumbb
 #end_debug
 
 
@@ -8926,13 +8926,13 @@
             T1abaj(a,b,a1,j)  = Gae_a(a1,a)^t1b_old_x(b,j)
             T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-            T1abaj(a,b,a1,j) *=1.0
+#            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
             T1abaj(a,b,a1,j)  = Gae_a_x(a1,a)^t1b_old(b,j)
 #bgn_debug
-            T1abaj(a,b,a1,j) *=1.0
+#            T1abaj(a,b,a1,j) *=1.0
 #end_debug
             T1abaj(a,b,a1,j) *= -0.125
             Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
@@ -8956,14 +8956,14 @@
                T1abaj(a,b,a1,j)  = Tau_ab(a,i,b,j)*l1a_old_x(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Tau_ab_x(a,i,b,j)*l1a_old(i,a1)
                T1abaj(a,b,a1,j) *= 0.125
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -8971,28 +8971,28 @@
                T1ajba(a,j,b,a1)  = L2old_ab(i,a,j,b)*t1a_old_x(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
 #bgn_debug
-               T1ajba(a,j,b,a1) *=1.0
+#               T1ajba(a,j,b,a1) *=1.0
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 
                T1ajba(a,j,b,a1)  = L2old_ab_x(i,a,j,b)*t1a_old(a1,i)
                T1ajba(a,j,b,a1) *= 0.125
 #bgn_debug
-               T1ajba(a,j,b,a1) *=1.0
+#               T1ajba(a,j,b,a1) *=1.0
 #end_debug
                Tajba(a,j,b,a1)  += T1ajba(a,j,b,a1)
 # DABCI_X end
                T1abaj(a,b,a1,j)  = Vibja_baab(j,a1,i,b)*t1a_old_x(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baab_x(j,a1,i,b)*t1a_old(a,i)
                T1abaj(a,b,a1,j) *= 0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9007,14 +9007,14 @@
                T1abaj(a,b,a1,j)  = Vibja_baba(j,a1,j1,a)*t1b_old_x(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
                T1abaj(a,b,a1,j)  = Vibja_baba_x(j,a1,j1,a)*t1b_old(b,j1)
                T1abaj(a,b,a1,j) *= -0.25
 #bgn_debug
-               T1abaj(a,b,a1,j) *=1.0
+#               T1abaj(a,b,a1,j) *=1.0
 #end_debug
                Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9030,7 +9030,7 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-                  T1abaj(a,b,a1,j) *=1.0
+#                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
 
@@ -9039,7 +9039,7 @@
                   T1abaj(a,b,a1,j)  = Tabij(a,b,i,j1)*Tijaj(i,j1,a1,j)
                   T1abaj(a,b,a1,j) *= -0.125
 #bgn_debug
-                  T1abaj(a,b,a1,j) *=1.0
+#                  T1abaj(a,b,a1,j) *=1.0
 #end_debug
                   Tabaj(a,b,a1,j)  += T1abaj(a,b,a1,j)
                ENDDO i
@@ -9063,17 +9063,17 @@
       ENDPARDO a, a1, b, j
       execute server_barrier
 #bgn_debug
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo mu, a1, b, j
-           request Dxbaj_x(mu,b,a1,j) j
-           tmp  =  Dxbaj_x(mu,b,a1,j) * Dxbaj_x(mu,b,a1,j)
-           suma += tmp
-     Endpardo  mu, a1, b, j
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute prInt_scalar sumaa
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo mu, a1, b, j
+#           request Dxbaj_x(mu,b,a1,j) j
+#           tmp  =  Dxbaj_x(mu,b,a1,j) * Dxbaj_x(mu,b,a1,j)
+#           suma += tmp
+#     Endpardo  mu, a1, b, j
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute prInt_scalar sumaa
 #end_debug
 
 # Back transform to full AO representation
@@ -9088,17 +9088,17 @@
       execute server_barrier
 
 #bgn_debug
-     suma  = 0.0
-     sumaa = 0.0
-     Pardo mu, a1, nu, j
-           request Dxxaj_x(mu,nu,a1,j) j
-           tmp  =  Dxxaj_x(mu,nu,a1,j) * Dxxaj_x(mu,nu,a1,j)
-           suma += tmp
-     Endpardo  mu, a1, nu, j
-     execute server_barrier
-     collective sumaa += suma
-     execute sip_barrier
-     execute prInt_scalar sumaa
+#     suma  = 0.0
+#     sumaa = 0.0
+#     Pardo mu, a1, nu, j
+#           request Dxxaj_x(mu,nu,a1,j) j
+#           tmp  =  Dxxaj_x(mu,nu,a1,j) * Dxxaj_x(mu,nu,a1,j)
+#           suma += tmp
+#     Endpardo  mu, a1, nu, j
+#     execute server_barrier
+#     collective sumaa += suma
+#     execute sip_barrier
+#     execute prInt_scalar sumaa
 #end_debug
 
       PARDO mu, nu, j
@@ -9120,17 +9120,17 @@
       execute server_barrier
 
 #bgn_debug
-      sumbb=0.0
-      sumb =0.0
-      PARDO mu, nu, lambda,j
-            REQUEST Dxxxj_x_AB(mu,nu,lambda,j) j
-            Txxxj(mu,nu,lambda,j) = Dxxxj_x_AB(mu,nu,lambda,j)
-            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
-            sumb += tmp
-      ENDPARDO mu, nu, lambda,j
-      execute server_barrier
-      collective sumbb += sumb
-      execute print_scalar sumbb
+#      sumbb=0.0
+#      sumb =0.0
+#      PARDO mu, nu, lambda,j
+#            REQUEST Dxxxj_x_AB(mu,nu,lambda,j) j
+#            Txxxj(mu,nu,lambda,j) = Dxxxj_x_AB(mu,nu,lambda,j)
+#            tmp = Txxxj(mu,nu,lambda,j) * Txxxj(mu,nu,lambda,j)
+#            sumb += tmp
+#      ENDPARDO mu, nu, lambda,j
+#      execute server_barrier
+#      collective sumbb += sumb
+#      execute print_scalar sumbb
 #end_debug
 
 
@@ -11159,15 +11159,15 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX_HF
-      execute print_scalar  E2GC_XY_HF
-      execute print_scalar  E2GC_XZ_HF
-      execute print_scalar  E2GC_YX_HF
-      execute print_scalar  E2GC_YY_HF
-      execute print_scalar  E2GC_YZ_HF
-      execute print_scalar  E2GC_ZX_HF
-      execute print_scalar  E2GC_ZY_HF
-      execute print_scalar  E2GC_ZZ_HF
+#      execute print_scalar  E2GC_XX_HF
+#      execute print_scalar  E2GC_XY_HF
+#      execute print_scalar  E2GC_XZ_HF
+#      execute print_scalar  E2GC_YX_HF
+#      execute print_scalar  E2GC_YY_HF
+#      execute print_scalar  E2GC_YZ_HF
+#      execute print_scalar  E2GC_ZX_HF
+#      execute print_scalar  E2GC_ZY_HF
+#      execute print_scalar  E2GC_ZZ_HF
 #end_debug
 
       E2GC_XX_SAVE = E2GC_XX_HF
@@ -11323,15 +11323,15 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX_HF
-      execute print_scalar  E2GC_XY_HF
-      execute print_scalar  E2GC_XZ_HF
-      execute print_scalar  E2GC_YX_HF
-      execute print_scalar  E2GC_YY_HF
-      execute print_scalar  E2GC_YZ_HF
-      execute print_scalar  E2GC_ZX_HF
-      execute print_scalar  E2GC_ZY_HF
-      execute print_scalar  E2GC_ZZ_HF
+#      execute print_scalar  E2GC_XX_HF
+#      execute print_scalar  E2GC_XY_HF
+#      execute print_scalar  E2GC_XZ_HF
+#      execute print_scalar  E2GC_YX_HF
+#      execute print_scalar  E2GC_YY_HF
+#      execute print_scalar  E2GC_YZ_HF
+#      execute print_scalar  E2GC_ZX_HF
+#      execute print_scalar  E2GC_ZY_HF
+#      execute print_scalar  E2GC_ZZ_HF
 #end_debug
 
       E2GC_XX_SAVE = E2GC_XX_HF
@@ -11855,15 +11855,15 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX
-      execute print_scalar  E2GC_XY
-      execute print_scalar  E2GC_XZ
-      execute print_scalar  E2GC_YX
-      execute print_scalar  E2GC_YY
-      execute print_scalar  E2GC_YZ
-      execute print_scalar  E2GC_ZX
-      execute print_scalar  E2GC_ZY
-      execute print_scalar  E2GC_ZZ
+#      execute print_scalar  E2GC_XX
+#      execute print_scalar  E2GC_XY
+#      execute print_scalar  E2GC_XZ
+#      execute print_scalar  E2GC_YX
+#      execute print_scalar  E2GC_YY
+#      execute print_scalar  E2GC_YZ
+#      execute print_scalar  E2GC_ZX
+#      execute print_scalar  E2GC_ZY
+#      execute print_scalar  E2GC_ZZ
 #enddebug
 
       E2GC_XX_SAVE = E2GC_XX
@@ -12381,15 +12381,15 @@
       execute server_barrier
 
 #bgn_debug
-      execute print_scalar  E2GC_XX
-      execute print_scalar  E2GC_XY
-      execute print_scalar  E2GC_XZ
-      execute print_scalar  E2GC_YX
-      execute print_scalar  E2GC_YY
-      execute print_scalar  E2GC_YZ
-      execute print_scalar  E2GC_ZX
-      execute print_scalar  E2GC_ZY
-      execute print_scalar  E2GC_ZZ
+#      execute print_scalar  E2GC_XX
+#      execute print_scalar  E2GC_XY
+#      execute print_scalar  E2GC_XZ
+#      execute print_scalar  E2GC_YX
+#      execute print_scalar  E2GC_YY
+#      execute print_scalar  E2GC_YZ
+#      execute print_scalar  E2GC_ZX
+#      execute print_scalar  E2GC_ZY
+#      execute print_scalar  E2GC_ZZ
 #enddebug
 
       E2GC_XX_SAVE += E2GC_XX
@@ -12652,7 +12652,7 @@
             T1xxxx(mu,nu,lambda,sigma)*= Coreln
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 #bgn_debug
-               Txxxx(mu,nu,lambda,sigma) = 0.0
+#               Txxxx(mu,nu,lambda,sigma) = 0.0
 #end_debug
 
 #           Fully transform Diixx
@@ -12920,7 +12920,7 @@
 #         
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
-##bgn_debug
+#bgn_debug
 #            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
 #            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 ##end_debug
@@ -13183,7 +13183,7 @@
             Txxxx(mu,nu,lambda,sigma) += T1xxxx(mu,nu,lambda,sigma)
 
 #bgn_debug
-               Txxxx(mu,nu,lambda,sigma) = 0.0
+#               Txxxx(mu,nu,lambda,sigma) = 0.0
 #end_debug
 #           Fully transform Diixx
 #           ---------------------
@@ -13455,10 +13455,10 @@
 #
            REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma 
            PXXXX_x(mu,nu,lambda,sigma) =  Dxxxx_x(mu,nu,lambda,sigma) 
-####bgn_debug
+#bgn_debug
 #            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
 #            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
-##end_debug
+#end_debug
             PXXXX_x(mu,nu,lambda,sigma)*= 0.25
 	    PXXXX_x(mu,nu,lambda,sigma)+= Txxxx(mu,nu,lambda,sigma)
             T2xxxx(mu,nu,lambda,sigma) *= 2.0
@@ -14009,8 +14009,8 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma  
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 #bgn_debug
-            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
-            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2xxxx(mu,nu,lambda,sigma)  *= 0.0
 #end_debug
 
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
@@ -14534,8 +14534,8 @@
             REQUEST Dxxxx_x(mu,nu,lambda,sigma) sigma
             PXXXX_x(mu,nu,lambda,sigma)  = Dxxxx_x(mu,nu,lambda,sigma)
 #bgn_debug
-            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
-            T2XXXX(mu,nu,lambda,sigma)  *= 0.0
+#            PXXXX_x(mu,nu,lambda,sigma) *= 0.0
+#            T2XXXX(mu,nu,lambda,sigma)  *= 0.0
 #end_debug
             PXXXX_x(mu,nu,lambda,sigma) *= 0.25
             PXXXX_x(mu,nu,lambda,sigma) += Txxxx(mu,nu,lambda,sigma)
@@ -16186,7 +16186,7 @@
       execute server_barrier 
       collective esum +=etmp
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute print_scalar esum 
 #
@@ -16200,7 +16200,7 @@
 #            
       ENDPARDO j, j1, j2, j3 
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier 
       collective esum +=etmp
@@ -16217,7 +16217,7 @@
 #            
       ENDPARDO i, i1, j, j1 
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier 
       collective esum +=etmp
@@ -16345,7 +16345,7 @@
       ENDPARDO a, a1, a2, i
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier
       collective esum +=etmp
@@ -16465,7 +16465,7 @@
       ENDPARDO i, i1, i2, a
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier
       collective esum +=etmp
@@ -16482,7 +16482,7 @@
       ENDPARDO j, j1, j2, b
 #      esum *= 0.5 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier
       collective esum +=etmp
@@ -16498,7 +16498,7 @@
 #     
       ENDPARDO i, i1, j, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier
       collective esum +=etmp
@@ -16514,7 +16514,7 @@
 #     
       ENDPARDO i, j1, j, a
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute server_barrier
       collective esum +=etmp
@@ -16582,7 +16582,7 @@
       ENDPARDO i, i1, a,a1
 #      esum *= 0.25 # to match aces
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute sip_barrier 
       collective esum += etmp
@@ -16683,7 +16683,7 @@
 #
       ENDPARDO j, j1, a, a1
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute sip_barrier 
       collective esum += etmp
@@ -16699,7 +16699,7 @@
             etmp += etemp
       ENDPARDO i, j, a, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute sip_barrier 
       collective esum += etmp
@@ -16716,7 +16716,7 @@
 #
       ENDPARDO i, j, a, b
 #bgn_debug
-      esum *= 1.0
+#      esum *= 1.0
 #end_debug
       execute sip_barrier 
       collective esum += etmp
@@ -16837,52 +16837,52 @@
      ENDPROC verify
 #-------------------------------------------------------------
 #bgn_debug
-      PROC verify_x
+#      PROC verify_x
 #     -------------
-         esuma   = 0.0
-         ecorraa = 0.0
-         PARDO mu, nu, lambda, sigma
-              request Dxxxx_aaaa_x(mu,nu,lambda,sigma) sigma
-              etemp = Dxxxx_aaaa_x(mu,nu,lambda,sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
-              esuma += etemp
-           ENDPARDO mu, nu, lambda, sigma
-           execute server_barrier
-           collective ecorraa += esuma
-           execute print_scalar ecorraa
-
-          esuma   = 0.0
-          ecorraa = 0.0
-          PARDO mu, nu, lambda, sigma
-              request Dxxxx_bbbb_x(mu,nu,lambda,sigma) sigma
-              etemp = Dxxxx_bbbb_x(mu,nu,lambda,sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
-              esuma += etemp
-          ENDPARDO mu, nu, lambda, sigma
-          execute server_barrier
-          collective ecorraa += esuma
-          execute print_scalar ecorraa
-
-          esuma   = 0.0
-          ecorraa = 0.0
-          PARDO mu, nu, lambda, sigma
-              request Dxxxx_abab_x(mu,nu,lambda,sigma) sigma
-              etemp = Dxxxx_abab_x(mu,nu,lambda,sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
-              esuma += etemp
-          ENDPARDO mu, nu, lambda, sigma
-          execute server_barrier
-          collective ecorraa += esuma
-          execute print_scalar ecorraa
-          esuma   = 0.0
-          ecorraa = 0.0
-           PARDO mu, nu, lambda, sigma
-              request Dxxxx_baba_x(mu,nu,lambda,sigma) sigma
-              etemp = Dxxxx_baba_x(mu,nu,lambda,sigma)*Dxxxx_baba_x(mu,nu,lambda,sigma)
-              esuma += etemp
-           ENDPARDO mu, nu, lambda, sigma
-           execute server_barrier
-          collective ecorraa += esuma
-          execute print_scalar ecorraa
-
-     ENDPROC verify_x
+#         esuma   = 0.0
+#         ecorraa = 0.0
+#         PARDO mu, nu, lambda, sigma
+#              request Dxxxx_aaaa_x(mu,nu,lambda,sigma) sigma
+#              etemp = Dxxxx_aaaa_x(mu,nu,lambda,sigma)*Dxxxx_aaaa_x(mu,nu,lambda,sigma)
+#              esuma += etemp
+#           ENDPARDO mu, nu, lambda, sigma
+#           execute server_barrier
+#           collective ecorraa += esuma
+#           execute print_scalar ecorraa
+#
+#          esuma   = 0.0
+#          ecorraa = 0.0
+#          PARDO mu, nu, lambda, sigma
+#              request Dxxxx_bbbb_x(mu,nu,lambda,sigma) sigma
+#              etemp = Dxxxx_bbbb_x(mu,nu,lambda,sigma)*Dxxxx_bbbb_x(mu,nu,lambda,sigma)
+#              esuma += etemp
+#          ENDPARDO mu, nu, lambda, sigma
+#          execute server_barrier
+#          collective ecorraa += esuma
+#          execute print_scalar ecorraa
+#
+#          esuma   = 0.0
+#          ecorraa = 0.0
+#          PARDO mu, nu, lambda, sigma
+#              request Dxxxx_abab_x(mu,nu,lambda,sigma) sigma
+#              etemp = Dxxxx_abab_x(mu,nu,lambda,sigma)*Dxxxx_abab_x(mu,nu,lambda,sigma)
+#              esuma += etemp
+#          ENDPARDO mu, nu, lambda, sigma
+#          execute server_barrier
+#          collective ecorraa += esuma
+#          execute print_scalar ecorraa
+#          esuma   = 0.0
+#          ecorraa = 0.0
+#           PARDO mu, nu, lambda, sigma
+#              request Dxxxx_baba_x(mu,nu,lambda,sigma) sigma
+#              etemp = Dxxxx_baba_x(mu,nu,lambda,sigma)*Dxxxx_baba_x(mu,nu,lambda,sigma)
+#              esuma += etemp
+#           ENDPARDO mu, nu, lambda, sigma
+#           execute server_barrier
+#          collective ecorraa += esuma
+#          execute print_scalar ecorraa
+#
+#     ENDPROC verify_x
 #enddbug
 #------------------------------------------------------
 
@@ -16969,57 +16969,57 @@
 #    ---------------------------
 
 #bgn_debug
-     PROC PICK_TL
+#     PROC PICK_TL
 #   ---------------
-
-      PARDO I, A
-            GET T1a_old(A,I)
-            Get L1a_old(i,a)
-            Tai(A,I) = T1a_old(A,I)
-            Tia(i,a) = L1a_old(i,a)
-            PUT T1a_old_x(A,I) = Tai(A,I)
-            PUT L1a_old_x(I,A) = Tia(i,a)
-      ENDPARDO I, A
-
-      PARDO J, B
-            GET T1b_old(B,J)
-            Get L1b_old(J,B)
-            Tbj(B,J) = T1b_old(B,J)
-            Tjb(J,B) = L1b_old(J,B)
-            PUT T1b_old_x(B,J) = Tbj(B,J)
-            PUT L1b_old_x(J,B) = Tjb(J,B)
-      ENDPARDO J,B
-
-      PARDO A, A1, I, I1
-            REQUEST T2old_aa(A,I,A1,I1) I1
-            REQUEST L2old_aa(i,a,i1,a1) a1
-            Taiai(A,I,A1,I1) = T2old_aa(A,I,A1,I1)
-            Tiaia(i,a,i1,a1) = L2old_aa(i,a,i1,a1)
-            PREPARE T2old_aa_X(A,I,A1,I1) = Taiai(A,I,A1,I1)
-            PREPARE L2old_aa_X(I,A,I1,A1) = Tiaia(i,a,i1,a1)
-      ENDPARDO A, A1, I, I1,
-
-      PARDO B, B1, J, J1
-            REQUEST T2old_bb(B,J,B1,J1) J1
-            REQUEST L2old_bb(j,b,j1,b1) b1
-            Tbjbj(B,J,B1,J1) = T2old_bb(B,J,B1,J1)
-            Tjbjb(j,b,j1,b1) = L2old_bb(j,b,j1,b1)
-            PREPARE T2old_bb_X(B,J,B1,J1)= Tbjbj(B,J,B1,J1)
-            PREPARE  L2old_bb_X(J,B,J1,B1)= Tjbjb(j,b,j1,b1)
-      ENDPARDO B, B1, J, J1
-
-      PARDO A, B, I, J
-            REQUEST T2old_ab(A,I,B,J) J
-            REQUEST L2old_ab(i,a,j,b) b
-            Taibj(A,I,B,J) = T2old_ab(A,I,B,J)
-            Tiajb(i,a,j,b) = L2old_ab(i,a,j,b)
-            PREPARE T2old_ab_X(A,I,B,J) = Taibj(A,I,B,J)
-            PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
-      ENDPARDO A, B, I, J,
-
-      EXECUTE SERVER_BARRIER
-
-      ENDPROC PICK_TL
+#
+#      PARDO I, A
+#            GET T1a_old(A,I)
+#            Get L1a_old(i,a)
+#            Tai(A,I) = T1a_old(A,I)
+#            Tia(i,a) = L1a_old(i,a)
+#            PUT T1a_old_x(A,I) = Tai(A,I)
+#            PUT L1a_old_x(I,A) = Tia(i,a)
+#      ENDPARDO I, A
+#
+#      PARDO J, B
+#            GET T1b_old(B,J)
+#            Get L1b_old(J,B)
+#            Tbj(B,J) = T1b_old(B,J)
+#            Tjb(J,B) = L1b_old(J,B)
+#            PUT T1b_old_x(B,J) = Tbj(B,J)
+#            PUT L1b_old_x(J,B) = Tjb(J,B)
+#      ENDPARDO J,B
+#
+#      PARDO A, A1, I, I1
+#            REQUEST T2old_aa(A,I,A1,I1) I1
+#            REQUEST L2old_aa(i,a,i1,a1) a1
+#            Taiai(A,I,A1,I1) = T2old_aa(A,I,A1,I1)
+#            Tiaia(i,a,i1,a1) = L2old_aa(i,a,i1,a1)
+#            PREPARE T2old_aa_X(A,I,A1,I1) = Taiai(A,I,A1,I1)
+#            PREPARE L2old_aa_X(I,A,I1,A1) = Tiaia(i,a,i1,a1)
+#      ENDPARDO A, A1, I, I1,
+#
+#      PARDO B, B1, J, J1
+#            REQUEST T2old_bb(B,J,B1,J1) J1
+#            REQUEST L2old_bb(j,b,j1,b1) b1
+#            Tbjbj(B,J,B1,J1) = T2old_bb(B,J,B1,J1)
+#            Tjbjb(j,b,j1,b1) = L2old_bb(j,b,j1,b1)
+#            PREPARE T2old_bb_X(B,J,B1,J1)= Tbjbj(B,J,B1,J1)
+#            PREPARE  L2old_bb_X(J,B,J1,B1)= Tjbjb(j,b,j1,b1)
+#      ENDPARDO B, B1, J, J1
+#
+#      PARDO A, B, I, J
+#            REQUEST T2old_ab(A,I,B,J) J
+#            REQUEST L2old_ab(i,a,j,b) b
+#            Taibj(A,I,B,J) = T2old_ab(A,I,B,J)
+#            Tiajb(i,a,j,b) = L2old_ab(i,a,j,b)
+#            PREPARE T2old_ab_X(A,I,B,J) = Taibj(A,I,B,J)
+#            PREPARE L2old_ab_x(i,a,j,b) = Tiajb(i,a,j,b)
+#      ENDPARDO A, B, I, J,
+#
+#      EXECUTE SERVER_BARRIER
+#
+#      ENDPROC PICK_TL
 #     ---------------
 #end_debug
       
@@ -17378,15 +17378,15 @@
 #             Coulmb        = 1.0
 #             Exchng        = 1.0
 #             Corlen        = 1.0
-            execute print_scalar property
-            execute print_scalar Pthalf
-            execute print_scalar mthalf
-            execute print_scalar phalf 
-            execute print_scalar mhalf 
-            execute print_scalar Null
-            execute print_scalar fact
-            execute print_scalar Pone
-            execute print_scalar Mone
+#            execute print_scalar property
+#            execute print_scalar Pthalf
+#            execute print_scalar mthalf
+#            execute print_scalar phalf 
+#            execute print_scalar mhalf 
+#            execute print_scalar Null
+#            execute print_scalar fact
+#            execute print_scalar Pone
+#            execute print_scalar Mone
 #end_debug
 
          CALL TAU 
@@ -17405,7 +17405,7 @@
 #end_debug
          CALL DIJAB
 #bgn_debug
-         CALL S2DIJAB
+#         CALL S2DIJAB
 #end_debug
          CALL DIJKA                                                 
 #bgn_debug
@@ -17488,46 +17488,46 @@
                 CALL PICK_PERT_T_Z
              ENDIF
 #bgn_debug
-      sum0 = 0.0
-      do a
-      do i
-         get t1a_old_x(a,i)
-         get l1a_old_x(i,a)
-         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
-         sum0 +=tmp
-         tmp  =  l1a_old_x(i,a) * l1a_old_x(i,a)
-          sum0 +=tmp
-      enddo i
-      enddo a
-      execute print_scalar sum0
-
-      suma = 0.0
-      sumb = 0.0
-      sumaa = 0.0
-      sumbb = 0.0
-
-      PARDO a, i, a2, i1
-            REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
-             REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
-             tmp = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
-             suma += tmp
-             tmp =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
-             suma += tmp
-      ENDPARDO a, i, a2, i1
-
-      PARDO b1, j, b2, j1
-            REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
-            REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
-            tmp = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
-            sumb += tmp
-            tmp = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
-            sumb += tmp
-       ENDPARDO b1, j, b2, j1
-       execute server_barrier
-       collective sumaa += suma
-       collective sumbb += sumb
-       execute print_scalar sumaa
-       execute print_scalar sumbb
+#      sum0 = 0.0
+#      do a
+#      do i
+#         get t1a_old_x(a,i)
+#         get l1a_old_x(i,a)
+#         tmp  =  t1a_old_x(a,i) * t1a_old_x(a,i)
+#         sum0 +=tmp
+#         tmp  =  l1a_old_x(i,a) * l1a_old_x(i,a)
+#          sum0 +=tmp
+#      enddo i
+#      enddo a
+#      execute print_scalar sum0
+#
+#      suma = 0.0
+#      sumb = 0.0
+#      sumaa = 0.0
+#      sumbb = 0.0
+#
+#      PARDO a, i, a2, i1
+#            REQUEST T2old_aa_x(a,i,a2,i1) i1  # read from list
+#             REQUEST L2old_aa_x(i,a,i1,a2) a2 # read from list
+#             tmp = T2old_aa_x(a,i,a2,i1) * T2old_aa_x(a,i,a2,i1)
+#             suma += tmp
+#             tmp =  L2old_aa_x(i,a,i1,a2) * L2old_aa_x(i,a,i1,a2)
+#             suma += tmp
+#      ENDPARDO a, i, a2, i1
+#
+#      PARDO b1, j, b2, j1
+#            REQUEST T2old_bb_x(b1,j,b2,j1) j1 # Read from the list
+#            REQUEST L2old_bb_x(j,b1,j1,b2)  j1 # Read from the list
+#            tmp = T2old_bb_x(b1,j,b2,j1) * T2old_bb_x(b1,j,b2,j1)
+#            sumb += tmp
+#            tmp = L2old_bb_x(j,b1,j1,b2) * L2old_bb_x(j,b1,j1,b2)
+#            sumb += tmp
+#       ENDPARDO b1, j, b2, j1
+#       execute server_barrier
+#       collective sumaa += suma
+#       collective sumbb += sumb
+#       execute print_scalar sumaa
+#       execute print_scalar sumbb
 #end_debug
 
              CREATE Gmi_a_x
