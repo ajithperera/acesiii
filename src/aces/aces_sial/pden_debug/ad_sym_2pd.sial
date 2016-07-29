@@ -13483,36 +13483,46 @@
       PROC S2DIJAB 
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, i1, a, a1  
 #
             REQUEST Dijab_aa(i,i1,a,a1) a  
             etemp = Dijab_aa(i,i1,a,a1)*Dijab_aa(i,i1,a,a1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, i1, a,a1 
-      esum *= 0.25 # to match aces 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO j, j1, b, b1  
 #
             REQUEST Dijab_bb(j,j1,b,b1) b  
             etemp = Dijab_bb(j,j1,b,b1)*Dijab_bb(j,j1,b,b1)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO j, j1, b,b1 
-      esum *= 0.25 # to match aces 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
+      execute print_scalar esum
 #
       esum = 0.0 
+      etmp = 0.0
       PARDO i, j, a, b  
 #
             REQUEST Dijab_ab(i,j,a,b) a  
             etemp = Dijab_ab(i,j,a,b)*Dijab_ab(i,j,a,b)
-            esum += etemp
+            etmp += etemp
 #            
       ENDPARDO i, j, a, b 
-      execute print_scalar esum 
+      execute server_barrier
+      collective esum +=etmp
+      execute server_barrier
+      execute print_scalar esum
 #
       ENDPROC S2DIJAB 
 #
